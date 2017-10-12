@@ -21,6 +21,7 @@ module.exports = function separatePinyinInSyllables(pinyin, separateBySpaces) {
   if (separateBySpaces) {
     return pinyin.split(String.fromCharCode(160));
   }
+
   const pinyinSeparated = separate(pinyin).split(' ');
   const newPinyin = [];
 

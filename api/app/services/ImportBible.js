@@ -133,8 +133,9 @@ module.exports = class ImportBible {
               block.v = item.verse_num;
             }
 
-            if ($(divContainer).hasClass('n') && verseIndex === 1) {
-              block.n = 1;
+            if ($(divContainer).hasClass('n') && verseIndex === 1 && line.length) {
+              lines.push(line);
+              line = [];
             }
 
             const pinyin = $(td).find('p.r1');

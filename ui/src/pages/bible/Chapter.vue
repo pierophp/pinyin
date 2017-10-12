@@ -13,6 +13,7 @@
   import {
     FILE_MUTATION_SET,
     FILE_MUTATION_SET_FILE_LOADING,
+    FILE_MUTATION_SET_FULL_FILE,
   } from 'src/data/file/types';
 
   export default {
@@ -21,22 +22,22 @@
       FilePrint,
       LoadableContent,
     },
-    data() {
-      return {
-        loading: true,
-      };
-    },
     methods: {
       ...mapMutations({
         setFileContent: FILE_MUTATION_SET,
+        setFullFile: FILE_MUTATION_SET_FULL_FILE,
         setFileLoading: FILE_MUTATION_SET_FILE_LOADING,
       }),
+      loadLine() {
+
+      },
     },
     async created() {
       this.setFileLoading(true);
       const content = await axios.get(`static/bible/cmn-hans/${this.$route.params.book}/${this.$route.params.chapter}.json`);
+      this.setFullFile({ file: content.data.lines });
       this.setFileContent({ file: content.data.lines });
-      this.loading = false;
+      this.setFileLoading(false);
     },
   };
 </script>

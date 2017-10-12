@@ -21,6 +21,7 @@
       };
     },
     props: {
+      useSpaces: false,
       pinyin: '',
       character: '',
     },
@@ -53,7 +54,7 @@
 
         let pinyin = '';
         if (this.pinyin) {
-          pinyin = separatePinyinInSyllables(this.pinyin, false);
+          pinyin = separatePinyinInSyllables(this.pinyin, this.useSpaces);
         }
 
         if (options.ideogramColored === '0') {

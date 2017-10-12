@@ -12,12 +12,12 @@
 
       <div class="pinyin" v-if="!block.small">
         <span>
-          <span v-for="data in printData" :class="[data.pinyinClass]" v-html="data.pinyin"></span>
+          <span v-for="(data, dataIndex) in printData" :class="[data.pinyinClass]" v-html="data.pinyin" v-bind:key="dataIndex" ></span>
         </span>
       </div>
 
       <div class="character" :data-highlight="highlight" :data-line="lineIndex" :data-block="blockIndex" :class="classBold" v-if="!block.small && !block.footnote">
-        <ideograms-show :pinyin="pinyin" :character="character"/>
+        <ideograms-show :pinyin="pinyin" :character="character" :useSpaces="true"/>
       </div>
 
       <div class="character footnote" v-if="block.footnote" @click.prevent="openFootnote(block.footnote)">
