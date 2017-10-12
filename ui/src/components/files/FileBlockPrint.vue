@@ -1,27 +1,31 @@
 <template>
   <!-- @click is on FilePrint cause performance  -->
-  <div class="block" :data-line="lineIndex" :data-block="blockIndex" :class="classHighlight" ref="block">
-    <div class="image" v-if="block.small">
-      <a href="javascript:void(0)" @click="openImage(block.large)">
-        <img :src="block.small" referrerpolicy="no-referrer"/>
-      </a>
-    </div>
+  <span>
+    <div v-if="block.n" class="new-line"></div>
 
-    <div class="pinyin" v-if="!block.small">
-      <span>
-        <span v-for="data in printData" :class="[data.pinyinClass]" v-html="data.pinyin"></span>
-      </span>
-    </div>
+    <div class="block" :data-line="lineIndex" :data-block="blockIndex" :class="[classHighlight, classNewLine]" ref="block">
+      <div class="image" v-if="block.small">
+        <a href="javascript:void(0)" @click="openImage(block.large)">
+          <img :src="block.small" referrerpolicy="no-referrer"/>
+        </a>
+      </div>
 
-    <div class="character" :data-highlight="highlight" :data-line="lineIndex" :data-block="blockIndex" :class="classBold" v-if="!block.small && !block.footnote">
-      <ideograms-show :pinyin="pinyin" :character="character"/>
-    </div>
+      <div class="pinyin" v-if="!block.small">
+        <span>
+          <span v-for="data in printData" :class="[data.pinyinClass]" v-html="data.pinyin"></span>
+        </span>
+      </div>
 
-    <div class="character footnote" v-if="block.footnote" @click.prevent="openFootnote(block.footnote)">
-        {{ character }}
+      <div class="character" :data-highlight="highlight" :data-line="lineIndex" :data-block="blockIndex" :class="classBold" v-if="!block.small && !block.footnote">
+        <ideograms-show :pinyin="pinyin" :character="character"/>
+      </div>
+
+      <div class="character footnote" v-if="block.footnote" @click.prevent="openFootnote(block.footnote)">
+          {{ character }}
+      </div>
     </div>
-  </div>
-  </div>
+    </div>
+  </span>
 </template>
 
 <script>
@@ -45,6 +49,7 @@
     data() {
       return {
         classHighlight: '',
+        classNewLine: '',
         classBold: '',
         printData: [],
       };
@@ -111,6 +116,7 @@
 
         let withoutPinyn = true;
         const pinyin = separatePinyinInSyllables(this.pinyin, true);
+
         for (let i = 0; i < chars.length; i += 1) {
           let newPinyin = '';
           let pinyinClass = '';
@@ -163,5 +169,8 @@
 </script>
 
 <style>
+.new-line {
+  margin-top: 15px;
+}
 
 </style>

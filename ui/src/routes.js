@@ -10,6 +10,9 @@ import DictionaryTopBar from 'src/components/dictionary/top-bar/dictionary';
 import FileDetailsTopBar from 'src/components/files/top-bar/file-details';
 import FilePrintTopBar from 'src/components/files/top-bar/file-print';
 import VideoShow from 'src/pages/video/Show';
+import BibleBooks from 'src/pages/bible/Books';
+import BibleChapters from 'src/pages/bible/Chapters';
+import BibleChapter from 'src/pages/bible/Chapter';
 
 export default [
   {
@@ -80,4 +83,20 @@ export default [
     name: 'video',
     component: VideoShow,
   },
+  {
+    path: '/bible',
+    name: 'bible',
+    component: BibleBooks,
+  },
+  {
+    path: '/bible/:book',
+    name: 'bible-chaoters',
+    component: BibleChapters,
+  },
+  {
+    path: '/bible/:book/:chapter',
+    name: 'bible-chaoter',
+    component: BibleChapter,
+  },
+
 ];

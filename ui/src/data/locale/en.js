@@ -2,6 +2,7 @@ export default {
   menu: {
     my_files: 'My Files',
     dictionary: 'Dictionary',
+    bible: 'Bible',
     my_ideograms: 'My Ideograms',
     settings: 'Settings',
     video: 'Video',

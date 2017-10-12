@@ -24,6 +24,10 @@
         <md-icon>pageview</md-icon> <span>{{ $t("menu.dictionary") }}</span>
       </md-list-item>
 
+      <md-list-item @click="goTo('/bible')">
+        <md-icon>library_books</md-icon> <span>{{ $t("menu.bible") }}</span>
+      </md-list-item>
+
       <md-list-item @click="goTo('/my-cjk')">
         <md-icon>translate</md-icon> <span>{{ $t("menu.my_ideograms") }}</span>
       </md-list-item>

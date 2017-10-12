@@ -62,4 +62,8 @@ program
   .version('0.0.1')
   .command('export-pinyin', 'Export Pinyin');
 
+program
+  .version('0.0.1')
+  .command('bible-import', 'Import Bible');
+
 program.parse(process.argv);
