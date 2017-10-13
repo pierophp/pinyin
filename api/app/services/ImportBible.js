@@ -131,10 +131,15 @@ module.exports = class ImportBible {
               block.line.pinyinSpaced = 1;
             }
 
+            if (verseIndex === 1) {
+              block.v = item.verse_num;
+            }
+
             const pinyin = $(td).find('p.r1');
             if (pinyin.length) {
               const pinyinTextList = pinyin.text().trim().split(String.fromCharCode(160));
               let charId = 0;
+
               pinyinTextList.forEach((pinyinItem, itemId) => {
                 const pinyinList = separatePinyinInSyllables(pinyinItem);
                 if (itemId > 0) {
@@ -156,10 +161,9 @@ module.exports = class ImportBible {
 
                 blocksTemp.push(block);
               });
-            }
-
-            if (verseIndex === 1) {
-              block.v = item.verse_num;
+            } else {
+              block.c = blockChar;
+              blocksTemp.push(block);
             }
 
             if ($(divContainer).hasClass('n') && verseIndex === 1 && line.length) {
