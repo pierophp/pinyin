@@ -288,6 +288,16 @@
     font-weight: lighter;
   }
 
+  .print .verse .ideogram-show span{
+    font-size: 16px !important;
+    width: auto !important;
+  }
+
+  .print .chapter .ideogram-show span{
+    font-size: 32px !important;
+    width: auto !important;
+  }
+
   .larger.print .pinyin,
   .larger.print .pinyin span {
     font-size: var(--larger-pinyin-font-size);

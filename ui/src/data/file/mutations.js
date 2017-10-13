@@ -120,7 +120,8 @@ export default {
         line[blockIndex].c = '';
       }
 
-      if (!state.fullFile[0][0].line || !state.fullFile[0][0].line.pinyinSpaced) {
+      if (state.fullFile && state.fullFile[0] &&
+          (!state.fullFile[0][0].line || !state.fullFile[0][0].line.pinyinSpaced)) {
         const pinyinList = separatePinyinInSyllables(line[blockIndex].p);
         line[blockIndex].p = pinyinList.join(String.fromCharCode(160));
       }

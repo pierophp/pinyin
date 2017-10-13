@@ -92,7 +92,6 @@ module.exports = class ImportBible {
 
     await Promise.mapSeries(result, async(item) => {
       if (chapterNum !== item.chapter_num || bookId !== item.book_id) {
-
         lines.push(line);
 
         if (lines.length) {
@@ -104,7 +103,6 @@ module.exports = class ImportBible {
 
           await fs.writeFileAsync(`${biblePath}${bibleKeys[bookId]}/${chapterNum}.json`, JSON.stringify({ lines }));
         }
-
 
         lines = [];
         line = [];
@@ -118,15 +116,46 @@ module.exports = class ImportBible {
       $('table').each((i, table) => {
         $(table).find('tr').each((j, tr) => {
           $(tr).find('td').each((k, td) => {
+            const blocksTemp = [];
+
             verseIndex += 1;
 
-            const block = {
-              c: $(td).find('p.c1').text().trim(),
+            const blockChar = $(td).find('p.c1').text().trim();
+
+            let block = {
+              c: '',
             };
 
             if (verseIndex === 1 && line.length === 0) {
               block.line = {};
               block.line.pinyinSpaced = 1;
+            }
+
+            const pinyin = $(td).find('p.r1');
+            if (pinyin.length) {
+              const pinyinTextList = pinyin.text().trim().split(String.fromCharCode(160));
+              let charId = 0;
+              pinyinTextList.forEach((pinyinItem, itemId) => {
+                const pinyinList = separatePinyinInSyllables(pinyinItem);
+                if (itemId > 0) {
+                  block = {
+                    c: '',
+                  };
+                }
+
+                pinyinList.forEach(() => {
+                  block.c += blockChar[charId];
+                  charId += 1;
+                });
+
+                if (!pinyinItem) {
+                  block.c = blockChar;
+                }
+
+                block.p = pinyinList.join(String.fromCharCode(160));
+
+                blocksTemp.push(block);
+              });
             }
 
             if (verseIndex === 1) {
@@ -138,13 +167,9 @@ module.exports = class ImportBible {
               line = [];
             }
 
-            const pinyin = $(td).find('p.r1');
-            if (pinyin.length) {
-              const pinyinList = separatePinyinInSyllables(pinyin.text().trim());
-              block.p = pinyinList.join(String.fromCharCode(160));
-            }
-
-            line.push(block);
+            blocksTemp.forEach((blockItem) => {
+              line.push(blockItem);
+            });
           });
         });
       });

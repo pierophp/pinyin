@@ -1,31 +1,26 @@
 <template>
   <!-- @click is on FilePrint cause performance  -->
-  <span>
-    <div v-if="block.n" class="new-line"></div>
-
-    <div class="block" :data-line="lineIndex" :data-block="blockIndex" :class="[classHighlight, classNewLine]" ref="block">
-      <div class="image" v-if="block.small">
-        <a href="javascript:void(0)" @click="openImage(block.large)">
-          <img :src="block.small" referrerpolicy="no-referrer"/>
-        </a>
-      </div>
-
-      <div class="pinyin" v-if="!block.small">
-        <span>
-          <span v-for="(data, dataIndex) in printData" :class="[data.pinyinClass]" v-html="data.pinyin" v-bind:key="dataIndex" ></span>
-        </span>
-      </div>
-
-      <div class="character" :data-highlight="highlight" :data-line="lineIndex" :data-block="blockIndex" :class="classBold" v-if="!block.small && !block.footnote">
-        <ideograms-show :pinyin="pinyin" :character="character" :useSpaces="true"/>
-      </div>
-
-      <div class="character footnote" v-if="block.footnote" @click.prevent="openFootnote(block.footnote)">
-          {{ character }}
-      </div>
+  <div class="block" :data-line="lineIndex" :data-block="blockIndex" :class="[classHighlight, classExtra]" ref="block">
+    <div class="image" v-if="block.small">
+      <a href="javascript:void(0)" @click="openImage(block.large)">
+        <img :src="block.small" referrerpolicy="no-referrer"/>
+      </a>
     </div>
+
+    <div class="pinyin" v-if="!block.small">
+      <span>
+        <span v-for="(data, dataIndex) in printData" :class="[data.pinyinClass]" v-html="data.pinyin" v-bind:key="dataIndex" ></span>
+      </span>
     </div>
-  </span>
+
+    <div class="character" :data-highlight="highlight" :data-line="lineIndex" :data-block="blockIndex" :class="classBold" v-if="!block.small && !block.footnote">
+      <ideograms-show :pinyin="pinyin" :character="character" :useSpaces="true"/>
+    </div>
+
+    <div class="character footnote" v-if="block.footnote" @click.prevent="openFootnote(block.footnote)">
+        a{{ character }}
+    </div>
+  </div>
 </template>
 
 <script>
@@ -49,7 +44,7 @@
     data() {
       return {
         classHighlight: '',
-        classNewLine: '',
+        classExtra: '',
         classBold: '',
         printData: [],
       };
@@ -109,6 +104,13 @@
         this.classBold = '';
         if (this.isBold === 1) {
           this.classBold = 'bold';
+        }
+
+        if (this.block.v) {
+          this.classExtra = 'verse';
+          if (this.block.v === 1) {
+            this.classExtra = 'chapter';
+          }
         }
 
         const printData = [];
