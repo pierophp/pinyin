@@ -94,7 +94,7 @@ module.exports = class ImportBible {
       if (chapterNum !== item.chapter_num || bookId !== item.book_id) {
         lines.push(line);
 
-        if (lines.length) {
+        if (chapterNum) {
           try {
             await fs.statAsync(`${biblePath}${bibleKeys[bookId]}`);
           } catch (e) {

@@ -225,9 +225,6 @@
 
 </script>
 <style>
-  @import url(//fonts.googleapis.com/earlyaccess/notosansscsliced.css);
-  @import url(//fonts.googleapis.com/earlyaccess/notosanstc.css);
-
   :root {
     --larger-pinyin-font-size: 23px;
     --larger-character-font-size: 34px;
