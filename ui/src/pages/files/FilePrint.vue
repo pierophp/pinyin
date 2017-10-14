@@ -4,7 +4,7 @@
     <image-zoom :src="imageZoom" ref="imageZoom"/>
     <div class="print-scroll">
       <div class="print" :class="[sizeClass, typeClass, ideogramSpacedClass]">
-        <h2>{{filename}}</h2>
+        <h2 v-if="filename">{{filename}}</h2>
         <div v-for="(line, lineIndex) in lines" :key="lineIndex">
           <div v-if="lineIndex === 0 && line[0].line !== undefined && line[0].line.audio !== undefined">
             <audio :src="line[0].line.audio" controls/>
@@ -288,11 +288,13 @@
   .print .verse .ideogram-show span{
     font-size: 16px !important;
     width: auto !important;
+    font-weight: bold;
   }
 
   .print .chapter .ideogram-show span{
     font-size: 32px !important;
     width: auto !important;
+    font-weight: bold;
   }
 
   .larger.print .pinyin,

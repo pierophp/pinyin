@@ -25,7 +25,7 @@
       </md-list-item>
 
       <md-list-item @click="goTo('/bible')">
-        <md-icon>library_books</md-icon> <span>{{ $t("menu.bible") }}</span>
+        <md-icon>import_contacts</md-icon> <span>{{ $t("menu.bible") }}</span>
       </md-list-item>
 
       <md-list-item @click="goTo('/my-cjk')">

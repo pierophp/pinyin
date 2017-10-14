@@ -145,7 +145,6 @@ module.exports = class CcCeDictDatabaseParser {
           }
 
           if (ideogramTraditional !== ideogram) {
-
             variants = [];
             variants.push(ideogram);
 

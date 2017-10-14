@@ -27,6 +27,7 @@ export const FILE_GETTER_IMPORTING = 'file/getter/importing';
 export const FILE_GETTER_PARSING = 'file/getter/parsing';
 export const FILE_GETTER_FOOTNOTES = 'file/getter/footnotes';
 export const FILE_GETTER_FULL_FILE = 'file/getter/fullFile';
+export const FILE_GETTER_SELECTEDS = 'file/getter/selecteds';
 
 // mutations
 export const FILES_MUTATION_SET = 'files/mutation/SET';
@@ -55,3 +56,4 @@ export const FILE_MUTATION_SET_FILE_IMPORTING = 'file/mutation/SET_FILE_IMPORTIN
 export const FILE_MUTATION_SET_FOOTNOTES = 'file/mutation/SET_FOOTNOTES';
 export const FILE_MUTATION_SET_FULL_FILE = 'file/mutation/SET_FULL_FILE';
 export const FILE_MUTATION_SET_PINYIN_SPACED = 'file/mutation/SET_PINYIN_SPACED';
+export const FILE_MUTATION_SET_SELECTEDS = 'file/mutation/SET_SELECTEDS';

@@ -1,5 +1,12 @@
+<template>
+  <div>
+    <md-button class="md-icon-button" @click.native="editionMode">
+      <md-icon>create</md-icon>
+    </md-button>
+  </div>
+</template>
+<script>
 export default {
-  template: '<div><md-button class="md-icon-button" @click.native="editionMode"><md-icon>create</md-icon></md-button></div>',
   methods: {
     editionMode() {
       this.$router.push({
@@ -9,3 +16,4 @@ export default {
     },
   },
 };
+</script>

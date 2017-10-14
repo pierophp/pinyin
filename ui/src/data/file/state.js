@@ -8,6 +8,7 @@ if (LocalStorage.has('my-cjk')) {
 export default {
   files: [],
   file: [],
+  fileSelecteds: {},
   fullFile: [],
   footnotes: [],
   fileLoading: false,

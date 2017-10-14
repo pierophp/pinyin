@@ -271,6 +271,11 @@ export default {
     Vue.delete(state.myCjk, myCjk);
   },
 
+
+  [types.FILE_MUTATION_SET_SELECTEDS](state, fileSelecteds) {
+    state.fileSelecteds = fileSelecteds;
+  },
+
   [types.FILE_MUTATION_SET_FILE_LOADING](state, fileLoading) {
     state.fileLoading = fileLoading;
   },

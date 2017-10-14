@@ -7,7 +7,8 @@ const router = express.Router();
 
 router.get('/download', async (req, res) => {
   try {
-    const response = await JWDownloader.download(req.query.url, req.query.language, req.query.ideogramType);
+    const response = await JWDownloader
+        .download(req.query.url, req.query.language, req.query.ideogramType);
     res.send({ status: 200, audio: response.audio, text: response.text });
   } catch (e) {
     // eslint-disable-next-line

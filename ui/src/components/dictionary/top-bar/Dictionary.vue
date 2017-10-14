@@ -1,8 +1,6 @@
-import axios from 'axios';
-
-const http = axios.create();
-export default {
-  template: `<div><md-menu md-size="5"  md-direction="top left" md-offset-y="-52">
+<template>
+  <div>
+      <md-menu md-size="5"  md-direction="top left" md-offset-y="-52">
       <md-button class="md-icon-button" md-menu-trigger>
         <md-icon>more_vert</md-icon>
       </md-button>
@@ -12,7 +10,14 @@ export default {
           <span>{{ $t('download_pleco_dictionary') }}</span>
         </md-menu-item>
       </md-menu-content>
-    </md-menu></div>`,
+    </md-menu>
+  </div>
+</template>
+<script>
+import axios from 'axios';
+
+const http = axios.create();
+export default {
   methods: {
     async downloadPleco() {
       const fileName = 'Dicionario_Pleco.txt';
@@ -28,3 +33,4 @@ export default {
     },
   },
 };
+</script>

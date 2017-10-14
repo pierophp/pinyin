@@ -6,6 +6,10 @@
   #container {}
 }
 
+.md-toolbar .md-toolbar-container > .md-button:first-child {
+  margin-right: 5px;
+}
+
 @media print
 {
   .md-toolbar { display: none !important; }
@@ -14,6 +18,9 @@
     display: block !important;
     overflow: initial !important;
     will-change: initial !important;
+  }
+  .no-print {
+    display: none !important;
   }
 }
 

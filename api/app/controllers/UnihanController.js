@@ -86,7 +86,8 @@ router.post('/save', async (req, res) => {
     return;
   }
 
-  const ideogram = UnihanSearch.convertIdeogramsToUtf16(await opencc.traditionalToSimplified(req.body.ideograms));
+  const ideogram = UnihanSearch
+        .convertIdeogramsToUtf16(await opencc.traditionalToSimplified(req.body.ideograms));
   const response = await knex('cjk')
         .where({
           ideogram,

@@ -40,17 +40,17 @@ services:
     volumes:
       - ./:/home/node/pinyin
     command: "yarn dev"
-  pinyin_ui:
-    hostname: ui
-    container_name: pinyin_ui
-    image: node:8.6
-    user: "node"
-    working_dir: /home/node/pinyin/ui
-    environment:
-      - NODE_ENV=development
-    ports:
-      - "8090:8090"
-    restart: always
-    volumes:
-      - ./:/home/node/pinyin
-    command: "yarn dev"
+  # pinyin_ui:
+  #   hostname: ui
+  #   container_name: pinyin_ui
+  #   image: node:8.6
+  #   user: "node"
+  #   working_dir: /home/node/pinyin/ui
+  #   environment:
+  #     - NODE_ENV=development
+  #   ports:
+  #     - "8090:8090"
+  #   restart: always
+  #   volumes:
+  #     - ./:/home/node/pinyin
+  #   command: "yarn dev"

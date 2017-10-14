@@ -6,9 +6,6 @@ import MyCjkList from 'src/pages/my-cjk/MyCjkList';
 import DictionarySearch from 'src/pages/dictionary/Search';
 import DictionaryDetails from 'src/pages/dictionary/Details';
 import Config from 'src/pages/config/Config';
-import DictionaryTopBar from 'src/components/dictionary/top-bar/dictionary';
-import FileDetailsTopBar from 'src/components/files/top-bar/file-details';
-import FilePrintTopBar from 'src/components/files/top-bar/file-print';
 import VideoShow from 'src/pages/video/Show';
 import BibleBooks from 'src/pages/bible/Books';
 import BibleChapters from 'src/pages/bible/Chapters';
@@ -41,7 +38,7 @@ export default [
     name: 'file',
     component: FileDetails,
     meta: {
-      topBar: FileDetailsTopBar,
+      topBar: 'file-details',
     },
   },
   {
@@ -49,7 +46,7 @@ export default [
     name: 'print',
     component: FilePrint,
     meta: {
-      topBar: FilePrintTopBar,
+      topBar: 'file-print',
     },
   },
   {
@@ -62,7 +59,7 @@ export default [
     name: 'dictionary',
     component: DictionarySearch,
     meta: {
-      topBar: DictionaryTopBar,
+      topBar: 'dictionary',
     },
   },
   {
@@ -70,7 +67,7 @@ export default [
     name: 'dictionary-details',
     component: DictionaryDetails,
     meta: {
-      topBar: DictionaryTopBar,
+      topBar: 'dictionary',
     },
   },
   {
@@ -92,11 +89,19 @@ export default [
     path: '/bible/:book',
     name: 'bible-chaoters',
     component: BibleChapters,
+    meta: {
+      hideTitle: true,
+      topBar: 'bible-chapters',
+    },
   },
   {
     path: '/bible/:book/:chapter',
     name: 'bible-chaoter',
     component: BibleChapter,
+    meta: {
+      hideTitle: true,
+      topBar: 'bible-chapter',
+    },
   },
 
 ];

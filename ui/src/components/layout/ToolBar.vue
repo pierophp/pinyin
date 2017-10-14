@@ -4,14 +4,14 @@
       <md-button v-if="!hideTopBar" class="md-icon-button" @click.native="$emit('toggle-sidebar')">
         <md-icon>menu</md-icon>
       </md-button>
-      <h2 class="md-title">Pinyin Editor</h2>
-      <span style="flex: 1"></span>
+      <h2 class="md-title" v-if="!hideTitle">Pinyin Editor</h2>
+      <span style="flex: 1" v-if="!hideTitle"></span>
       <dynamic :options="topBar"/>
     </div>
   </md-whiteframe>
 </template>
 <script>
-  import Dynamic from 'src/components/layout/dynamic';
+  import Dynamic from 'src/components/layout/Dynamic';
 
   export default {
     components: {
@@ -21,12 +21,14 @@
       $route() {
         this.topBar = this.$route.meta.topBar;
         this.hideTopBar = this.$route.meta.hideTopBar;
+        this.hideTitle = this.$route.meta.hideTitle;
       },
     },
     data() {
       return {
         topBar: this.$route.meta.topBar,
         hideTopBar: this.$route.meta.hideTopBar,
+        hideTitle: this.$route.meta.hideTitle,
       };
     },
   };

@@ -34,7 +34,7 @@
   flex-wrap: wrap;
   align-content: flex-start;
   width:100%;
-  margin: 25px;
+  margin: 15px;
   overflow: auto;
 }
 
@@ -43,11 +43,17 @@
   line-height: 50px;
   height: 50px;
   width: 50px;
-  background-color: #275197;
+  background-color: #bab6b6;
   justify-content: flex-start;
   margin: 2px;
   text-align: center;
   font-size: 16px;
   cursor: pointer;
+  user-select: none;
 }
+
+.bible-chapter:hover {
+  background-color: #275197;
+}
+
 </style>
