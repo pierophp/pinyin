@@ -14,58 +14,52 @@
       </div>
     </div>
 
-    <file-print/>
+    <file-container ref="fileContainer" :lines="lines" :fullLines="chapter" :filename="filename" :fileLoading="fileLoading"/>
   </span>
 </template>
 
 <script>
   import chaptersData from 'src/data/bible/chapters';
   import axios from 'axios';
-  import FilePrint from 'src/pages/files/FilePrint';
+  import FileContainer from 'src/components/files/FileContainer';
   import LoadableContent from 'src/components/common/loading/LoadableContent';
   import _ from 'lodash';
-
-  import {
-    mapMutations,
-  } from 'vuex';
-
-  import {
-    FILE_MUTATION_SET,
-    FILE_MUTATION_SET_LINE,
-    FILE_MUTATION_SET_FILE_LOADING,
-    FILE_MUTATION_SET_FULL_FILE,
-  } from 'src/data/file/types';
 
   export default {
     name: 'bible-chapter',
     components: {
-      FilePrint,
+      FileContainer,
       LoadableContent,
     },
     data() {
       return {
+        lines: [],
         chapter: [],
         showVerses: true,
         verses: [],
         selecteds: [],
         versesMap: {},
+        fileLoading: false,
       };
     },
     methods: {
-      ...mapMutations({
-        setFileContent: FILE_MUTATION_SET,
-        setLine: FILE_MUTATION_SET_LINE,
-        setFullFile: FILE_MUTATION_SET_FULL_FILE,
-        setFileLoading: FILE_MUTATION_SET_FILE_LOADING,
-      }),
       clear() {
         this.selecteds = [];
-        this.setFileContent({ file: [] });
+        this.setFileContent([]);
+      },
+      setLine(line) {
+        this.$set(this.lines, line.lineIndex, line.line);
+      },
+      setFileContent(lines) {
+        this.lines = lines;
+      },
+      setFileLoading(loading) {
+        this.fileLoading = loading;
       },
       selectAll() {
         this.setFileLoading(true);
         this.selecteds = [];
-        this.setFileContent({ file: [] });
+        this.setFileContent([]);
         this.loadFile(this.chapter, 0);
       },
       selectVerse(verse) {
@@ -101,7 +95,7 @@
           newLines.push(line.blocks);
         }
 
-        this.setFileContent({ file: newLines });
+        this.setFileContent(newLines);
       },
       parseVerses(lines) {
         lines.forEach((line, lineIndex) => {
@@ -149,14 +143,13 @@
       },
     },
     async created() {
-      this.setFileContent({ file: [] });
+      this.setFileContent([]);
       const CACHE_VERSION = 1;
 
       axios.get(`static/bible/cmn-hans/${this.$route.params.book}/${this.$route.params.chapter}.json?v=${CACHE_VERSION}`)
         .then((content) => {
           this.chapter = content.data.lines;
           this.parseVerses(content.data.lines);
-          this.setFullFile({ file: content.data.lines });
         });
 
       const chapter = chaptersData[this.$route.params.book][this.$route.params.chapter - 1];
