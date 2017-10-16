@@ -3,6 +3,7 @@ import http from 'src/helpers/http';
 import replaceall from 'replaceall';
 import Promise from 'bluebird';
 import OptionsManager from 'src/domain/options-manager';
+import isChinese from 'shared/helpers/is-chinese';
 
 async function parseJW(link) {
   const options = OptionsManager.getOptions();
@@ -63,6 +64,7 @@ export default async function (content) {
     const ideograms = line.text.split(' ');
 
     let isBold = 0;
+    let bible = '';
 
     ideograms.forEach((char, i) => {
       if (char === '<b>') {
@@ -84,10 +86,23 @@ export default async function (content) {
         char = footNoteSplit[2];
       }
 
+      const bibleVerify = 'BI#[';
+      const isBible = char.substr(0, bibleVerify.length) === bibleVerify;
+      if (isBible) {
+        bible = replaceall('BI#[', '', char);
+        bible = replaceall(']#BI', '', bible);
+        return;
+      }
+
       const item = {
         p: line.pinyin[i],
         c: char,
       };
+
+      if (bible && !isChinese(char)) {
+        item.b = bible;
+        bible = '';
+      }
 
       if (isBold === 1) {
         item.isBold = isBold;

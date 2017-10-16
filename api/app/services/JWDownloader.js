@@ -5,6 +5,7 @@ const profiler = require('../helpers/profiler');
 const knex = require('./knex');
 const replaceall = require('replaceall');
 const replaceIdeogramsToSpace = require('../../../shared/helpers/special-ideograms-chars');
+const bibleBooks = require('../../../shared/helpers/bible');
 const UnihanSearch = require('../services/UnihanSearch');
 const fs = Promise.promisifyAll(require('fs'));
 
@@ -674,6 +675,23 @@ module.exports = class JwDownloader {
       });
     }
 
+    // bible
+    const bibles = $(element).find('.jsBibleLink');
+    if (bibles.length > 0 && this.isChinese) {
+      bibles.each((i, bible) => {
+        const bibleLink = decodeURIComponent($(bible).attr('href')).split('/');
+        const bibleBook = bibleLink[6];
+        const bibleChapter = bibleLink[7];
+        const bibleVerses = [];
+        const bibleVersesLinks = bibleLink[8].split('-');
+        bibleVersesLinks.forEach((bibleVersesLink) => {
+          bibleVerses.push(parseInt(bibleVersesLink.substr(-3), 10));
+        });
+
+        text = replaceall($.html(bible), `BI#[${bibleBooks[bibleBook]}:${bibleChapter}:${bibleVerses.join('-')}]#BI${$(bible).html()}`, text);
+      });
+    }
+
     const numberRegex = new RegExp('^[0-9]+$');
 
     text = replaceall('+', '', text);
@@ -689,6 +707,7 @@ module.exports = class JwDownloader {
 
     text = replaceall('//STRONG-OPEN//', '<b>', text);
     text = replaceall('//STRONG-CLOSE//', '</b>', text);
+
 
     if (!this.isChinese) {
       return this.trim(text);
@@ -738,6 +757,7 @@ module.exports = class JwDownloader {
       replaceIdeogramsToSpace.forEach((item) => {
         lineText = replaceall(item, ` ${item}${specialWord} `, lineText);
       });
+
       // remove double spaces
       if (lineText) {
         lineText = lineText.replace(/\s{2,}/g, ' ').trim();
@@ -783,6 +803,14 @@ module.exports = class JwDownloader {
       if (footNoteId) {
         lineText = replaceall('#FOOTNOTE', `#FOOTNOTE-${footNoteId}-`, lineText);
         lineText = replaceall('- *', '-*', lineText);
+      }
+
+      if (bibles.length > 0 && this.isChinese) {
+        // separate ）from numbers
+        lineText = lineText.replace(/([1-9])(）)/g, '$1 $2');
+        lineText = replaceall('BI #[', 'BI#[', lineText);
+        lineText = replaceall(']# BI', ']#BI ', lineText);
+        lineText = lineText.replace(/\s{2,}/g, ' ').trim();
       }
 
       newText += `${lineText}\r\n`;

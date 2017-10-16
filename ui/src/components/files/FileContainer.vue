@@ -26,8 +26,11 @@
           @remove-character="removeCharacter"
           ref="addRemoveCharacterModal"/>
         <highlight-modal/>
+
+        <bible-modal ref="bibleModal"/>
       </div>
     </div>
+
     <file-bottom-bar ref="fileBottomBar" @open-modal="openModal"/>
   </div>
 </template>
@@ -37,6 +40,7 @@
   import AddRemoveCharacterModal from 'src/components/modals/AddRemoveCharacter';
   import FootnoteModal from 'src/components/modals/Footnote';
   import HighlightModal from 'src/components/modals/Highlight';
+  import BibleModal from 'src/components/modals/Bible';
   import OptionsManager from 'src/domain/options-manager';
   import ImageZoom from 'src/components/common/ImageZoom';
 
@@ -62,12 +66,19 @@
       HighlightModal,
       FileBottomBar,
       FootnoteModal,
+      BibleModal,
       ImageZoom,
     },
 
     props: {
-      lines: [],
-      fullLines: [],
+      lines: {
+        type: Array,
+        default: [],
+      },
+      fullLines: {
+        type: Array,
+        default: [],
+      },
       filename: '',
       fileLoading: false,
     },
@@ -143,6 +154,11 @@
 
         const lineIndex = element.getAttribute('data-line');
         const blockIndex = element.getAttribute('data-block');
+
+        if (this.lines[lineIndex][blockIndex].b) {
+          this.$refs.bibleModal.openDialog();
+          return;
+        }
 
         this.openBottomBar({
           pinyin: this.lines[lineIndex][blockIndex].p,
