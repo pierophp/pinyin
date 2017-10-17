@@ -2,7 +2,7 @@
   <div>
     <md-dialog ref="modal">
       <md-dialog-title>
-        {{ book }} {{ chapter }} {{ verse }}
+        {{ booksName(book, 'cmn-hans') }} {{ chapter }}:{{ verse }}
       </md-dialog-title>
 
       <md-dialog-content>
@@ -19,6 +19,7 @@
 <script>
   import chaptersData from 'src/data/bible/chapters';
   import ChapterContainer from 'src/components/bible/ChapterContainer';
+  import booksName from 'src/data/bible/names';
 
   export default {
     name: 'modal-bible',
@@ -41,6 +42,7 @@
       ChapterContainer,
     },
     methods: {
+      booksName,
       openBottomBar(data) {
         this.$emit('open-bottom-bar', data);
       },
