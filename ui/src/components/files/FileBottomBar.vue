@@ -187,6 +187,8 @@
 
       changeShow(show) {
         this.show = !show;
+        const action = show ? 'remove' : 'add';
+        document.body.classList[action]('has-bottom-bar');
       },
 
       separate() {
@@ -214,10 +216,12 @@
       },
 
       close() {
+        document.body.classList.remove('has-bottom-bar');
         this.show = false;
       },
 
       open(block) {
+        document.body.classList.add('has-bottom-bar');
         this.show = true;
         if (md.mobile() && this.tempDictCharacter === block.character) {
           block.openDictionary = true;

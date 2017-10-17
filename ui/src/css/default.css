@@ -10,10 +10,11 @@
   margin-right: 5px;
 }
 
-.md-dialog-container,
-.md-backdrop {
+.has-bottom-bar .md-dialog-container,
+.has-bottom-bar .md-backdrop {
   height: calc(100% - 34px);
 }
+
 
 @media print
 {
