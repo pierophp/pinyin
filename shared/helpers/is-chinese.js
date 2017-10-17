@@ -16,22 +16,24 @@ const chineseRange = [
   [65306, 65306], // ：
 ];
 
-module.exports = function isChinese(str) {
+module.exports = function isChinese(str, ignoreNumbers) {
   let charCode;
   let flag = false;
   let range;
 
-  str = str
-    .replace(1, '')
-    .replace(2, '')
-    .replace(3, '')
-    .replace(4, '')
-    .replace(5, '')
-    .replace(6, '')
-    .replace(7, '')
-    .replace(8, '')
-    .replace(9, '')
-    .replace(0, '');
+  if (!ignoreNumbers) {
+    str = str
+      .replace(1, '')
+      .replace(2, '')
+      .replace(3, '')
+      .replace(4, '')
+      .replace(5, '')
+      .replace(6, '')
+      .replace(7, '')
+      .replace(8, '')
+      .replace(9, '')
+      .replace(0, '');
+  }
 
   for (let i = 0; i < str.length;) {
     charCode = str.codePointAt(i);

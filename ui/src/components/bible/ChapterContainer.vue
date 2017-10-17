@@ -14,24 +14,20 @@
       </div>
     </div>
 
-    <file-container :lines="lines" :fullLines="fullLines" filename="" :fileLoading="fileLoading" />
+    <file-container :lines="lines" :fullLines="fullLines" filename="" :fileLoading="fileLoading" @open-bottom-bar="openBottomBar"/>
   </span>
 </template>
 
 <script>
   import chaptersData from 'src/data/bible/chapters';
   import axios from 'axios';
-  import FileContainer from 'src/components/files/FileContainer';
   import _ from 'lodash';
 
   export default {
     name: 'bible-chapter',
-    components: {
-      FileContainer,
-    },
     props: {
       book: '',
-      chapter: '',
+      chapter: 0,
       verse: '',
     },
     data() {
@@ -44,6 +40,17 @@
         versesMap: {},
         fileLoading: false,
       };
+    },
+    watch: {
+      book() {
+        this.loadBook();
+      },
+      chapter() {
+        this.loadBook();
+      },
+      verse() {
+        this.loadBook();
+      },
     },
     methods: {
       clear() {
@@ -58,6 +65,9 @@
       },
       setFileLoading(loading) {
         this.fileLoading = loading;
+      },
+      openBottomBar(data) {
+        this.$emit('open-bottom-bar', data);
       },
       selectAll() {
         this.setFileLoading(true);
@@ -101,6 +111,7 @@
         this.setFileContent(newLines);
       },
       parseVerses(lines) {
+        this.versesMap = [];
         lines.forEach((line, lineIndex) => {
           let verse = null;
           line.forEach((block, blockIndex) => {
@@ -144,26 +155,48 @@
           });
         });
       },
+
+      async loadBook() {
+        this.setFileContent([]);
+        this.verses = [];
+        const CACHE_VERSION = 1;
+
+        axios.get(`static/bible/cmn-hans/${this.book}/${this.chapter}.json?v=${CACHE_VERSION}`)
+          .then((content) => {
+            this.fullLines = content.data.lines;
+            this.parseVerses(content.data.lines);
+            if (this.verse) {
+              this.selecteds = [];
+              const splitVerse = this.verse.split('-');
+              const startVerse = splitVerse[0];
+              let endVerse = splitVerse[0];
+              if (splitVerse[1]) {
+                endVerse = splitVerse[1];
+              }
+
+              for (let i = parseInt(startVerse, 10); i <= parseInt(endVerse, 10); i += 1) {
+                this.selectVerse(i);
+              }
+            }
+          });
+        if (this.verse) {
+          this.showVerses = false;
+        }
+
+        const chapter = chaptersData[this.book][this.chapter - 1];
+        let initial = 1;
+        if (chapter.i) {
+          initial = chapter.i;
+        }
+
+        this.verses = [];
+        for (let i = initial; i <= chapter.t; i += 1) {
+          this.verses.push(i);
+        }
+      },
     },
     async created() {
-      this.setFileContent([]);
-      const CACHE_VERSION = 1;
-
-      axios.get(`static/bible/cmn-hans/${this.book}/${this.chapter}.json?v=${CACHE_VERSION}`)
-        .then((content) => {
-          this.fullLines = content.data.lines;
-          this.parseVerses(content.data.lines);
-        });
-      this.selectVerse(this.verse);
-      const chapter = chaptersData[this.$route.params.book][this.$route.params.chapter - 1];
-      let initial = 1;
-      if (chapter.i) {
-        initial = chapter.i;
-      }
-
-      for (let i = initial; i <= chapter.t; i += 1) {
-        this.verses.push(i);
-      }
+      await this.loadBook();
     },
   };
 </script>

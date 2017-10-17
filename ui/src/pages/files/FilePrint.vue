@@ -1,10 +1,8 @@
 <template>
-  <file-container ref="fileContainer" :lines="lines" :fullLines="fullLines" :filename="filename" :fileLoading="fileLoading"/>
+  <file-container ref="fileContainer" :lines="lines" :fullLines="fullLines" :filename="filename" :fileLoading="fileLoading" :parent="true"/>
 </template>
 
 <script>
-  import FileContainer from 'src/components/files/FileContainer';
-
   import {
     mapActions,
     mapGetters,
@@ -21,9 +19,6 @@
 
   export default {
     name: 'file-print',
-    components: {
-      FileContainer,
-    },
 
     data() {
       return {

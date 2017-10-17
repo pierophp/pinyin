@@ -99,7 +99,7 @@ export default async function (content) {
         c: char,
       };
 
-      if (bible && !isChinese(char)) {
+      if (bible && !isChinese(char, true)) {
         item.b = bible;
         bible = '';
       }

@@ -23,10 +23,13 @@ import router from 'src/router';
 import store from 'src/data/store';
 import localeEn from 'src/data/locale/en';
 import localePt from 'src/data/locale/pt';
+import FileContainer from 'src/components/files/FileContainer';
 
 Vue.use(VueI18n);
 Vue.use(VueMaterial);
 Vue.use(VueClipboards);
+
+Vue.component('file-container', FileContainer);
 
 Vue.locale('en', localeEn);
 Vue.locale('pt', localePt);

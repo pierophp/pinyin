@@ -18,6 +18,10 @@ function separate(pinyin) {
 }
 
 module.exports = function separatePinyinInSyllables(pinyin, separateBySpaces) {
+  if (!pinyin) {
+    return [];
+  }
+
   if (separateBySpaces) {
     return pinyin.split(String.fromCharCode(160));
   }

@@ -27,13 +27,14 @@
           ref="addRemoveCharacterModal"/>
         <highlight-modal/>
 
-        <bible-modal ref="bibleModal"/>
+        <bible-modal ref="bibleModal" v-if="parent" :bookIndex="bible.bookIndex" :chapter="bible.chapter" :verse="bible.verse" @open-bottom-bar="openBottomBar"/>
       </div>
     </div>
 
     <file-bottom-bar ref="fileBottomBar" @open-modal="openModal"/>
   </div>
 </template>
+
 <script>
   import FileRowPrint from 'src/components/files/FileRowPrint';
   import FileBottomBar from 'src/components/files/FileBottomBar';
@@ -73,14 +74,15 @@
     props: {
       lines: {
         type: Array,
-        default: [],
+        default: () => [],
       },
       fullLines: {
         type: Array,
-        default: [],
+        default: () => [],
       },
       filename: '',
       fileLoading: false,
+      parent: false,
     },
 
     data() {
@@ -91,6 +93,11 @@
         ideogramSpacedClass: '',
         footnoteLine: null,
         footnoteLineIndex: null,
+        bible: {
+          bookIndex: 0,
+          chapter: '',
+          verse: '',
+        },
       };
     },
 
@@ -156,7 +163,22 @@
         const blockIndex = element.getAttribute('data-block');
 
         if (this.lines[lineIndex][blockIndex].b) {
+          const bible = this.lines[lineIndex][blockIndex].b.split(':');
+          this.bible.bookIndex = bible[0];
+          this.bible.chapter = bible[1];
+          this.bible.verse = bible[2];
           this.$refs.bibleModal.openDialog();
+          return;
+        }
+
+        if (!this.parent) {
+          this.$emit('open-bottom-bar', {
+            pinyin: this.lines[lineIndex][blockIndex].p,
+            character: this.lines[lineIndex][blockIndex].c,
+            lineIndex,
+            blockIndex,
+            openDictionary: (e.ctrlKey || e.metaKey),
+          });
           return;
         }
 
@@ -208,10 +230,9 @@
         });
       },
     },
-
   };
-
 </script>
+
 <style>
   :root {
     --larger-pinyin-font-size: 23px;

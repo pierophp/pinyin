@@ -10,6 +10,11 @@
   margin-right: 5px;
 }
 
+.md-dialog-container,
+.md-backdrop {
+  height: calc(100% - 34px);
+}
+
 @media print
 {
   .md-toolbar { display: none !important; }
