@@ -7,7 +7,7 @@
       </a>
     </div>
 
-    <div class="pinyin" v-if="!block.small">
+    <div class="pinyin" v-if="!block.small && !withoutPinyn">
       <span>
         <span v-for="(data, dataIndex) in printData" :class="[data.pinyinClass]" v-html="data.pinyin" v-bind:key="dataIndex" ></span>
       </span>
@@ -18,7 +18,7 @@
     </div>
 
     <div class="character footnote" v-if="block.footnote" @click.prevent="openFootnote(block.footnote)">
-        a{{ character }}
+        {{ character }}
     </div>
   </div>
 </template>
@@ -65,6 +65,7 @@
       },
       highlight: '',
       block: '',
+      withoutPinyn: false,
     },
     watch: {
       pinyin() {
@@ -155,6 +156,8 @@
             printData[i].pinyin = '';
           });
         }
+
+        this.withoutPinyn = withoutPinyn;
 
         if (chars.length === 0) {
           printData.push({

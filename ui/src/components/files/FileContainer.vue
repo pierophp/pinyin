@@ -237,7 +237,7 @@
   :root {
     --larger-pinyin-font-size: 23px;
     --larger-character-font-size: 34px;
-    --normal-pinyin-font-size: 14px;
+    --normal-pinyin-font-size: 15px;
     --normal-character-font-size: 22px;
   }
 

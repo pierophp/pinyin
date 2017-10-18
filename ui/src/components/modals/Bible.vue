@@ -1,15 +1,12 @@
 <template>
   <div>
-    <md-dialog ref="modal">
-      <md-dialog-title>
-        {{ booksName(book, 'cmn-hans') }} {{ chapter }}:{{ verse }}
-      </md-dialog-title>
-
+    <md-dialog ref="modal" class="dialog-bible">
       <md-dialog-content>
         <chapter-container v-if="book" :book="book" :chapter="chapter" :verse="verse" @open-bottom-bar="openBottomBar"/>
       </md-dialog-content>
 
       <md-dialog-actions>
+        <span class="bible-title">{{ booksName(book, 'cmn-hans') }} {{ chapter }}:{{ verse }}</span>
         <md-button class="md-primary" @click.native="closeDialog()">{{ $t('close') }}</md-button>
       </md-dialog-actions>
     </md-dialog>
@@ -56,12 +53,26 @@
   };
 </script>
 
-<style scoped>
-.md-dialog-title {
+<style>
+.dialog-bible .md-dialog-title {
   margin: 0;
   padding: 15px 15px 0;
 }
-.md-dialog-content {
+
+.dialog-bible .md-dialog-content {
   padding: 2px;
+}
+
+.dialog-bible .md-dialog{
+  max-width: 90% !important;
+  max-height: 90% !important;
+}
+.dialog-bible .md-dialog-actions {
+  min-height: 42px;
+  justify-content: space-between;
+}
+
+.dialog-bible .bible-title {
+  font-size: 19px;
 }
 </style>

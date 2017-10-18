@@ -803,7 +803,7 @@ module.exports = class JwDownloader {
 
 
       if (footNoteId) {
-        lineText = replaceall('# FOOTNOTE', `#FOOTNOTE-${footNoteId}-`, lineText);
+        lineText = replaceall('# FOOTNOTE', ` #FOOTNOTE-${footNoteId}-`, lineText);
         lineText = replaceall('- *', '-*', lineText);
       }
 
