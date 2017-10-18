@@ -1,5 +1,5 @@
 <template>
-  <chapter-container :book="$route.params.book" :chapter="$route.params.chapter"/>
+  <chapter-container :book="$route.params.book" :chapter="$route.params.chapter" :parent="true"/>
 </template>
 
 <script>

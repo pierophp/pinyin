@@ -237,8 +237,8 @@
   :root {
     --larger-pinyin-font-size: 23px;
     --larger-character-font-size: 34px;
-    --normal-pinyin-font-size: 18px;
-    --normal-character-font-size: 24px;
+    --normal-pinyin-font-size: 14px;
+    --normal-character-font-size: 22px;
   }
 
   ::selection {
@@ -283,7 +283,7 @@
     user-select:none;
     background: none !important;
     font-size: var(--normal-pinyin-font-size);
-    height: var(--normal-pinyin-font-size);
+    height: calc(var(--normal-pinyin-font-size) + 2px);
     min-width: 0;
   }
 
@@ -332,7 +332,7 @@
   .print .character span {
     display: inline-block;
     font-weight: 300;
-    width: 25px;
+    width: 22px;
   }
 
   .print .type-h1 .character span {
@@ -397,9 +397,9 @@
   }
 
   .print .type-qu .character span {
-    line-height: 22px;
-    font-size: 22px;
-    width: 22px;
+    line-height: 19px;
+    font-size: 19px;
+    width: 19px;
   }
 
   .print .character span.special-ideogram {

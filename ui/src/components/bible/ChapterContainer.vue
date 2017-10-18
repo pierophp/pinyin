@@ -14,7 +14,7 @@
       </div>
     </div>
 
-    <file-container :lines="lines" :fullLines="fullLines" filename="" :fileLoading="fileLoading" @open-bottom-bar="openBottomBar"/>
+    <file-container :lines="lines" :fullLines="fullLines" filename="" :fileLoading="fileLoading" @open-bottom-bar="openBottomBar" :parent="parent"/>
   </span>
 </template>
 
@@ -29,6 +29,7 @@
       book: '',
       chapter: 0,
       verse: '',
+      parent: false,
     },
     data() {
       return {

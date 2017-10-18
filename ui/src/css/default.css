@@ -98,7 +98,7 @@ html, body {
 .character .div-input,
 .character span {
   min-height: 0;
-  font-size: 24px;
+  font-size: 22px;
   min-width: var(--block-width);
   border: 0;
   width: 100%;
