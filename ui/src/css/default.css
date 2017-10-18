@@ -12,7 +12,7 @@
 
 .has-bottom-bar .md-dialog-container,
 .has-bottom-bar .md-backdrop {
-  height: calc(100% - 34px);
+  height: calc(100% - 35px);
 }
 
 

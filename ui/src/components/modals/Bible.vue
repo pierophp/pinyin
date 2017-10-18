@@ -74,5 +74,6 @@
 
 .dialog-bible .bible-title {
   font-size: 19px;
+  color:#000 !important;
 }
 </style>
