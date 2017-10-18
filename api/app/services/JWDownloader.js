@@ -758,6 +758,7 @@ module.exports = class JwDownloader {
         lineText = replaceall(item, ` ${item}${specialWord} `, lineText);
       });
 
+
       // remove double spaces
       if (lineText) {
         lineText = lineText.replace(/\s{2,}/g, ' ').trim();
@@ -800,15 +801,16 @@ module.exports = class JwDownloader {
         lineText = replaceall(replaceWord, ` ${word} `, lineText);
       });
 
+
       if (footNoteId) {
-        lineText = replaceall('#FOOTNOTE', `#FOOTNOTE-${footNoteId}-`, lineText);
+        lineText = replaceall('# FOOTNOTE', `#FOOTNOTE-${footNoteId}-`, lineText);
         lineText = replaceall('- *', '-*', lineText);
       }
 
       if (bibles.length > 0 && this.isChinese) {
         // separate ）from numbers
         lineText = lineText.replace(/([1-9])(）)/g, '$1 $2');
-        lineText = replaceall('BI #[', 'BI#[', lineText);
+        lineText = replaceall('BI #[', ' BI#[', lineText);
         lineText = replaceall(']# BI', ']#BI ', lineText);
         lineText = lineText.replace(/\s{2,}/g, ' ').trim();
       }

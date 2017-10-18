@@ -104,11 +104,13 @@
     },
 
     mounted() {
-      requestAnimationFrame(() => {
+      setTimeout(() => {
         requestAnimationFrame(() => {
-          this.enableFiles = true;
+          requestAnimationFrame(() => {
+            this.enableFiles = true;
+          });
         });
-      });
+      }, 200);
     },
 
     methods: {
