@@ -37,4 +37,4 @@ services:
       - pinyin_redis
     volumes:
       - ./:/home/node/pinyin
-    command: "yarn dev"
+    command: "yarn server"

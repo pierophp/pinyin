@@ -1,7 +1,9 @@
 import Vue from 'vue';
 import pinyin from 'src/helpers/pinyin';
+import LocalStorage from 'src/helpers/local-storage';
 import * as types from './types';
 import separatePinyinInSyllables from '../../../../shared/helpers/separate-pinyin-in-syllables';
+
 
 function addHighlight(state, data) {
   for (let i = parseInt(data.startLine, 10); i <= parseInt(data.endLine, 10); i += 1) {
@@ -290,6 +292,11 @@ export default {
 
   [types.FILE_MUTATION_SET_FULL_FILE](state, fullFile) {
     state.fullFile = fullFile;
+  },
+
+  [types.FILE_MUTATION_SET_BOOKS_EXHIBITION_TYPE](state, booksExhibitionType) {
+    LocalStorage.save('books-exhibition-type', booksExhibitionType);
+    state.booksExhibitionType = booksExhibitionType;
   },
 
   [types.FILE_MUTATION_SET_FOOTNOTES](state, lines) {

@@ -5,6 +5,11 @@ if (LocalStorage.has('my-cjk')) {
   myCjk = LocalStorage.get('my-cjk');
 }
 
+let booksExhibitionType = '1';
+if (LocalStorage.has('books-exhibition-type')) {
+  booksExhibitionType = LocalStorage.get('books-exhibition-type');
+}
+
 export default {
   files: [],
   file: [],
@@ -18,4 +23,5 @@ export default {
   filePasteAction: '',
   myCjk,
   myCjkTemp: '',
+  booksExhibitionType,
 };

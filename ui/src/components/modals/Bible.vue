@@ -6,7 +6,7 @@
       </md-dialog-content>
 
       <md-dialog-actions>
-        <span class="bible-title">{{ booksName(book, 'cmn-hans') }} {{ chapter }}:{{ verse }}</span>
+        <span class="bible-title">{{ booksName(book, exhibitionType ) }} {{ chapter }}:{{ verse }}</span>
         <md-button class="md-primary" @click.native="closeDialog()">{{ $t('close') }}</md-button>
       </md-dialog-actions>
     </md-dialog>
@@ -17,9 +17,17 @@
   import chaptersData from 'src/data/bible/chapters';
   import ChapterContainer from 'src/components/bible/ChapterContainer';
   import booksName from 'src/data/bible/names';
+  import OptionsManager from 'src/domain/options-manager';
+
+  const options = OptionsManager.getOptions();
 
   export default {
     name: 'modal-bible',
+    data() {
+      return {
+        exhibitionType: `cmn-han${options.ideogramType}`,
+      };
+    },
     props: {
       bookIndex: 0,
       chapter: 0,

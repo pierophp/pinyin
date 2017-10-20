@@ -84,6 +84,9 @@ export default [
     path: '/bible',
     name: 'bible',
     component: BibleBooks,
+    meta: {
+      topBar: 'bible-books',
+    },
   },
   {
     path: '/bible/:book',
