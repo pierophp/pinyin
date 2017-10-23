@@ -45,7 +45,7 @@ before_script:
 #- sh -e /etc/init.d/xvfb start
 - mysql -u root -e "CREATE DATABASE pinyin CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
 - export NODE_ENV=staging
-- cd ../api/
+- cd ../
 - mkdir storage
 script:
 - echo "Run Script"

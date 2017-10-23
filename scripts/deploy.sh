@@ -1,4 +1,5 @@
 echo "Deploy Starting"
+cd api/
 export SSH_KEY="/home/travis/.ssh/id_rsa"
 export CMD="scp -o StrictHostKeyChecking=no /home/travis/pinyin.dist.zip ${SSH_USER}@${SSH_HOST}:~"
 git checkout -- yarn.lock
