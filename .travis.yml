@@ -47,6 +47,7 @@ before_script:
 - export NODE_ENV=staging
 - cd ../
 - mkdir storage
+- pwd
 script:
 - echo "Run Script"
 deploy:
