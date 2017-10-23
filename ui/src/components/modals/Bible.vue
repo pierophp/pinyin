@@ -14,7 +14,7 @@
 </template>
 
 <script>
-  import chaptersData from 'src/data/bible/chapters';
+  import chaptersData from 'shared/data/bible/chapters';
   import ChapterContainer from 'src/components/bible/ChapterContainer';
   import booksName from 'src/data/bible/names';
   import OptionsManager from 'src/domain/options-manager';

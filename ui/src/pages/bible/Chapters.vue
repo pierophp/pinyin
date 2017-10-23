@@ -7,7 +7,7 @@
 </template>
 
 <script>
-  import chaptersData from 'src/data/bible/chapters';
+  import chaptersData from 'shared/data/bible/chapters';
 
   export default {
     name: 'bible-chapters',

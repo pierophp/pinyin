@@ -1,5 +1,5 @@
 /* eslint-disable */
-export default {
+module.exports = {
   'genesis': [
     { c: 1, t: 31 },
     { c: 2, t: 25 },
@@ -1053,7 +1053,7 @@ export default {
     { c: 13, t: 37 },
     { c: 14, t: 72 },
     { c: 15, t: 47 },
-    { c: 16, t: 20 },
+    { c: 16, t: 8 },
   ],
   'luke': [
     { c: 1, t: 80 },
