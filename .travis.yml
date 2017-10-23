@@ -47,7 +47,7 @@ before_script:
 - export NODE_ENV=staging
 - cd ../
 - mkdir storage
-- pwd
+- chmod +x scripts/deploy.sh
 script:
 - echo "Run Script"
 deploy:
