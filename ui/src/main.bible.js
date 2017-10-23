@@ -5,11 +5,6 @@ import VueI18n from 'vue-i18n';
 import VueAnalytics from 'vue-analytics';
 import VueClipboards from 'vue-clipboards';
 
-// @todo Implement autocomplete
-// @todo melhorar ordenação
-
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap-social/bootstrap-social.css';
 import 'font-awesome/css/font-awesome.min.css';
 import 'vue-material/dist/vue-material.css';
 import 'src/css/default.css';
@@ -19,7 +14,7 @@ import 'medium-editor/dist/css/medium-editor.css';
 import 'medium-editor/dist/css/themes/default.css';
 
 import App from 'src/pages/App';
-import router from 'src/router';
+import router from 'src/router.bible';
 import store from 'src/data/store';
 import localeEn from 'src/data/locale/en';
 import localePt from 'src/data/locale/pt';
@@ -36,7 +31,6 @@ Vue.locale('pt', localePt);
 
 Vue.config.lang = navigator.language.split('-')[0];
 Vue.config.fallbackLang = 'en';
-Vue.config.showMenu = false;
 
 if (process.env.NODE_ENV === 'production') {
   offlinePlugin.install({
@@ -55,9 +49,9 @@ if (process.env.NODE_ENV === 'production') {
     router,
   });
 }
+App.props = {};
+App.props.showMenu = false;
 
-
-// Vue.use(require('src/components/directives/drag-and-drop'));
 
 const Main = Vue.extend(App);
 

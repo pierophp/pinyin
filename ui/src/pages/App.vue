@@ -1,12 +1,12 @@
 <template>
   <div id="container">
-    <tool-bar @toggle-sidebar="toggle()"></tool-bar>
+    <tool-bar @toggle-sidebar="toggle()" :showMenu="showMenu"></tool-bar>
 
     <div class="content">
       <router-view />
     </div>
 
-    <side-nav ref="sidenav"></side-nav>
+    <side-nav ref="sidenav" v-if="showMenu"></side-nav>
 
   </div>
 </template>

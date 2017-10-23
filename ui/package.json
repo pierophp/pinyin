@@ -5,8 +5,10 @@
   "author": "Piero Giusti <pierophp@gmail.com>",
   "private": true,
   "scripts": {
-    "dev": "node build/dev-server.js",
-    "build": "node build/build.js",
+    "dev": "export BUILD_ENTRYPOINT=main; node build/dev-server.js",
+    "build": "export  BUILD_ENTRYPOINT=main; node build/build.js --env.build=main",
+    "dev-bible": "export BUILD_ENTRYPOINT=main.bible; node build/dev-server.js",
+    "build-bible": "export  BUILD_ENTRYPOINT=main.bible; node build/build.js --env.build=main",
     "unit": "karma start test/unit/karma.conf.js --single-run",
     "e2e": "node test/e2e/runner.js",
     "test": "npm run unit && npm run e2e",

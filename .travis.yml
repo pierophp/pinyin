@@ -33,8 +33,12 @@ before_install:
 - yarn install
 - cd ../ui
 - yarn install
+- export BUILD_ENTRYPOINT=main
 - yarn build --verbose
 - zip -r /home/travis/pinyin.dist.zip dist
+- export BUILD_ENTRYPOINT=main.bible
+- yarn build --verbose
+- zip -r /home/travis/bible.pinyin.dist.zip dist
 before_script:
 - export CHROME_BIN=chromium-browser
 - export DISPLAY=:99.0
@@ -45,11 +49,8 @@ before_script:
 - mkdir storage
 script:
 - echo "Run Script"
-after_success:
-- export SSH_KEY="/home/travis/.ssh/id_rsa"
-- export CMD="scp -o StrictHostKeyChecking=no /home/travis/pinyin.dist.zip ${SSH_USER}@${SSH_HOST}:~"
-- git checkout -- yarn.lock
-- echo $CMD
-- $CMD
-- export CMD="pm2 deploy ecosystem.config.js production"
-- $CMD
+deploy:
+  provider: script
+  script: scripts/deploy.sh
+  on:
+    branch: master

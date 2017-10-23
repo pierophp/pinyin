@@ -1,7 +1,7 @@
 <template>
   <md-whiteframe md-tag="md-toolbar" md-elevation="2" md-theme="deep-purple" class="md-dense">
     <div class="md-toolbar-container">
-      <md-button v-if="!hideTopBar" class="md-icon-button" @click.native="$emit('toggle-sidebar')">
+      <md-button v-if="!hideTopBar && showMenu" class="md-icon-button" @click.native="$emit('toggle-sidebar')">
         <md-icon>menu</md-icon>
       </md-button>
       <h2 class="md-title" v-if="!hideTitle">Pinyin Editor</h2>
@@ -16,6 +16,9 @@
   export default {
     components: {
       Dynamic,
+    },
+    props: {
+      showMenu: true,
     },
     watch: {
       $route() {

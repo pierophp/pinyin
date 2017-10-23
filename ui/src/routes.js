@@ -18,6 +18,7 @@ export default [
     component: Login,
     meta: {
       hideTopBar: true,
+      redirectTo: '/#/files',
     },
   },
   {
