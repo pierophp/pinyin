@@ -6,5 +6,9 @@ git checkout -- yarn.lock
 $CMD
 export CMD="scp -o StrictHostKeyChecking=no /home/travis/bible.pinyin.dist.zip ${SSH_USER}@${SSH_HOST}:~"
 $CMD
+export CMD="scp -o StrictHostKeyChecking=no /home/travis/dictionary.pinyin.dist.zip ${SSH_USER}@${SSH_HOST}:~"
+$CMD
+export CMD="scp -o StrictHostKeyChecking=no /home/travis/videos.pinyin.dist.zip ${SSH_USER}@${SSH_HOST}:~"
+$CMD
 export CMD="pm2 deploy ecosystem.config.js production"
 $CMD

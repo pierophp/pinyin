@@ -3,25 +3,26 @@ import VueRouter from 'vue-router';
 
 import User from 'src/domain/user';
 import LocalStorage from 'src/helpers/local-storage';
-import routes from 'src/routes';
 
-Vue.use(VueRouter);
+export default (routes, showMenu) => {
+  Vue.use(VueRouter);
 
-const router = new VueRouter({ routes });
+  const router = new VueRouter({ routes, showMenu });
 
-router.beforeEach((to, from, next) => {
-  if (!User.isLogged() && to.matched.length && to.matched[0].meta.protected) {
-    next('/');
-  } else {
-    if (LocalStorage.has('url') && User.isLogged()) {
-      const url = LocalStorage.get('url');
+  router.beforeEach((to, from, next) => {
+    if (!User.isLogged() && to && to.matched.length && to.matched[0].meta.protected) {
+      next('/');
+    } else {
+      if (LocalStorage.has('url') && User.isLogged()) {
+        const url = LocalStorage.get('url');
 
-      LocalStorage.remove('url');
-      next(url);
+        LocalStorage.remove('url');
+        next(url);
+      }
+
+      next();
     }
+  });
 
-    next();
-  }
-});
-
-export default router;
+  return router;
+};

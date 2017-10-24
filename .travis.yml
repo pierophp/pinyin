@@ -39,6 +39,13 @@ before_install:
 - export BUILD_ENTRYPOINT=main.bible
 - yarn build --verbose
 - zip -r /home/travis/bible.pinyin.dist.zip dist
+- rm -Rf static/bible
+- export BUILD_ENTRYPOINT=main.videos
+- yarn build --verbose
+- zip -r /home/travis/bible.videos.dist.zip dist
+- export BUILD_ENTRYPOINT=main.dictionary
+- yarn build --verbose
+- zip -r /home/travis/bible.dictionary.dist.zip dist
 before_script:
 - export CHROME_BIN=chromium-browser
 - export DISPLAY=:99.0

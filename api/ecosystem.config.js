@@ -11,6 +11,16 @@ const postDeployCommands = [
   'unzip bible.pinyin.dist.zip',
   'mv /home/ubuntu/dist /var/www/pinyin/bible',
   'mv /var/www/pinyin/static/iframe-bible.html /var/www/bible.pinyin/index.html',
+  // Dictionary Editor UI
+  'rm -Rf dist/',
+  'unzip dictionary.pinyin.dist.zip',
+  'mv /home/ubuntu/dist /var/www/pinyin/dictionary',
+  'mv /var/www/pinyin/static/iframe-dictionary.html /var/www/dictionary.pinyin/index.html',
+  // Videos Editor UI
+  'rm -Rf dist/',
+  'unzip videos.pinyin.dist.zip',
+  'mv /home/ubuntu/dist /var/www/pinyin/videos',
+  'mv /var/www/pinyin/static/iframe-videos.html /var/www/videos.pinyin/index.html',
   // API
   'cd /var/www/api.pinyin/current/api',
   'cp ../../env/* .',

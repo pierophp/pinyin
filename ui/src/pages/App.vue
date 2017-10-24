@@ -21,6 +21,11 @@
       ToolBar,
       SideNav,
     },
+    data() {
+      return {
+        showMenu: this.$router.options.showMenu,
+      };
+    },
     mounted() {
      // this.$refs.snackbar.open();
       // console.log('snackbar');

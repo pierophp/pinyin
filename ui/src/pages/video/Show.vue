@@ -33,7 +33,7 @@
 
     <div class="editor-container" v-show="showSubtitle">
       <div>
-        <md-button class="md-raised md-accent" @click.native="toggleSubtitle">{{ $t("hide_track") }}</md-button>
+        <md-button class="md-raised md-accent no-print" @click.native="toggleSubtitle">{{ $t("hide_track") }}</md-button>
       </div>
       <video-subtitle :url="videoUrl"/>
     </div>

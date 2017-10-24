@@ -5,9 +5,6 @@ import VueI18n from 'vue-i18n';
 import VueAnalytics from 'vue-analytics';
 import VueClipboards from 'vue-clipboards';
 
-// @todo Implement autocomplete
-// @todo melhorar ordenação
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-social/bootstrap-social.css';
 import 'font-awesome/css/font-awesome.min.css';
@@ -20,13 +17,13 @@ import 'medium-editor/dist/css/themes/default.css';
 
 import App from 'src/pages/App';
 import routerMethod from 'src/router';
-import routes from 'src/routes';
+import routes from 'src/routes.dictionary';
 import store from 'src/data/store';
 import localeEn from 'src/data/locale/en';
 import localePt from 'src/data/locale/pt';
 import FileContainer from 'src/components/files/FileContainer';
 
-const router = routerMethod(routes, true);
+const router = routerMethod(routes, false);
 
 Vue.use(VueI18n);
 Vue.use(VueMaterial);
@@ -57,8 +54,6 @@ if (process.env.NODE_ENV === 'production') {
     router,
   });
 }
-
-// Vue.use(require('src/components/directives/drag-and-drop'));
 
 const Main = Vue.extend(App);
 

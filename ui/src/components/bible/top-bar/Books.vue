@@ -35,7 +35,11 @@
 </script>
 
 <style>
-.books-top-bar-container span{
+div[options="bible-books"] {
+  text-align:right;
+}
+
+.books-top-bar-container span {
   cursor: pointer;
 }
 </style>

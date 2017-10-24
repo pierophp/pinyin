@@ -16,11 +16,14 @@ import 'medium-editor/dist/css/medium-editor.css';
 import 'medium-editor/dist/css/themes/default.css';
 
 import App from 'src/pages/App';
-import router from 'src/router.bible';
+import routerMethod from 'src/router';
+import routes from 'src/routes.bible';
 import store from 'src/data/store';
 import localeEn from 'src/data/locale/en';
 import localePt from 'src/data/locale/pt';
 import FileContainer from 'src/components/files/FileContainer';
+
+const router = routerMethod(routes, false);
 
 Vue.use(VueI18n);
 Vue.use(VueMaterial);
@@ -51,9 +54,6 @@ if (process.env.NODE_ENV === 'production') {
     router,
   });
 }
-App.props = {};
-App.props.showMenu = false;
-
 
 const Main = Vue.extend(App);
 

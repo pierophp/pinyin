@@ -27,6 +27,7 @@ export default [
     component: BibleBooks,
     meta: {
       protected: true,
+      hideTitle: true,
       topBar: 'bible-books',
     },
   },

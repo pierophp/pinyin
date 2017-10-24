@@ -7,6 +7,7 @@ import http from 'src/helpers/http';
 import webVTTParser from 'src/domain/webvtt-parser';
 import replaceall from 'replaceall';
 import FilePrint from 'src/pages/files/FilePrint';
+import separatePinyinInSyllables from 'shared/helpers/separate-pinyin-in-syllables';
 
 import {
     mapMutations,
@@ -68,7 +69,7 @@ export default {
 
             line.push({
               c: blockItem[0].trim(),
-              p: blockItem[1].trim(),
+              p: separatePinyinInSyllables(blockItem[1].trim()).join(String.fromCharCode(160)),
             });
           });
 

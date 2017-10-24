@@ -47,6 +47,7 @@
         classExtra: '',
         classBold: '',
         printData: [],
+        withoutPinyn: false,
       };
     },
     props: {
@@ -65,7 +66,6 @@
       },
       highlight: '',
       block: '',
-      withoutPinyn: false,
     },
     watch: {
       pinyin() {
