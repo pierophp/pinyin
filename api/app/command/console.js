@@ -48,6 +48,10 @@ program
 
 program
   .version('0.0.1')
+  .command('jw-bible-traditional', 'JW Bible Traditional');
+
+program
+  .version('0.0.1')
   .command('jw-insight', 'JW Insight');
 
 program

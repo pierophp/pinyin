@@ -28,8 +28,10 @@ export default {
   [types.FILE_GETTER_FULL_FILE]({ fullFile }) {
     return fullFile;
   },
-
   [types.FILE_GETTER_SELECTEDS]({ fileSelecteds }) {
     return fileSelecteds;
+  },
+  [types.FILE_GETTER_BOOKS_EXHIBITION_TYPE]({ booksExhibitionType }) {
+    return booksExhibitionType;
   },
 };

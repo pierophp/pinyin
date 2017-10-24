@@ -18,6 +18,7 @@ export default [
     component: Login,
     meta: {
       hideTopBar: true,
+      redirectTo: '/#/files',
     },
   },
   {
@@ -84,6 +85,9 @@ export default [
     path: '/bible',
     name: 'bible',
     component: BibleBooks,
+    meta: {
+      topBar: 'bible-books',
+    },
   },
   {
     path: '/bible/:book',

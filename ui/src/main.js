@@ -36,6 +36,7 @@ Vue.locale('pt', localePt);
 
 Vue.config.lang = navigator.language.split('-')[0];
 Vue.config.fallbackLang = 'en';
+Vue.config.showMenu = false;
 
 if (process.env.NODE_ENV === 'production') {
   offlinePlugin.install({

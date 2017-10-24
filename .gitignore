@@ -7,3 +7,4 @@ travis/secrets.tar
 nbproject/*
 .idea/*
 .DS_Store
+.history/*

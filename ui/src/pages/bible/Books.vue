@@ -1,5 +1,5 @@
 <template>
-  <div class="bible-books-container">
+  <div class="bible-books-container" :class="exhibitionClass">
     <div class="bible-half">
       <div v-for="(book, bookId) in books.hebrew" v-bind:key="bookId" class="bible-book">
         <div :class="['bible-content', 'fullName', 'color-' + book.color]" @click="goTo(book.name)">
@@ -27,12 +27,23 @@
 <script>
   import booksData from 'src/data/bible/books';
   import booksName from 'src/data/bible/names';
+  import OptionsManager from 'src/domain/options-manager';
+
+  import {
+    mapGetters,
+  } from 'vuex';
+
+  import {
+    FILE_GETTER_BOOKS_EXHIBITION_TYPE,
+  } from 'src/data/file/types';
+
+  const options = OptionsManager.getOptions();
 
   export default {
     name: 'bible-books',
     data() {
       return {
-        exhibitionType: 'cmn-hans',
+        exhibitionType: `cmn-han${options.ideogramType}`,
         books: booksData,
       };
     },
@@ -40,6 +51,18 @@
       booksName,
       goTo(link) {
         this.$router.push(`/bible/${link}`);
+      },
+    },
+    computed: {
+      ...mapGetters({
+        booksExhibitionType: FILE_GETTER_BOOKS_EXHIBITION_TYPE,
+      }),
+      exhibitionClass() {
+        if (this.booksExhibitionType === '2') {
+          return 'books-container-columns';
+        }
+
+        return '';
       },
     },
     mounted() {
@@ -52,6 +75,14 @@
 .bible-books-container {
   margin: 10px;
   overflow: auto;
+}
+
+.books-container-columns {
+  display: flex;
+}
+
+.books-container-columns .bible-book {
+  width: 100% !important;
 }
 
 .bible-half {
@@ -86,6 +117,14 @@
   }
   .abbrName {
     display: block;
+  }
+
+  .books-container-columns .fullName {
+    display: block !important;
+  }
+
+  .books-container-columns .abbrName {
+    display: none !important;
   }
 }
 

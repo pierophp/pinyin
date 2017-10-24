@@ -35,7 +35,7 @@
     },
     created() {
       if (User.isLogged()) {
-        window.location = '/#/files';
+        window.location = this.$route.meta.redirectTo;
       }
 
       let parsed = this.$route.query;

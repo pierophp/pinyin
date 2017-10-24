@@ -19,9 +19,12 @@
 </template>
 
 <script>
-  import chaptersData from 'src/data/bible/chapters';
+  import chaptersData from 'shared/data/bible/chapters';
   import axios from 'axios';
   import _ from 'lodash';
+  import OptionsManager from 'src/domain/options-manager';
+
+  const options = OptionsManager.getOptions();
 
   export default {
     name: 'bible-chapter',
@@ -162,7 +165,7 @@
         this.verses = [];
         const CACHE_VERSION = 1;
 
-        axios.get(`static/bible/cmn-hans/${this.book}/${this.chapter}.json?v=${CACHE_VERSION}`)
+        axios.get(`static/bible/cmn-han${options.ideogramType}/${this.book}/${this.chapter}.json?v=${CACHE_VERSION}`)
           .then((content) => {
             this.fullLines = content.data.lines;
             this.parseVerses(content.data.lines);

@@ -1,10 +1,17 @@
 const postDeployCommands = [
   'cd /home/ubuntu/',
+  // Pinyin Editor UI
   'rm -Rf dist/',
   'unzip pinyin.dist.zip',
   'sudo rm -Rf /var/www/pinyin',
   'mv /home/ubuntu/dist /var/www/pinyin',
   'ln -s /var/local/pinyin/Dicionario_Pleco.txt /var/www/pinyin/Dicionario_Pleco.txt',
+  // Bible Editor UI
+  'rm -Rf dist/',
+  'unzip bible.pinyin.dist.zip',
+  'sudo rm -Rf /var/www/bible.pinyin',
+  'mv /home/ubuntu/dist /var/www/bible.pinyin',
+  // API
   'cd /var/www/api.pinyin/current/api',
   'cp ../../env/* .',
   'yarn install --production',
