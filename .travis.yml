@@ -33,19 +33,19 @@ before_install:
 - yarn install
 - cd ../ui
 - yarn install
-#- export BUILD_ENTRYPOINT=main
-#- yarn build --verbose
-#- zip -r /home/travis/pinyin.dist.zip dist
-#- export BUILD_ENTRYPOINT=main.bible
-#- yarn build --verbose
-#- zip -r /home/travis/bible.pinyin.dist.zip dist
-#- rm -Rf static/bible
+- export BUILD_ENTRYPOINT=main
+- yarn build --verbose
+- zip -r /home/travis/pinyin.dist.zip dist > /dev/null
+- export BUILD_ENTRYPOINT=main.bible
+- yarn build --verbose
+- zip -r /home/travis/bible.pinyin.dist.zip dist > /dev/null
+- rm -Rf static/bible
 - export BUILD_ENTRYPOINT=main.videos
 - yarn build --verbose
-- zip -r /home/travis/videos.pinyin.dist.zip dist
+- zip -r /home/travis/videos.pinyin.dist.zip dist > /dev/null
 - export BUILD_ENTRYPOINT=main.dictionary
 - yarn build --verbose
-- zip -r /home/travis/dictionary.pinyin.dist.zip dist
+- zip -r /home/travis/dictionary.pinyin.dist.zip dist > /dev/null
 before_script:
 - export CHROME_BIN=chromium-browser
 - export DISPLAY=:99.0
