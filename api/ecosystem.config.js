@@ -9,8 +9,8 @@ const postDeployCommands = [
   // Bible Editor UI
   'rm -Rf dist/',
   'unzip bible.pinyin.dist.zip',
-  'sudo rm -Rf /var/www/bible.pinyin',
-  'mv /home/ubuntu/dist /var/www/bible.pinyin',
+  'mv /home/ubuntu/dist /var/www/pinyin/bible',
+  'mv /var/www/pinyin/iframe-bible.html /var/www/bible.pinyin/index.html',
   // API
   'cd /var/www/api.pinyin/current/api',
   'cp ../../env/* .',
