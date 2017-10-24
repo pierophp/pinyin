@@ -26,6 +26,7 @@ export default [
     name: 'bible',
     component: BibleBooks,
     meta: {
+      protected: true,
       topBar: 'bible-books',
     },
   },
@@ -34,6 +35,7 @@ export default [
     name: 'bible-chaoters',
     component: BibleChapters,
     meta: {
+      protected: true,
       hideTitle: true,
       topBar: 'bible-chapters',
     },
@@ -43,6 +45,7 @@ export default [
     name: 'bible-chaoter',
     component: BibleChapter,
     meta: {
+      protected: true,
       hideTitle: true,
       topBar: 'bible-chapter',
     },

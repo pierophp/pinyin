@@ -11,7 +11,7 @@ const router = new VueRouter({ routes });
 
 router.beforeEach((to, from, next) => {
   if (!User.isLogged() && to.matched.length && to.matched[0].meta.protected) {
-    next('/login');
+    next('/');
   } else {
     if (LocalStorage.has('url') && User.isLogged()) {
       const url = LocalStorage.get('url');

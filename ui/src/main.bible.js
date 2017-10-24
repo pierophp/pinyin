@@ -5,6 +5,8 @@ import VueI18n from 'vue-i18n';
 import VueAnalytics from 'vue-analytics';
 import VueClipboards from 'vue-clipboards';
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-social/bootstrap-social.css';
 import 'font-awesome/css/font-awesome.min.css';
 import 'vue-material/dist/vue-material.css';
 import 'src/css/default.css';

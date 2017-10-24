@@ -2,12 +2,12 @@
   <div class="login-container">
   <loadable-content :loading="loading">
       <br/>
-      <a class="btn btn-social btn-lg btn-google" :href="authGoogleUrl">
+      <a class="btn btn-social btn-lg btn-google" href="javascript:void(0)" @click="goToAuth(authGoogleUrl)">
         <i class="fa fa-google"></i>
         {{ $t("sign_in_google") }}
       </a>
 
-      <a class="btn btn-social btn-lg btn-google btn-baidu" :href="authBaiduUrl">
+      <a class="btn btn-social btn-lg btn-google btn-baidu" href="javascript:void(0)" @click="goToAuth(authBaiduUrl)">
         <i class="fa fa-baidu"></i>
         {{ $t("sign_in_baidu") }}
       </a>
@@ -20,6 +20,7 @@
   import Config from 'src/helpers/config';
   import QueryString from 'query-string';
   import LoadableContent from 'src/components/common/loading/LoadableContent';
+  import LocalStorage from 'src/helpers/local-storage';
 
   export default {
     name: 'login',
@@ -33,9 +34,23 @@
         authBaiduUrl: `${Config.get('apiUrl')}auth/baidu`,
       };
     },
+    methods: {
+      goToAuth(url) {
+        const urlToRedirect = window.location.href.split('/#');
+        LocalStorage.save('login-url', `${urlToRedirect[0]}${this.$route.meta.redirectTo}`);
+        window.location = url;
+      },
+    },
     created() {
       if (User.isLogged()) {
-        window.location = this.$route.meta.redirectTo;
+        let redirectTo = LocalStorage.get('login-url');
+        if (redirectTo) {
+          LocalStorage.save('login-url', '');
+        } else {
+          redirectTo = this.$route.meta.redirectTo;
+        }
+
+        window.location = redirectTo;
       }
 
       let parsed = this.$route.query;
@@ -45,9 +60,16 @@
       parsed.route = this.$route.name;
 
       if (parsed.code) {
+        let redirectTo = LocalStorage.get('login-url');
+        if (redirectTo) {
+          LocalStorage.save('login-url', '');
+        } else {
+          redirectTo = this.$route.meta.redirectTo;
+        }
+
         User.login(parsed)
           .then(() => {
-            window.location = '/#/files';
+            window.location = redirectTo;
           })
           .catch(() => {
             this.loading = false;

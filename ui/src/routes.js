@@ -33,12 +33,16 @@ export default [
     path: '/files',
     name: 'files',
     component: FilesList,
+    meta: {
+      protected: true,
+    },
   },
   {
     path: '/files/file/:filename',
     name: 'file',
     component: FileDetails,
     meta: {
+      protected: true,
       topBar: 'file-details',
     },
   },
@@ -47,6 +51,7 @@ export default [
     name: 'print',
     component: FilePrint,
     meta: {
+      protected: true,
       topBar: 'file-print',
     },
   },
@@ -54,6 +59,9 @@ export default [
     path: '/my-cjk',
     name: 'my-cjk',
     component: MyCjkList,
+    meta: {
+      protected: true,
+    },
   },
   {
     path: '/dictionary',
@@ -75,6 +83,9 @@ export default [
     path: '/config',
     name: 'config',
     component: Config,
+    meta: {
+      protected: true,
+    },
   },
   {
     path: '/video',
@@ -87,6 +98,7 @@ export default [
     component: BibleBooks,
     meta: {
       topBar: 'bible-books',
+      protected: true,
     },
   },
   {
@@ -96,6 +108,7 @@ export default [
     meta: {
       hideTitle: true,
       topBar: 'bible-chapters',
+      protected: true,
     },
   },
   {
@@ -105,6 +118,7 @@ export default [
     meta: {
       hideTitle: true,
       topBar: 'bible-chapter',
+      protected: true,
     },
   },
 
