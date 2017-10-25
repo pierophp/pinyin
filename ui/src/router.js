@@ -4,7 +4,7 @@ import VueRouter from 'vue-router';
 import User from 'src/domain/user';
 import LocalStorage from 'src/helpers/local-storage';
 
-export default (routes, showMenu) => {
+module.exports = (routes, showMenu) => {
   Vue.use(VueRouter);
 
   const router = new VueRouter({ routes, showMenu });

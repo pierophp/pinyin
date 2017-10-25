@@ -3,7 +3,7 @@ import BibleBooks from 'src/pages/bible/Books';
 import BibleChapters from 'src/pages/bible/Chapters';
 import BibleChapter from 'src/pages/bible/Chapter';
 
-export default [
+module.exports = [
   {
     path: '/',
     name: 'login',
@@ -51,5 +51,4 @@ export default [
       topBar: 'bible-chapter',
     },
   },
-
 ];

@@ -1,7 +1,7 @@
 import Login from 'src/pages/auth/Login';
 import VideoShow from 'src/pages/video/Show';
 
-export default [
+module.exports = [
   {
     path: '/',
     name: 'login',

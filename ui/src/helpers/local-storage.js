@@ -1,39 +1,27 @@
 /* eslint-disable no-undef */
 class LocalStorage {
   static get(key) {
-    const value = localStorage.getItem(key);
-
-    if (!value) {
-      return null;
+    if (!window.frames['iframe-storage'].get) {
+      return '';
     }
 
-    if (/(\[|{)/.test(value.charAt(0))) {
-      return JSON.parse(value);
-    }
-
-    return value;
+    return window.frames['iframe-storage'].get(key);
   }
 
   static save(key, value) {
-    if (value === null) {
-      return;
-    }
-
-    if (typeof value === 'object') {
-      localStorage.setItem(key, JSON.stringify(value));
-    } else {
-      localStorage.setItem(key, value);
-    }
+    window.frames['iframe-storage'].save(key, value);
   }
 
   static remove(key) {
-    localStorage.removeItem(key);
+    window.frames['iframe-storage'].remove(key);
   }
 
   static has(key) {
-    return !!LocalStorage.get(key);
+    if (!window.frames['iframe-storage'].has) {
+      return false;
+    }
+    return window.frames['iframe-storage'].has(key);
   }
 }
 
 export default LocalStorage;
-/* eslint-enable no-undef */

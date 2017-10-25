@@ -26,10 +26,6 @@
         showMenu: this.$router.options.showMenu,
       };
     },
-    mounted() {
-     // this.$refs.snackbar.open();
-      // console.log('snackbar');
-    },
     methods: {
       toggle() {
         this.$refs.sidenav.$refs.sidenav.toggle();
@@ -37,8 +33,3 @@
     },
   };
 </script>
-
-<style>
-
-
-</style>

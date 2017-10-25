@@ -2,7 +2,7 @@ import Login from 'src/pages/auth/Login';
 import DictionarySearch from 'src/pages/dictionary/Search';
 import DictionaryDetails from 'src/pages/dictionary/Details';
 
-export default [
+module.exports = [
   {
     path: '/',
     name: 'login',

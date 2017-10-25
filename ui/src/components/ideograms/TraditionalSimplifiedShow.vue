@@ -37,6 +37,10 @@
       },
 
       secondOnlyDiff() {
+        if (!this.second) {
+          return '';
+        }
+
         const total = this.second.length;
         let secondWithDiff = '';
         for (let i = 0; i < total; i += 1) {

@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import offlinePlugin from 'offline-plugin/runtime';
 import Vue from 'vue';
 import VueMaterial from 'vue-material';
@@ -16,48 +18,61 @@ import 'medium-editor/dist/css/medium-editor.css';
 import 'medium-editor/dist/css/themes/default.css';
 
 import App from 'src/pages/App';
-import routerMethod from 'src/router';
-import routes from 'src/routes.videos';
 import store from 'src/data/store';
 import localeEn from 'src/data/locale/en';
 import localePt from 'src/data/locale/pt';
 import FileContainer from 'src/components/files/FileContainer';
 
-const router = routerMethod(routes, false);
+function loadMain() {
+  const routerMethod = require('src/router');
+  const routes = require('src/routes.videos');
 
-Vue.use(VueI18n);
-Vue.use(VueMaterial);
-Vue.use(VueClipboards);
+  const router = routerMethod(routes, false);
 
-Vue.component('file-container', FileContainer);
+  Vue.use(VueI18n);
+  Vue.use(VueMaterial);
+  Vue.use(VueClipboards);
 
-Vue.locale('en', localeEn);
-Vue.locale('pt', localePt);
+  Vue.component('file-container', FileContainer);
 
-Vue.config.lang = navigator.language.split('-')[0];
-Vue.config.fallbackLang = 'en';
+  Vue.locale('en', localeEn);
+  Vue.locale('pt', localePt);
 
-if (process.env.NODE_ENV === 'production') {
-  offlinePlugin.install({
-    onUpdateReady: () => {
-      // Tells to new SW to take control immediately
-      offlinePlugin.applyUpdate();
-    },
-    onUpdated: () => {
-      // Reload the webpage to load into the new version
-      window.location.reload();
-    },
-  });
+  Vue.config.lang = navigator.language.split('-')[0];
+  Vue.config.fallbackLang = 'en';
 
-  Vue.use(VueAnalytics, {
-    id: 'UA-4081205-4',
+  if (process.env.NODE_ENV === 'production') {
+    offlinePlugin.install({
+      onUpdateReady: () => {
+        // Tells to new SW to take control immediately
+        offlinePlugin.applyUpdate();
+      },
+      onUpdated: () => {
+        // Reload the webpage to load into the new version
+        window.location.reload();
+      },
+    });
+
+    Vue.use(VueAnalytics, {
+      id: 'UA-4081205-4',
+      router,
+    });
+  }
+
+  const Main = Vue.extend(App);
+
+  new Main({
     router,
-  });
+    store: store(),
+  }).$mount('#app');
 }
 
-const Main = Vue.extend(App);
+function tryLoadMain() {
+  if (window.frames['iframe-storage'].get) {
+    loadMain();
+  } else {
+    setTimeout(tryLoadMain, 50);
+  }
+}
 
-new Main({
-  router,
-  store,
-}).$mount('#app');
+tryLoadMain();
