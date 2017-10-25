@@ -3,7 +3,6 @@ import LocalStorage from 'src/helpers/local-storage';
 import Config from 'src/helpers/config';
 import http from 'src/helpers/http';
 
-
 const apiUrl = Config.get('apiUrl');
 
 class User {
@@ -27,12 +26,7 @@ class User {
       });
     }
 
-    let tokenDomain = '';
-    if (window.location.host.indexOf('2pinyin.net') !== -1) {
-      tokenDomain = '.2pinyin.net';
-    }
-
-    Cookies.set('token', response.data.token, { domain: tokenDomain });
+    Cookies.set('token', response.data.token, { domain: this.getDomain() });
 
     // LocalStorage.save('token', response.data.token);
     LocalStorage.save('user', response.data.user);
@@ -41,7 +35,7 @@ class User {
   }
 
   static logout() {
-    Cookies.remove('token');
+    Cookies.remove('token', { domain: this.getDomain() });
     // LocalStorage.remove('token');
     LocalStorage.remove('user');
     window.location = '/';
@@ -54,6 +48,16 @@ class User {
   static getUser() {
     return LocalStorage.get('user') || {};
   }
+
+  static getDomain() {
+    let domain = '';
+    if (window.location.host.indexOf('2pinyin.net') !== -1) {
+      domain = '.2pinyin.net';
+    }
+
+    return domain;
+  }
+
 }
 
 export default User;
