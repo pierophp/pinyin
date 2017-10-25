@@ -39,18 +39,18 @@ before_install:
 - zip -r /home/travis/pinyin.dist.zip dist > /dev/null
 - rm index.html
 - cp index-prod.html index.html
-- sed -i -e 's/manifest.json/manifestBible.json/g' index.html
+- sed -i -e 's/favicon\//favicon-bible\//g' index.html
 - yarn build-bible --verbose
 - zip -r /home/travis/bible.pinyin.dist.zip dist > /dev/null
 - rm -Rf static/bible
 - rm index.html
 - cp index-prod.html index.html
-- sed -i -e 's/manifest.json/manifestVideos.json/g' index.html
+- sed -i -e 's/favicon\//favicon-videos\//g' index.html
 - yarn build-videos --verbose
 - zip -r /home/travis/videos.pinyin.dist.zip dist > /dev/null
 - rm index.html
 - cp index-prod.html index.html
-- sed -i -e 's/manifest.json/manifestDictionary.json/g' index.html
+- sed -i -e 's/favicon\//favicon-dictionary\//g' index.html
 - yarn build-dictionary --verbose
 - zip -r /home/travis/dictionary.pinyin.dist.zip dist > /dev/null
 -
