@@ -104,4 +104,5 @@ export default {
   ideogram_type: 'Tipo de Ideograma',
   simplified: 'Simplificado',
   traditional: 'Tradicional',
+  no_internet: 'Sem conexão com a internet',
 };

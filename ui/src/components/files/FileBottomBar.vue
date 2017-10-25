@@ -11,8 +11,6 @@
         <md-icon>find_in_page</md-icon>
       </md-button>
 
-
-
       <md-menu md-size="4" md-direction="top left" md-offset-y="-52">
         <md-button class="md-icon-button md-primary md-2" md-menu-trigger>
           <md-icon>more_vert</md-icon>

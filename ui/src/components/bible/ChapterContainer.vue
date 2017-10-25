@@ -15,6 +15,9 @@
     </div>
 
     <file-container :lines="lines" :fullLines="fullLines" filename="" :fileLoading="fileLoading" @open-bottom-bar="openBottomBar" :parent="parent"/>
+    <md-snackbar md-position="bottom center" ref="snackbarNoInternet" md-duration="3000">
+      <span>{{ $t('no_internet') }}</span>
+    </md-snackbar>
   </span>
 </template>
 
@@ -183,6 +186,7 @@
               }
             }
           });
+
         if (this.verse) {
           this.showVerses = false;
         }
@@ -199,8 +203,17 @@
         }
       },
     },
-    async created() {
-      await this.loadBook();
+    async mounted() {
+      if (navigator.onLine) {
+        await this.loadBook();
+      } else {
+        setTimeout(() => {
+          this.$refs.snackbarNoInternet.open();
+        }, 500);
+        window.addEventListener('online', () => {
+          this.loadBook();
+        });
+      }
     },
   };
 </script>
