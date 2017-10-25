@@ -27,7 +27,12 @@ class User {
       });
     }
 
-    Cookies.set('token', response.data.token);
+    let tokenDomain = '';
+    if (window.location.host.indexOf('2pinyin.net') !== -1) {
+      tokenDomain = '.2pinyin.net';
+    }
+
+    Cookies.set('token', response.data.token, { domain: tokenDomain });
 
     // LocalStorage.save('token', response.data.token);
     LocalStorage.save('user', response.data.user);
