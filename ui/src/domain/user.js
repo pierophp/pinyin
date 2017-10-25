@@ -1,6 +1,8 @@
+import Cookies from 'js-cookie';
 import LocalStorage from 'src/helpers/local-storage';
 import Config from 'src/helpers/config';
 import http from 'src/helpers/http';
+
 
 const apiUrl = Config.get('apiUrl');
 
@@ -25,20 +27,23 @@ class User {
       });
     }
 
-    LocalStorage.save('token', response.data.token);
+    Cookies.set('token', response.data.token);
+
+    // LocalStorage.save('token', response.data.token);
     LocalStorage.save('user', response.data.user);
 
     return response.data.user;
   }
 
   static logout() {
-    LocalStorage.remove('token');
+    Cookies.remove('token');
+    // LocalStorage.remove('token');
     LocalStorage.remove('user');
     window.location = '/';
   }
 
   static isLogged() {
-    return LocalStorage.has('token');
+    return !!Cookies.get('token');
   }
 
   static getUser() {

@@ -1,9 +1,9 @@
 import axios from 'axios';
-import LocalStorage from 'src/helpers/local-storage';
 import Config from 'src/helpers/config';
+import Cookies from 'js-cookie';
 
 const baseURL = Config.get('apiUrl');
-axios.defaults.headers.common.Authorization = `Bearer ${LocalStorage.get('token')}`;
+axios.defaults.headers.common.Authorization = `Bearer ${Cookies.get('token')}`;
 
 const instance = axios.create({
   baseURL,
