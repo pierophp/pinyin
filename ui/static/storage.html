@@ -32,4 +32,8 @@ function remove(key) {
 function has(key) {
   return !!get(key);
 }
+
+if (window.location.host.indexOf('2pinyin.net') !== -1) {
+  document.domain = '2pinyin.net';
+}
 </script>
