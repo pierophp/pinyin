@@ -10,6 +10,11 @@ if (LocalStorage.has('books-exhibition-type')) {
   booksExhibitionType = LocalStorage.get('books-exhibition-type');
 }
 
+let booksShowPinyin = 0;
+if (LocalStorage.has('books-show-pinyin')) {
+  booksShowPinyin = parseInt(LocalStorage.get('books-show-pinyin'), 10);
+}
+
 export default {
   files: [],
   file: [],
@@ -24,4 +29,5 @@ export default {
   myCjk,
   myCjkTemp: '',
   booksExhibitionType,
+  booksShowPinyin,
 };

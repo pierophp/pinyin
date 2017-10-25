@@ -29,6 +29,8 @@ export const FILE_GETTER_FOOTNOTES = 'file/getter/footnotes';
 export const FILE_GETTER_FULL_FILE = 'file/getter/fullFile';
 export const FILE_GETTER_SELECTEDS = 'file/getter/selecteds';
 export const FILE_GETTER_BOOKS_EXHIBITION_TYPE = 'file/getter/booksExhibitionType';
+export const FILE_GETTER_BOOKS_SHOW_PINIYN = 'file/getter/booksShowPinyin';
+
 // mutations
 export const FILES_MUTATION_SET = 'files/mutation/SET';
 
@@ -58,3 +60,4 @@ export const FILE_MUTATION_SET_FULL_FILE = 'file/mutation/SET_FULL_FILE';
 export const FILE_MUTATION_SET_PINYIN_SPACED = 'file/mutation/SET_PINYIN_SPACED';
 export const FILE_MUTATION_SET_SELECTEDS = 'file/mutation/SET_SELECTEDS';
 export const FILE_MUTATION_SET_BOOKS_EXHIBITION_TYPE = 'file/mutation/SET_BOOKS_EXHIBITION_TYPE';
+export const FILE_MUTATION_SET_BOOKS_SHOW_PINYIN = 'file/mutation/SET_BOOKS_SHOW_PINYIN';

@@ -299,6 +299,11 @@ export default {
     state.booksExhibitionType = booksExhibitionType;
   },
 
+  [types.FILE_MUTATION_SET_BOOKS_SHOW_PINYIN](state, booksShowPinyin) {
+    LocalStorage.save('books-show-pinyin', booksShowPinyin);
+    state.booksShowPinyin = booksShowPinyin;
+  },
+
   [types.FILE_MUTATION_SET_FOOTNOTES](state, lines) {
     const footnotes = [];
     lines.forEach((line, lineIndex) => {

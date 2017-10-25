@@ -2,12 +2,12 @@
   <div class="login-container">
   <loadable-content :loading="loading">
       <br/>
-      <a class="btn btn-social btn-lg btn-google" href="javascript:void(0)" @click="goToAuth(authGoogleUrl)">
+      <a class="btn btn-social btn-lg btn-google" href="javascript:void(0)" @click="goToAuth(authGoogleUrl)" v-if="!loading">
         <i class="fa fa-google"></i>
         {{ $t("sign_in_google") }}
       </a>
 
-      <a class="btn btn-social btn-lg btn-google btn-baidu" href="javascript:void(0)" @click="goToAuth(authBaiduUrl)">
+      <a class="btn btn-social btn-lg btn-google btn-baidu" href="javascript:void(0)" @click="goToAuth(authBaiduUrl)" v-if="!loading">
         <i class="fa fa-baidu"></i>
         {{ $t("sign_in_baidu") }}
       </a>

@@ -1,5 +1,8 @@
 <template>
   <div class="books-top-bar-container">
+    <span @click="setShowPinyin(showPinyin ? 0 : 1)">
+      <md-icon>translate</md-icon>
+    </span>
     <span v-if="booksExhibitionType === '1'" @click="setType('2')">
       <md-icon>view_compact</md-icon>
     </span>
@@ -16,7 +19,9 @@
 
   import {
     FILE_GETTER_BOOKS_EXHIBITION_TYPE,
+    FILE_GETTER_BOOKS_SHOW_PINIYN,
     FILE_MUTATION_SET_BOOKS_EXHIBITION_TYPE,
+    FILE_MUTATION_SET_BOOKS_SHOW_PINYIN,
   } from 'src/data/file/types';
 
   export default {
@@ -24,11 +29,13 @@
     methods: {
       ...mapMutations({
         setType: FILE_MUTATION_SET_BOOKS_EXHIBITION_TYPE,
+        setShowPinyin: FILE_MUTATION_SET_BOOKS_SHOW_PINYIN,
       }),
     },
     computed: {
       ...mapGetters({
         booksExhibitionType: FILE_GETTER_BOOKS_EXHIBITION_TYPE,
+        showPinyin: FILE_GETTER_BOOKS_SHOW_PINIYN,
       }),
     },
   };

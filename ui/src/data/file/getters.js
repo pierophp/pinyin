@@ -34,4 +34,8 @@ export default {
   [types.FILE_GETTER_BOOKS_EXHIBITION_TYPE]({ booksExhibitionType }) {
     return booksExhibitionType;
   },
+  [types.FILE_GETTER_BOOKS_SHOW_PINIYN]({ booksShowPinyin }) {
+    return booksShowPinyin;
+  },
+
 };
