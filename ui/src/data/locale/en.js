@@ -8,6 +8,12 @@ export default {
     video: 'Video',
     logout: 'Logout',
   },
+  app: {
+    editor: '2Pinyin - Editor',
+    bible: '2Pinyin - Bible',
+    dictionary: '2Pinyin - Dictionary',
+    videos: '2Pinyin - Videos',
+  },
   visualization_mode: 'Visualization mode',
   edition_mode: 'Edition mode',
   delete: 'Delete',

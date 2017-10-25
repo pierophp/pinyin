@@ -27,7 +27,10 @@ function loadMain() {
   const routerMethod = require('src/router');
   const routes = require('src/routes');
 
-  const router = routerMethod(routes, true);
+  const router = routerMethod(routes, {
+    showMenu: true,
+    title: 'app.editor',
+  });
 
   Vue.use(VueI18n);
   Vue.use(VueMaterial);

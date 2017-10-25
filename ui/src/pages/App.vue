@@ -23,7 +23,7 @@
     },
     data() {
       return {
-        showMenu: this.$router.options.showMenu,
+        showMenu: this.$router.options.appOptions.showMenu,
       };
     },
     methods: {

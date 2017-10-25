@@ -27,7 +27,10 @@ function loadMain() {
   const routerMethod = require('src/router');
   const routes = require('src/routes.bible');
 
-  const router = routerMethod(routes, false);
+  const router = routerMethod(routes, {
+    showMenu: false,
+    title: 'app.bible',
+  });
 
   Vue.use(VueI18n);
   Vue.use(VueMaterial);
