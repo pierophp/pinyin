@@ -46,11 +46,11 @@ function loadMain() {
 
   if (process.env.NODE_ENV === 'production') {
     offlinePlugin.install({
-      onUpdateReady: () => {
+      onUpdateReady() {
         // Tells to new SW to take control immediately
         offlinePlugin.applyUpdate();
       },
-      onUpdated: () => {
+      onUpdated() {
         // Reload the webpage to load into the new version
         window.location.reload();
       },

@@ -50,7 +50,9 @@
           redirectTo = this.$route.meta.redirectTo;
         }
 
-        window.location = redirectTo;
+        this.$router.push(redirectTo.replace('/#', ''));
+
+        return;
       }
 
       let parsed = this.$route.query;
