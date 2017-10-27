@@ -92,7 +92,6 @@ var webpackConfig = merge(baseWebpackConfig, {
         'https://fonts.googleapis.com/icon?family=Material+Icons',
         'https://fonts.googleapis.com/earlyaccess/notosansscsliced.css',
         'https://fonts.googleapis.com/earlyaccess/notosanstc.css',
-        'https://editor.2pinyin.net/static/storage.html',
       ],
     }),
   ]
