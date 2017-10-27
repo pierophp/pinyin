@@ -2,6 +2,7 @@
 class LocalStorage {
   static get(key) {
     if (!window.frames['iframe-storage'].get) {
+      console.log('Iframe not loaded yet - GET');
       return '';
     }
 
@@ -18,6 +19,7 @@ class LocalStorage {
 
   static has(key) {
     if (!window.frames['iframe-storage'].has) {
+      console.log('Iframe not loaded yet - HAS');
       return false;
     }
     return window.frames['iframe-storage'].has(key);

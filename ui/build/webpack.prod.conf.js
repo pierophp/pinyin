@@ -82,7 +82,7 @@ var webpackConfig = merge(baseWebpackConfig, {
     }),
 
     new OfflinePlugin({
-      responseStrategy: 'cache-first',
+      responseStrategy: 'network-first',
       ServiceWorker: {
         events: true,
         navigateFallbackURL: 'index.html',
