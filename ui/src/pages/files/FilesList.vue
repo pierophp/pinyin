@@ -110,7 +110,7 @@
             this.enableFiles = true;
           });
         });
-      }, 300);
+      }, 400);
     },
 
     methods: {
