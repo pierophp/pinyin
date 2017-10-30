@@ -34,6 +34,7 @@ before_install:
 - cd ../ui-storage
 - yarn install
 - yarn build
+- cp index.html dist/
 - mv dist/ ../ui/static/storage/
 - cd ../ui
 - yarn install
