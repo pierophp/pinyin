@@ -71,9 +71,15 @@ function loadMain() {
 }
 
 function tryLoadMain() {
-  if (window.frames['iframe-storage'].get) {
-    loadMain();
-  } else {
+  try {
+    if (window.frames['iframe-storage'].get) {
+      loadMain();
+    } else {
+      setTimeout(tryLoadMain, 50);
+    }
+  } catch (e) {
+    // eslint-disable-next-line
+    console.log('Exception iframe get');
     setTimeout(tryLoadMain, 50);
   }
 }
