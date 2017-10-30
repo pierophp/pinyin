@@ -256,8 +256,8 @@ module.exports = class JwDownloader {
           verseText = replaceall(String.fromCharCode(8288), '', verseText);
 
 
-          const chapterDebug = 7;
-          const verseDebug = 14;
+          const chapterDebug = 200;
+          const verseDebug = 19;
           for (let vId = 0; vId < verseText.length; vId += 1) {
             if (!verseText[vId]) {
               continue;
@@ -267,6 +267,9 @@ module.exports = class JwDownloader {
               return;
             }
 
+            if (bibleEnglish === 'habakkuk' && chapter == 3 && verse == 19 && lineIndex === 18) {
+              return;
+            }
 
             const blockContentSimplified = chapterObject.lines[lineIndex][blockIndex];
             let blockContent = chapterObjectTraditional.lines[lineIndex][blockIndex];
@@ -351,9 +354,9 @@ module.exports = class JwDownloader {
             chapterObjectTraditional.lines[lineIndex][blockIndex].c = blockContent.join('');
             if (chapter == chapterDebug && verse == verseDebug) {
               console.log(blockContent.join(''));
-              //console.log(verseText[vId].charCodeAt(0));
-              //console.log(blockIndex);
-              //console.log(blockInlineIndex);
+              // console.log(verseText[vId].charCodeAt(0));
+              // console.log(blockIndex);
+              // console.log(blockInlineIndex);
             }
             blockInlineIndex += 1;
             if (blockInlineIndex === blockContent.length) {

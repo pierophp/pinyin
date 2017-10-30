@@ -19,13 +19,11 @@
   import booksName from 'src/data/bible/names';
   import OptionsManager from 'src/domain/options-manager';
 
-  const options = OptionsManager.getOptions();
-
   export default {
     name: 'modal-bible',
     data() {
       return {
-        exhibitionType: `cmn-han${options.ideogramType}`,
+        options: {},
       };
     },
     props: {
@@ -34,7 +32,10 @@
       verse: 0,
     },
     computed: {
-      book: function book() {
+      exhibitionType() {
+        return `cmn-han${this.options.ideogramType}`;
+      },
+      book() {
         const key = this.bookIndex - 1;
         if (key < 0) {
           return '';
@@ -45,6 +46,9 @@
     },
     components: {
       ChapterContainer,
+    },
+    created() {
+      this.options = OptionsManager.getOptions();
     },
     methods: {
       booksName,

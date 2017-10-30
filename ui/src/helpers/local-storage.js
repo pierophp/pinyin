@@ -2,6 +2,7 @@
 class LocalStorage {
   static get(key) {
     if (!window.frames['iframe-storage'].get) {
+      // eslint-disable-next-l0ine
       console.log('Iframe not loaded yet - GET');
       return '';
     }
@@ -19,6 +20,7 @@ class LocalStorage {
 
   static has(key) {
     if (!window.frames['iframe-storage'].has) {
+      // eslint-disable-next-line
       console.log('Iframe not loaded yet - HAS');
       return false;
     }

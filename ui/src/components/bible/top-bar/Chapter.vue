@@ -11,14 +11,20 @@
 import booksName from 'src/data/bible/names';
 import OptionsManager from 'src/domain/options-manager';
 
-const options = OptionsManager.getOptions();
-
 export default {
   name: 'bible-chapter-top-bar',
   data() {
     return {
-      exhibitionType: `cmn-han${options.ideogramType}`,
+      options: {},
     };
+  },
+  computed: {
+    exhibitionType() {
+      return `cmn-han${this.options.ideogramType}`;
+    },
+  },
+  created() {
+    this.options = OptionsManager.getOptions();
   },
   methods: {
     booksName,
