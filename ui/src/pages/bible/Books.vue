@@ -42,12 +42,11 @@
     FILE_GETTER_BOOKS_EXHIBITION_TYPE,
   } from 'src/data/file/types';
 
-  const options = OptionsManager.getOptions();
-
   export default {
     name: 'bible-books',
     data() {
       return {
+        options: {},
         books: booksData,
       };
     },
@@ -63,7 +62,7 @@
         showPinyin: FILE_GETTER_BOOKS_SHOW_PINIYN,
       }),
       exhibitionType() {
-        return `cmn-han${options.ideogramType}`;
+        return `cmn-han${this.options.ideogramType}`;
       },
       exhibitionClassPinyin() {
         if (this.showPinyin) {
@@ -79,6 +78,9 @@
 
         return '';
       },
+    },
+    created() {
+      this.options = OptionsManager.getOptions();
     },
     mounted() {
 

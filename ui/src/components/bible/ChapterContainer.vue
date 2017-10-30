@@ -27,7 +27,7 @@
   import _ from 'lodash';
   import OptionsManager from 'src/domain/options-manager';
 
-  const options = OptionsManager.getOptions();
+  let options = {};
 
   export default {
     name: 'bible-chapter',
@@ -202,6 +202,9 @@
           this.verses.push(i);
         }
       },
+    },
+    created() {
+      options = OptionsManager.getOptions();
     },
     async mounted() {
       if (navigator.onLine) {
