@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>ui-storage</title>
+    <script>
+      function get(key) {
+        const value = localStorage.getItem(key);
+
+        if (!value) {
+          return null;
+        }
+
+        if (/(\[|{)/.test(value.charAt(0))) {
+          return JSON.parse(value);
+        }
+
+        return value;
+      }
+
+      function save(key, value) {
+        if (value === null) {
+          return;
+        }
+
+        if (typeof value === 'object') {
+          localStorage.setItem(key, JSON.stringify(value));
+        } else {
+          localStorage.setItem(key, value);
+        }
+      }
+
+      function remove(key) {
+        localStorage.removeItem(key);
+      }
+
+      function has(key) {
+        return !!get(key);
+      }
+
+      if (window.location.host.indexOf('2pinyin.net') !== -1) {
+        document.domain = '2pinyin.net';
+      }
+      </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script src="/dist/build.js"></script>
+  </body>
+</html>

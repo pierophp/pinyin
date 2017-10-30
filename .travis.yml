@@ -31,7 +31,11 @@ before_install:
 - npm install pm2 -g
 - cd api
 - yarn install
+- cd ../ui-storage
+- yarn install
+- yarn build
 - cd ../ui
+- mv dist/ ../ui/static/storage/
 - yarn install
 - rm index.html
 - cp index-prod.html index.html
