@@ -1,6 +1,7 @@
 import Login from 'src/pages/auth/Login';
 import DictionarySearch from 'src/pages/dictionary/Search';
 import DictionaryDetails from 'src/pages/dictionary/Details';
+import NotFound from 'src/pages/NotFound';
 
 export default [
   {
@@ -35,6 +36,11 @@ export default [
     meta: {
       topBar: 'dictionary',
     },
+  },
+  {
+    path: '*',
+    name: 'not-found',
+    component: NotFound,
   },
 
 ];

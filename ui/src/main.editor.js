@@ -3,7 +3,7 @@ import loadMain from 'main';
 function tryLoadMain() {
   try {
     if (window.frames['iframe-storage'].get) {
-      loadMain('videos');
+      loadMain('editor');
     } else {
       setTimeout(tryLoadMain, 50);
     }

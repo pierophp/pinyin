@@ -2,6 +2,7 @@ import Login from 'src/pages/auth/Login';
 import BibleBooks from 'src/pages/bible/Books';
 import BibleChapters from 'src/pages/bible/Chapters';
 import BibleChapter from 'src/pages/bible/Chapter';
+import NotFound from 'src/pages/NotFound';
 
 export default [
   {
@@ -49,5 +50,10 @@ export default [
       hideTitle: true,
       topBar: 'bible-chapter',
     },
+  },
+  {
+    path: '*',
+    name: 'not-found',
+    component: NotFound,
   },
 ];

@@ -1,5 +1,6 @@
 import Login from 'src/pages/auth/Login';
 import VideoShow from 'src/pages/video/Show';
+import NotFound from 'src/pages/NotFound';
 
 export default [
   {
@@ -23,5 +24,10 @@ export default [
     path: '/video',
     name: 'video',
     component: VideoShow,
+  },
+  {
+    path: '*',
+    name: 'not-found',
+    component: NotFound,
   },
 ];

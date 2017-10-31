@@ -26,7 +26,10 @@ class User {
       });
     }
 
-    Cookies.set('token', response.data.token, { domain: this.getDomain() });
+    Cookies.set('token', response.data.token, {
+      expires: 365 * 3, // 3 years
+      domain: this.getDomain(),
+    });
 
     // LocalStorage.save('token', response.data.token);
     LocalStorage.save('user', response.data.user);

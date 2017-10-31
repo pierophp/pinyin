@@ -23,15 +23,13 @@ import localeEn from 'src/data/locale/en';
 import localePt from 'src/data/locale/pt';
 import FileContainer from 'src/components/files/FileContainer';
 
-async function loadMain() {
+export default async function loadMain(moduleName) {
+
   const routerMethod = (await import('src/router')).default;
 
-  const routes = (await import('src/routes')).default;
+  const routes = (await import(`src/routes/${moduleName}`)).default;
 
-  const router = routerMethod(routes, {
-    showMenu: true,
-    title: 'app.editor',
-  });
+  const router = routerMethod(routes, (await import(`src/app/${moduleName}`)).default);
 
   Vue.use(VueI18n);
   Vue.use(VueMaterial);
@@ -69,18 +67,4 @@ async function loadMain() {
     router,
     store: await store(),
   }).$mount('#app');
-}
-
-function tryLoadMain() {
-  try {
-    if (window.frames['iframe-storage'].get) {
-      loadMain();
-    } else {
-      setTimeout(tryLoadMain, 50);
-    }
-  } catch (e) {
-    setTimeout(tryLoadMain, 50);
-  }
-}
-
-tryLoadMain();
+};

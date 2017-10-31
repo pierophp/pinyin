@@ -5,8 +5,8 @@
   "author": "Piero Giusti <pierophp@gmail.com>",
   "private": true,
   "scripts": {
-    "dev": "export BUILD_ENTRYPOINT=main; node build/dev-server.js",
-    "build": "export  BUILD_ENTRYPOINT=main; node build/build.js",
+    "dev": "export BUILD_ENTRYPOINT=main.editor; node build/dev-server.js",
+    "build": "export  BUILD_ENTRYPOINT=main.editor; node build/build.js",
     "dev-bible": "export BUILD_ENTRYPOINT=main.bible; node build/dev-server.js",
     "build-bible": "export  BUILD_ENTRYPOINT=main.bible; node build/build.js",
     "dev-dictionary": "export BUILD_ENTRYPOINT=main.dictionary; node build/dev-server.js",

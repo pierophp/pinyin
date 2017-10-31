@@ -10,6 +10,7 @@ import VideoShow from 'src/pages/video/Show';
 import BibleBooks from 'src/pages/bible/Books';
 import BibleChapters from 'src/pages/bible/Chapters';
 import BibleChapter from 'src/pages/bible/Chapter';
+import NotFound from 'src/pages/NotFound';
 
 export default [
   {
@@ -121,5 +122,9 @@ export default [
       protected: true,
     },
   },
-
+  {
+    path: '*',
+    name: 'not-found',
+    component: NotFound,
+  },
 ];
