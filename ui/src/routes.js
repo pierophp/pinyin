@@ -11,7 +11,7 @@ import BibleBooks from 'src/pages/bible/Books';
 import BibleChapters from 'src/pages/bible/Chapters';
 import BibleChapter from 'src/pages/bible/Chapter';
 
-module.exports = [
+export default [
   {
     path: '/',
     name: 'login',

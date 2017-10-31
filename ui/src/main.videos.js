@@ -23,9 +23,10 @@ import localeEn from 'src/data/locale/en';
 import localePt from 'src/data/locale/pt';
 import FileContainer from 'src/components/files/FileContainer';
 
-function loadMain() {
-  const routerMethod = require('src/router');
-  const routes = require('src/routes.videos');
+async function loadMain() {
+  const routerMethod = (await import('src/router')).default;
+
+  const routes = (await import('src/routes.videos')).default;
 
   const router = routerMethod(routes, {
     showMenu: false,
@@ -66,7 +67,7 @@ function loadMain() {
 
   new Main({
     router,
-    store: store(),
+    store: await store(),
   }).$mount('#app');
 }
 
