@@ -192,7 +192,8 @@
       },
 
       updateCss() {
-        this.sizeClass = this.options.size;
+        document.body.style.setProperty('--character-font-size', this.options.ideogramSize);
+        document.body.style.setProperty('--pinyin-font-size', this.options.pinyinSize);
 
         this.typeClass = '';
         if (this.options.type === '2') {
@@ -234,18 +235,10 @@
 </script>
 
 <style>
-  :root {
-    --larger-pinyin-font-size: 23px;
-    --larger-character-font-size: 34px;
-    --normal-pinyin-font-size: 15px;
-    --normal-character-font-size: 22px;
-  }
-
   ::selection {
     background: #a8d1ff !important;
     color: #000 !important;
   }
-
 
   .print-container{
     flex: 1;
@@ -282,8 +275,8 @@
   .print .pinyin span {
     user-select:none;
     background: none !important;
-    font-size: var(--normal-pinyin-font-size);
-    height: calc(var(--normal-pinyin-font-size) + 2px);
+    font-size: var(--pinyin-font-size);
+    height: calc(var(--pinyin-font-size) + 2px);
     min-width: 0;
   }
 
@@ -293,34 +286,22 @@
     font-family: 'Noto Sans SC Sliced', 'Noto Sans TC', sans-serif;
     font-weight: lighter;
   }
+  .print .character span {
+    display: inline-block;
+    font-weight: 300;
+    width: calc(var(--character-font-size) - 1px);
+  }
 
   .print .verse .ideogram-show span{
-    font-size: 16px !important;
+    font-size: calc(var(--character-font-size) - 7px) !important;
     width: auto !important;
     font-weight: bold;
   }
 
   .print .chapter .ideogram-show span{
-    font-size: 32px !important;
+    font-size: calc(var(--character-font-size) + 7px) !important;
     width: auto !important;
     font-weight: bold;
-  }
-
-  .larger.print .pinyin,
-  .larger.print .pinyin span {
-    font-size: var(--larger-pinyin-font-size);
-    height: var(--larger-pinyin-font-size);
-  }
-
-  .larger .pinyin span {
-    font-size: var(--larger-pinyin-font-size);
-    height: var(--larger-pinyin-font-size);
-    line-height: var(--larger-pinyin-font-size);
-  }
-
-  .larger .character span {
-    font-size: var(--larger-character-font-size);
-    height: var(--larger-character-font-size);
   }
 
   .print .type-box-img,
@@ -329,16 +310,11 @@
     padding-bottom: 0 !important;
   }
 
-  .print .character span {
-    display: inline-block;
-    font-weight: 300;
-    width: 22px;
-  }
 
   .print .type-h1 .character span {
-    line-height: 40px;
-    font-size: 40px;
-    width: 40px;
+    line-height: calc(var(--character-font-size) + 17px);
+    font-size: calc(var(--character-font-size) + 17px);
+    width: calc(var(--character-font-size) + 17px);
     font-weight: 400;
   }
 
@@ -355,76 +331,42 @@
 
   .print .type-box-h2 .character span,
   .print .type-h2 .character span {
-    line-height: 34px;
-    font-size: 34px;
-    width: 33px;
+    line-height: calc(var(--character-font-size) + 11px);
+    font-size: calc(var(--character-font-size) + 11px);
+    width: calc(var(--character-font-size) + 10px);
     font-weight: 400;
-  }
-
-  .print .type-foot .pinyin span,
-  .print .type-box-imgcaption .pinyin span,
-  .print .type-imgcaption .pinyin span {
-    line-height: 15px;
-    font-size: 15px;
   }
 
   .print .type-foot .character span,
   .print .type-box-imgcaption .character span,
   .print .type-imgcaption .character span {
-    line-height: 20px;
-    font-size: 20px;
-    width: 20px;
+    line-height: calc(var(--character-font-size) - 3px);
+    font-size: calc(var(--character-font-size) - 3px);
+    width: calc(var(--character-font-size) - 3px);
   }
 
   .print .type-box-h2,
   .print .type-box,
   .print .type-box-img,
   .print .type-box-imgcaption {
-    border-left:3px solid #93c5ff;
-    border-right:3px solid #93c5ff;
+    border-left: 3px solid #93c5ff;
+    border-right: 3px solid #93c5ff;
     padding: 0 10px;
   }
 
   .print .type-qu {
-    border-top:1px solid #ccc;
-    border-bottom:1px solid #ccc;
-  }
-
-  .print .type-qu .pinyin span {
-    line-height: 17px;
-    font-size: 15px;
-    height: 20px;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
   }
 
   .print .type-qu .character span {
-    line-height: 19px;
-    font-size: 19px;
-    width: 19px;
+    line-height: calc(var(--character-font-size) - 4px);
+    font-size: calc(var(--character-font-size) - 4px);
+    width: calc(var(--character-font-size) - 4px);
   }
 
   .print .character span.special-ideogram {
     width: 17px;
-  }
-
-  .larger.print .character span {
-    width: 34px;
-  }
-
-  .larger.print .type-h1 .character span {
-    line-height: 50px;
-    font-size: 50px;
-    width: 48px;
-  }
-
-  .larger.print .type-box-h2 .character span,
-  .larger.print .type-h2 .character span {
-    line-height: 36px;
-    font-size: 36px;
-    width: 35px;
-  }
-
-  .larger.print .character span.special-ideogram {
-    width: 24px;
   }
 
   .print .block {

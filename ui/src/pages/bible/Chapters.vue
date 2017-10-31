@@ -40,9 +40,9 @@
 
 .bible-chapter {
   color: #fff;
-  line-height: 50px;
-  height: 50px;
-  width: 50px;
+  line-height: 45px;
+  height: 45px;
+  width: 45px;
   background-color: #bab6b6;
   justify-content: flex-start;
   margin: 2px;

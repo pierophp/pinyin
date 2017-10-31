@@ -1,5 +1,7 @@
-:root {
+body {
   --block-width: 25px;
+  --pinyin-font-size: 15px;
+  --character-font-size: 23px;
 }
 
 @media (min-width: 1024px) {
@@ -86,7 +88,7 @@ html, body {
 .pinyin span {
   min-height: 0;
   background: #fff;
-  font-size: 22px;
+  font-size: var(--pinyin-font-size);
   min-width: var(--block-width);
   width: 100%;
   border: 0;
@@ -99,7 +101,8 @@ html, body {
 .character .div-input,
 .character span {
   min-height: 0;
-  font-size: 23px;
+  font-size: var(--character-font-size);
+  height: var(--character-font-size);
   min-width: var(--block-width);
   border: 0;
   width: 100%;

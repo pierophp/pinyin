@@ -4,10 +4,53 @@
     <md-tabs>
       <md-tab id="visualization" :md-label="$t('visualization_mode')">
         <md-input-container>
-          <label for="size">{{ $t('size') }}</label>
-          <md-select name="size" id="size" v-model="size">
-            <md-option value="normal">{{ $t('normal') }}</md-option>
-            <md-option value="larger">{{ $t('larger') }}</md-option>
+          <label for="pinyinSize">{{ $t('Pinyin') }} - {{ $t('size') }}</label>
+          <md-select name="pinyinSize" id="pinyinSize" v-model="pinyinSize">
+            <md-option value="12px">{{ $t('12') }}</md-option>
+            <md-option value="13px">{{ $t('13') }}</md-option>
+            <md-option value="14px">{{ $t('14') }}</md-option>
+            <md-option value="15px">{{ $t('15') }}</md-option>
+            <md-option value="16px">{{ $t('16') }}</md-option>
+            <md-option value="17px">{{ $t('17') }}</md-option>
+            <md-option value="18px">{{ $t('18') }}</md-option>
+            <md-option value="19px">{{ $t('19') }}</md-option>
+            <md-option value="20px">{{ $t('20') }}</md-option>
+            <md-option value="21px">{{ $t('21') }}</md-option>
+            <md-option value="22px">{{ $t('22') }}</md-option>
+            <md-option value="23px">{{ $t('23') }}</md-option>
+            <md-option value="24px">{{ $t('24') }}</md-option>
+            <md-option value="25px">{{ $t('25') }}</md-option>
+            <md-option value="26px">{{ $t('26') }}</md-option>
+            <md-option value="27px">{{ $t('27') }}</md-option>
+          </md-select>
+        </md-input-container>
+
+        <md-input-container>
+          <label for="ideogramSize">{{ $t('ideogram') }} - {{ $t('size') }}</label>
+          <md-select name="ideogramSize" id="ideogramSize" v-model="ideogramSize">
+            <md-option value="17px">{{ $t('17') }}</md-option>
+            <md-option value="18px">{{ $t('18') }}</md-option>
+            <md-option value="19px">{{ $t('19') }}</md-option>
+            <md-option value="20px">{{ $t('20') }}</md-option>
+            <md-option value="21px">{{ $t('21') }}</md-option>
+            <md-option value="22px">{{ $t('22') }}</md-option>
+            <md-option value="23px">{{ $t('23') }}</md-option>
+            <md-option value="24px">{{ $t('24') }}</md-option>
+            <md-option value="25px">{{ $t('25') }}</md-option>
+            <md-option value="26px">{{ $t('26') }}</md-option>
+            <md-option value="27px">{{ $t('27') }}</md-option>
+            <md-option value="27px">{{ $t('28') }}</md-option>
+            <md-option value="29px">{{ $t('29') }}</md-option>
+            <md-option value="30px">{{ $t('30') }}</md-option>
+          </md-select>
+        </md-input-container>
+
+
+        <md-input-container>
+          <label for="ideogramType">{{ $t('ideogram_type') }}</label>
+          <md-select name="ideogramType" id="ideogramType" v-model="ideogramType">
+            <md-option value="s">{{ $t('simplified') }}</md-option>
+            <md-option value="t">{{ $t('traditional') }}</md-option>
           </md-select>
         </md-input-container>
 
@@ -20,6 +63,13 @@
           </md-select>
         </md-input-container>
 
+        <md-input-container>
+          <label for="pinyinHide">{{ $t('hide_pinyin_by') }}</label>
+          <md-select name="pinyinHide" id="pinyinHide" v-model="pinyinHide">
+            <md-option value="1">{{ $t('ideogram') }}</md-option>
+            <md-option value="2">{{ $t('word') }}</md-option>
+          </md-select>
+        </md-input-container>
 
         <md-input-container>
           <label for="ideogramSpaced">{{ $t('ideograms_spaced') }}</label>
@@ -30,28 +80,12 @@
         </md-input-container>
 
         <md-input-container>
-          <label for="pinyinHide">{{ $t('hide_pinyin_by') }}</label>
-          <md-select name="pinyinHide" id="pinyinHide" v-model="pinyinHide">
-            <md-option value="1">{{ $t('ideogram') }}</md-option>
-            <md-option value="2">{{ $t('word') }}</md-option>
-          </md-select>
-        </md-input-container>
-
-        <md-input-container>
           <label for="translationLanguage">{{ $t('translation_language') }}</label>
           <md-select name="translationLanguage" id="translationLanguage" v-model="translationLanguage">
             <md-option value="">{{ $t('no_translation') }}</md-option>
             <md-option value="pt">{{ $t('portuguese') }}</md-option>
             <md-option value="en">{{ $t('english') }}</md-option>
             <md-option value="es">{{ $t('spanish') }}</md-option>
-          </md-select>
-        </md-input-container>
-
-        <md-input-container>
-          <label for="ideogramType">{{ $t('ideogram_type') }}</label>
-          <md-select name="ideogramType" id="ideogramType" v-model="ideogramType">
-            <md-option value="s">{{ $t('simplified') }}</md-option>
-            <md-option value="t">{{ $t('traditional') }}</md-option>
           </md-select>
         </md-input-container>
 

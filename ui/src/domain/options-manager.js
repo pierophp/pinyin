@@ -5,7 +5,9 @@ class OptionsManager {
 
   static getDefaultOptions() {
     return {
-      size: 'normal', // normal, larger
+      size: 'normal', // normal, larger@deprecated
+      ideogramSize: '23px',
+      pinyinSize: '15px',
       type: '1', // 1 = pinyin_ideograms_without_knew, 2 = ideograms_only, 4 = pinyin_ideograms
       ideogramColored: '1', // bool
       ideogramType: 's', // s = simplified, t = traditional
