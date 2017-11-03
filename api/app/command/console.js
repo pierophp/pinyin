@@ -52,6 +52,10 @@ program
 
 program
   .version('0.0.1')
+  .command('jw-bible-language', 'JW Bible Language');
+
+program
+  .version('0.0.1')
   .command('jw-insight', 'JW Insight');
 
 program

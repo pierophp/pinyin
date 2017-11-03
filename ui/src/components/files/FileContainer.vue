@@ -391,7 +391,7 @@
 
   .print .line {
     margin-bottom: 10px;
-    padding-bottom: 15px;
+    padding-bottom: 5px;
   }
 
   .ideogram-spaced .block {

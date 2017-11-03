@@ -171,7 +171,6 @@ module.exports = class JwDownloader {
   }
 
   static async getTraditionalBible() {
-    const dirname = `${__dirname}/../../storage/`;
     const urlBible = 'https://www.jw.org/cmn-hant/出版物/聖經/bi12/聖經經卷/';
     let response = await axios.get(this.encodeUrl(urlBible));
     let $ = cheerio.load(response.data);
@@ -386,6 +385,125 @@ module.exports = class JwDownloader {
       });
     });
   }
+
+  static async getLanguageBible() {
+    const language = 'pt';
+    const urlBible = {
+      pt: 'https://www.jw.org/pt/publicacoes/biblia/nwt/livros/',
+      en: 'https://www.jw.org/en/publications/bible/nwt/books/',
+      es: 'https://www.jw.org/es/publicaciones/biblia/bi12/libros/',
+    };
+    let response = await axios.get(this.encodeUrl(urlBible[language]));
+    let $ = cheerio.load(response.data);
+    const bibles = [];
+    $('.bibleBook').each((i, bibleChildren) => {
+      bibles.push($(bibleChildren).attr('href'));
+    });
+
+    await Promise.mapSeries(bibles, async (bible, bibleIndex) => {
+
+      const urlChapter = `https://jw.org${bible}/`;
+      response = await axios.get(this.encodeUrl(urlChapter));
+      $ = cheerio.load(response.data);
+      const chapters = [];
+      $('.chapters .chapter').each((j, bibleChapterChildren) => {
+        chapters.push($(bibleChapterChildren).text().trim());
+      });
+
+      const bibleEnglish = Object.keys(bibleChapters)[bibleIndex];
+
+      // eslint-disable-next-line
+      console.log(bible);
+      console.log(bibleEnglish);
+
+      const biblePath = `${__dirname}/../../../ui/static/bible/${language}/`;
+
+      await Promise.mapSeries(chapters, async (chapter) => {
+        console.log(chapter);
+        let chapterExists = true;
+        try {
+          await fs.statAsync(`${biblePath}${bibleEnglish}/${chapter}.json`);
+        } catch (e) {
+          chapterExists = false;
+        }
+
+        if (chapterExists) {
+          return;
+        }
+
+        let lineIndex = 0;
+        let blockIndex = -1;
+
+        const url = `${urlChapter}/${chapter}/`;
+        try {
+          response = await axios.get(this.encodeUrl(url));
+        } catch (e) {
+          // eslint-disable-next-line
+          console.log(e);
+          // eslint-disable-next-line
+          console.log(url);
+          throw e;
+        }
+        $ = cheerio.load(response.data);
+        const chapterObject = {};
+        chapterObject.lines = [];
+        chapterObject.lines[0] = [];
+        chapterObject.lines[0][0] = {};
+        chapterObject.lines[0][0].line = {};
+        chapterObject.lines[0][0].line.pinyinSpaced = 1;
+
+        $('#bibleText .verse').each((i, children) => {
+          $(children).find('.superscription').remove();
+
+          if ($(children).find('.first').length) {
+            lineIndex += 1;
+            blockIndex = 0;
+          } else {
+            blockIndex += 1;
+          }
+
+          let verse = $(children).find('.verseNum').text().trim();
+          if (!verse) {
+            verse = 1;
+          }
+
+          let verseText = $(children).text().trim();
+          verseText = replaceall('+', '', verseText);
+          verseText = replaceall('*', '', verseText);
+
+          if (!chapterObject.lines[lineIndex]) {
+            chapterObject.lines[lineIndex] = [];
+          }
+
+          if (!chapterObject.lines[lineIndex][blockIndex]) {
+            chapterObject.lines[lineIndex][blockIndex] = {};
+          }
+          let splitChar = '  ';
+          if (i === 0) {
+            splitChar = ' ';
+          }
+
+          const verseTextArray = verseText.split(splitChar);
+
+          chapterObject.lines[lineIndex][blockIndex].p = verseTextArray[0];
+          chapterObject.lines[lineIndex][blockIndex].v = parseInt(verse, 10);
+          blockIndex += 1;
+          chapterObject.lines[lineIndex][blockIndex] = {};
+          chapterObject.lines[lineIndex][blockIndex].p = verseTextArray.splice(1).join(splitChar).trim();
+        });
+
+        try {
+          await fs.statAsync(`${biblePath}${bibleEnglish}`);
+        } catch (e) {
+          await fs.mkdirAsync(`${biblePath}${bibleEnglish}`);
+        }
+
+        await fs.writeFileAsync(`${biblePath}${bibleEnglish}/${chapter}.json`, JSON.stringify(chapterObject));
+      });
+    });
+  }
+
+
 
   static async loadTracks() {
     const languages = ['CH', 'CHS'];

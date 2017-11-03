@@ -13,7 +13,7 @@
       </span>
     </div>
 
-    <div class="character" :data-highlight="highlight" :data-line="lineIndex" :data-block="blockIndex" :class="classBold" v-if="!block.small && !block.footnote">
+    <div class="character" :data-highlight="highlight" :data-line="lineIndex" :data-block="blockIndex" :class="classBold" v-if="!block.small && !block.footnote && !block.noIdeogram">
       <ideograms-show :pinyin="pinyin" :character="character" :useSpaces="true"/>
     </div>
 

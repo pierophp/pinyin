@@ -9,12 +9,12 @@
           <md-icon>delete_sweep</md-icon>
       </div>
 
-      <div v-for="(verse, verseId) in verses" v-bind:key="verseId" :class="['bible-verse', (selecteds.indexOf(verse) != -1) ? 'selected' : '']" @click="selectVerse(verse)">
+      <div v-for="(verse, verseId) in verses" v-bind:key="verseId" :class="['bible-verse', (selecteds.indexOf(verse) != -1) ? 'selected' : '']" @click="selectVerseClick(verse)">
           {{ verse }}
       </div>
     </div>
 
-    <file-container :lines="lines" :fullLines="fullLines" filename="" :fileLoading="fileLoading" @open-bottom-bar="openBottomBar" :parent="parent"/>
+    <file-container :lines="lines.concat(linesLanguage)" :fullLines="fullLines.concat(fullLinesLanguage)" filename="" :fileLoading="fileLoading" @open-bottom-bar="openBottomBar" :parent="parent"/>
     <md-snackbar md-position="bottom center" ref="snackbarNoInternet" md-duration="3000">
       <span>{{ $t('no_internet') }}</span>
     </md-snackbar>
@@ -40,12 +40,17 @@
     data() {
       return {
         lines: [],
+        linesLanguage: [],
         fullLines: [],
+        fullLinesLanguage: [],
         showVerses: true,
         verses: [],
         selecteds: [],
+        selectedsLanguage: [],
         versesMap: {},
+        versesMapLanguage: {},
         fileLoading: false,
+        fileLoadingLanguage: false,
       };
     },
     watch: {
@@ -62,7 +67,13 @@
     methods: {
       clear() {
         this.selecteds = [];
+        this.selectedsLanguage = [];
         this.setFileContent([]);
+        this.setFileContentLanguage([]);
+      },
+      selectVerseClick(verse) {
+        this.selectVerse(verse);
+        this.selectVerseLanguage(verse);
       },
       setLine(line) {
         this.$set(this.lines, line.lineIndex, line.line);
@@ -73,6 +84,12 @@
       setFileLoading(loading) {
         this.fileLoading = loading;
       },
+      setFileContentLanguage(lines) {
+        this.linesLanguage = lines;
+      },
+      setFileLoadingLanguage(loading) {
+        this.fileLoadingLanguage = loading;
+      },
       openBottomBar(data) {
         this.$emit('open-bottom-bar', data);
       },
@@ -80,6 +97,7 @@
         this.setFileLoading(true);
         this.selecteds = [];
         this.setFileContent([]);
+        this.setFileContentLanguage([]);
         this.loadFile(this.fullLines, 0);
       },
       selectVerse(verse) {
@@ -117,6 +135,48 @@
 
         this.setFileContent(newLines);
       },
+      selectVerseLanguage(verse) {
+        if (this.selectedsLanguage.indexOf(verse) === -1) {
+          this.selectedsLanguage.push(verse);
+        } else {
+          this.selectedsLanguage.remove(this.selectedsLanguage.indexOf(verse));
+        }
+
+        this.selectedsLanguage = _.sortBy(this.selectedsLanguage);
+
+        const newLines = [];
+
+        const lines = {};
+
+        this.selectedsLanguage.forEach((v) => {
+          const verseMap = this.versesMapLanguage[v];
+          if (!lines[verseMap.line]) {
+            lines[verseMap.line] = {
+              line: verseMap.line,
+              blocks: [],
+            };
+          }
+
+          for (let i = verseMap.blockStart; i <= verseMap.blockEnd; i += 1) {
+            const words = this.fullLinesLanguage[verseMap.line][i].p.split(' ');
+            words.forEach((word) => {
+              const block = {};
+              block.c = ' ';
+              block.noIdeogram = true;
+              block.p = word;
+              lines[verseMap.line].blocks.push(block);
+            });
+          }
+        });
+
+        // eslint-disable-next-line
+        for (const lineIndex in lines) {
+          const line = lines[lineIndex];
+          newLines.push(line.blocks);
+        }
+
+        this.setFileContentLanguage(newLines);
+      },
       parseVerses(lines) {
         this.versesMap = [];
         lines.forEach((line, lineIndex) => {
@@ -138,6 +198,30 @@
           });
 
           this.versesMap[verse].blockEnd = line.length - 1;
+        });
+      },
+
+      parseVersesLanguage(lines) {
+        this.versesMapLanguage = [];
+        lines.forEach((line, lineIndex) => {
+          let verse = null;
+          line.forEach((block, blockIndex) => {
+            if (block.v) {
+              if (blockIndex > 0) {
+                this.versesMapLanguage[block.v - 1].blockEnd = blockIndex - 1;
+              }
+
+              this.versesMapLanguage[block.v] = {
+                line: lineIndex,
+                blockStart: blockIndex,
+                blockEnd: null,
+              };
+
+              verse = block.v;
+            }
+          });
+
+          this.versesMapLanguage[verse].blockEnd = line.length - 1;
         });
       },
 
@@ -165,6 +249,7 @@
 
       async loadBook() {
         this.setFileContent([]);
+        this.setFileContentLanguage([]);
         this.verses = [];
         const CACHE_VERSION = 1;
 
@@ -183,6 +268,25 @@
 
               for (let i = parseInt(startVerse, 10); i <= parseInt(endVerse, 10); i += 1) {
                 this.selectVerse(i);
+              }
+            }
+          });
+
+        axios.get(`static/bible/${options.translationLanguage}/${this.book}/${this.chapter}.json?v=${CACHE_VERSION}`)
+          .then((content) => {
+            this.fullLinesLanguage = content.data.lines;
+            this.parseVersesLanguage(content.data.lines);
+            if (this.verse) {
+              this.selectedsLanguage = [];
+              const splitVerse = this.verse.split('-');
+              const startVerse = splitVerse[0];
+              let endVerse = splitVerse[0];
+              if (splitVerse[1]) {
+                endVerse = splitVerse[1];
+              }
+
+              for (let i = parseInt(startVerse, 10); i <= parseInt(endVerse, 10); i += 1) {
+                this.selectVerseLanguage(i);
               }
             }
           });
