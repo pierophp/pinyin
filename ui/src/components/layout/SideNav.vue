@@ -16,32 +16,8 @@
     </md-toolbar>
 
     <md-list >
-      <md-list-item @click="goTo('/files')">
-        <md-icon>insert_drive_file</md-icon> <span>{{ $t("menu.my_files") }}</span>
-      </md-list-item>
-
-      <md-list-item @click="goTo('/dictionary')">
-        <md-icon>pageview</md-icon> <span>{{ $t("menu.dictionary") }}</span>
-      </md-list-item>
-
-      <md-list-item @click="goTo('/bible')">
-        <md-icon>import_contacts</md-icon> <span>{{ $t("menu.bible") }}</span>
-      </md-list-item>
-
-      <md-list-item @click="goTo('/my-cjk')">
-        <md-icon>translate</md-icon> <span>{{ $t("menu.my_ideograms") }}</span>
-      </md-list-item>
-
-      <md-list-item @click="goTo('/video')">
-        <md-icon>play_circle_outline</md-icon> <span>{{ $t("menu.video") }}</span>
-      </md-list-item>
-
-      <md-list-item @click="goTo('/config')">
-        <md-icon>settings</md-icon> <span>{{ $t("menu.settings") }}</span>
-      </md-list-item>
-
-      <md-list-item @click="logout()">
-        <md-icon>power_settings_new</md-icon> <span>{{ $t("menu.logout") }}</span>
+      <md-list-item @click="doAction(menuItem.action, menuItem.link)" v-for="(menuItem, menuItemId) in menu" v-bind:key="menuItemId">
+        <md-icon>{{ menuItem.icon }}</md-icon> <span>{{ $t(menuItem.title) }}</span>
       </md-list-item>
     </md-list>
   </md-sidenav>
@@ -55,9 +31,17 @@
     data() {
       return {
         user: User.getUser(),
+        menu: this.$router.options.appOptions.menu,
       };
     },
     methods: {
+      doAction(action, param) {
+        if (action === 'goTo') {
+          this.goTo(param);
+        } else if (action === 'logout') {
+          this.logout();
+        }
+      },
       goTo(link) {
         this.$refs.sidenav.close();
         this.$router.push(link);

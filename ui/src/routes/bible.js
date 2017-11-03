@@ -2,6 +2,8 @@ import Login from 'src/pages/auth/Login';
 import BibleBooks from 'src/pages/bible/Books';
 import BibleChapters from 'src/pages/bible/Chapters';
 import BibleChapter from 'src/pages/bible/Chapter';
+import Config from 'src/pages/config/Config';
+import MyCjkList from 'src/pages/my-cjk/MyCjkList';
 import NotFound from 'src/pages/NotFound';
 
 export default [
@@ -49,6 +51,22 @@ export default [
       protected: true,
       hideTitle: true,
       topBar: 'bible-chapter',
+    },
+  },
+  {
+    path: '/my-cjk',
+    name: 'my-cjk',
+    component: MyCjkList,
+    meta: {
+      protected: true,
+    },
+  },
+  {
+    path: '/config',
+    name: 'config',
+    component: Config,
+    meta: {
+      protected: true,
     },
   },
   {
