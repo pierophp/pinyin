@@ -9,6 +9,8 @@ const bibleBooks = require('../../../shared/data/bible/bible');
 const bibleChapters = require('../../../shared/data/bible/chapters');
 const UnihanSearch = require('../services/UnihanSearch');
 const fs = Promise.promisifyAll(require('fs'));
+const axiosRetry = require('axios-retry');
+
 
 module.exports = class JwDownloader {
   static async getInsight() {
@@ -387,12 +389,15 @@ module.exports = class JwDownloader {
   }
 
   static async getLanguageBible() {
-    const language = 'pt';
+    const language = 'es';
     const urlBible = {
       pt: 'https://www.jw.org/pt/publicacoes/biblia/nwt/livros/',
       en: 'https://www.jw.org/en/publications/bible/nwt/books/',
       es: 'https://www.jw.org/es/publicaciones/biblia/bi12/libros/',
     };
+
+    axiosRetry(axios, { retries: 5 });
+
     let response = await axios.get(this.encodeUrl(urlBible[language]));
     let $ = cheerio.load(response.data);
     const bibles = [];

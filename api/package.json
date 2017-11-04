@@ -22,6 +22,7 @@
     "adm-zip": "^0.4.7",
     "aws-xray-sdk": "^1.1.0",
     "axios": "^0.15.3",
+    "axios-retry": "^3.0.1",
     "bluebird": "^3.4.0",
     "body-parser": "^1.15.1",
     "cheerio": "^0.22.0",
