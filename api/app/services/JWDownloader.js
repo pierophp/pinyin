@@ -389,11 +389,16 @@ module.exports = class JwDownloader {
   }
 
   static async getLanguageBible() {
-    const language = 'es';
+    const language = 'ko';
     const urlBible = {
       pt: 'https://www.jw.org/pt/publicacoes/biblia/nwt/livros/',
       en: 'https://www.jw.org/en/publications/bible/nwt/books/',
       es: 'https://www.jw.org/es/publicaciones/biblia/bi12/libros/',
+      ko: 'https://www.jw.org/ko/publications/성경/nwt/목차/',
+      ja: 'https://www.jw.org/ja/出版物/聖書/bi12/各書/',
+      it: 'https://www.jw.org/it/pubblicazioni/bibbia/bi12/libri/',
+      fr: 'https://www.jw.org/fr/publications/bible/bi12/livres/',
+      de: 'https://www.jw.org/de/publikationen/bibel/bi12/bibelbuecher/',
     };
 
     axiosRetry(axios, { retries: 5 });

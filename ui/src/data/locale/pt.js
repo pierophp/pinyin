@@ -90,6 +90,7 @@ export default {
   portuguese: 'Português',
   english: 'Inglês',
   spanish: 'Espanhol',
+  korean: 'Coreano',
   close: 'Fechar',
   import_site: 'Importar Site',
   import: 'Importar',

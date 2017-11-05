@@ -86,6 +86,7 @@
             <md-option value="pt">{{ $t('portuguese') }}</md-option>
             <md-option value="en">{{ $t('english') }}</md-option>
             <md-option value="es">{{ $t('spanish') }}</md-option>
+            <md-option value="ko">{{ $t('korean') }}</md-option>
           </md-select>
         </md-input-container>
 
