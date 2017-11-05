@@ -25,7 +25,8 @@
           @add-character="addCharacter"
           @remove-character="removeCharacter"
           ref="addRemoveCharacterModal"/>
-        <highlight-modal/>
+
+        <highlight-modal v-if="showHighlight"/>
 
         <bible-modal ref="bibleModal" v-if="parent" :bookIndex="bible.bookIndex" :chapter="bible.chapter" :verse="bible.verse" @open-bottom-bar="openBottomBar"/>
       </div>
@@ -83,6 +84,10 @@
       filename: '',
       fileLoading: false,
       parent: false,
+      showHighlight: {
+        type: Boolean,
+        default: true,
+      },
     },
 
     data() {

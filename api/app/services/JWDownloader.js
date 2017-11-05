@@ -389,7 +389,7 @@ module.exports = class JwDownloader {
   }
 
   static async getLanguageBible() {
-    const language = 'ko';
+    const language = 'it';
     const urlBible = {
       pt: 'https://www.jw.org/pt/publicacoes/biblia/nwt/livros/',
       en: 'https://www.jw.org/en/publications/bible/nwt/books/',

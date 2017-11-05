@@ -6,42 +6,42 @@
         <md-input-container>
           <label for="pinyinSize">{{ $t('Pinyin') }} - {{ $t('size') }}</label>
           <md-select name="pinyinSize" id="pinyinSize" v-model="pinyinSize">
-            <md-option value="12px">{{ $t('12') }}</md-option>
-            <md-option value="13px">{{ $t('13') }}</md-option>
-            <md-option value="14px">{{ $t('14') }}</md-option>
-            <md-option value="15px">{{ $t('15') }}</md-option>
-            <md-option value="16px">{{ $t('16') }}</md-option>
-            <md-option value="17px">{{ $t('17') }}</md-option>
-            <md-option value="18px">{{ $t('18') }}</md-option>
-            <md-option value="19px">{{ $t('19') }}</md-option>
-            <md-option value="20px">{{ $t('20') }}</md-option>
-            <md-option value="21px">{{ $t('21') }}</md-option>
-            <md-option value="22px">{{ $t('22') }}</md-option>
-            <md-option value="23px">{{ $t('23') }}</md-option>
-            <md-option value="24px">{{ $t('24') }}</md-option>
-            <md-option value="25px">{{ $t('25') }}</md-option>
-            <md-option value="26px">{{ $t('26') }}</md-option>
-            <md-option value="27px">{{ $t('27') }}</md-option>
+            <md-option value="12px">12</md-option>
+            <md-option value="13px">13</md-option>
+            <md-option value="14px">14</md-option>
+            <md-option value="15px">15</md-option>
+            <md-option value="16px">16</md-option>
+            <md-option value="17px">17</md-option>
+            <md-option value="18px">18</md-option>
+            <md-option value="19px">19</md-option>
+            <md-option value="20px">20</md-option>
+            <md-option value="21px">21</md-option>
+            <md-option value="22px">22</md-option>
+            <md-option value="23px">23</md-option>
+            <md-option value="24px">24</md-option>
+            <md-option value="25px">25</md-option>
+            <md-option value="26px">26</md-option>
+            <md-option value="27px">27</md-option>
           </md-select>
         </md-input-container>
 
         <md-input-container>
           <label for="ideogramSize">{{ $t('ideogram') }} - {{ $t('size') }}</label>
           <md-select name="ideogramSize" id="ideogramSize" v-model="ideogramSize">
-            <md-option value="17px">{{ $t('17') }}</md-option>
-            <md-option value="18px">{{ $t('18') }}</md-option>
-            <md-option value="19px">{{ $t('19') }}</md-option>
-            <md-option value="20px">{{ $t('20') }}</md-option>
-            <md-option value="21px">{{ $t('21') }}</md-option>
-            <md-option value="22px">{{ $t('22') }}</md-option>
-            <md-option value="23px">{{ $t('23') }}</md-option>
-            <md-option value="24px">{{ $t('24') }}</md-option>
-            <md-option value="25px">{{ $t('25') }}</md-option>
-            <md-option value="26px">{{ $t('26') }}</md-option>
-            <md-option value="27px">{{ $t('27') }}</md-option>
-            <md-option value="27px">{{ $t('28') }}</md-option>
-            <md-option value="29px">{{ $t('29') }}</md-option>
-            <md-option value="30px">{{ $t('30') }}</md-option>
+            <md-option value="17px">17</md-option>
+            <md-option value="18px">18</md-option>
+            <md-option value="19px">19</md-option>
+            <md-option value="20px">20</md-option>
+            <md-option value="21px">21</md-option>
+            <md-option value="22px">22</md-option>
+            <md-option value="23px">23</md-option>
+            <md-option value="24px">24</md-option>
+            <md-option value="25px">25</md-option>
+            <md-option value="26px">26</md-option>
+            <md-option value="27px">27</md-option>
+            <md-option value="27px">28</md-option>
+            <md-option value="29px">29</md-option>
+            <md-option value="30px">30</md-option>
           </md-select>
         </md-input-container>
 
@@ -83,10 +83,7 @@
           <label for="translationLanguage">{{ $t('translation_language') }}</label>
           <md-select name="translationLanguage" id="translationLanguage" v-model="translationLanguage">
             <md-option value="">{{ $t('no_translation') }}</md-option>
-            <md-option value="pt">{{ $t('portuguese') }}</md-option>
-            <md-option value="en">{{ $t('english') }}</md-option>
-            <md-option value="es">{{ $t('spanish') }}</md-option>
-            <md-option value="ko">{{ $t('korean') }}</md-option>
+            <md-option v-for="(language, languageId) in languages" v-bind:key="languageId"  :value="language.code">{{ language.language }}</md-option>
           </md-select>
         </md-input-container>
 
@@ -133,6 +130,7 @@
 <script>
 import LocalStorage from 'src/helpers/local-storage';
 import OptionsManager from 'src/domain/options-manager';
+import _ from 'lodash';
 
 export default{
   data() {
@@ -146,6 +144,18 @@ export default{
     }
 
     data.dataDefault = dataDefault;
+    data.languages = _.orderBy([
+      { code: 'pt', language: this.$t('portuguese') },
+      { code: 'en', language: this.$t('english') },
+      { code: 'es', language: this.$t('spanish') },
+      { code: 'ko', language: this.$t('korean') },
+      { code: 'ja', language: this.$t('japanese') },
+      { code: 'it', language: this.$t('italian') },
+      { code: 'fr', language: this.$t('french') },
+      { code: 'de', language: this.$t('german') },
+    ], ['language']);
+
+    console.log(data);
 
     return data;
   },

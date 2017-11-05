@@ -14,7 +14,7 @@
       </div>
     </div>
 
-    <file-container :lines="lines.concat(linesLanguage)" :fullLines="fullLines.concat(fullLinesLanguage)" filename="" :fileLoading="fileLoading" @open-bottom-bar="openBottomBar" :parent="parent"/>
+    <file-container :lines="lines.concat(linesLanguage)" :fullLines="fullLines.concat(fullLinesLanguage)" filename="" :fileLoading="fileLoading" @open-bottom-bar="openBottomBar" :parent="parent" :showHighlight="false"/>
     <md-snackbar md-position="bottom center" ref="snackbarNoInternet" md-duration="3000">
       <span>{{ $t('no_internet') }}</span>
     </md-snackbar>
@@ -158,7 +158,10 @@
           }
 
           for (let i = verseMap.blockStart; i <= verseMap.blockEnd; i += 1) {
-            const words = this.fullLinesLanguage[verseMap.line][i].p.split(' ');
+            let words = this.fullLinesLanguage[verseMap.line][i].p.split(' ');
+            if (options.translationLanguage === 'ja') {
+              words = this.fullLinesLanguage[verseMap.line][i].p.split('');
+            }
             words.forEach((word) => {
               const block = {};
               block.c = ' ';
