@@ -1,4 +1,4 @@
-module.exports ={
+module.exports = {
   '创世记': 1,
   '出埃及记': 2,
   '利未记': 3,
