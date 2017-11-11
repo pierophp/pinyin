@@ -224,6 +224,9 @@
             }
           });
 
+          if (!verse) {
+            return;
+          }
           this.versesMapLanguage[verse].blockEnd = line.length - 1;
         });
       },
