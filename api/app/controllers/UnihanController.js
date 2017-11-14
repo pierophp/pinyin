@@ -70,6 +70,10 @@ router.get('/dictionary', (req, res) => {
     search.ideograms = req.query.ideograms;
   }
 
+  if (req.query.pinyin !== undefined) {
+    search.pinyin = req.query.pinyin;
+  }
+
   if (req.query.id !== undefined) {
     search.id = req.query.id;
   }
@@ -88,12 +92,23 @@ router.post('/save', async (req, res) => {
 
   const ideogram = UnihanSearch
         .convertIdeogramsToUtf16(await opencc.traditionalToSimplified(req.body.ideograms));
-  const response = await knex('cjk')
+  const pronunciation = req.body.pinyin.toLowerCase();
+
+  let response = await knex('cjk')
         .where({
           ideogram,
-          main: 1,
+          pronunciation,
         })
         .select('id');
+
+  if (!response.length) {
+    response = await knex('cjk')
+          .where({
+            ideogram,
+            main: 1,
+          })
+          .select('id');
+  }
 
   if (response.length) {
     const id = response[0].id;
@@ -103,7 +118,7 @@ router.post('/save', async (req, res) => {
           definition_pt: JSON.stringify(req.body.dictionary),
         });
   } else {
-    const pronunciation = req.body.pinyin;
+
     const pronunciationUnaccented = removeDiacritics(pronunciation);
     await knex('cjk')
         .insert({

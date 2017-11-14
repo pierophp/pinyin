@@ -4,6 +4,10 @@
     <meta charset="utf-8">
     <title>ui-storage</title>
     <script>
+      if (window.location.host.indexOf('2pinyin.net') !== -1) {
+        document.domain = '2pinyin.net';
+      }
+
       function get(key) {
         const value = localStorage.getItem(key);
 
@@ -38,8 +42,58 @@
         return !!get(key);
       }
 
-      if (window.location.host.indexOf('2pinyin.net') !== -1) {
-        document.domain = '2pinyin.net';
+      let db;
+
+      async function indexedDBOpen() {
+        if (db) {
+          return;
+        }
+
+        const indexedDBRequest = window.indexedDB.open('pinyin', 1);
+
+        return new Promise((resolve, reject) => {
+          indexedDBRequest.onerror = (event) => {
+            reject();
+          };
+
+          indexedDBRequest.onsuccess = (event) => {
+            db = event.target.result;
+            resolve();
+          };
+
+          indexedDBRequest.onupgradeneeded = (event) => {
+            db = event.target.result;
+            const objectStore = db.createObjectStore('bible', { keyPath: 'key' });
+          };
+        });
+      }
+
+      async function indexedDBPut(table, data) {
+        const transaction = db.transaction([table], 'readwrite');
+        const objectStore = transaction.objectStore(table);
+        return new Promise((resolve, reject) => {
+          const request = objectStore.put(data);;
+          request.onerror = function(event) {
+            reject();
+          };
+          request.onsuccess = function(event) {
+            resolve();
+          };
+        });
+      }
+
+      async function indexedDBGet(table, key) {
+        const transaction = db.transaction([table], 'readwrite');
+        const objectStore = transaction.objectStore(table);
+        return new Promise((resolve, reject) => {
+          const request = objectStore.get(key);
+          request.onerror = function(event) {
+            reject();
+          };
+          request.onsuccess = function(event) {
+            resolve(request.result);
+          };
+        });
       }
       </script>
   </head>

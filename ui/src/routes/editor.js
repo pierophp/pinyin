@@ -10,6 +10,7 @@ import VideoShow from 'src/pages/video/Show';
 import BibleBooks from 'src/pages/bible/Books';
 import BibleChapters from 'src/pages/bible/Chapters';
 import BibleChapter from 'src/pages/bible/Chapter';
+import BibleSave from 'src/pages/bible/Save';
 import NotFound from 'src/pages/NotFound';
 
 export default [
@@ -100,6 +101,15 @@ export default [
     meta: {
       topBar: 'bible-books',
       protected: true,
+    },
+  },
+  {
+    path: '/bible/save',
+    name: 'bible-save',
+    component: BibleSave,
+    meta: {
+      protected: true,
+      hideTitle: true,
     },
   },
   {

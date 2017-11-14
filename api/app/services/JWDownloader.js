@@ -513,8 +513,6 @@ module.exports = class JwDownloader {
     });
   }
 
-
-
   static async loadTracks() {
     const languages = ['CH', 'CHS'];
     const videosInserted = {};
@@ -1077,15 +1075,10 @@ module.exports = class JwDownloader {
 
       if (verifyText.split(' ').length === 1) {
         let segementedText = UnihanSearch.segment(line).join(' ');
-        segementedText = replaceall('< b >', '<b>', segementedText);
-        segementedText = replaceall('< / b >', '</b>', segementedText);
         lineText = segementedText;
       } else {
         lineText = line;
       }
-
-      lineText = replaceall('<b>', ' <b> ', lineText);
-      lineText = replaceall('</b>', ' </b> ', lineText);
 
       const specialWord = 'JOIN_SPECIAL';
 
@@ -1103,6 +1096,15 @@ module.exports = class JwDownloader {
       replaceIdeogramsToSpace.forEach((item) => {
         lineText = replaceall(item, ` ${item}${specialWord} `, lineText);
       });
+
+      lineText = replaceall('< b >', '<b>', lineText);
+      lineText = replaceall('< /b >', '</b>', lineText);
+
+      lineText = replaceall(`<${specialWord} b >${specialWord}`, '<b>', lineText);
+      lineText = replaceall(`<${specialWord} /b >${specialWord}`, '</b>', lineText);
+
+      lineText = replaceall('<b>', ' <b> ', lineText);
+      lineText = replaceall('</b>', ' </b> ', lineText);
 
 
       // remove double spaces
@@ -1140,6 +1142,7 @@ module.exports = class JwDownloader {
       const wordsToReplace = [
         '各地',
         '可见',
+        '称为',
       ];
 
       wordsToReplace.forEach((word) => {

@@ -6,7 +6,7 @@
       :block="block"
       :pinyin="block.p"
       :character="block.c"
-      :isBold="block.isBold"
+      :isBold="block.isBold ? 1 : 0"
       :highlight="block.h"
       :line-index="lineIndex"
       :block-index="index"
@@ -46,6 +46,7 @@
       },
     },
     created() {
+      this.type = '';
       if (this.line[0] !== undefined && this.line[0].line !== undefined) {
         const type = this.line[0].line.type;
         this.type = `type-${type}`;

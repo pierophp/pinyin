@@ -4,7 +4,7 @@
     <div class="dict-title">PT</div>
     <div class="dict-block">
       <div v-if="!editing" >
-        <div v-for="pt in dictionary.pt">{{ pt }}</div>
+        <div v-for="(pt, dictId) in dictionary.pt" v-bind:key="dictId">{{ pt }}</div>
         <md-button v-if="user.admin" class="md-raised md-primary" @click.native="edit()">
           {{$t('edit')}}
         </md-button>
@@ -22,35 +22,35 @@
   <div v-if="dictionary.chinese_tools_pt">
     <div class="dict-title">Chinese Tools - PT</div>
     <div class="dict-block">
-      <div v-for="chinese_tools_pt in dictionary.chinese_tools_pt">{{ chinese_tools_pt }}</div>
+      <div v-for="(chinese_tools_pt, dictId) in dictionary.chinese_tools_pt" v-bind:key="dictId">{{ chinese_tools_pt }}</div>
     </div>
   </div>
 
   <div v-if="dictionary.chinese_tools_es">
     <div class="dict-title">Chinese Tools - ES</div>
     <div class="dict-block">
-      <div v-for="chinese_tools_es in dictionary.chinese_tools_es">{{ chinese_tools_es }}</div>
+      <div v-for="(chinese_tools_es, dictId) in dictionary.chinese_tools_es" v-bind:key="dictId">{{ chinese_tools_es }}</div>
     </div>
   </div>
 
   <div v-if="dictionary.unihan">
     <div class="dict-title">Unihan</div>
     <div class="dict-block">
-      <div v-for="unihan in dictionary.unihan">{{ unihan }}</div>
+      <div v-for="(unihan, dictId) in dictionary.unihan" v-bind:key="dictId">{{ unihan }}</div>
     </div>
   </div>
 
   <div v-if="dictionary.cedict">
     <div class="dict-title">CC-CEDICT</div>
     <div  class="dict-block">
-      <div v-for="cedict in dictionary.cedict">{{ cedict }}</div>
+      <div v-for="(cedict, dictId) in dictionary.cedict" v-bind:key="dictId">{{ cedict }}</div>
     </div>
   </div>
 
   <div v-if="dictionary.chinese_tools_en">
     <div class="dict-title">Chinese Tools - EN</div>
     <div class="dict-block">
-      <div v-for="chinese_tools_en in dictionary.chinese_tools_en">{{ chinese_tools_en }}</div>
+      <div v-for="(chinese_tools_en, dictId) in dictionary.chinese_tools_en" v-bind:key="dictId">{{ chinese_tools_en }}</div>
     </div>
   </div>
   </div>

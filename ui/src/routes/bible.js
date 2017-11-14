@@ -2,6 +2,7 @@ import Login from 'src/pages/auth/Login';
 import BibleBooks from 'src/pages/bible/Books';
 import BibleChapters from 'src/pages/bible/Chapters';
 import BibleChapter from 'src/pages/bible/Chapter';
+import BibleSave from 'src/pages/bible/Save';
 import Config from 'src/pages/config/Config';
 import MyCjkList from 'src/pages/my-cjk/MyCjkList';
 import NotFound from 'src/pages/NotFound';
@@ -31,6 +32,16 @@ export default [
     meta: {
       protected: true,
       topBar: 'bible-books',
+    },
+  },
+
+  {
+    path: '/bible/save',
+    name: 'bible-save',
+    component: BibleSave,
+    meta: {
+      protected: true,
+      hideTitle: true,
     },
   },
   {

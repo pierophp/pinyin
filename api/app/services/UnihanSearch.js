@@ -92,21 +92,37 @@ module.exports = class UnihanSearch {
   }
 
   static async searchToDictionary(search) {
-    const where = {};
+    let where = {};
     if (search.ideograms !== undefined) {
       const simplifiedIdeogram = await opencc.traditionalToSimplified(search.ideograms);
       where.ideogram = UnihanSearch.convertIdeogramsToUtf16(simplifiedIdeogram);
+    }
+
+    if (search.pinyin !== undefined) {
+      where.pronunciation = search.pinyin;
     }
 
     if (search.id !== undefined) {
       where.id = search.id;
     }
 
-    const cjkList = await knex('cjk')
+    let cjkList = await knex('cjk')
       .where(where)
       .orderBy('frequency', 'ASC')
       .orderBy('usage', 'DESC')
       .select('id', 'ideogram', 'pronunciation', 'definition_unihan', 'definition_pt', 'definition_cedict', 'definition_ct_pt', 'definition_ct_es', 'definition_ct_en');
+
+
+    if (cjkList.length === 0 && search.pinyin && search.ideograms) {
+      where = {};
+      const simplifiedIdeogram = await opencc.traditionalToSimplified(search.ideograms);
+      where.ideogram = UnihanSearch.convertIdeogramsToUtf16(simplifiedIdeogram);
+      cjkList = await knex('cjk')
+      .where(where)
+      .orderBy('frequency', 'ASC')
+      .orderBy('usage', 'DESC')
+      .select('id', 'ideogram', 'pronunciation', 'definition_unihan', 'definition_pt', 'definition_cedict', 'definition_ct_pt', 'definition_ct_es', 'definition_ct_en');
+    }
 
     const response = {};
     response.ideograms = search.ideograms;
@@ -359,6 +375,10 @@ module.exports = class UnihanSearch {
       '"': ' ',
       '「': ' ',
       '」': ' ',
+      '<': ' ',
+      '>': ' ',
+      '〈': ' ',
+      '〉': ' ',
       1: ' ',
       2: ' ',
       3: ' ',

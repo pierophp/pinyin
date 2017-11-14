@@ -26,6 +26,7 @@
   import axios from 'axios';
   import _ from 'lodash';
   import OptionsManager from 'src/domain/options-manager';
+  import LocalStorage from 'src/helpers/local-storage';
 
   let options = {};
 
@@ -150,6 +151,10 @@
 
         this.selectedsLanguage.forEach((v) => {
           const verseMap = this.versesMapLanguage[v];
+          if (!verseMap) {
+            return;
+          }
+
           if (!lines[verseMap.line]) {
             lines[verseMap.line] = {
               line: verseMap.line,
@@ -258,9 +263,30 @@
         this.setFileContentLanguage([]);
         this.verses = [];
         const CACHE_VERSION = 1;
+        const language = `cmn-han${options.ideogramType}`;
 
-        axios.get(`static/bible/cmn-han${options.ideogramType}/${this.book}/${this.chapter}.json?v=${CACHE_VERSION}`)
-          .then((content) => {
+        if (LocalStorage.get(`BIBLE_SAVE_${language}`)) {
+          await window.frames['iframe-storage'].indexedDBOpen();
+          const chapterCache = await window.frames['iframe-storage'].indexedDBGet('bible', `${language}_${this.book}_${this.chapter}`);
+          this.fullLines = JSON.parse(chapterCache.text).lines;
+          this.parseVerses(this.fullLines);
+          if (this.verse) {
+            this.selecteds = [];
+            const splitVerse = this.verse.split('-');
+            const startVerse = splitVerse[0];
+            let endVerse = splitVerse[0];
+            if (splitVerse[1]) {
+              endVerse = splitVerse[1];
+            }
+
+            for (let i = parseInt(startVerse, 10); i <= parseInt(endVerse, 10); i += 1) {
+              this.selectVerse(i);
+            }
+          }
+        }
+
+        axios.get(`static/bible/${language}/${this.book}/${this.chapter}.json?v=${CACHE_VERSION}`)
+          .then(async (content) => {
             this.fullLines = content.data.lines;
             this.parseVerses(content.data.lines);
             if (this.verse) {
@@ -275,6 +301,16 @@
               for (let i = parseInt(startVerse, 10); i <= parseInt(endVerse, 10); i += 1) {
                 this.selectVerse(i);
               }
+            }
+
+            if (LocalStorage.get(`BIBLE_SAVE_${language}`)) {
+              await window.frames['iframe-storage'].indexedDBPut('bible', {
+                key: `${language}_${this.book}_${this.chapter}`,
+                language,
+                book: this.book,
+                chapter: this.chapter,
+                text: JSON.stringify(content.data),
+              });
             }
           });
 
@@ -317,7 +353,9 @@
       options = OptionsManager.getOptions();
     },
     async mounted() {
-      if (navigator.onLine) {
+      const language = `cmn-han${options.ideogramType}`;
+
+      if (navigator.onLine || LocalStorage.get(`BIBLE_SAVE_${language}`)) {
         await this.loadBook();
       } else {
         setTimeout(() => {

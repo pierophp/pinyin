@@ -149,7 +149,7 @@
           return;
         }
         const lineIndex = this.footnotes[footnoteIndex];
-        this.footnoteLine = this.fullLines[lineIndex];
+        this.footnoteLine = this.lines[lineIndex] ? this.lines[lineIndex] : this.fullLines[lineIndex];
         this.footnoteLineIndex = lineIndex;
         this.$refs.footnote.openDialog();
       },

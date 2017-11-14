@@ -275,6 +275,7 @@
         .get('unihan/dictionary', {
           params: {
             ideograms: this.block.character,
+            pinyin: this.block.pinyin,
           },
         })
         .then((response) => {

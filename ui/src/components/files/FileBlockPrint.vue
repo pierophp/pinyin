@@ -101,12 +101,13 @@
 
       async updateRender() {
         const options = OptionsManager.getOptions();
-        this.classHighlight = `highlight-${this.highlight}`;
+        this.classHighlight = `highlight-${this.highlight ? this.highlight : ''}`;
         this.classBold = '';
         if (this.isBold === 1) {
           this.classBold = 'bold';
         }
 
+        this.classExtra = '';
         if (this.block.v) {
           this.classExtra = 'verse';
           if (this.block.v === 1) {
