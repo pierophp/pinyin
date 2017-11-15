@@ -130,7 +130,6 @@
 <script>
 import LocalStorage from 'src/helpers/local-storage';
 import OptionsManager from 'src/domain/options-manager';
-import _ from 'lodash';
 
 export default{
   data() {
@@ -144,18 +143,7 @@ export default{
     }
 
     data.dataDefault = dataDefault;
-    data.languages = _.orderBy([
-      { code: 'pt', language: this.$t('portuguese') },
-      { code: 'en', language: this.$t('english') },
-      { code: 'es', language: this.$t('spanish') },
-      { code: 'ko', language: this.$t('korean') },
-      { code: 'ja', language: this.$t('japanese') },
-      { code: 'it', language: this.$t('italian') },
-      { code: 'fr', language: this.$t('french') },
-      { code: 'de', language: this.$t('german') },
-    ], ['language']);
-
-    console.log(data);
+    data.languages = OptionsManager.getLanguages(false);
 
     return data;
   },

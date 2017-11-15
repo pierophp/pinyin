@@ -1,4 +1,6 @@
 import LocalStorage from 'src/helpers/local-storage';
+import _ from 'lodash';
+import Vue from 'vue';
 
 class OptionsManager {
   static options;
@@ -20,6 +22,25 @@ class OptionsManager {
       color4: '#ff0000',
       translationLanguage: 'pt',
     };
+  }
+
+  static getLanguages(chinese) {
+    const languages = [
+      { code: 'pt', language: Vue.t('portuguese') },
+      { code: 'en', language: Vue.t('english') },
+      { code: 'es', language: Vue.t('spanish') },
+      { code: 'ko', language: Vue.t('korean') },
+      { code: 'ja', language: Vue.t('japanese') },
+      { code: 'it', language: Vue.t('italian') },
+      { code: 'fr', language: Vue.t('french') },
+      { code: 'de', language: Vue.t('german') },
+    ];
+
+    if (chinese) {
+      languages.push({ code: 'cmn-hans', language: Vue.t('chinese.simplified') });
+      languages.push({ code: 'cmn-hant', language: Vue.t('chinese.traditional') });
+    }
+    return _.orderBy(languages, ['language']);
   }
 
   static getOptions() {
