@@ -2,20 +2,20 @@
   <div class="video-parent-container" >
     <div class="video-container" v-show="!showSubtitle">
       <loadable-content :loading="loading">
-        <md-input-container>
+        <md-field>
           <label for="size">{{ $t('show') }}</label>
-          <md-select @change="refreshVideo" name="size" id="size" v-model="type">
+          <md-select name="size" id="size" v-model="type">
             <md-option value="a">{{ $t('pinyin_ideograms') }}</md-option>
             <md-option value="p">{{ $t('pinyin_only') }}</md-option>
             <md-option value="c">{{ $t('ideograms_only') }}</md-option>
           </md-select>
-        </md-input-container>
+        </md-field>
 
-        <md-input-container>
+        <md-field>
             <md-icon>play_circle_outline</md-icon>
             <label>{{ $t("url") }}</label>
-            <md-input @change="loadVideo" type="text" ref="inputSearch" v-model="videoUrl"></md-input>
-        </md-input-container>
+            <md-input type="text" ref="inputSearch" v-model="videoUrl"></md-input>
+        </md-field>
         <video :src="videoUrl" controls preload ref="video" v-show="videoUrl">
         </video>
 
@@ -26,7 +26,7 @@
         <md-button v-if="downloadLink" class="md-raised md-primary" @click.native="toggleSubtitle">{{ $t("show_track") }}</md-button>
       </loadable-content>
 
-      <md-snackbar md-position="bottom center" ref="snackbar" md-duration="3000">
+      <md-snackbar md-position="center" ref="snackbar" :md-duration="3000">
         <span>{{ $t("message_no_track") }}</span>
       </md-snackbar>
     </div>
@@ -52,10 +52,18 @@
       LoadableContent,
       VideoSubtitle,
     },
-    moounted() {
+    mounted() {
       setTimeout(() => {
         this.$refs.inputSearch.$el.focus();
       }, 500);
+    },
+    watch: {
+      videoUrl() {
+        this.loadVideo(this.videoUrl);
+      },
+      type() {
+        this.refreshVideo();
+      },
     },
     methods: {
       toggleSubtitle() {

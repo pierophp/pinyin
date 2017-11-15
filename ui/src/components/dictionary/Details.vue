@@ -10,9 +10,9 @@
         </md-button>
       </div>
       <div v-if="editing">
-        <md-input-container>
+        <md-field>
           <md-textarea v-model="dictionaryEntry"/>
-        </md-input-container>
+        </md-field>
         <md-button class="md-raised md-primary" @click.native="save()">{{$t('save')}}</md-button>
         <md-button class="md-raised md-accent" @click.native="cancelEdit()">{{$t('cancel')}}</md-button>
       </div>

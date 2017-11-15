@@ -3,10 +3,10 @@
     <md-dialog-title>{{ $t('import_site') }}</md-dialog-title>
 
     <md-dialog-content>
-      <md-input-container>
+      <md-field>
           <label>{{ $t("url") }}</label>
           <md-input type="text" ref="inputUrl" v-model="siteUrl"></md-input>
-      </md-input-container>
+      </md-field>
     </md-dialog-content>
 
     <md-dialog-actions>

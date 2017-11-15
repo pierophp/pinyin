@@ -8,3 +8,5 @@ nbproject/*
 .idea/*
 .DS_Store
 .history/*
+api/yarn-error.log
+ui/yarn-error.log

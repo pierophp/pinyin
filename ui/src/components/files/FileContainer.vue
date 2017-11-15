@@ -18,7 +18,7 @@
             ref="fileRowPrint"/>
         </div>
         <div class="loading-container">
-          <md-spinner md-indeterminate v-if="fileLoading"></md-spinner>
+          <md-progress-spinner md-mode="indeterminate" v-if="fileLoading"></md-progress-spinner>
         </div>
 
         <add-remove-character-modal

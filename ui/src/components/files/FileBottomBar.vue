@@ -11,7 +11,7 @@
         <md-icon>find_in_page</md-icon>
       </md-button>
 
-      <md-menu md-size="4" md-direction="top left" md-offset-y="-52">
+      <md-menu md-size="big" md-direction="top-start" :md-offset-y="-52">
         <md-button class="md-icon-button md-primary md-2" md-menu-trigger>
           <md-icon>more_vert</md-icon>
         </md-button>
@@ -19,23 +19,23 @@
         <md-menu-content>
           <md-menu-item @click.native="close()">
             <md-icon>clear</md-icon>
-            <span>{{ $t('close') }}</span>
+            <span class="md-list-item-text">{{ $t('close') }}</span>
           </md-menu-item>
           <md-menu-item @click.native="joinLeft(block)">
             <md-icon>arrow_back</md-icon>
-            <span>{{ $t('join_left') }}</span>
+            <span class="md-list-item-text">{{ $t('join_left') }}</span>
           </md-menu-item>
           <md-menu-item @click.native="separate(block)">
             <md-icon>swap_horiz</md-icon>
-            <span>{{ $t('split') }}</span>
+            <span class="md-list-item-text">{{ $t('split') }}</span>
           </md-menu-item>
           <md-menu-item @click.native="edit(block)">
             <md-icon>edit</md-icon>
-            <span>{{ $t('edit') }}</span>
+            <span class="md-list-item-text">{{ $t('edit') }}</span>
           </md-menu-item>
           <md-menu-item @click.native="openLinkMenu()">
             <md-icon>open_in_browser</md-icon>
-            <span>Links</span>
+            <span class="md-list-item-text">Links</span>
           </md-menu-item>
         </md-menu-content>
       </md-menu>
@@ -44,7 +44,7 @@
     </div>
 
 
-    <md-dialog ref="dialogDictionary">
+    <md-dialog ref="dialogDictionary":md-active.sync="modalDictionaryOpen">
       <md-dialog-title>
         <ideograms-show :pinyin="block.pinyin" :character="block.character"/>
         - {{ block.pinyin }}
@@ -66,16 +66,16 @@
       </md-dialog-actions>
     </md-dialog>
 
-    <md-dialog ref="dialogSeparate">
+    <md-dialog ref="dialogSeparate":md-active.sync="modalSeparateOpen">
       <md-dialog-title>
         <ideograms-show :pinyin="block.pinyin" :character="block.character"/>
         - {{ block.pinyin }}
       </md-dialog-title>
 
       <md-dialog-content>
-        <md-input-container md-inline>
+        <md-field md-inline>
           <md-input v-model="separateCharacter"></md-input>
-        </md-input-container>
+        </md-field>
       </md-dialog-content>
 
       <md-dialog-actions>
@@ -83,16 +83,16 @@
       </md-dialog-actions>
     </md-dialog>
 
-    <md-dialog ref="dialogEdit">
+    <md-dialog ref="dialogEdit":md-active.sync="modalEditOpen">
       <md-dialog-title>
         <ideograms-show :pinyin="block.pinyin" :character="block.character"/>
         - {{ block.pinyin }}
       </md-dialog-title>
 
       <md-dialog-content>
-        <md-input-container md-inline>
-          <md-input :value="editPinyin" @change="changeEditPinyin"></md-input>
-        </md-input-container>
+        <md-field md-inline>
+          <md-input :value="editPinyin" v-model="editPinyin"></md-input>
+        </md-field>
       </md-dialog-content>
 
       <md-dialog-actions>
@@ -102,7 +102,7 @@
 
     <forvo-modal ref="dialogForvo" :character="block.character" />
 
-    <md-snackbar md-position="bottom center" ref="snackbarClipboard" md-duration="1300">
+    <md-snackbar md-position="center" ref="snackbarClipboard" :md-duration="1300">
       <span>{{ $t('copied_to_clipboard') }}</span>
     </md-snackbar>
 
@@ -147,6 +147,9 @@
         tempDictCharacter: null,
         block: {},
         printData: {},
+        modalDictionaryOpen: false,
+        modalSeparateOpen: false,
+        modalEditOpen: false,
         dictionary: {
           pt: null,
           unihan: null,
@@ -169,6 +172,12 @@
       }),
     },
 
+    watch: {
+      editPinyin() {
+        this.changeEditPinyin(this.editPinyin);
+      },
+    },
+
     methods: {
       ...mapActions({
         joinLeft: FILE_ACTION_JOIN_LEFT,
@@ -180,7 +189,7 @@
       }),
 
       openLinkMenu() {
-        this.$refs.links.$refs.menuLinks.open();
+        this.$refs.links.open();
       },
 
       changeShow(show) {
@@ -191,22 +200,22 @@
 
       separate() {
         this.separateCharacter = this.block.character;
-        this.openDialog('dialogSeparate');
+        this.modalSeparateOpen = true;
       },
 
       confirmSeparate() {
         this.separateAction({ ...this.block, separateCharacter: this.separateCharacter });
-        this.closeDialog('dialogSeparate');
+        this.modalSeparateOpen = false;
       },
 
       edit() {
         this.editPinyin = this.block.pinyin;
-        this.openDialog('dialogEdit');
+        this.modalEditOpen = true;
       },
 
       confirmEdit() {
         this.updatePinyin({ ...this.block, pinyin: this.editPinyin });
-        this.closeDialog('dialogEdit');
+        this.modalEditOpen = false;
       },
 
       changeEditPinyin(pinyin) {

@@ -1,12 +1,12 @@
 <template>
   <div>
-    <md-menu md-size="4" md-direction="top left" md-offset-y="-52" ref="menuLinks" v-if="list == 0">
+    <md-menu md-size="big" md-direction="top-start" ref="menuLinks" :md-offset-x="40" v-if="list == 0" :md-active.sync="showMenu">
       <span md-menu-trigger></span>
 
       <md-menu-content>
         <a v-for="(link, index) in links" :href="link.href" v-bind:key="index" target="_blank">
           <md-menu-item>
-            <span>{{ link.title }}</span>
+            <span class="md-list-item-text">{{ link.title }}</span>
           </md-menu-item>
         </a>
       </md-menu-content>
@@ -28,6 +28,16 @@
     props: {
       character: '',
       list: 0,
+    },
+    data() {
+      return {
+        showMenu: false,
+      };
+    },
+    methods: {
+      open() {
+        this.showMenu = true;
+      },
     },
     computed: {
       links: function links() {

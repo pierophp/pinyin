@@ -3,7 +3,7 @@
     <md-dialog-title>{{ $t('paste') }}</md-dialog-title>
 
     <md-dialog-content>
-      <md-input-container>
+      <md-field>
         <label for="action">{{ $t('action') }}</label>
         <md-select name="action" id="action" v-model="action">
           <md-option value="1">{{ $t('paste_action.multi_nwt') }}</md-option>
@@ -11,12 +11,12 @@
           <md-option value="3">{{ $t('paste_action.jw_org') }}</md-option>
           <md-option value="4">{{ $t('paste_action.ideograms') }}</md-option>
         </md-select>
-      </md-input-container>
+      </md-field>
 
-      <md-input-container>
+      <md-field>
         <label for="action">{{ $t('paste') }}</label>
         <md-textarea v-model="textarea" ref="textarea"></md-textarea>
-      </md-input-container>
+      </md-field>
     </md-dialog-content>
 
     <md-dialog-actions>

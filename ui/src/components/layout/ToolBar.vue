@@ -1,13 +1,13 @@
 <template>
   <div>
-    <md-toolbar class="md-primary">
-      <div class="md-toolbar-container">
-        <md-button v-if="!hideTopBar && showMenu" class="md-icon-button" @click="showNavigation = true">
-          <md-icon>menu</md-icon>
-        </md-button>
+    <md-toolbar class="md-primary md-dense">
+      <md-button v-if="!hideTopBar && showMenu" class="md-icon-button" @click="showNavigation = true">
+        <md-icon>menu</md-icon>
+      </md-button>
 
-        <span class="md-title" v-if="!hideTitle">{{ $t($router.options.appOptions.title) }}</span>
-        <span style="flex: 1" v-if="!hideTitle"></span>
+      <span class="md-title" v-if="!hideTitle">{{ $t($router.options.appOptions.title) }}</span>
+
+      <div class="md-toolbar-section-end">
         <dynamic :options="topBar"/>
       </div>
     </md-toolbar>
@@ -82,3 +82,12 @@
     },
   };
 </script>
+<style>
+.md-toolbar .md-title {
+  margin-left: 0 !important;
+}
+
+.md-drawer {
+  width: 240px !important;
+}
+</style>

@@ -1,13 +1,13 @@
 <template>
   <div>
-      <md-menu md-size="5"  md-direction="top left" md-offset-y="-52">
+      <md-menu md-size="medium" md-direction="top-start" :md-offset-y="-52">
       <md-button class="md-icon-button" md-menu-trigger>
         <md-icon>more_vert</md-icon>
       </md-button>
       <md-menu-content>
         <md-menu-item @click.native="downloadPleco()">
           <md-icon>arrow_downward</md-icon>
-          <span>{{ $t('download_pleco_dictionary') }}</span>
+          <span class="md-list-item-text">{{ $t('download_pleco_dictionary') }}</span>
         </md-menu-item>
       </md-menu-content>
     </md-menu>

@@ -4,14 +4,14 @@
       <md-icon>add</md-icon>
     </md-button>
 
-    <md-dialog md-open-from="#newFileModal" md-close-to="#newFileModal" ref="modal" @open="onOpen" :md-active.sync="modalOpen">
+    <md-dialog md-open-from="#newFileModal" md-close-to="#newFileModal" ref="modal" @md-opened="onOpen" :md-active.sync="modalOpen">
       <md-dialog-title>{{ $t('new_file') }}</md-dialog-title>
 
       <md-dialog-content>
-         <md-input-container>
+         <md-field>
           <label>{{ $t('filename') }}</label>
           <md-input :placeholder="$t('filename')" v-model="filename" ref="inputFilename"></md-input>
-        </md-input-container>
+        </md-field>
       </md-dialog-content>
 
       <md-dialog-actions>
@@ -56,7 +56,7 @@
       onOpen() {
         setTimeout(() => {
           this.$refs.inputFilename.$el.focus();
-        }, 10);
+        }, 100);
       },
       ...mapActions({
         newFile: FILE_ACTION_NEW_FILE,
