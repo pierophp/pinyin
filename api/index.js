@@ -13,9 +13,17 @@ const jwt = require('express-jwt');
 const app = express();
 // let AWSXRay = null;
 if (process.env.NODE_ENV === 'production') {
+  // AWSXRAY
   // eslint-disable-next-line global-require
   // AWSXRay = require('aws-xray-sdk');
   // app.use(AWSXRay.express.openSegment());
+
+  // RAVEN - SENTRY
+  // eslint-disable-next-line global-require
+  const Raven = require('raven');
+  Raven.config(env.sentry_dsn).install();
+  app.use(Raven.requestHandler());
+  app.use(Raven.errorHandler());
 }
 
 app.use(cors());
