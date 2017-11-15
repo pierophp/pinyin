@@ -1,5 +1,5 @@
 <template>
-  <md-dialog ref="modal">
+  <md-dialog ref="modal" :md-active.sync="modalOpen">
     <md-dialog-title>{{ $t('import_site') }}</md-dialog-title>
 
     <md-dialog-content>
@@ -30,6 +30,7 @@
     data() {
       return {
         siteUrl: '',
+        modalOpen: false,
       };
     },
     props: {
@@ -50,11 +51,11 @@
         }, 500);
       },
       openDialog() {
-        this.$refs.modal.open();
+        this.modalOpen = true;
         this.onOpen();
       },
       closeDialog() {
-        this.$refs.modal.close();
+        this.modalOpen = false;
       },
       ...mapActions({
         importFile: FILE_ACTION_IMPORT_FILE,

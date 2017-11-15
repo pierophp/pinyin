@@ -1,6 +1,6 @@
 <template>
   <div>
-    <md-dialog ref="modal">
+    <md-dialog ref="modal" :md-active.sync="modalOpen">
       <md-dialog-title>
       </md-dialog-title>
 
@@ -32,12 +32,17 @@
     components: {
       FileRowPrint,
     },
+    data() {
+      return {
+        modalOpen: false,
+      };
+    },
     methods: {
       openDialog() {
-        this.$refs.modal.open();
+        this.modalOpen = true;
       },
       closeDialog() {
-        this.$refs.modal.close();
+        this.modalOpen = false;
       },
     },
   };

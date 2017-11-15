@@ -1,5 +1,5 @@
 <template>
-  <md-dialog ref="dialogForvo">
+  <md-dialog ref="dialogForvo" :md-active.sync="modalOpen">
     <md-dialog-content>
       <iframe :src="'https://pt.forvo.com/word/' + character + '#zh'" id="forvo"/>
     </md-dialog-content>
@@ -16,12 +16,17 @@
     props: {
       character: '',
     },
+    data() {
+      return {
+        modalOpen: false,
+      };
+    },
     methods: {
       open() {
-        this.$refs.dialogForvo.open();
+        this.modalOpen = true;
       },
       close() {
-        this.$refs.dialogForvo.close();
+        this.modalOpen = false;
       },
     },
   };

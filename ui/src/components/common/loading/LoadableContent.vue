@@ -1,7 +1,7 @@
 <template>
   <div class="loadable-content">
     <div class="loadable-loader" v-show="loading">
-      <md-spinner md-indeterminate :visible="loading"></md-spinner>
+      <md-progress-spinner class="md-accent" md-mode="indeterminate" :visible="loading"></md-progress-spinner>
     </div>
 
     <slot></slot>

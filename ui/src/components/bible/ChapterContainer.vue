@@ -15,7 +15,7 @@
     </div>
 
     <file-container :lines="lines.concat(linesLanguage)" :fullLines="fullLines.concat(fullLinesLanguage)" filename="" :fileLoading="fileLoading" @open-bottom-bar="openBottomBar" :parent="parent" :showHighlight="false"/>
-    <md-snackbar md-position="bottom center" ref="snackbarNoInternet" md-duration="3000">
+    <md-snackbar md-position="center" ref="snackbarNoInternet" :md-duration="3000">
       <span>{{ $t('no_internet') }}</span>
     </md-snackbar>
   </span>

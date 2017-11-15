@@ -1,5 +1,5 @@
 <template>
-  <md-dialog md-open-from="#filePasteModal" md-close-to="#filePasteModal" ref="modal" @open="onOpen">
+  <md-dialog md-open-from="#filePasteModal" md-close-to="#filePasteModal" ref="modal" @open="onOpen" :md-active.sync="modalOpen">
     <md-dialog-title>{{ $t('paste') }}</md-dialog-title>
 
     <md-dialog-content>
@@ -41,6 +41,7 @@
       return {
         action: '3',
         textarea: '',
+        modalOpen: false,
       };
     },
     methods: {
@@ -53,10 +54,10 @@
         this.textarea = '';
       },
       openDialog() {
-        this.$refs.modal.open();
+        this.modalOpen = true;
       },
       closeDialog() {
-        this.$refs.modal.close();
+        this.modalOpen = false;
       },
       onOpen() {
         setTimeout(() => {

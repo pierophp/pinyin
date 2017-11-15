@@ -1,5 +1,5 @@
 <template>
-  <md-dialog ref="modal">
+  <md-dialog ref="modal" :md-active.sync="modalOpen">
     <md-dialog-title>{{ $t('delete_file') }}</md-dialog-title>
 
     <md-dialog-content>
@@ -27,6 +27,11 @@
     props: {
       filename: '',
     },
+    data() {
+      return {
+        modalOpen: false,
+      };
+    },
     methods: {
       confirm() {
         this.closeDialog();
@@ -35,10 +40,10 @@
         });
       },
       openDialog() {
-        this.$refs.modal.open();
+        this.modalOpen = true;
       },
       closeDialog() {
-        this.$refs.modal.close();
+        this.modalOpen = false;
       },
       ...mapActions({
         deleteFile: FILE_ACTION_DELETE_FILE,

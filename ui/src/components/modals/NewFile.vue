@@ -4,7 +4,7 @@
       <md-icon>add</md-icon>
     </md-button>
 
-    <md-dialog md-open-from="#newFileModal" md-close-to="#newFileModal" ref="modal" @open="onOpen">
+    <md-dialog md-open-from="#newFileModal" md-close-to="#newFileModal" ref="modal" @open="onOpen" :md-active.sync="modalOpen">
       <md-dialog-title>{{ $t('new_file') }}</md-dialog-title>
 
       <md-dialog-content>
@@ -36,6 +36,7 @@
     data() {
       return {
         filename: '',
+        modalOpen: false,
       };
     },
     methods: {
@@ -47,10 +48,10 @@
         this.filename = '';
       },
       openDialog() {
-        this.$refs.modal.open();
+        this.modalOpen = true;
       },
       closeDialog() {
-        this.$refs.modal.close();
+        this.modalOpen = false;
       },
       onOpen() {
         setTimeout(() => {
