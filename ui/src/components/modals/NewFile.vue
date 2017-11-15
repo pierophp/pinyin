@@ -4,7 +4,7 @@
       <md-icon>add</md-icon>
     </md-button>
 
-    <md-dialog md-open-from="#newFileModal" md-close-to="#newFileModal" ref="modal" @md-opened="onOpen" :md-active.sync="modalOpen">
+    <md-dialog md-open-from="#newFileModal" md-close-to="#newFileModal" ref="modal" @md-opened="onOpen" :md-active.sync="modalOpen" :md-fullscreen="false">
       <md-dialog-title>{{ $t('new_file') }}</md-dialog-title>
 
       <md-dialog-content>

@@ -1,14 +1,16 @@
 <template>
-  <div class="books-top-bar-container">
-    <span @click="setShowPinyin(showPinyin ? 0 : 1)">
-      <md-icon>translate</md-icon>
-    </span>
-    <span v-if="booksExhibitionType === '1'" @click="setType('2')">
-      <md-icon>view_compact</md-icon>
-    </span>
-    <span v-if="booksExhibitionType === '2'" @click="setType('1')">
-      <md-icon>view_module</md-icon>
-    </span>
+  <div>
+    <div class="books-top-bar-container">
+      <span @click="setShowPinyin(showPinyin ? 0 : 1)">
+        <md-icon>translate</md-icon>
+      </span>
+      <span v-if="booksExhibitionType === '1'" @click="setType('2')">
+        <md-icon>view_compact</md-icon>
+      </span>
+      <span v-if="booksExhibitionType === '2'" @click="setType('1')">
+        <md-icon>view_module</md-icon>
+      </span>
+    </div>
   </div>
 </template>
 <script>

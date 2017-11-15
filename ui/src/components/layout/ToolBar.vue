@@ -7,21 +7,13 @@
 
       <span class="md-title" v-if="!hideTitle">{{ $t($router.options.appOptions.title) }}</span>
 
-      <div class="md-toolbar-section-end">
-        <dynamic :options="topBar"/>
-      </div>
+      <dynamic :options="topBar"/>
     </md-toolbar>
 
     <md-drawer :md-active.sync="showNavigation">
-      <md-toolbar md-elevation="0">
-        <md-list md-transparent>
-          <md-list-item>
-            <div class="md-list-item-text">
-              <span>{{user.name}}</span>
-              <span>{{user.email}}</span>
-            </div>
-          </md-list-item>
-        </md-list>
+      <md-toolbar :md-elevation="1">
+        <span class="md-title">{{user.name}}</span>
+        <span>{{user.email}}</span>
       </md-toolbar>
 
       <md-list >

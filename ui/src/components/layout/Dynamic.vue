@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="topBarClass">
     <dictionary-top-bar v-if="topBar == 'dictionary'"/>
     <file-details-top-bar v-if="topBar == 'file-details'"/>
     <file-print-top-bar v-if="topBar == 'file-print'"/>
@@ -28,10 +28,20 @@
     watch: {
       $route() {
         this.topBar = this.$route.meta.topBar;
+        this.topBarClass = 'md-toolbar-section-end';
+        if (this.$route.meta.topBarLeft) {
+          this.topBarClass = '';
+        }
       },
     },
     data() {
+      let topBarClass = 'md-toolbar-section-end';
+      if (this.$route.meta.topBarLeft) {
+        topBarClass = '';
+      }
+
       return {
+        topBarClass,
         topBar: this.$route.meta.topBar,
       };
     },

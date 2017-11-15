@@ -1,6 +1,6 @@
 <template>
   <div>
-    <md-dialog ref="modal" class="dialog-bible" :md-active.sync="modalOpen">
+    <md-dialog ref="modal" class="dialog-bible" :md-active.sync="modalOpen" :md-fullscreen="false">
       <md-dialog-content>
         <chapter-container v-if="book" :book="book" :chapter="chapter" :verse="verse" @open-bottom-bar="openBottomBar"/>
       </md-dialog-content>

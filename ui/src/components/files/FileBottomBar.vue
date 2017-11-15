@@ -11,7 +11,7 @@
         <md-icon>find_in_page</md-icon>
       </md-button>
 
-      <md-menu md-size="big" md-direction="top-start" :md-offset-y="-52">
+      <md-menu md-size="big" md-direction="top-start" :md-offset-y="-90">
         <md-button class="md-icon-button md-primary md-2" md-menu-trigger>
           <md-icon>more_vert</md-icon>
         </md-button>
@@ -44,7 +44,7 @@
     </div>
 
 
-    <md-dialog ref="dialogDictionary":md-active.sync="modalDictionaryOpen">
+    <md-dialog ref="dialogDictionary":md-active.sync="modalDictionaryOpen" :md-fullscreen="false">
       <md-dialog-title>
         <ideograms-show :pinyin="block.pinyin" :character="block.character"/>
         - {{ block.pinyin }}
@@ -52,7 +52,7 @@
           <md-icon>content_copy</md-icon>
         </md-button>
 
-        <md-button class="md-icon-button md-warn sound-btn" @click.native="openSound">
+        <md-button class="md-icon-button md-accent sound-btn" @click.native="openSound">
           <md-icon>volume_up</md-icon>
         </md-button>
       </md-dialog-title>
@@ -62,11 +62,11 @@
       </md-dialog-content>
 
       <md-dialog-actions>
-        <md-button class="md-primary" @click.native="closeDialog('dialogDictionary')">OK</md-button>
+        <md-button class="md-primary" @click.native="modalDictionaryOpen = false">OK</md-button>
       </md-dialog-actions>
     </md-dialog>
 
-    <md-dialog ref="dialogSeparate":md-active.sync="modalSeparateOpen">
+    <md-dialog ref="dialogSeparate":md-active.sync="modalSeparateOpen" :md-fullscreen="false">
       <md-dialog-title>
         <ideograms-show :pinyin="block.pinyin" :character="block.character"/>
         - {{ block.pinyin }}
@@ -83,7 +83,7 @@
       </md-dialog-actions>
     </md-dialog>
 
-    <md-dialog ref="dialogEdit":md-active.sync="modalEditOpen">
+    <md-dialog ref="dialogEdit":md-active.sync="modalEditOpen" :md-fullscreen="false">
       <md-dialog-title>
         <ideograms-show :pinyin="block.pinyin" :character="block.character"/>
         - {{ block.pinyin }}
@@ -294,7 +294,7 @@
             return;
           }
           this.dictionary = response.data;
-          this.openDialog('dialogDictionary');
+          this.modalDictionaryOpen = true;
         });
       },
 

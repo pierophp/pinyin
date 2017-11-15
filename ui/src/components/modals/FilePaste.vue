@@ -1,5 +1,5 @@
 <template>
-  <md-dialog md-open-from="#filePasteModal" md-close-to="#filePasteModal" ref="modal" @open="onOpen" :md-active.sync="modalOpen">
+  <md-dialog md-open-from="#filePasteModal" md-close-to="#filePasteModal" ref="modal" @open="onOpen" :md-active.sync="modalOpen" :md-fullscreen="true">
     <md-dialog-title>{{ $t('paste') }}</md-dialog-title>
 
     <md-dialog-content>
@@ -74,7 +74,11 @@
 <style>
 .md-dialog-content textarea{
   width:500px;
-  min-height: 120px;
+  min-height: 350px;
+  max-height: auto;
 }
 
+.md-select-menu {
+  z-index: 1000;
+}
 </style>

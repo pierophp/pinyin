@@ -1,5 +1,5 @@
 <template>
-  <md-dialog ref="dialogForvo" :md-active.sync="modalOpen">
+  <md-dialog ref="dialogForvo" :md-active.sync="modalOpen":md-fullscreen="false">
     <md-dialog-content>
       <iframe :src="'https://pt.forvo.com/word/' + character + '#zh'" id="forvo"/>
     </md-dialog-content>
@@ -31,3 +31,12 @@
     },
   };
 </script>
+
+<style>
+#forvo {
+  border: 0;
+  width: 100vw !important;
+  height: 100vh !important;
+}
+</style>
+

@@ -1,5 +1,5 @@
 <template>
-  <md-dialog ref="modal" :md-active.sync="modalOpen">
+  <md-dialog ref="modal" :md-active.sync="modalOpen" :md-fullscreen="false">
     <md-dialog-title>{{ $t('import_site') }}</md-dialog-title>
 
     <md-dialog-content>

@@ -52,6 +52,7 @@ export default [
       protected: true,
       hideTitle: true,
       topBar: 'bible-chapters',
+      topBarLeft: true,
     },
   },
   {
@@ -62,6 +63,7 @@ export default [
       protected: true,
       hideTitle: true,
       topBar: 'bible-chapter',
+      topBarLeft: true,
     },
   },
   {

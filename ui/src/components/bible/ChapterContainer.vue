@@ -403,8 +403,13 @@
   cursor: pointer;
   user-select: none;
 }
+
 .special-action{
   background: #4c4a4a;
+}
+
+.special-action i{
+  color: #fff !important;
 }
 
 .selected {

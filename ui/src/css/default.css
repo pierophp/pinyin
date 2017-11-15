@@ -131,3 +131,8 @@ html, body {
 .autocomplete a.selected {
   font-weight: bold;
 }
+
+.md-list-item:hover {
+  background-color: rgba(153, 153, 153, 0.2);
+  cursor: pointer;
+}

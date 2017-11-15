@@ -1,6 +1,6 @@
 <template>
   <div>
-    <md-menu md-size="big" md-direction="top-start" ref="menuLinks" :md-offset-x="40" v-if="list == 0" :md-active.sync="showMenu">
+    <md-menu md-size="big" md-align-trigger ref="menuLinks" v-if="list == 0" :md-active.sync="showMenu">
       <span md-menu-trigger></span>
 
       <md-menu-content>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <md-dialog md-open-from="#addCharacterModal" md-close-to="#addCharacterModal" ref="modal" :md-active.sync="modalOpen">
+    <md-dialog md-open-from="#addCharacterModal" md-close-to="#addCharacterModal" ref="modal" :md-active.sync="modalOpen" :md-fullscreen="false">
       <md-dialog-title v-if="add">{{ $t('add_ideogram') }}</md-dialog-title>
       <md-dialog-title v-if="!add">{{ $t('remove_ideogram') }}</md-dialog-title>
       <md-dialog-content>
