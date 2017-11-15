@@ -6,6 +6,8 @@ import VueMaterial from 'vue-material';
 import VueI18n from 'vue-i18n';
 import VueAnalytics from 'vue-analytics';
 import VueClipboards from 'vue-clipboards';
+import Raven from 'raven-js';
+import RavenVue from 'raven-js/plugins/vue';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-social/bootstrap-social.css';
@@ -59,6 +61,11 @@ export default async function loadMain(moduleName) {
       id: 'UA-4081205-4',
       router,
     });
+
+    Raven
+    .config('https://c66b5a8acf4440d796646fdab764969a@sentry.io/245293')
+    .addPlugin(RavenVue, Vue)
+    .install();
   }
 
   const Main = Vue.extend(App);
