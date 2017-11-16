@@ -15,7 +15,7 @@
     </div>
 
     <file-container :lines="lines.concat(linesLanguage)" :fullLines="fullLines.concat(fullLinesLanguage)" filename="" :fileLoading="fileLoading" @open-bottom-bar="openBottomBar" :parent="parent" :showHighlight="false"/>
-    <md-snackbar md-position="center" ref="snackbarNoInternet" :md-duration="3000">
+    <md-snackbar md-position="center" :md-duration="3000" :md-active.sync="showSnackbarNoInternet">
       <span>{{ $t('no_internet') }}</span>
     </md-snackbar>
   </span>
@@ -52,6 +52,7 @@
         versesMapLanguage: {},
         fileLoading: false,
         fileLoadingLanguage: false,
+        showSnackbarNoInternet: false,
       };
     },
     watch: {
@@ -358,9 +359,7 @@
       if (navigator.onLine || LocalStorage.get(`BIBLE_SAVE_${language}`)) {
         await this.loadBook();
       } else {
-        setTimeout(() => {
-          this.$refs.snackbarNoInternet.open();
-        }, 500);
+        this.showSnackbarNoInternet = true;
         window.addEventListener('online', () => {
           this.loadBook();
         });

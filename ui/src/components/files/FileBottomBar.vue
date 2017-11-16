@@ -11,7 +11,7 @@
         <md-icon>find_in_page</md-icon>
       </md-button>
 
-      <md-menu md-size="big" md-direction="top-start" :md-offset-y="-90">
+      <md-menu md-size="big" md-direction="top-start" :md-offset-y="6">
         <md-button class="md-icon-button md-primary md-2" md-menu-trigger>
           <md-icon>more_vert</md-icon>
         </md-button>
@@ -235,7 +235,7 @@
         }
 
         this.block = block;
-        block.pinyin = replaceall(String.fromCharCode(160), '', block.pinyin);
+        block.pinyin = replaceall(String.fromCharCode(160), '', block.pinyin || '');
         this.tempDictCharacter = block.character;
         const pinyin = separatePinyinInSyllables(block.pinyin);
         setTimeout(() => {

@@ -6,7 +6,7 @@
       <div class="print" :class="[sizeClass, typeClass, ideogramSpacedClass]">
         <h2 v-if="filename">{{filename}}</h2>
         <div v-for="(line, lineIndex) in lines" :key="lineIndex">
-          <div v-if="lineIndex === 0 && line[0].line !== undefined && line[0].line.audio !== undefined">
+          <div v-if="lineIndex === 0 && line && line[0].line !== undefined && line[0].line.audio !== undefined">
             <audio :src="line[0].line.audio" controls/>
           </div>
           <file-row-print
@@ -283,6 +283,7 @@
     font-size: var(--pinyin-font-size);
     height: calc(var(--pinyin-font-size) + 2px);
     min-width: 0;
+    min-height: 5px;
   }
 
   .print .character,
