@@ -42,6 +42,8 @@ export default [
     meta: {
       protected: true,
       hideTitle: true,
+      topBar: 'bible-save',
+      topBarLeft: true,
     },
   },
   {

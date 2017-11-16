@@ -1,15 +1,22 @@
 <template>
   <div>
     <div class="books-top-bar-container">
-      <span @click="setShowPinyin(showPinyin ? 0 : 1)">
+
+      <md-button class="md-icon-button" @click="setShowPinyin(showPinyin ? 0 : 1)">
         <md-icon>translate</md-icon>
-      </span>
-      <span v-if="booksExhibitionType === '1'" @click="setType('2')">
+      </md-button>
+
+      <md-button class="md-icon-button" v-if="booksExhibitionType === '1'" @click="setType('2')">
         <md-icon>view_compact</md-icon>
-      </span>
-      <span v-if="booksExhibitionType === '2'" @click="setType('1')">
+      </md-button>
+
+      <md-button class="md-icon-button" v-if="booksExhibitionType === '2'" @click="setType('1')">
         <md-icon>view_module</md-icon>
-      </span>
+      </md-button>
+
+      <md-button class="md-icon-button" @click="$router.push('/bible/save')">
+        <md-icon>cloud_download</md-icon>
+      </md-button>
     </div>
   </div>
 </template>
@@ -50,5 +57,9 @@ div[options="bible-books"] {
 
 .books-top-bar-container span {
   cursor: pointer;
+}
+
+.books-top-bar-container .md-icon-button {
+  margin: 0;
 }
 </style>
