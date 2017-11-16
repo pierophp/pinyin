@@ -158,7 +158,7 @@
           });
         }
 
-        this.withoutPinyn = withoutPinyn;
+       // this.withoutPinyn = withoutPinyn;
 
         if (chars.length === 0) {
           printData.push({
