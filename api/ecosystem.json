@@ -9,11 +9,18 @@
       "env_production": {
         "PORT": "3001",
         "NODE_ENV": "production"
+      },
+      "env_staging": {
+        "PORT": "3002",
+        "NODE_ENV": "production"
       }
     }
   ],
   "deploy": {
     "production": {
+
+    },
+    "staging": {
 
     }
   }
