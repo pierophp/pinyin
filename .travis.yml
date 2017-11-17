@@ -49,6 +49,7 @@ before_install:
 - yarn build-bible > /dev/null
 - echo $TRAVIS_BRANCH > dist/branch.txt
 - zip -r /home/travis/bible.pinyin.dist.zip dist > /dev/null
+- echo "static/bible/*" >> .gitignore
 - rm -Rf static/bible
 - rm index.html
 - cp index-prod.html index.html
