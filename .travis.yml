@@ -73,7 +73,11 @@ before_script:
 script:
 - echo "Run Script"
 deploy:
-  provider: script
-  script: scripts/deploy.sh
-  on:
-    branch: master
+  - provider: script
+    script: scripts/deploy.sh
+    on:
+      branch: master
+  - provider: script
+    script: scripts/deploy.sh
+    on:
+      branch: staging
