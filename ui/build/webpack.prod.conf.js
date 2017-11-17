@@ -39,6 +39,11 @@ const webpackConfig = merge(baseWebpackConfig, {
       compress: {
         warnings: false
       },
+      // uglifyOptions: {
+      //   output: {
+      //     ascii_only: true
+      //   },
+      // },
       sourceMap: config.build.productionSourceMap,
       parallel: true
     }),

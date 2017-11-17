@@ -116,7 +116,7 @@
   import Links from 'src/components/ideograms/Links';
   import OptionsManager from 'src/domain/options-manager';
   import MobileDetect from 'mobile-detect';
-  import separatePinyinInSyllables from 'shared/helpers/separate-pinyin-in-syllables';
+  import separatePinyinInSyllables from 'src/helpers/separate-pinyin-in-syllables';
   import replaceall from 'replaceall';
   import pinyinHelper from 'src/helpers/pinyin';
   import ForvoModal from 'src/components/modals/Forvo';

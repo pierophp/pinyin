@@ -8,7 +8,7 @@
 </template>
 
 <script>
-  import separatePinyinInSyllables from 'shared/helpers/separate-pinyin-in-syllables';
+  import separatePinyinInSyllables from 'src/helpers/separate-pinyin-in-syllables';
   import extractPinyinTone from 'src/helpers/extract-pinyin-tone';
   import OptionsManager from 'src/domain/options-manager';
   import specialIdeograms from '../../../../shared/helpers/special-ideograms-chars';

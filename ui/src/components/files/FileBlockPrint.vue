@@ -24,7 +24,7 @@
 </template>
 
 <script>
-  import separatePinyinInSyllables from 'shared/helpers/separate-pinyin-in-syllables';
+  import separatePinyinInSyllables from 'src/helpers/separate-pinyin-in-syllables';
   import IdeogramsShow from 'src/components/ideograms/Show';
   import OptionsManager from 'src/domain/options-manager';
 
