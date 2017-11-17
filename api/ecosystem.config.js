@@ -5,10 +5,10 @@ const postDeployCommands = [
   'unzip pinyin.dist.zip > /dev/null',
   'BRANCH="$(cat dist/branch.txt)"',
   'echo $BRANCH',
-  '[[ $BRANCH = "master" ]] && UI_PATH="/var/www/pinyin" || UI_PATH="/var/www/pinyin.dev"',
+  '[[ $BRANCH = "master" ]] && UI_PATH="/var/www/pinyin.dev" || UI_PATH="/var/www/pinyin.dev"',
   'echo $UI_PATH',
-  'sudo rm -Rf /var/www/pinyin',
-  'mv /home/ubuntu/dist /var/www/pinyin',
+  'sudo rm -Rf $UI_PATH',
+  'mv /home/ubuntu/dist $UI_PATH',
   'ln -s /var/local/pinyin/Dicionario_Pleco.txt /var/www/pinyin/Dicionario_Pleco.txt',
   // Bible Editor UI
   'rm -Rf dist/',
