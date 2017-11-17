@@ -67,7 +67,21 @@ async function indexedDBPut(table, data) {
   const transaction = db.transaction([table], 'readwrite');
   const objectStore = transaction.objectStore(table);
   return new Promise((resolve, reject) => {
-    const request = objectStore.put(data);;
+    const request = objectStore.put(data);
+    request.onerror = function(event) {
+      reject();
+    };
+    request.onsuccess = function(event) {
+      resolve();
+    };
+  });
+}
+
+async function indexedDBDelete(table, key) {
+  const transaction = db.transaction([table], 'readwrite');
+  const objectStore = transaction.objectStore(table);
+  return new Promise((resolve, reject) => {
+    const request = objectStore.delete(key);
     request.onerror = function(event) {
       reject();
     };
