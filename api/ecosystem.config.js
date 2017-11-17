@@ -3,6 +3,10 @@ const postDeployCommands = [
   // Pinyin Editor UI
   'rm -Rf dist/',
   'unzip pinyin.dist.zip',
+  'BRANCH=`cat dist/branch.txt`',
+  'echo $BRANCH',
+  '[[ $BRANCH = "master" ]] && UI_PATH="/var/www/pinyin" || UI_PATH="/var/www/pinyin.dev"',
+  'echo $UI_PATH',
   'sudo rm -Rf /var/www/pinyin',
   'mv /home/ubuntu/dist /var/www/pinyin',
   'ln -s /var/local/pinyin/Dicionario_Pleco.txt /var/www/pinyin/Dicionario_Pleco.txt',
@@ -11,19 +15,16 @@ const postDeployCommands = [
   'unzip bible.pinyin.dist.zip',
   'sudo rm -Rf /var/www/bible.pinyin',
   'mv /home/ubuntu/dist /var/www/bible.pinyin',
-  // 'mv /var/www/pinyin/static/iframe-bible.html /var/www/bible.pinyin/index.html',
   // Dictionary Editor UI
   'rm -Rf dist/',
   'unzip dictionary.pinyin.dist.zip',
   'sudo rm -Rf /var/www/dictionary.pinyin',
   'mv /home/ubuntu/dist /var/www/dictionary.pinyin',
-  // 'mv /var/www/pinyin/static/iframe-dictionary.html /var/www/dictionary.pinyin/index.html',
   // Videos Editor UI
   'rm -Rf dist/',
   'unzip videos.pinyin.dist.zip',
   'sudo rm -Rf /var/www/videos.pinyin',
   'mv /home/ubuntu/dist /var/www/videos.pinyin',
-  // 'mv /var/www/pinyin/static/iframe-videos.html /var/www/videos.pinyin/index.html',
   // API
   'cd /var/www/api.pinyin/current/api',
   'cp ../../env/* .',
