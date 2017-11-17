@@ -269,19 +269,21 @@
         if (LocalStorage.get(`BIBLE_SAVE_${language}`)) {
           await window.frames['iframe-storage'].indexedDBOpen();
           const chapterCache = await window.frames['iframe-storage'].indexedDBGet('bible', `${language}_${this.book}_${this.chapter}`);
-          this.fullLines = JSON.parse(chapterCache.text).lines;
-          this.parseVerses(this.fullLines);
-          if (this.verse) {
-            this.selecteds = [];
-            const splitVerse = this.verse.split('-');
-            const startVerse = splitVerse[0];
-            let endVerse = splitVerse[0];
-            if (splitVerse[1]) {
-              endVerse = splitVerse[1];
-            }
+          if (chapterCache) {
+            this.fullLines = JSON.parse(chapterCache.text).lines;
+            this.parseVerses(this.fullLines);
+            if (this.verse) {
+              this.selecteds = [];
+              const splitVerse = this.verse.split('-');
+              const startVerse = splitVerse[0];
+              let endVerse = splitVerse[0];
+              if (splitVerse[1]) {
+                endVerse = splitVerse[1];
+              }
 
-            for (let i = parseInt(startVerse, 10); i <= parseInt(endVerse, 10); i += 1) {
-              this.selectVerse(i);
+              for (let i = parseInt(startVerse, 10); i <= parseInt(endVerse, 10); i += 1) {
+                this.selectVerse(i);
+              }
             }
           }
         }
@@ -315,8 +317,30 @@
             }
           });
 
+        if (LocalStorage.get(`BIBLE_SAVE_${options.translationLanguage}`)) {
+          await window.frames['iframe-storage'].indexedDBOpen();
+          const chapterCache = await window.frames['iframe-storage'].indexedDBGet('bible', `${options.translationLanguage}_${this.book}_${this.chapter}`);
+          if (chapterCache) {
+            this.fullLinesLanguage = JSON.parse(chapterCache.text).lines;
+            this.parseVersesLanguage(this.fullLinesLanguage);
+            if (this.verse) {
+              this.selectedsLanguage = [];
+              const splitVerse = this.verse.split('-');
+              const startVerse = splitVerse[0];
+              let endVerse = splitVerse[0];
+              if (splitVerse[1]) {
+                endVerse = splitVerse[1];
+              }
+
+              for (let i = parseInt(startVerse, 10); i <= parseInt(endVerse, 10); i += 1) {
+                this.selectVerseLanguage(i);
+              }
+            }
+          }
+        }
+
         axios.get(`static/bible/${options.translationLanguage}/${this.book}/${this.chapter}.json?v=${CACHE_VERSION}`)
-          .then((content) => {
+          .then(async (content) => {
             this.fullLinesLanguage = content.data.lines;
             this.parseVersesLanguage(content.data.lines);
             if (this.verse) {
@@ -331,6 +355,16 @@
               for (let i = parseInt(startVerse, 10); i <= parseInt(endVerse, 10); i += 1) {
                 this.selectVerseLanguage(i);
               }
+            }
+
+            if (LocalStorage.get(`BIBLE_SAVE_${options.translationLanguage}`)) {
+              await window.frames['iframe-storage'].indexedDBPut('bible', {
+                key: `${options.translationLanguage}_${this.book}_${this.chapter}`,
+                language,
+                book: this.book,
+                chapter: this.chapter,
+                text: JSON.stringify(content.data),
+              });
             }
           });
 
