@@ -1,6 +1,6 @@
-echo "Deploy Starting"
 cd api/
-[[ $TRAVIS_BRANCH = "master" ]] && DEPLOY_ENV="production" || UI_PATH="staging"
+[[ $TRAVIS_BRANCH = "master" ]] && DEPLOY_ENV="production" || DEPLOY_ENV="staging"
+echo "Deploy Starting: $DEPLOY_ENV"
 export SSH_KEY="/home/travis/.ssh/id_rsa"
 export CMD="scp -o StrictHostKeyChecking=no /home/travis/pinyin.dist.zip ${SSH_USER}@${SSH_HOST}:~"
 git checkout -- yarn.lock
