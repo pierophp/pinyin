@@ -8,7 +8,7 @@ const postDeployCommands = [
   'unzip pinyin.dist.zip > /dev/null',
   `sudo rm -Rf ${isProduction ? '/var/www/pinyin' : '/var/www/pinyin.staging'}`,
   `mv /home/ubuntu/dist ${isProduction ? '/var/www/pinyin' : '/var/www/pinyin.staging'}`,
-  'ln -s /var/local/pinyin/Dicionario_Pleco.txt /var/www/pinyin/Dicionario_Pleco.txt',
+  'ln -sf /var/local/pinyin/Dicionario_Pleco.txt /var/www/pinyin/Dicionario_Pleco.txt',
   // Bible Editor UI
   'rm -Rf dist/',
   'unzip bible.pinyin.dist.zip > /dev/null',
