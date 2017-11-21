@@ -39,23 +39,23 @@ before_install:
 - cd ../ui
 - yarn install
 - rm index.html
-- cp index-prod.html index.html
+- cp index-${TRAVIS_BRANCH}.html index.html
 - yarn build > /dev/null
 - zip -r /home/travis/pinyin.dist.zip dist > /dev/null
 - rm index.html
-- cp index-prod.html index.html
+- cp index-${TRAVIS_BRANCH}.html index.html
 - sed -i -e 's/favicon\//favicon-bible\//g' index.html
 - yarn build-bible > /dev/null
 - zip -r /home/travis/bible.pinyin.dist.zip dist > /dev/null
 - echo "static/bible/*" >> .gitignore
 - rm -Rf static/bible
 - rm index.html
-- cp index-prod.html index.html
+- cp index-${TRAVIS_BRANCH}.html index.html
 - sed -i -e 's/favicon\//favicon-videos\//g' index.html
 - yarn build-videos > /dev/null
 - zip -r /home/travis/videos.pinyin.dist.zip dist > /dev/null
 - rm index.html
-- cp index-prod.html index.html
+- cp index-${TRAVIS_BRANCH}.html index.html
 - sed -i -e 's/favicon\//favicon-dictionary\//g' index.html
 - yarn build-dictionary > /dev/null
 - zip -r /home/travis/dictionary.pinyin.dist.zip dist > /dev/null
