@@ -1,6 +1,5 @@
 const isProduction = process.env.TRAVIS_BRANCH === 'master';
-console.log('isProduction');
-console.log(isProduction);
+
 const postDeployCommands = [
   'cd /home/ubuntu/',
   // Pinyin Editor UI
