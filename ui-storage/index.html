@@ -8,6 +8,10 @@
         document.domain = '2pinyin.net';
       }
 
+      else if (window.location.host.indexOf('giusit.com.br') !== -1) {
+        document.domain = 'giusit.com.br';
+      }
+
       function get(key) {
         const value = localStorage.getItem(key);
 
