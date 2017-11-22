@@ -49,8 +49,6 @@ before_install:
 - sed -i -e 's/favicon\//favicon-bible\//g' index.html
 - yarn build-bible > /dev/null
 - zip -r /home/travis/bible.pinyin.dist.zip dist > /dev/null
-- echo "static/bible/*" >> .gitignore
-- echo "src/.config.js" >> .gitignore
 - rm -Rf static/bible
 - rm index.html
 - cp index-${TRAVIS_BRANCH}.html index.html
@@ -62,17 +60,14 @@ before_install:
 - sed -i -e 's/favicon\//favicon-dictionary\//g' index.html
 - yarn build-dictionary > /dev/null
 - zip -r /home/travis/dictionary.pinyin.dist.zip dist > /dev/null
--
 before_script:
 - export CHROME_BIN=chromium-browser
 - export DISPLAY=:99.0
 #- sh -e /etc/init.d/xvfb start
 - mysql -u root -e "CREATE DATABASE pinyin CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
-- export NODE_ENV=staging
 - cd ../
 - mkdir storage
 - chmod +x scripts/deploy.sh
-- git config core.fileMode false
 script:
 - echo "Run Script"
 deploy:
