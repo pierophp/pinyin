@@ -5,7 +5,6 @@ A simple pinyin editor made in node.js
 Run:
 ```
 npm install
-npm install -g bower
 npm install -g knex
 npm install -g gulp
 bower install
