@@ -17,6 +17,7 @@ import 'font-awesome/css/font-awesome.min.css';
 import 'src/css/vue-material.scss';
 import 'src/css/default.css';
 import 'src/css/bootstrap-callout.css';
+import 'src/css/material-icons.css';
 import 'src/helpers/array';
 import 'medium-editor/dist/css/medium-editor.css';
 import 'medium-editor/dist/css/themes/default.css';

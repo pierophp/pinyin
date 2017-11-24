@@ -37,14 +37,14 @@ before_install:
 - mv dist/ ../ui/static/storage/
 - cd ../ui
 - yarn install
+- rm src/.config.js
+- cp src/.config-${TRAVIS_BRANCH}.js src/.config.js
 - rm index.html
 - cp index-${TRAVIS_BRANCH}.html index.html
 - yarn build > /dev/null
 - zip -r /home/travis/pinyin.dist.zip dist > /dev/null
 - rm index.html
 - cp index-${TRAVIS_BRANCH}.html index.html
-- rm src/.config.js
-- cp src/.config-${TRAVIS_BRANCH}.js src/.config.js
 - sed -i -e 's/favicon\//favicon-bible\//g' index.html
 - yarn build-bible > /dev/null
 - zip -r /home/travis/bible.pinyin.dist.zip dist > /dev/null

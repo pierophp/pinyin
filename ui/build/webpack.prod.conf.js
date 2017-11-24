@@ -132,7 +132,7 @@ const webpackConfig = merge(baseWebpackConfig, {
       },
       externals: [
         'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic',
-        'https://fonts.googleapis.com/icon?family=Material+Icons',
+        'https://fonts.gstatic.com/s/materialicons/v31/2fcrYFNaTjcS6g4U3t-Y5UEw0lE80llgEseQY3FEmqw.woff2',
         'https://fonts.googleapis.com/earlyaccess/notosansscsliced.css',
         'https://fonts.googleapis.com/earlyaccess/notosanstc.css',
       ],
