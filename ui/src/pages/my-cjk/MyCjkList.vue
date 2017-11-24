@@ -5,37 +5,35 @@
         <loadable-content :loading="loading">
           <h3>{{ $t('my_total') }}: {{total}}</h3>
           <md-table>
-            <md-table-header>
-              <md-table-row>
-                <md-table-head>{{ $t('freq.') }}</md-table-head>
-                <md-table-head>{{ $t('my_ideograms') }}</md-table-head>
-                <md-table-head></md-table-head>
-              </md-table-row>
-            </md-table-header>
-            <md-table-body>
-              <md-table-row v-for="row in report" :key="row.frequency">
-                <md-table-cell>{{ (row.frequency === 999) ? '-' : row.frequency }}</md-table-cell>
-                <md-table-cell>
-                  {{row.total_my}}
-                  {{ (row.frequency === 999) ? '' : ('/ ' + row.total + ' (' + row.percent + '%)') }}
-                </md-table-cell>
-                <md-table-cell>
-                  <md-menu md-size="3" >
-                    <md-button class="md-raised md-primary" md-menu-trigger>
-                      {{ $t('action') }}
-                    </md-button>
-                    <md-menu-content>
-                      <md-menu-item @click.native="unknownIdeograms(row.frequency)" v-if="row.frequency !== 999">
-                        <span>{{ $t('unknown') }}</span>
-                      </md-menu-item>
-                      <md-menu-item @click.native="knownIdeograms(row.frequency)">
-                        <span>{{ $t('known') }}</span>
-                      </md-menu-item>
-                    </md-menu-content>
-                  </md-menu>
-                </md-table-cell>
-              </md-table-row>
-            </md-table-body>
+
+            <md-table-row>
+              <md-table-head>{{ $t('freq.') }}</md-table-head>
+              <md-table-head>{{ $t('my_ideograms') }}</md-table-head>
+              <md-table-head></md-table-head>
+            </md-table-row>
+
+            <md-table-row v-for="row in report" :key="row.frequency">
+              <md-table-cell>{{ (row.frequency === 999) ? '-' : row.frequency }}</md-table-cell>
+              <md-table-cell>
+                {{row.total_my}}
+                {{ (row.frequency === 999) ? '' : ('/ ' + row.total + ' (' + row.percent + '%)') }}
+              </md-table-cell>
+              <md-table-cell>
+                <md-menu md-size="medium" >
+                  <md-button class="md-raised md-primary" md-menu-trigger>
+                    {{ $t('action') }}
+                  </md-button>
+                  <md-menu-content>
+                    <md-menu-item @click.native="unknownIdeograms(row.frequency)" v-if="row.frequency !== 999">
+                      <span>{{ $t('unknown') }}</span>
+                    </md-menu-item>
+                    <md-menu-item @click.native="knownIdeograms(row.frequency)">
+                      <span>{{ $t('known') }}</span>
+                    </md-menu-item>
+                  </md-menu-content>
+                </md-menu>
+              </md-table-cell>
+            </md-table-row>
           </md-table>
         </loadable-content>
       </md-tab>
@@ -44,66 +42,60 @@
         <loadable-content :loading="loading">
         <h3>{{ $t('my_total') }}: {{totalWords}}</h3>
           <md-table>
-            <md-table-header>
-              <md-table-row>
-                <md-table-head>HSK</md-table-head>
-                <md-table-head>{{ $t('word') }}</md-table-head>
-                <md-table-head></md-table-head>
-              </md-table-row>
-            </md-table-header>
-            <md-table-body>
-              <md-table-row v-for="row in reportWords" :key="row.hsk">
-                <md-table-cell>{{ (row.hsk === 999) ? '-' : row.hsk }}</md-table-cell>
-                <md-table-cell>{{row.total_my}}
-                  {{ (row.hsk === 999) ? '' : ('/ ' + row.total + ' (' + row.percent + '%)') }}
-                </md-table-cell>
-                <md-table-cell>
-                  <md-menu md-size="3" >
-                    <md-button class="md-raised md-primary" md-menu-trigger>
-                      {{ $t('action') }}
-                    </md-button>
-                    <md-menu-content>
-                      <md-menu-item @click.native="unknownWords(row.hsk)" v-if="row.hsk !== 999">
-                        <span>{{ $t('unknown') }}</span>
-                      </md-menu-item>
-                      <md-menu-item @click.native="knownWords(row.hsk)">
-                        <span>{{ $t('known') }}</span>
-                      </md-menu-item>
-                    </md-menu-content>
-                  </md-menu>
-                </md-table-cell>
-              </md-table-row>
-            </md-table-body>
+            <md-table-row>
+              <md-table-head>HSK</md-table-head>
+              <md-table-head>{{ $t('word') }}</md-table-head>
+              <md-table-head></md-table-head>
+            </md-table-row>
+
+            <md-table-row v-for="row in reportWords" :key="row.hsk">
+              <md-table-cell>{{ (row.hsk === 999) ? '-' : row.hsk }}</md-table-cell>
+              <md-table-cell>{{row.total_my}}
+                {{ (row.hsk === 999) ? '' : ('/ ' + row.total + ' (' + row.percent + '%)') }}
+              </md-table-cell>
+              <md-table-cell>
+                <md-menu md-size="medium" >
+                  <md-button class="md-raised md-primary" md-menu-trigger>
+                    {{ $t('action') }}
+                  </md-button>
+                  <md-menu-content>
+                    <md-menu-item @click.native="unknownWords(row.hsk)" v-if="row.hsk !== 999">
+                      <span>{{ $t('unknown') }}</span>
+                    </md-menu-item>
+                    <md-menu-item @click.native="knownWords(row.hsk)">
+                      <span>{{ $t('known') }}</span>
+                    </md-menu-item>
+                  </md-menu-content>
+                </md-menu>
+              </md-table-cell>
+            </md-table-row>
           </md-table>
         </loadable-content>
       </md-tab>
     </md-tabs>
 
-    <md-dialog ref="dialogUnknown">
+    <md-dialog ref="dialogUnknown" :md-active.sync="dialogUnknownOpen">
       <md-dialog-title>{{ $t('unknown') }} <span v-if="frequency !== 999">- {{ $t('frequency') }} {{frequency}}</span>
       </md-dialog-title>
       <md-dialog-content>
         <md-table>
-          <md-table-header>
-            <md-table-row>
-              <md-table-head>{{ $t('ideogram') }}</md-table-head>
-              <md-table-head>{{ $t('pronunciation') }}</md-table-head>
-              <md-table-head></md-table-head>
-            </md-table-row>
-          </md-table-header>
-          <md-table-body>
-            <md-table-row v-for="(ideogram, index) in reportUnkown" :key="index">
-              <md-table-cell class="ideogram">
-                <ideograms-show :pinyin="ideogram.pronunciation" :character="ideogram.ideogram"/>
-              </md-table-cell>
-              <md-table-cell>{{ideogram.pronunciation}}</md-table-cell>
-              <md-table-cell class="cell-button">
-                <md-button class="md-icon-button md-raised" @click.native="openModal(true, ideogram.ideogram, index)">
-                  <md-icon>add</md-icon>
-                </md-button>
-              </md-table-cell>
-            </md-table-row>
-          </md-table-body>
+          <md-table-row>
+            <md-table-head>{{ $t('ideogram') }}</md-table-head>
+            <md-table-head>{{ $t('pronunciation') }}</md-table-head>
+            <md-table-head></md-table-head>
+          </md-table-row>
+
+          <md-table-row v-for="(ideogram, index) in reportUnkown" :key="index">
+            <md-table-cell class="ideogram">
+              <ideograms-show :pinyin="ideogram.pronunciation" :character="ideogram.ideogram"/>
+            </md-table-cell>
+            <md-table-cell>{{ideogram.pronunciation}}</md-table-cell>
+            <md-table-cell class="cell-button">
+              <md-button class="md-icon-button md-raised" @click.native="openModal(true, ideogram.ideogram, index)">
+                <md-icon>add</md-icon>
+              </md-button>
+            </md-table-cell>
+          </md-table-row>
         </md-table>
       </md-dialog-content>
 
@@ -112,31 +104,28 @@
       </md-dialog-actions>
     </md-dialog>
 
-    <md-dialog ref="dialogKnown">
+    <md-dialog ref="dialogKnown" :md-active.sync="dialogKnownOpen">
       <md-dialog-title>{{ $t('known') }} <span v-if="frequency !== 999">- {{ $t('frequency') }} {{frequency}}</span>
       </md-dialog-title>
       <md-dialog-content>
         <md-table>
-          <md-table-header>
-            <md-table-row>
-              <md-table-head>{{ $t('ideogram') }}</md-table-head>
-              <md-table-head>{{ $t('pronunciation') }}</md-table-head>
-              <md-table-head></md-table-head>
-            </md-table-row>
-          </md-table-header>
-          <md-table-body>
-            <md-table-row v-for="(ideogram, index) in reportUnkown" :key="index">
-              <md-table-cell class="ideogram">
-                <ideograms-show :pinyin="ideogram.pronunciation" :character="ideogram.ideogram"/>
-              </md-table-cell>
-              <md-table-cell>{{ideogram.pronunciation}}</md-table-cell>
-              <md-table-cell class="cell-button">
-                <md-button class="md-icon-button md-raised" @click.native="openModal(false, ideogram.ideogram, index)">
-                  <md-icon>remove</md-icon>
-                </md-button>
-              </md-table-cell>
-            </md-table-row>
-          </md-table-body>
+          <md-table-row>
+            <md-table-head>{{ $t('ideogram') }}</md-table-head>
+            <md-table-head>{{ $t('pronunciation') }}</md-table-head>
+            <md-table-head></md-table-head>
+          </md-table-row>
+
+          <md-table-row v-for="(ideogram, index) in reportUnkown" :key="index">
+            <md-table-cell class="ideogram">
+              <ideograms-show :pinyin="ideogram.pronunciation" :character="ideogram.ideogram"/>
+            </md-table-cell>
+            <md-table-cell>{{ideogram.pronunciation}}</md-table-cell>
+            <md-table-cell class="cell-button">
+              <md-button class="md-icon-button md-raised" @click.native="openModal(false, ideogram.ideogram, index)">
+                <md-icon>remove</md-icon>
+              </md-button>
+            </md-table-cell>
+          </md-table-row>
         </md-table>
       </md-dialog-content>
       <md-dialog-actions>
@@ -144,31 +133,28 @@
       </md-dialog-actions>
     </md-dialog>
 
-    <md-dialog ref="dialogUnknownWords">
+    <md-dialog ref="dialogUnknownWords" :md-active.sync="dialogUnknownWordsOpen">
       <md-dialog-title>{{ $t('unknown') }} <span v-if="hsk !== 999">- HSK {{hsk}}</span>
       </md-dialog-title>
       <md-dialog-content>
         <md-table>
-          <md-table-header>
-            <md-table-row>
-              <md-table-head>{{ $t('ideogram') }}</md-table-head>
-              <md-table-head>{{ $t('pronunciation') }}</md-table-head>
-              <md-table-head></md-table-head>
-            </md-table-row>
-          </md-table-header>
-          <md-table-body>
-            <md-table-row v-for="(ideogram, index) in reportUnkown" :key="index">
-              <md-table-cell class="ideogram">
-                <ideograms-show :pinyin="ideogram.pronunciation" :character="ideogram.ideogram"/>
-              </md-table-cell>
-              <md-table-cell>{{ideogram.pronunciation}}</md-table-cell>
-              <md-table-cell class="cell-button">
-                <md-button class="md-icon-button md-raised" @click.native="openModal(true, ideogram.ideogram, index)">
-                  <md-icon>add</md-icon>
-                </md-button>
-              </md-table-cell>
-            </md-table-row>
-          </md-table-body>
+          <md-table-row>
+            <md-table-head>{{ $t('ideogram') }}</md-table-head>
+            <md-table-head>{{ $t('pronunciation') }}</md-table-head>
+            <md-table-head></md-table-head>
+          </md-table-row>
+
+          <md-table-row v-for="(ideogram, index) in reportUnkown" :key="index">
+            <md-table-cell class="ideogram">
+              <ideograms-show :pinyin="ideogram.pronunciation" :character="ideogram.ideogram"/>
+            </md-table-cell>
+            <md-table-cell>{{ideogram.pronunciation}}</md-table-cell>
+            <md-table-cell class="cell-button">
+              <md-button class="md-icon-button md-raised" @click.native="openModal(true, ideogram.ideogram, index)">
+                <md-icon>add</md-icon>
+              </md-button>
+            </md-table-cell>
+          </md-table-row>
         </md-table>
       </md-dialog-content>
 
@@ -177,31 +163,28 @@
       </md-dialog-actions>
     </md-dialog>
 
-    <md-dialog ref="dialogKnownWords">
+    <md-dialog ref="dialogKnownWords" :md-active.sync="dialogKnownWordsOpen">
       <md-dialog-title>{{ $t('known') }} <span v-if="hsk !== 999">- HSK {{hsk}}</span>
       </md-dialog-title>
       <md-dialog-content>
         <md-table>
-          <md-table-header>
-            <md-table-row>
-              <md-table-head>{{ $t('ideogram') }}</md-table-head>
-              <md-table-head>{{ $t('pronunciation') }}</md-table-head>
-              <md-table-head></md-table-head>
-            </md-table-row>
-          </md-table-header>
-          <md-table-body>
-            <md-table-row v-for="(ideogram, index) in reportUnkown" :key="index">
-              <md-table-cell class="ideogram">
-                <ideograms-show :pinyin="ideogram.pronunciation" :character="ideogram.ideogram"/>
-              </md-table-cell>
-              <md-table-cell>{{ideogram.pronunciation}}</md-table-cell>
-              <md-table-cell class="cell-button">
-                <md-button class="md-icon-button md-raised" @click.native="openModal(false, ideogram.ideogram, index)">
-                  <md-icon>remove</md-icon>
-                </md-button>
-              </md-table-cell>
-            </md-table-row>
-          </md-table-body>
+          <md-table-row>
+            <md-table-head>{{ $t('ideogram') }}</md-table-head>
+            <md-table-head>{{ $t('pronunciation') }}</md-table-head>
+            <md-table-head></md-table-head>
+          </md-table-row>
+
+          <md-table-row v-for="(ideogram, index) in reportUnkown" :key="index">
+            <md-table-cell class="ideogram">
+              <ideograms-show :pinyin="ideogram.pronunciation" :character="ideogram.ideogram"/>
+            </md-table-cell>
+            <md-table-cell>{{ideogram.pronunciation}}</md-table-cell>
+            <md-table-cell class="cell-button">
+              <md-button class="md-icon-button md-raised" @click.native="openModal(false, ideogram.ideogram, index)">
+                <md-icon>remove</md-icon>
+              </md-button>
+            </md-table-cell>
+          </md-table-row>
         </md-table>
       </md-dialog-content>
 
@@ -247,6 +230,10 @@
         reportWords: [],
         reportUnkown: [],
         selectedCharacter: null,
+        dialogUnknownOpen: false,
+        dialogKnownOpen: false,
+        dialogUnknownWordsOpen: false,
+        dialogKnownWordsOpen: false,
       };
     },
     components: {
@@ -279,7 +266,7 @@
         .then((result) => {
           this.loading = false;
           this.reportUnkown = result.data.ideograms;
-          this.openDialog('dialogKnown');
+          this.dialogKnownOpen = true;
         });
       },
       unknownIdeograms(frequency) {
@@ -295,7 +282,7 @@
         .then((result) => {
           this.loading = false;
           this.reportUnkown = result.data.ideograms;
-          this.openDialog('dialogUnknown');
+          this.dialogUnknownOpen = true;
         });
       },
       knownWords(hsk) {
@@ -311,7 +298,7 @@
         .then((result) => {
           this.loading = false;
           this.reportUnkown = result.data.ideograms;
-          this.openDialog('dialogKnownWords');
+          this.dialogKnownWordsOpen = true;
         });
       },
       unknownWords(hsk) {
@@ -327,14 +314,14 @@
         .then((result) => {
           this.loading = false;
           this.reportUnkown = result.data.ideograms;
-          this.openDialog('dialogUnknownWords');
+          this.dialogUnknownWordsOpen = true;
         });
       },
       openDialog(ref) {
-        this.$refs[ref].open();
+        this[`${ref}Open`] = true;
       },
       closeDialog(ref) {
-        this.$refs[ref].close();
+        this[`${ref}Open`] = false;
       },
     },
     created() {
@@ -369,10 +356,6 @@
     margin: auto !important;
   }
 
-  .cell-button .md-table-cell-container{
-    padding: 6px 10px 6px 10px !important;
-  }
-
   .ideograms-container .md-table .md-table-head-text,
   .ideograms-container .md-table .md-table-cell .md-table-cell-container {
     padding-left: 10px !important;
@@ -402,8 +385,8 @@
     max-width: 650px;
   }
 
-  #ideograms .md-table-head-text,
-  #words .md-table-head-text{
+  #ideograms .md-table-head-label,
+  #words .md-table-head-label {
     font-size: 16px !important;
   }
 
@@ -418,9 +401,10 @@
     font-weight: 300 !important;
   }
 
-  .ideograms-container .md-table .md-table-head-text{
-    padding-right:0 !important;
+  .ideograms-container .md-table .md-table-head-label {
+    padding-left:0 !important;
   }
+
   .ideograms-container .md-table .md-table-cell .md-button {
     width: auto;
   }

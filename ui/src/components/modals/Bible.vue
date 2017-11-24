@@ -1,6 +1,6 @@
 <template>
   <div>
-    <md-dialog ref="modal" class="dialog-bible">
+    <md-dialog ref="modal" class="dialog-bible" :md-active.sync="modalOpen" :md-fullscreen="false">
       <md-dialog-content>
         <chapter-container v-if="book" :book="book" :chapter="chapter" :verse="verse" @open-bottom-bar="openBottomBar"/>
       </md-dialog-content>
@@ -24,6 +24,7 @@
     data() {
       return {
         options: {},
+        modalOpen: false,
       };
     },
     props: {
@@ -56,10 +57,10 @@
         this.$emit('open-bottom-bar', data);
       },
       openDialog() {
-        this.$refs.modal.open();
+        this.modalOpen = true;
       },
       closeDialog() {
-        this.$refs.modal.close();
+        this.modalOpen = false;
       },
     },
   };

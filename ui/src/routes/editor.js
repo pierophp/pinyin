@@ -110,6 +110,8 @@ export default [
     meta: {
       protected: true,
       hideTitle: true,
+      topBar: 'bible-save',
+      topBarLeft: true,
     },
   },
   {
@@ -120,6 +122,7 @@ export default [
       hideTitle: true,
       topBar: 'bible-chapters',
       protected: true,
+      topBarLeft: true,
     },
   },
   {
@@ -130,6 +133,7 @@ export default [
       hideTitle: true,
       topBar: 'bible-chapter',
       protected: true,
+      topBarLeft: true,
     },
   },
   {

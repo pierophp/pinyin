@@ -1,11 +1,11 @@
 <template>
 <div class="dictionary-container">
   <form novalidate @submit.stop.prevent="submit">
-    <md-input-container>
+    <md-field>
       <md-icon>pageview</md-icon>
       <label>{{ $t("search") }}</label>
-      <md-input @change="search" type="text" ref="inputSearch" autofocus v-model="searchValue"></md-input>
-    </md-input-container>
+      <md-input type="text" ref="inputSearch" autofocus v-model="searchValue"></md-input>
+    </md-field>
   </form>
   <div>
   <loadable-content :loading="loading">
@@ -44,6 +44,11 @@
         loading: false,
         noResults: false,
       };
+    },
+    watch: {
+      searchValue() {
+        this.search(this.searchValue);
+      },
     },
     created() {
       setTimeout(() => {

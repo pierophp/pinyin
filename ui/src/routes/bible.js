@@ -42,6 +42,8 @@ export default [
     meta: {
       protected: true,
       hideTitle: true,
+      topBar: 'bible-save',
+      topBarLeft: true,
     },
   },
   {
@@ -52,6 +54,7 @@ export default [
       protected: true,
       hideTitle: true,
       topBar: 'bible-chapters',
+      topBarLeft: true,
     },
   },
   {
@@ -62,6 +65,7 @@ export default [
       protected: true,
       hideTitle: true,
       topBar: 'bible-chapter',
+      topBarLeft: true,
     },
   },
   {

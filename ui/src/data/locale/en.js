@@ -113,4 +113,7 @@ export default {
   simplified: 'Simplified',
   traditional: 'Traditional',
   no_internet: 'No Internet conection',
+  confirmation: 'Confirmation',
+  confirmation_download_bible: 'Would you like to download the Bible?',
+  confirmation_delete_bible: 'Would you like to delete the Bible?',
 };

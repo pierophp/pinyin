@@ -1,12 +1,12 @@
 <template>
-  <md-dialog ref="modal">
+  <md-dialog ref="modal" :md-active.sync="modalOpen" :md-fullscreen="false">
     <md-dialog-title>{{ $t('import_site') }}</md-dialog-title>
 
     <md-dialog-content>
-      <md-input-container>
+      <md-field>
           <label>{{ $t("url") }}</label>
           <md-input type="text" ref="inputUrl" v-model="siteUrl"></md-input>
-      </md-input-container>
+      </md-field>
     </md-dialog-content>
 
     <md-dialog-actions>
@@ -30,6 +30,7 @@
     data() {
       return {
         siteUrl: '',
+        modalOpen: false,
       };
     },
     props: {
@@ -50,11 +51,11 @@
         }, 500);
       },
       openDialog() {
-        this.$refs.modal.open();
+        this.modalOpen = true;
         this.onOpen();
       },
       closeDialog() {
-        this.$refs.modal.close();
+        this.modalOpen = false;
       },
       ...mapActions({
         importFile: FILE_ACTION_IMPORT_FILE,

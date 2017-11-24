@@ -5,3 +5,6 @@ travis/secrets.tar
 .DS_Store
 .history/*
 api/deploy-local.sh
+api/yarn-error.log
+ui/yarn-error.log
+

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <md-dialog md-open-from="#addCharacterModal" md-close-to="#addCharacterModal" ref="modal">
+    <md-dialog md-open-from="#addCharacterModal" md-close-to="#addCharacterModal" ref="modal" :md-active.sync="modalOpen" :md-fullscreen="false">
       <md-dialog-title v-if="add">{{ $t('add_ideogram') }}</md-dialog-title>
       <md-dialog-title v-if="!add">{{ $t('remove_ideogram') }}</md-dialog-title>
       <md-dialog-content>
@@ -38,6 +38,7 @@
     data() {
       return {
         add: true,
+        modalOpen: false,
       };
     },
     methods: {
@@ -61,10 +62,10 @@
       },
       openDialog(add) {
         this.add = add;
-        this.$refs.modal.open();
+        this.modalOpen = true;
       },
       closeDialog() {
-        this.$refs.modal.close();
+        this.modalOpen = false;
       },
       ...mapActions({
         addMyCjk: FILE_ACTION_ADD_MY_CJK,

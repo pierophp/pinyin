@@ -1,16 +1,18 @@
 <template>
   <div>
-    <md-menu md-size="4" md-direction="top left" md-offset-y="-52" ref="menuLinks" v-if="list == 0">
-      <span md-menu-trigger></span>
+    <md-dialog ref="modal" :md-active.sync="showMenu" :md-fullscreen="false" v-if="list == 0" >
+      <md-dialog-content>
+        <div v-for="(link, index) in links" v-bind:key="index">
+          <a :href="link.href" target="_blank">
+              <md-button class="link-button md-primary">{{ link.title }}</md-button>
+          </a>
+        </div>
+      </md-dialog-content>
 
-      <md-menu-content>
-        <a v-for="(link, index) in links" :href="link.href" v-bind:key="index" target="_blank">
-          <md-menu-item>
-            <span>{{ link.title }}</span>
-          </md-menu-item>
-        </a>
-      </md-menu-content>
-    </md-menu>
+      <md-dialog-actions>
+        <md-button class="md-primary" @click.native="showMenu = false">{{ $t('cancel') }}</md-button>
+      </md-dialog-actions>
+    </md-dialog>
 
     <div v-if="list == 1">
       <div v-for="(link, index) in links" v-bind:key="index">
@@ -28,6 +30,16 @@
     props: {
       character: '',
       list: 0,
+    },
+    data() {
+      return {
+        showMenu: false,
+      };
+    },
+    methods: {
+      open() {
+        this.showMenu = true;
+      },
     },
     computed: {
       links: function links() {

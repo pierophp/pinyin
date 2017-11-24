@@ -7,7 +7,7 @@ import http from 'src/helpers/http';
 import webVTTParser from 'src/domain/webvtt-parser';
 import replaceall from 'replaceall';
 import FilePrint from 'src/pages/files/FilePrint';
-import separatePinyinInSyllables from 'shared/helpers/separate-pinyin-in-syllables';
+import separatePinyinInSyllables from 'src/helpers/separate-pinyin-in-syllables';
 
 import {
     mapMutations,
