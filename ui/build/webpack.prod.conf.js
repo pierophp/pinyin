@@ -114,16 +114,6 @@ const webpackConfig = merge(baseWebpackConfig, {
       children: true,
       minChunks: 3
     }),
-
-    // copy custom static assets
-    new CopyWebpackPlugin([
-      {
-        from: path.resolve(__dirname, '../static'),
-        to: config.build.assetsSubDirectory,
-        ignore: ['.*']
-      }
-    ]),
-
     new OfflinePlugin({
       responseStrategy: 'network-first',
       ServiceWorker: {
@@ -137,7 +127,16 @@ const webpackConfig = merge(baseWebpackConfig, {
         'https://fonts.googleapis.com/earlyaccess/notosanstc.css',
       ],
     }),
-  ]
+
+    // copy custom static assets
+    new CopyWebpackPlugin([
+      {
+        from: path.resolve(__dirname, '../static'),
+        to: config.build.assetsSubDirectory,
+        ignore: ['.*']
+      }
+    ]),
+  ],
 })
 
 if (config.build.productionGzip) {
