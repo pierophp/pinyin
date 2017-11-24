@@ -29,29 +29,12 @@ const postDeployCommands = [
   'cp ../../env/* .',
   'yarn install --production',
   'knex migrate:latest --env production',
-  `sudo pm2 startOrRestart ecosystem.json --env ${isProduction ? 'production' : 'staging'}`,
+  `sudo pm2 startOrRestart ecosystem-${isProduction ? 'master' : 'staging'}.json --env production`,
 ];
 
 const postDeploy = postDeployCommands.join(' && ');
 
 module.exports = {
-  apps: [
-    {
-      name: 'Pinyin ' + process.env.TRAVIS_BRANCH,
-      script: 'server.js',
-      env: {
-        COMMON_VARIABLE: 'true',
-      },
-      env_production: {
-        PORT: 3001,
-        NODE_ENV: 'production',
-      },
-      env_staging: {
-        PORT: 3002,
-        NODE_ENV: 'production',
-      },
-    },
-  ],
  /**
    * Deployment section
    * http://pm2.keymetrics.io/docs/usage/deployment/
