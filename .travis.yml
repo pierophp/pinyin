@@ -49,6 +49,8 @@ before_install:
 - sed -i -e 's/favicon\//favicon-bible\//g' index.html
 - yarn build-bible > /dev/null
 - zip -r /home/travis/bible.pinyin.dist.zip dist > /dev/null
+- echo "static/bible/*" >> .gitignore
+- echo "src/.config.js" >> .gitignore
 - rm -Rf static/bible
 - rm index.html
 - cp index-${TRAVIS_BRANCH}.html index.html
@@ -68,6 +70,7 @@ before_script:
 - cd ../
 - mkdir storage
 - chmod +x scripts/deploy.sh
+- git config core.fileMode false
 script:
 - echo "Run Script"
 deploy:

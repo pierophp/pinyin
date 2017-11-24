@@ -2,6 +2,7 @@ cd api/
 [[ $TRAVIS_BRANCH = "master" ]] && DEPLOY_ENV="production" || DEPLOY_ENV="staging"
 echo "Deploy Starting: $DEPLOY_ENV"
 export SSH_KEY="/home/travis/.ssh/id_rsa"
+git checkout -- yarn.lock
 export CMD="scp -o StrictHostKeyChecking=no /home/travis/pinyin.dist.zip ${SSH_USER}@${SSH_HOST}:~/pinyin.dist-${TRAVIS_BRANCH}.zip"
 $CMD
 export CMD="scp -o StrictHostKeyChecking=no /home/travis/bible.pinyin.dist.zip ${SSH_USER}@${SSH_HOST}:~/bible.pinyin.dist-${TRAVIS_BRANCH}.zip"
