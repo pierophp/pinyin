@@ -57,6 +57,10 @@ class User {
     if (window.location.host.indexOf('2pinyin.net') !== -1) {
       domain = '.2pinyin.net';
     }
+    
+    if (window.location.host.indexOf('giusit.com.br') !== -1) {
+      domain = '.giusit.com.br';
+    }
 
     return domain;
   }
