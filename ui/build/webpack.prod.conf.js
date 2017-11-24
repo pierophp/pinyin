@@ -121,10 +121,22 @@ const webpackConfig = merge(baseWebpackConfig, {
         navigateFallbackURL: 'index.html',
       },
       externals: [
-        'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic',
+        //  Material Icons
         'https://fonts.gstatic.com/s/materialicons/v31/2fcrYFNaTjcS6g4U3t-Y5UEw0lE80llgEseQY3FEmqw.woff2',
-        'https://fonts.googleapis.com/earlyaccess/notosansscsliced.css',
-        'https://fonts.googleapis.com/earlyaccess/notosanstc.css',
+        //  Noto Sans Simplified
+        'https://fonts.gstatic.com/ea/notosanssc/v1/NotoSansSC-Thin.woff2',
+        'https://fonts.gstatic.com/ea/notosanssc/v1/NotoSansSC-Light.woff2',
+        'https://fonts.gstatic.com/ea/notosanssc/v1/NotoSansSC-Regular.woff2',
+        'https://fonts.gstatic.com/ea/notosanssc/v1/NotoSansSC-Medium.woff2',
+        'https://fonts.gstatic.com/ea/notosanssc/v1/NotoSansSC-Bold.woff2',
+        'https://fonts.gstatic.com/ea/notosanssc/v1/NotoSansSC-Black.woff2',
+        //  Noto Sans Traditional
+        'https://fonts.gstatic.com/ea/notosanstc/v1/NotoSansTC-Thin.woff2',
+        'https://fonts.gstatic.com/ea/notosanstc/v1/NotoSansTC-Light.woff2',
+        'https://fonts.gstatic.com/ea/notosanstc/v1/NotoSansTC-Regular.woff2',
+        'https://fonts.gstatic.com/ea/notosanstc/v1/NotoSansTC-Medium.woff2',
+        'https://fonts.gstatic.com/ea/notosanstc/v1/NotoSansTC-Bold.woff2',
+        'https://fonts.gstatic.com/ea/notosanstc/v1/NotoSansTC-Black.woff2',
       ],
     }),
 
