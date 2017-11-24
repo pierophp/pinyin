@@ -289,7 +289,7 @@
   .print .character,
   .print .character span {
     min-width: 0;
-    font-family: 'Noto Sans SC Sliced', 'Noto Sans TC', sans-serif;
+    font-family: 'Noto Sans SC', 'Noto Sans TC', sans-serif;
     font-weight: lighter;
   }
   .print .character span {

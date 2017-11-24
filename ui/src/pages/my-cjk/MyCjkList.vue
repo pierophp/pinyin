@@ -396,7 +396,7 @@
   }
 
   .ideogram .md-table-cell-container{
-    font-family: 'Noto Sans SC Sliced', 'Noto Sans TC', sans-serif;
+    font-family: 'Noto Sans SC', 'Noto Sans TC', sans-serif;
     font-size: 21px !important;
     font-weight: 300 !important;
   }
