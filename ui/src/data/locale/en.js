@@ -13,6 +13,7 @@ export default {
     bible: '2Pinyin - Bible',
     dictionary: '2Pinyin - Dictionary',
     videos: '2Pinyin - Videos',
+    converter: '2Pinyin - Converter',
   },
   visualization_mode: 'Visualization mode',
   edition_mode: 'Edition mode',
@@ -116,4 +117,7 @@ export default {
   confirmation: 'Confirmation',
   confirmation_download_bible: 'Would you like to download the Bible?',
   confirmation_delete_bible: 'Would you like to delete the Bible?',
+  about_text: 'For questions or suggestions, send an email to pinyineditor@gmail.com',
+  other_apps: 'Other Apps',
+  share: 'Share',
 };

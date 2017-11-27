@@ -11,6 +11,7 @@ import BibleBooks from 'src/pages/bible/Books';
 import BibleChapters from 'src/pages/bible/Chapters';
 import BibleChapter from 'src/pages/bible/Chapter';
 import BibleSave from 'src/pages/bible/Save';
+import About from 'src/pages/about/About';
 import NotFound from 'src/pages/NotFound';
 
 export default [
@@ -134,6 +135,14 @@ export default [
       topBar: 'bible-chapter',
       protected: true,
       topBarLeft: true,
+    },
+  },
+  {
+    path: '/about',
+    name: 'about',
+    component: About,
+    meta: {
+
     },
   },
   {
