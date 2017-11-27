@@ -6,6 +6,7 @@ export default {
     my_ideograms: 'Meus ideogramas',
     settings: 'Configurações',
     video: 'Vídeo',
+    about: 'Sobre',
     logout: 'Sair',
   },
   app: {

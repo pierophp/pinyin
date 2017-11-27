@@ -6,6 +6,7 @@ export default {
     my_ideograms: 'My Ideograms',
     settings: 'Settings',
     video: 'Video',
+    about: 'About',
     logout: 'Logout',
   },
   app: {
