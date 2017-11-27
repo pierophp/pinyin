@@ -102,7 +102,7 @@
 
     <forvo-modal ref="dialogForvo" :character="block.character" />
 
-    <md-snackbar md-position="center" ref="snackbarClipboard" :md-duration="1300">
+    <md-snackbar md-position="center" ref="snackbarClipboard" :md-duration="1300" :md-active.sync="clipboardOpen">
       <span>{{ $t('copied_to_clipboard') }}</span>
     </md-snackbar>
 
@@ -150,6 +150,7 @@
         modalDictionaryOpen: false,
         modalSeparateOpen: false,
         modalEditOpen: false,
+        clipboardOpen: false,
         dictionary: {
           pt: null,
           unihan: null,
@@ -310,7 +311,7 @@
       },
 
       clipboardSuccess() {
-        this.$refs.snackbarClipboard.open();
+        this.clipboardOpen = true;
       },
 
       openSound() {

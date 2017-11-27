@@ -13,7 +13,7 @@ body {
 }
 
 .has-bottom-bar .md-dialog-container,
-.has-bottom-bar .md-backdrop {
+.has-bottom-bar .md-overlay {
   height: calc(100% - 35px);
 }
 
@@ -135,4 +135,8 @@ html, body {
 .md-list-item:hover {
   background-color: rgba(153, 153, 153, 0.2);
   cursor: pointer;
+}
+
+.md-menu-content {
+  max-height: 40vh !important;
 }

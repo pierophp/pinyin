@@ -67,6 +67,12 @@
 </script>
 
 <style>
+.dialog-bible {
+  max-width: 90% !important;
+  min-width: 90% !important;
+  max-height: 80% !important;
+}
+
 .dialog-bible .md-dialog-title {
   margin: 0;
   padding: 15px 15px 0;
@@ -76,10 +82,6 @@
   padding: 2px;
 }
 
-.dialog-bible .md-dialog{
-  max-width: 90% !important;
-  max-height: 90% !important;
-}
 .dialog-bible .md-dialog-actions {
   min-height: 42px;
   justify-content: space-between;

@@ -137,6 +137,11 @@ const webpackConfig = merge(baseWebpackConfig, {
         'https://fonts.gstatic.com/ea/notosanstc/v1/NotoSansTC-Medium.woff2',
         'https://fonts.gstatic.com/ea/notosanstc/v1/NotoSansTC-Bold.woff2',
         'https://fonts.gstatic.com/ea/notosanstc/v1/NotoSansTC-Black.woff2',
+        // Roboto
+        'https://fonts.gstatic.com/s/roboto/v18/Ks_cVxiCiwUWVsFWFA3Bjn-_kf6ByYO6CLYdB4HQE-Y.woff2', // Roboto 400 latin ext
+        'https://fonts.gstatic.com/s/roboto/v18/oMMgfZMQthOryQo9n22dcuvvDin1pK8aKteLpeZ5c0A.woff2', // Roboto 400 latin
+        'https://fonts.gstatic.com/s/roboto/v18/97uahxiqZRoncBaCEI3aW4X0hVgzZQUfRDuZrPvH3D8.woff2', // Roboto Bold 700 latin ext
+        'https://fonts.gstatic.com/s/roboto/v18/d-6IYplOFocCacKzxwXSOJBw1xU1rKptJj_0jans920.woff2', // Roboto Bold 700 latin
       ],
     }),
 
