@@ -67,7 +67,7 @@ export default {
         const url = window.location.href.split('/#')[0];
         if (navigator.share) {
           navigator.share({
-              title: this.$t($router.options.appOptions.title),
+              title: this.$t($this.router.options.appOptions.title),
               text: 'Use o app!',
               url,
           })
