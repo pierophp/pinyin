@@ -1,16 +1,14 @@
 <template>
-  <div>
-    <md-dialog ref="modal" class="dialog-bible" :md-active.sync="modalOpen" :md-fullscreen="false">
-      <md-dialog-content>
-        <chapter-container v-if="book" :book="book" :chapter="chapter" :verse="verse" @open-bottom-bar="openBottomBar"/>
-      </md-dialog-content>
+  <md-dialog ref="modal" class="dialog-bible" :md-active.sync="modalOpen" :md-fullscreen="false" :md-backdrop="true">
+    <md-dialog-content>
+      <chapter-container v-if="book" :book="book" :chapter="chapter" :verse="verse" @open-bottom-bar="openBottomBar"/>
+    </md-dialog-content>
 
-      <md-dialog-actions>
-        <span class="bible-title">{{ booksName(book, exhibitionType ) }} {{ chapter }}:{{ verse }}</span>
-        <md-button class="md-primary" @click.native="closeDialog()">{{ $t('close') }}</md-button>
-      </md-dialog-actions>
-    </md-dialog>
-  </div>
+    <md-dialog-actions>
+      <span class="bible-title">{{ booksName(book, exhibitionType ) }} {{ chapter }}:{{ verse }}</span>
+      <md-button class="md-primary" @click.native="closeDialog()">{{ $t('close') }}</md-button>
+    </md-dialog-actions>
+  </md-dialog>
 </template>
 
 <script>
