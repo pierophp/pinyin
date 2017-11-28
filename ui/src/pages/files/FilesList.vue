@@ -174,4 +174,8 @@
 .files-container .md-list-item .list-icon{
   padding: 0;
 }
+
+.files-container .md-list-item-text{
+  text-transform: none !important;
+}
 </style>

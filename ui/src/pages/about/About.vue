@@ -84,7 +84,7 @@ export default {
         const url = window.location.href.split('#/')[0];
 
         await navigator.share({
-          title: this.$t(this.$router.options.appOptions.title),
+          text: this.$t(this.$router.options.appOptions.title),
           url,
         });
       },

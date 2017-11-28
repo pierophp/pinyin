@@ -118,7 +118,6 @@ router.post('/save', async (req, res) => {
           definition_pt: JSON.stringify(req.body.dictionary),
         });
   } else {
-
     const pronunciationUnaccented = removeDiacritics(pronunciation);
     await knex('cjk')
         .insert({
