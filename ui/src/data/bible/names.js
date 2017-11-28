@@ -43,7 +43,7 @@ const data = {
     mark: 'Mǎkěfúyīn',
     luke: 'Lùjiāfúyīn',
     john: 'Yuēhànfúyīn',
-    acts: 'Shǐtúxíngchuán',
+    acts: 'Shǐtúxíngzhuàn',
     romans: 'Luómǎshū',
     '1corinthians': 'Gēlínduōqiánshū',
     '2corinthians': 'Gēlínduōhòushū',
