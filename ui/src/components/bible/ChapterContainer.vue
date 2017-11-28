@@ -44,7 +44,7 @@
         linesLanguage: [],
         fullLines: [],
         fullLinesLanguage: [],
-        showVerses: true,
+        showVerses: false,
         verses: [],
         selecteds: [],
         selectedsLanguage: [],
@@ -370,6 +370,8 @@
 
         if (this.verse) {
           this.showVerses = false;
+        } else {
+          this.showVerses = true;
         }
 
         const chapter = chaptersData[this.book][this.chapter - 1];
