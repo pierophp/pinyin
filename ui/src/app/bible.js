@@ -22,7 +22,7 @@ export default {
       link: '/config',
     },
     {
-      icon: 'about',
+      icon: 'help',
       title: 'menu.about',
       action: 'goTo',
       link: '/about',
