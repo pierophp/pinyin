@@ -2,8 +2,10 @@
 
 import offlinePlugin from 'offline-plugin/runtime';
 import Vue from 'vue';
+
 import VueMaterial from 'vue-material';
 import VueI18n from 'vue-i18n';
+// import { MdButton, MdIcon, MdToolbar } from 'vue-i18n';
 import VueAnalytics from 'vue-analytics';
 import VueClipboards from 'vue-clipboards';
 import Raven from 'raven-js';
@@ -12,9 +14,14 @@ import RavenVue from 'raven-js/plugins/vue';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-social/bootstrap-social.css';
 import 'font-awesome/css/font-awesome.min.css';
-import 'vue-material/dist/vue-material.css';
+import 'src/css/vue-material.scss';
 import 'src/css/default.css';
 import 'src/css/bootstrap-callout.css';
+import 'src/css/fonts/material-icons.css';
+import 'src/css/fonts/roboto.css';
+import 'src/css/fonts/noto-sans-sc.css';
+import 'src/css/fonts/noto-sans-tc.css';
+import 'src/css/fonts/roboto.css';
 import 'src/helpers/array';
 import 'medium-editor/dist/css/medium-editor.css';
 import 'medium-editor/dist/css/themes/default.css';

@@ -39,7 +39,7 @@ export default {
 .bible-title{
   cursor: pointer;
   font-size: 18px;
-  font-family: 'Noto Sans SC Sliced', 'Noto Sans TC', sans-serif;
+  font-family: 'Noto Sans SC', 'Noto Sans TC', sans-serif;
   color:#fff;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <md-dialog ref="modal" id="image-zoom-modal">
+  <md-dialog ref="modal" id="image-zoom-modal" :md-active.sync="modalOpen" :md-fullscreen="false">
     <md-dialog-title>
       <div class="top-actions">
 
@@ -11,7 +11,7 @@
     </md-dialog-content>
 
     <md-dialog-actions>
-      <md-button class="md-primary" @click.native="closeDialog()">{{ $t('cancel') }}</md-button>
+      <md-button class="md-primary" @click.native="closeDialog()">{{ $t('close') }}</md-button>
     </md-dialog-actions>
   </md-dialog>
 </template>
@@ -22,15 +22,20 @@
     props: {
       src: '',
     },
+    data() {
+      return {
+        modalOpen: false,
+      };
+    },
     methods: {
       confirm() {
-        this.closeDialog('imageZoomModal');
+        this.modalOpen = false;
       },
       openDialog() {
-        this.$refs.modal.open();
+        this.modalOpen = true;
       },
       closeDialog() {
-        this.$refs.modal.close();
+        this.modalOpen = false;
       },
     },
   };
@@ -43,7 +48,8 @@
   background-color: #777;
 }
 
-#image-zoom-modal .md-dialog {
+#image-zoom-modal.md-dialog {
+  min-width: 95%;
   max-width: 95%;
   max-height: 95%;
 }

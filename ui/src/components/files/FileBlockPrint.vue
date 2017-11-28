@@ -7,7 +7,7 @@
       </a>
     </div>
 
-    <div class="pinyin" v-if="!block.small && !withoutPinyn">
+    <div class="pinyin" v-if="!block.small" v-bind:style="pinyinStyleObject">
       <span>
         <span v-for="(data, dataIndex) in printData" :class="[data.pinyinClass]" v-html="data.pinyin" v-bind:key="dataIndex" ></span>
       </span>
@@ -24,7 +24,7 @@
 </template>
 
 <script>
-  import separatePinyinInSyllables from 'shared/helpers/separate-pinyin-in-syllables';
+  import separatePinyinInSyllables from 'src/helpers/separate-pinyin-in-syllables';
   import IdeogramsShow from 'src/components/ideograms/Show';
   import OptionsManager from 'src/domain/options-manager';
 
@@ -47,7 +47,7 @@
         classExtra: '',
         classBold: '',
         printData: [],
-        withoutPinyn: false,
+        pinyinStyleObject: {},
       };
     },
     props: {
@@ -158,7 +158,10 @@
           });
         }
 
-        this.withoutPinyn = withoutPinyn;
+        this.pinyinStyleObject = {};
+        if (withoutPinyn) {
+          this.pinyinStyleObject.height = 'auto';
+        }
 
         if (chars.length === 0) {
           printData.push({

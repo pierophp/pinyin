@@ -150,7 +150,7 @@
   padding: 10px 0 10px 10px;
   cursor: pointer;
   font-size: 16px;
-  font-family: 'Noto Sans SC Sliced', 'Noto Sans TC', sans-serif;
+  font-family: 'Noto Sans SC', 'Noto Sans TC', sans-serif;
 }
 
 .pinyin .bible-content {

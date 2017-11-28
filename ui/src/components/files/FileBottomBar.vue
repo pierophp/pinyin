@@ -11,7 +11,7 @@
         <md-icon>find_in_page</md-icon>
       </md-button>
 
-      <md-menu md-size="4" md-direction="top left" md-offset-y="-52">
+      <md-menu md-size="big" md-direction="top-start" :md-offset-y="6">
         <md-button class="md-icon-button md-primary md-2" md-menu-trigger>
           <md-icon>more_vert</md-icon>
         </md-button>
@@ -19,23 +19,23 @@
         <md-menu-content>
           <md-menu-item @click.native="close()">
             <md-icon>clear</md-icon>
-            <span>{{ $t('close') }}</span>
+            <span class="md-list-item-text">{{ $t('close') }}</span>
           </md-menu-item>
           <md-menu-item @click.native="joinLeft(block)">
             <md-icon>arrow_back</md-icon>
-            <span>{{ $t('join_left') }}</span>
+            <span class="md-list-item-text">{{ $t('join_left') }}</span>
           </md-menu-item>
           <md-menu-item @click.native="separate(block)">
             <md-icon>swap_horiz</md-icon>
-            <span>{{ $t('split') }}</span>
+            <span class="md-list-item-text">{{ $t('split') }}</span>
           </md-menu-item>
           <md-menu-item @click.native="edit(block)">
             <md-icon>edit</md-icon>
-            <span>{{ $t('edit') }}</span>
+            <span class="md-list-item-text">{{ $t('edit') }}</span>
           </md-menu-item>
           <md-menu-item @click.native="openLinkMenu()">
             <md-icon>open_in_browser</md-icon>
-            <span>Links</span>
+            <span class="md-list-item-text">Links</span>
           </md-menu-item>
         </md-menu-content>
       </md-menu>
@@ -44,7 +44,7 @@
     </div>
 
 
-    <md-dialog ref="dialogDictionary">
+    <md-dialog ref="dialogDictionary":md-active.sync="modalDictionaryOpen" :md-fullscreen="false">
       <md-dialog-title>
         <ideograms-show :pinyin="block.pinyin" :character="block.character"/>
         - {{ block.pinyin }}
@@ -52,7 +52,7 @@
           <md-icon>content_copy</md-icon>
         </md-button>
 
-        <md-button class="md-icon-button md-warn sound-btn" @click.native="openSound">
+        <md-button class="md-icon-button md-accent sound-btn" @click.native="openSound">
           <md-icon>volume_up</md-icon>
         </md-button>
       </md-dialog-title>
@@ -62,20 +62,20 @@
       </md-dialog-content>
 
       <md-dialog-actions>
-        <md-button class="md-primary" @click.native="closeDialog('dialogDictionary')">OK</md-button>
+        <md-button class="md-primary" @click.native="modalDictionaryOpen = false">OK</md-button>
       </md-dialog-actions>
     </md-dialog>
 
-    <md-dialog ref="dialogSeparate">
+    <md-dialog ref="dialogSeparate":md-active.sync="modalSeparateOpen" :md-fullscreen="false">
       <md-dialog-title>
         <ideograms-show :pinyin="block.pinyin" :character="block.character"/>
         - {{ block.pinyin }}
       </md-dialog-title>
 
       <md-dialog-content>
-        <md-input-container md-inline>
+        <md-field md-inline>
           <md-input v-model="separateCharacter"></md-input>
-        </md-input-container>
+        </md-field>
       </md-dialog-content>
 
       <md-dialog-actions>
@@ -83,16 +83,16 @@
       </md-dialog-actions>
     </md-dialog>
 
-    <md-dialog ref="dialogEdit">
+    <md-dialog ref="dialogEdit":md-active.sync="modalEditOpen" :md-fullscreen="false">
       <md-dialog-title>
         <ideograms-show :pinyin="block.pinyin" :character="block.character"/>
         - {{ block.pinyin }}
       </md-dialog-title>
 
       <md-dialog-content>
-        <md-input-container md-inline>
-          <md-input :value="editPinyin" @change="changeEditPinyin"></md-input>
-        </md-input-container>
+        <md-field md-inline>
+          <md-input :value="editPinyin" v-model="editPinyin"></md-input>
+        </md-field>
       </md-dialog-content>
 
       <md-dialog-actions>
@@ -102,7 +102,7 @@
 
     <forvo-modal ref="dialogForvo" :character="block.character" />
 
-    <md-snackbar md-position="bottom center" ref="snackbarClipboard" md-duration="1300">
+    <md-snackbar md-position="center" ref="snackbarClipboard" :md-duration="1300" :md-active.sync="clipboardOpen">
       <span>{{ $t('copied_to_clipboard') }}</span>
     </md-snackbar>
 
@@ -116,7 +116,7 @@
   import Links from 'src/components/ideograms/Links';
   import OptionsManager from 'src/domain/options-manager';
   import MobileDetect from 'mobile-detect';
-  import separatePinyinInSyllables from 'shared/helpers/separate-pinyin-in-syllables';
+  import separatePinyinInSyllables from 'src/helpers/separate-pinyin-in-syllables';
   import replaceall from 'replaceall';
   import pinyinHelper from 'src/helpers/pinyin';
   import ForvoModal from 'src/components/modals/Forvo';
@@ -147,6 +147,10 @@
         tempDictCharacter: null,
         block: {},
         printData: {},
+        modalDictionaryOpen: false,
+        modalSeparateOpen: false,
+        modalEditOpen: false,
+        clipboardOpen: false,
         dictionary: {
           pt: null,
           unihan: null,
@@ -169,6 +173,12 @@
       }),
     },
 
+    watch: {
+      editPinyin() {
+        this.changeEditPinyin(this.editPinyin);
+      },
+    },
+
     methods: {
       ...mapActions({
         joinLeft: FILE_ACTION_JOIN_LEFT,
@@ -180,7 +190,7 @@
       }),
 
       openLinkMenu() {
-        this.$refs.links.$refs.menuLinks.open();
+        this.$refs.links.open();
       },
 
       changeShow(show) {
@@ -191,22 +201,22 @@
 
       separate() {
         this.separateCharacter = this.block.character;
-        this.openDialog('dialogSeparate');
+        this.modalSeparateOpen = true;
       },
 
       confirmSeparate() {
         this.separateAction({ ...this.block, separateCharacter: this.separateCharacter });
-        this.closeDialog('dialogSeparate');
+        this.modalSeparateOpen = false;
       },
 
       edit() {
         this.editPinyin = this.block.pinyin;
-        this.openDialog('dialogEdit');
+        this.modalEditOpen = true;
       },
 
       confirmEdit() {
         this.updatePinyin({ ...this.block, pinyin: this.editPinyin });
-        this.closeDialog('dialogEdit');
+        this.modalEditOpen = false;
       },
 
       changeEditPinyin(pinyin) {
@@ -226,7 +236,7 @@
         }
 
         this.block = block;
-        block.pinyin = replaceall(String.fromCharCode(160), '', block.pinyin);
+        block.pinyin = replaceall(String.fromCharCode(160), '', block.pinyin || '');
         this.tempDictCharacter = block.character;
         const pinyin = separatePinyinInSyllables(block.pinyin);
         setTimeout(() => {
@@ -285,7 +295,7 @@
             return;
           }
           this.dictionary = response.data;
-          this.openDialog('dialogDictionary');
+          this.modalDictionaryOpen = true;
         });
       },
 
@@ -301,7 +311,7 @@
       },
 
       clipboardSuccess() {
-        this.$refs.snackbarClipboard.open();
+        this.clipboardOpen = true;
       },
 
       openSound() {
@@ -341,7 +351,7 @@
   flex-shrink: 0;
 }
 .bottom-bar .md-menu {
-  margin-left: -30px;
+  margin-left: -25px;
 }
 .bottom-bar-pinyin{
   font-size: 15px;

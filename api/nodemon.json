@@ -1,15 +1,7 @@
 {
-  "verbose": true,
-  "ext": "ts",
-  "exec": "node -r tsconfig-paths/register ./index",
-  "ignore": [
-    "*.test.js",
-    ".git/*",
-    "public/*",
-    "storage/*",
-    "tests/*",
-    "travis/*",
-    "migrations/*",
-    "README.md"
-    ]
+  "watch": [
+    "app"
+  ],
+  "ignore": ["src/**/*.spec.ts"],
+  "exec": "node ./server"
 }

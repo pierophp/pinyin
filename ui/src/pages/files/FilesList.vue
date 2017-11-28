@@ -10,30 +10,30 @@
               </md-icon>
             </md-button>
 
-            <div class="md-list-text-container">
+            <div class="md-list-item-text">
               {{ file.path }}
             </div>
 
-            <md-menu md-size="4" :md-offset-x="menuX" ref="menu">
+            <md-menu md-size="big" :md-offset-x="menuX" ref="menu" :md-active="fileId === menuFileId">
               <md-button md-menu-trigger class="md-icon-button md-list-action">
                 <md-icon>more_vert</md-icon>
               </md-button>
               <md-menu-content>
                 <md-menu-item @click="openImportDialog(file.path)" v-if="file.type == 'file'">
                   <md-icon>cloud_upload</md-icon>
-                  <span>{{ $t("import_site") }}</span>
+                  <span class="md-list-item-text">{{ $t("import_site") }}</span>
                 </md-menu-item>
                 <md-menu-item @click="visualizationMode(file.path)" v-if="file.type == 'file'">
                   <md-icon>visibility</md-icon>
-                  <span>{{ $t("visualization_mode") }}</span>
+                  <span class="md-list-item-text">{{ $t("visualization_mode") }}</span>
                 </md-menu-item>
                 <md-menu-item @click="goToFile(file.path)" v-if="file.type == 'file'">
                   <md-icon>edit</md-icon>
-                  <span>{{ $t("edition_mode") }}</span>
+                  <span class="md-list-item-text">{{ $t("edition_mode") }}</span>
                 </md-menu-item>
                 <md-menu-item @click="openDeleteDialog(file.path)">
                   <md-icon>delete</md-icon>
-                  <span>{{ $t("delete") }}</span>
+                  <span class="md-list-item-text">{{ $t("delete") }}</span>
                 </md-menu-item>
               </md-menu-content>
             </md-menu>
@@ -96,6 +96,7 @@
         deleteFilename: '',
         importFilename: '',
         menuX: 0,
+        menuFileId: '',
       };
     },
 
@@ -133,7 +134,8 @@
       openOptions(fileId, e) {
         this.menuX = (window.innerWidth - (e.clientX + 100)) * -1;
         this.$nextTick(() => {
-          this.$refs.menu[fileId].open();
+         // this.$refs.menu[fileId]['md-active'] = true;
+          this.menuFileId = fileId;
         });
 
         // setTimeout(() => {
@@ -171,5 +173,9 @@
 
 .files-container .md-list-item .list-icon{
   padding: 0;
+}
+
+.files-container .md-list-item-text{
+  text-transform: none !important;
 }
 </style>

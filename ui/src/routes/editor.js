@@ -11,6 +11,7 @@ import BibleBooks from 'src/pages/bible/Books';
 import BibleChapters from 'src/pages/bible/Chapters';
 import BibleChapter from 'src/pages/bible/Chapter';
 import BibleSave from 'src/pages/bible/Save';
+import About from 'src/pages/about/About';
 import NotFound from 'src/pages/NotFound';
 
 export default [
@@ -110,6 +111,8 @@ export default [
     meta: {
       protected: true,
       hideTitle: true,
+      topBar: 'bible-save',
+      topBarLeft: true,
     },
   },
   {
@@ -120,6 +123,7 @@ export default [
       hideTitle: true,
       topBar: 'bible-chapters',
       protected: true,
+      topBarLeft: true,
     },
   },
   {
@@ -130,6 +134,15 @@ export default [
       hideTitle: true,
       topBar: 'bible-chapter',
       protected: true,
+      topBarLeft: true,
+    },
+  },
+  {
+    path: '/about',
+    name: 'about',
+    component: About,
+    meta: {
+
     },
   },
   {

@@ -4,7 +4,7 @@ export default {
   },
 
   production: {
-    apiUrl: 'https://staging.editor.pinyin.giusit.com.br/',
+    apiUrl: 'https://staging.api.pinyin.giusit.com.br/',
   },
 
   testing: {},

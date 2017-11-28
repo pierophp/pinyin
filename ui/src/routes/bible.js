@@ -6,6 +6,7 @@ import BibleSave from 'src/pages/bible/Save';
 import Config from 'src/pages/config/Config';
 import MyCjkList from 'src/pages/my-cjk/MyCjkList';
 import NotFound from 'src/pages/NotFound';
+import About from 'src/pages/about/About';
 
 export default [
   {
@@ -42,6 +43,8 @@ export default [
     meta: {
       protected: true,
       hideTitle: true,
+      topBar: 'bible-save',
+      topBarLeft: true,
     },
   },
   {
@@ -52,6 +55,7 @@ export default [
       protected: true,
       hideTitle: true,
       topBar: 'bible-chapters',
+      topBarLeft: true,
     },
   },
   {
@@ -62,6 +66,7 @@ export default [
       protected: true,
       hideTitle: true,
       topBar: 'bible-chapter',
+      topBarLeft: true,
     },
   },
   {
@@ -78,6 +83,14 @@ export default [
     component: Config,
     meta: {
       protected: true,
+    },
+  },
+  {
+    path: '/about',
+    name: 'about',
+    component: About,
+    meta: {
+
     },
   },
   {

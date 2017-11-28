@@ -224,9 +224,12 @@
   }
 
   .highlight-modal .trash {
-    color: #fff !important;
     cursor: pointer;
     align-self: center;
+  }
+
+  .highlight-modal .trash i{
+    color: #fff !important;
   }
 
   .highlight-modal .circle:hover,

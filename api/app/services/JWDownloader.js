@@ -196,6 +196,7 @@ module.exports = class JwDownloader {
 
       // eslint-disable-next-line
       console.log(bible);
+      // eslint-disable-next-line
       console.log(bibleEnglish);
 
       const biblePath = `${__dirname}/../../../ui/static/bible/cmn-hans/`;
@@ -243,7 +244,7 @@ module.exports = class JwDownloader {
             verse = 1;
           }
 
-          if (bibleEnglish === 'john' && chapter == 8 && i < 12) {
+          if (bibleEnglish === 'john' && chapter === '8' && i < 12) {
             return;
           }
 
@@ -256,19 +257,16 @@ module.exports = class JwDownloader {
           verseText = replaceall('*', '', verseText);
           verseText = replaceall(String.fromCharCode(8288), '', verseText);
 
-
-          const chapterDebug = 200;
-          const verseDebug = 19;
           for (let vId = 0; vId < verseText.length; vId += 1) {
             if (!verseText[vId]) {
               continue;
             }
 
-            if (bibleEnglish === 'mark' && chapter == 16 && verse == 8 && lineIndex === 1) {
+            if (bibleEnglish === 'mark' && chapter === '16' && verse === '8' && lineIndex === 1) {
               return;
             }
 
-            if (bibleEnglish === 'habakkuk' && chapter == 3 && verse == 19 && lineIndex === 18) {
+            if (bibleEnglish === 'habakkuk' && chapter === '3' && verse === '19' && lineIndex === 18) {
               return;
             }
 
@@ -330,7 +328,7 @@ module.exports = class JwDownloader {
             ];
 
 
-            for (const wordToChangeId in wordsToChange) {
+            for (const wordToChangeId of Object.keys(wordsToChange)) {
               const wordToChange = wordsToChange[wordToChangeId];
 
               if (blockInlineIndex === 0 && blockContent.c === wordToChange.c && replaceall(space, '', blockContent.p.toLowerCase()) === replaceall(space, '', wordToChange.p)) {
@@ -345,20 +343,10 @@ module.exports = class JwDownloader {
               }
             }
 
-            if (chapter == chapterDebug && verse == verseDebug) {
-              //console.log(verseText);
-              console.log('NEW');
-              console.log(blockContent.c);
-            }
             blockContent = blockContent.c.trim().split('');
             blockContent[blockInlineIndex] = verseText[vId];
             chapterObjectTraditional.lines[lineIndex][blockIndex].c = blockContent.join('');
-            if (chapter == chapterDebug && verse == verseDebug) {
-              console.log(blockContent.join(''));
-              // console.log(verseText[vId].charCodeAt(0));
-              // console.log(blockIndex);
-              // console.log(blockInlineIndex);
-            }
+
             blockInlineIndex += 1;
             if (blockInlineIndex === blockContent.length) {
               blockInlineIndex = 0;
@@ -411,7 +399,6 @@ module.exports = class JwDownloader {
     });
 
     await Promise.mapSeries(bibles, async (bible, bibleIndex) => {
-
       const urlChapter = `https://jw.org${bible}/`;
       response = await axios.get(this.encodeUrl(urlChapter));
       $ = cheerio.load(response.data);
@@ -424,11 +411,13 @@ module.exports = class JwDownloader {
 
       // eslint-disable-next-line
       console.log(bible);
+      // eslint-disable-next-line
       console.log(bibleEnglish);
 
       const biblePath = `${__dirname}/../../../ui/static/bible/${language}/`;
 
       await Promise.mapSeries(chapters, async (chapter) => {
+        // eslint-disable-next-line
         console.log(chapter);
         let chapterExists = true;
         try {
@@ -499,7 +488,10 @@ module.exports = class JwDownloader {
           chapterObject.lines[lineIndex][blockIndex].v = parseInt(verse, 10);
           blockIndex += 1;
           chapterObject.lines[lineIndex][blockIndex] = {};
-          chapterObject.lines[lineIndex][blockIndex].p = verseTextArray.splice(1).join(splitChar).trim();
+          chapterObject.lines[lineIndex][blockIndex].p = verseTextArray
+              .splice(1)
+              .join(splitChar)
+              .trim();
         });
 
         try {
@@ -747,6 +739,10 @@ module.exports = class JwDownloader {
     this.isChinese = isChinese;
     this.figcaptionsText = [];
 
+    $('.viewOptions').remove();
+    $('noscript').remove();
+    $('#docSubVideo').remove();
+
     downloadResponse.audio = null;
     let media = $('.jsAudioPlayer a');
     if (isChinese && media.length > 0) {
@@ -794,9 +790,13 @@ module.exports = class JwDownloader {
       type: 'h1',
     });
 
-    let mainElement = $('article .docSubContent');
+    let mainElement = $('article > .docSubContent');
     if (!mainElement.length) {
       mainElement = $('article #bibleText');
+    }
+
+    if (!mainElement.length) {
+      mainElement = $('article .docSubContent');
     }
 
     mainElement.children().each((i, children) => {
@@ -1074,7 +1074,7 @@ module.exports = class JwDownloader {
       }
 
       if (verifyText.split(' ').length === 1) {
-        let segementedText = UnihanSearch.segment(line).join(' ');
+        const segementedText = UnihanSearch.segment(line).join(' ');
         lineText = segementedText;
       } else {
         lineText = line;

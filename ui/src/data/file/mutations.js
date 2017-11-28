@@ -1,9 +1,8 @@
 import Vue from 'vue';
 import pinyin from 'src/helpers/pinyin';
 import LocalStorage from 'src/helpers/local-storage';
+import separatePinyinInSyllables from 'src/helpers/separate-pinyin-in-syllables';
 import * as types from './types';
-import separatePinyinInSyllables from '../../../../shared/helpers/separate-pinyin-in-syllables';
-
 
 function addHighlight(state, data) {
   for (let i = parseInt(data.startLine, 10); i <= parseInt(data.endLine, 10); i += 1) {

@@ -14,7 +14,6 @@ cache:
   directories:
   - node_modules
   - $HOME/.npm
-  - $HOME/.cache/bower
 env:
   global:
   - secure: R1EKUeNYwn0AbHqJlHvXdkN0+VvSInvkqxveoIql2Rso768pkBB3YkIQasz2MsCA/bb1Cqsk4+WCL2ARJtLFUmuVAXCnOh8VPNyipc5CfG0Y37Y45thABmAp8gjgp/51dBM6ngqK0RRhyqc/CJqOkCCoI7ADgRR3lpvVfruklgMa3S4u+4zm2bGNy33rQ5y4kDXi/TACBtifq/Q4wEmqD6iusZemKkpUis8EeqyVbsUUwPujsCSA7Uh99HNZ9MFto5PNJy/kov3+fCKoXdzk/7m6qZHfbiozFZ4Ktt/9XnbKAwDU7n0FUXlAy7QjFmT7vbSWN8NyBD/edvj+441USrIkcGUlDz/jik+i20LEDcnD1m7KVPeqRFdsbA+V3wc0OE0LZf/I10Dt7Ll4odVVlfQL3Z2rujdRQk99J+KmYIfxcuEgwoLuqtJdF2sRefiKX2yNBFwnJohZc37qFvxhIB2X47UxDsIOK52ahRGNqRX7ia3pFPxxVVdWJD4qBdii64fALU3F8sFZis4C6wZ/2lsAcGPkKN9Ps2UWpFbzPRX+Y7i2AVyVF65UStAo66uD8Akp+wLNmtZQA6jm/KMf4zLijSB8Y1He3cs6HxdH/loPlZFbA+AkNKiQxPM7tSEVclvb/lU1lssP2uevTe4pfhxAwb7XNCESB0aDZUCbbLg=
@@ -38,14 +37,14 @@ before_install:
 - mv dist/ ../ui/static/storage/
 - cd ../ui
 - yarn install
+- rm src/.config.js
+- cp src/.config-${TRAVIS_BRANCH}.js src/.config.js
 - rm index.html
 - cp index-${TRAVIS_BRANCH}.html index.html
 - yarn build > /dev/null
 - zip -r /home/travis/pinyin.dist.zip dist > /dev/null
 - rm index.html
 - cp index-${TRAVIS_BRANCH}.html index.html
-- rm src/.config.js
-- cp src/.config-${TRAVIS_BRANCH}.js src/.config.js
 - sed -i -e 's/favicon\//favicon-bible\//g' index.html
 - yarn build-bible > /dev/null
 - zip -r /home/travis/bible.pinyin.dist.zip dist > /dev/null

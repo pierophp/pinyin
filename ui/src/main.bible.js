@@ -1,4 +1,4 @@
-import loadMain from 'main';
+import loadMain from './main';
 
 function tryLoadMain() {
   try {

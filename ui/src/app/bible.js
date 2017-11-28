@@ -22,6 +22,12 @@ export default {
       link: '/config',
     },
     {
+      icon: 'help',
+      title: 'menu.about',
+      action: 'goTo',
+      link: '/about',
+    },
+    {
       icon: 'power_settings_new',
       title: 'menu.logout',
       action: 'logout',

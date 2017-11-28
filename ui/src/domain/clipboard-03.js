@@ -3,7 +3,7 @@ import http from 'src/helpers/http';
 import replaceall from 'replaceall';
 import Promise from 'bluebird';
 import OptionsManager from 'src/domain/options-manager';
-import isChinese from 'shared/helpers/is-chinese';
+import isChinese from 'src/helpers/is-chinese';
 
 async function parseJW(link) {
   const options = OptionsManager.getOptions();
