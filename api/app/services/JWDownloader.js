@@ -741,6 +741,7 @@ module.exports = class JwDownloader {
 
     $('.viewOptions').remove();
     $('noscript').remove();
+    $('#docSubVideo').remove();
 
     downloadResponse.audio = null;
     let media = $('.jsAudioPlayer a');
