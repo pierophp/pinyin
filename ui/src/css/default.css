@@ -141,6 +141,7 @@ html, body {
   max-height: 40vh !important;
 }
 
-.md-overlay {
+.md-overlay,
+.md-dialog {
   transition: initial !important;
 }
