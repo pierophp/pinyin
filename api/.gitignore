@@ -1,5 +1,6 @@
 env.js
-node_modules/*
+node_modules/
 newrelic.js
 newrelic_agent.log
-storage/*
+storage/
+dist/

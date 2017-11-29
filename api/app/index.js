@@ -4,7 +4,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const express = require('express');
-const env = require('./env');
+const env = require('../env');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const cors = require('cors');
@@ -28,23 +28,27 @@ if (process.env.NODE_ENV === 'production') {
 
 app.use(cors());
 
-app.use(jwt({
-  secret: env.jwt_key,
-}).unless({ path: [
-  '/',
-  '/auth/google',
-  '/auth/google/callback',
-  '/auth/baidu',
-  '/auth/baidu/callback',
-  '/unihan/to_pinyin',
-  '/unihan/dictionary',
-  '/unihan/dictionary_search',
-  '/segmentation/segment',
-  '/jw/download',
-  '/jw/track',
-  '/chinese-tools',
-  '/hanzi-writer',
-] }));
+app.use(
+  jwt({
+    secret: env.jwt_key,
+  }).unless({
+    path: [
+      '/',
+      '/auth/google',
+      '/auth/google/callback',
+      '/auth/baidu',
+      '/auth/baidu/callback',
+      '/unihan/to_pinyin',
+      '/unihan/dictionary',
+      '/unihan/dictionary_search',
+      '/segmentation/segment',
+      '/jw/download',
+      '/jw/track',
+      '/chinese-tools',
+      '/hanzi-writer',
+    ],
+  }),
+);
 app.use((req, res, next) => {
   res.setHeader('Content-Type', 'application/json');
   return next();
@@ -54,8 +58,8 @@ app.use(express.static('public'));
 app.use(passport.initialize());
 app.use(bodyParser.json({ limit: '5mb' }));
 
-require('./app/routes')(app, passport);
-require('./app/config/passport')(passport);
+require('./routes')(app, passport);
+require('./config/passport')(passport);
 
 if (process.env.NODE_ENV === 'production') {
   // app.use(AWSXRay.express.closeSegment());
