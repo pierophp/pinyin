@@ -2179,6 +2179,10 @@ lsmod@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/lsmod/-/lsmod-1.0.0.tgz#9a00f76dca36eb23fa05350afe1b585d4299e64b"
 
+ltrim@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/ltrim/-/ltrim-1.0.0.tgz#f9a53c3186152242069a2774805587e61d49fc8e"
+
 make-dir@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/make-dir/-/make-dir-1.1.0.tgz#19b4369fe48c116f53c2af95ad102c0e39e85d51"
@@ -3042,6 +3046,10 @@ rimraf@2, rimraf@^2.2.8, rimraf@^2.5.1, rimraf@^2.6.1:
 rimraf@~2.2.8:
   version "2.2.8"
   resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.2.8.tgz#e439be2aaee327321952730f99a8929e4fc50582"
+
+rtrim@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/rtrim/-/rtrim-1.0.0.tgz#60fb47a18624d6c14ff282c91de08c6e5779e8d9"
 
 run-async@^0.1.0:
   version "0.1.0"

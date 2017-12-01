@@ -5,15 +5,15 @@ import * as uid from 'uid';
 
 import * as env from '../../../env';
 import { ListContentsResponse } from '../response/list.contents.response';
-import { AdapterInterface } from './adapter.interface';
+import { AbstractAdapter } from './abstract.adapter';
 import { NativeAdapter } from './native.adapter';
+import { AdapterInterface } from '../adapter.interface';
 
 const writeFileAsync = promisify(writeFile);
-const nativeAdapter = new NativeAdapter();
 
 let instance;
 
-export class S3Adapter implements AdapterInterface {
+export class S3Adapter extends AbstractAdapter implements AdapterInterface {
   protected getInstance() {
     if (instance) {
       return instance;
@@ -30,22 +30,48 @@ export class S3Adapter implements AdapterInterface {
     return instance;
   }
 
-  public async listContents(folder: string): Promise<ListContentsResponse[]> {
+  protected normalizeResponse(response: any, path: string) {
+    let result: any = {
+      path: path ? '': this.removePathPrefix(response.Key ? response.Key : response.Prefix),
+    };
+
+    // result = array_merge($result, Util::pathinfo($result['path']));
+
+    // if (isset($response['LastModified'])) {
+    //     $result['timestamp'] = strtotime($response['LastModified']);
+    // }
+
+    // if (substr($result['path'], -1) === '/') {
+    //     $result['type'] = 'dir';
+    //     $result['path'] = rtrim($result['path'], '/');
+
+    //     return $result;
+    // }
+
+    // return array_merge($result, Util::map($response, static::$resultMap), ['type' => 'file']);
+  }
+
+  public async listContents(folder: string, recursive: boolean = false): Promise<ListContentsResponse[]> {
     folder = `${folder}/`;
-    const s3Params = {
+    const s3Params: any = {
       Bucket: env.aws_s3_bucket,
       Prefix: folder,
     };
 
+    if (recursive === false) {
+      s3Params.Delimiter = '/';
+    }
+
     const finder = this.getInstance().listObjects({
       s3Params,
-      recursive: false,
+      recursive,
     });
 
     const response: ListContentsResponse[] = [];
 
     return new Promise<ListContentsResponse[]>((done, reject) => {
       finder.on('data', data => {
+        console.log(data.Contents);
         data.Contents.forEach(element => {
           if (element.Key === folder) {
             return;
@@ -67,47 +93,51 @@ export class S3Adapter implements AdapterInterface {
     });
   }
 
-  public async write(path: string, content: string): Promise<string> {
-    const localFile = `tmp/${uid(20)}`;
-    const fullLocalFile = await nativeAdapter.write(localFile, content);
-    const params = {
-      localFile: fullLocalFile,
-      s3Params: {
-        Key: path,
-        Bucket: env.aws_s3_bucket,
-      },
+  public async write(path: string, contents: string): Promise<any> {
+    const s3Params = {
+      Body: Buffer.from(contents),
+      Key: path,
+      Bucket: env.aws_s3_bucket,
+      ContentType: 'application/octet-stream',
     };
 
-    const uploader = this.getInstance().uploadFile(params);
+    const s3 = this.getInstance().s3;
 
-    return new Promise<string>(async (done, reject) => {
-      await nativeAdapter.delete(localFile);
+    return new Promise<any>(async (done, reject) => {
 
-      uploader.on('error', reject);
+      s3.putObject(s3Params, function(err, data) {
+        if (err) {
+          reject(err);
+        }
+        else{
+          done();
+        }
 
-      uploader.on('end', () => {
-        done(path);
       });
     });
   }
 
-  public async read(path: string): Promise<string> {
+  public async read(path: string): Promise<any> {
     const downloader = this.getInstance().downloadBuffer({
       Key: path,
       Bucket: env.aws_s3_bucket,
     });
 
-    return new Promise<string>(done => {
+    return new Promise<any>(done => {
       downloader.on('error', done(''));
 
       downloader.on('end', buffer => {
-        const response = buffer.toString('utf8');
+        const response = {
+          type: 'file',
+          path,
+          contents: buffer.toString('utf8'),
+        };
         done(response);
       });
     });
   }
 
-  public async delete(path: string): Promise<void> {
+  public async delete(path: string): Promise<boolean> {
     const params = {
       Bucket: env.aws_s3_bucket,
       Delete: {
@@ -119,11 +149,86 @@ export class S3Adapter implements AdapterInterface {
       },
     };
 
-    return new Promise<void>(done => {
+    return new Promise<boolean>(done => {
       const deleter = this.getInstance().deleteObjects(params);
       deleter.on('end', function() {
-        done();
+        done(true);
       });
     });
+  }
+
+  public async has(path: string): Promise<boolean> {
+    throw new Error('Not implemented yet');
+  }
+
+  public async readStream(path: string): Promise<any | false> {
+    throw new Error('Not implemented yet');
+  }
+
+  public async getMetadata(path: string): Promise<any | false> {
+    throw new Error('Not implemented yet');
+  }
+
+  public async getSize(path: string): Promise<any | false> {
+    throw new Error('Not implemented yet');
+  }
+
+  public async getMimetype(path: string): Promise<any | false> {
+    throw new Error('Not implemented yet');
+  }
+
+  public async getTimestamp(path: string): Promise<any | false> {
+    throw new Error('Not implemented yet');
+  }
+
+  public async getVisibility(path: string): Promise<any | false> {
+    throw new Error('Not implemented yet');
+  }
+
+  public async writeStream(
+    path: string,
+    resource: any,
+    config?: any,
+  ): Promise<any> {
+    throw new Error('Not implemented yet');
+  }
+
+  public async update(
+    path: string,
+    contents: string,
+    config?: any,
+  ): Promise<any> {
+    throw new Error('Not implemented yet');
+  }
+
+  public async updateStream(
+    path: string,
+    resource: any,
+    config?: any,
+  ): Promise<any> {
+    throw new Error('Not implemented yet');
+  }
+
+  public async rename(path: string, newPath: string): Promise<boolean> {
+    throw new Error('Not implemented yet');
+  }
+
+  public async copy(path: string, newPath: string): Promise<boolean> {
+    throw new Error('Not implemented yet');
+  }
+
+  public async deleteDir(path: string): Promise<boolean> {
+    throw new Error('Not implemented yet');
+  }
+
+  public async createDir(path: string): Promise<boolean> {
+    throw new Error('Not implemented yet');
+  }
+
+  public async setVisibility(
+    path: string,
+    visibility: 'public' | 'private',
+  ): Promise<any> {
+    throw new Error('Not implemented yet');
   }
 }

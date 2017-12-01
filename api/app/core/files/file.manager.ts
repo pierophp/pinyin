@@ -1,5 +1,5 @@
 import * as env from '../../../env';
-import { AdapterInterface } from '../../file/adapters/adapter.interface';
+import { AdapterInterface } from '../../file/adapter.interface';
 import { NativeAdapter } from '../../file/adapters/native.adapter';
 import { S3Adapter } from '../../file/adapters/s3.adapter';
 
@@ -8,6 +8,11 @@ const adapters = {
   s3: S3Adapter,
 };
 
+let dirname = `${__dirname}/../../../storage/`;
+if (env.storage_path) {
+  dirname = `${env.storage_path}`;
+}
+
 export class FileManager {
   protected getAdapter(): AdapterInterface {
     let adapter = env.files_adapter;
@@ -15,12 +20,16 @@ export class FileManager {
       adapter = 'native';
     }
 
+    if (adapter === 'native') {
+      return new adapters[adapter](dirname);
+    }
+
     return new adapters[adapter]();
   }
 
   public async getFiles(userId: number): Promise<any> {
     const adapter = this.getAdapter();
-    const files = await adapter.listContents('files/' + userId);
+    const files = await adapter.listContents('files/' + userId, true);
 
     files.forEach(file => {
       file.path = file.path.replace('.json', '');
@@ -31,7 +40,7 @@ export class FileManager {
 
   public async getFile(userId: number, filename: string): Promise<any> {
     const adapter = this.getAdapter();
-    await adapter.read(`files/${userId}/${filename}`);
+    return (await adapter.read(`files/${userId}/${filename}`)).contents;
   }
 
   public async saveFile(
