@@ -1,10 +1,10 @@
 import * as env from '../../../env';
-import { AdapterInterface } from '../../file/adapter.interface';
-import { NativeAdapter } from '../../file/adapters/native.adapter';
-import { S3Adapter } from '../../file/adapters/s3.adapter';
+import { AdapterInterface } from 'node-filesystem';
+import { LocalAdapter } from 'node-filesystem';
+import { S3Adapter } from 'node-filesystem';
 
 const adapters = {
-  native: NativeAdapter,
+  local: LocalAdapter,
   s3: S3Adapter,
 };
 
@@ -17,10 +17,10 @@ export class FileManager {
   protected getAdapter(): AdapterInterface {
     let adapter = env.files_adapter;
     if (!adapter) {
-      adapter = 'native';
+      adapter = 'local';
     }
 
-    if (adapter === 'native') {
+    if (adapter === 'local') {
       return new adapters[adapter](dirname);
     }
 
@@ -49,7 +49,7 @@ export class FileManager {
     content: string,
   ): Promise<any> {
     const adapter = this.getAdapter();
-    await adapter.write(`files/${userId}/${filename}`, content);
+    await adapter.write(`files/${userId}/${filename}`, content. {});
   }
 
   public async deleteFile(userId: number, filename: string): Promise<any> {
