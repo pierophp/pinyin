@@ -14,40 +14,38 @@
 </template>
 
 <script>
-  import {
-      mapActions,
-    } from 'vuex';
+import { mapActions } from 'vuex';
 
-  import {
-    FILE_ACTION_DELETE_FILE,
-  } from 'src/data/file/types';
+import { FILE_ACTION_DELETE_FILE } from 'src/data/file/types';
 
-  export default {
-    name: 'modal-delete-file',
-    props: {
-      filename: '',
+export default {
+  name: 'modal-delete-file',
+  props: {
+    file: {},
+  },
+  data() {
+    return {
+      modalOpen: false,
+    };
+  },
+  methods: {
+    confirm() {
+      this.closeDialog();
+      this.deleteFile({
+        filename: this.file.path,
+        type: this.file.type,
+        dirname: this.file.dirname,
+      });
     },
-    data() {
-      return {
-        modalOpen: false,
-      };
+    openDialog() {
+      this.modalOpen = true;
     },
-    methods: {
-      confirm() {
-        this.closeDialog();
-        this.deleteFile({
-          filename: this.filename,
-        });
-      },
-      openDialog() {
-        this.modalOpen = true;
-      },
-      closeDialog() {
-        this.modalOpen = false;
-      },
-      ...mapActions({
-        deleteFile: FILE_ACTION_DELETE_FILE,
-      }),
+    closeDialog() {
+      this.modalOpen = false;
     },
-  };
+    ...mapActions({
+      deleteFile: FILE_ACTION_DELETE_FILE,
+    }),
+  },
+};
 </script>

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon",
+    "dev": "nodemon -e js,ts,json",
     "build": "tsc",
     "server": "node server.js",
     "knex": "node node_modules/knex/src/bin/cli.js",
@@ -40,7 +40,7 @@
     "moment": "^2.18.1",
     "mysql2": "^1.2.0",
     "newrelic": "^1.40.0",
-    "node-filesystem": "^0.0.3",
+    "node-filesystem": "^0.0.5",
     "node-opencc": "^2.0.0",
     "nodejieba": "^2.2.3",
     "passport": "^0.3.2",

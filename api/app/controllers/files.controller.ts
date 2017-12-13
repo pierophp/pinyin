@@ -1,6 +1,6 @@
 import * as bluebird from 'bluebird';
 import * as express from 'express';
-
+import { trimStart } from 'lodash';
 import { FileManager } from '../core/files/file.manager';
 
 const fileManager = new FileManager();
@@ -17,12 +17,34 @@ router.get('/file', async (req: any, res) => {
 });
 
 router.post('/save', async (req: any, res) => {
-  await fileManager.saveFile(req.user.id, req.query.filename, req.body.content);
+  if (req.query.type === 'file') {
+    await fileManager.saveFile(
+      req.user.id,
+      `${trimStart(req.query.dirname, '/')}/${req.query.filename}`,
+      req.body.content,
+    );
+  } else {
+    await fileManager.createDir(
+      req.user.id,
+      `${trimStart(req.query.dirname, '/')}/${req.query.filename}`,
+    );
+  }
+
   res.send({});
 });
 
 router.delete('/', async (req: any, res) => {
-  await fileManager.deleteFile(req.user.id, req.query.filename);
+  if (req.query.type === 'file') {
+    await fileManager.deleteFile(
+      req.user.id,
+      `${trimStart(req.query.dirname, '/')}/${req.query.filename}`,
+    );
+  } else {
+    await fileManager.deleteDir(
+      req.user.id,
+      `${trimStart(req.query.dirname, '/')}/${req.query.filename}`,
+    );
+  }
   res.send({});
 });
 

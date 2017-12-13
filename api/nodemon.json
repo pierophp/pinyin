@@ -1,8 +1,5 @@
 {
-  "watch": [
-    "app"
-  ],
-  "ext": "ts",
+  "watch": ["app"],
   "ignore": ["src/**/*.spec.ts"],
   "exec": "node -r tsconfig-paths/register ./app/server"
 }
