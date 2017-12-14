@@ -13,7 +13,6 @@
     "strict": true,
     "moduleResolution": "node",
     "baseUrl": "./app/",
-    "outDir": "dist",
     "paths": {
       "*": ["./*"]
     }
