@@ -41,6 +41,7 @@
     "mysql2": "^1.2.0",
     "newrelic": "^1.40.0",
     "node-filesystem": "^0.0.5",
+    "node-libcurl": "^1.2.0",
     "node-opencc": "^2.0.0",
     "nodejieba": "^2.2.3",
     "passport": "^0.3.2",

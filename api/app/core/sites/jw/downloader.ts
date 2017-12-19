@@ -1,9 +1,10 @@
 import { http } from '../../../helpers/http';
 import * as profiler from '../../../helpers/profiler';
-import cheerio from 'cheerio';
+import * as cheerio from 'cheerio';
 import { Parser } from './parser';
 import * as UnihanSearch from '../../../services/UnihanSearch';
 import * as bluebird from 'bluebird';
+import { Curl } from 'node-libcurl';
 
 export class Downloader {
   public async download(url: string, language: string, ideogramType: string) {
@@ -30,14 +31,14 @@ export class Downloader {
     let response;
 
     try {
-      response = await http.get(this.encodeUrl(url));
+      response = await this.downloadUrl(this.encodeUrl(url));
     } catch (e) {
       profiler('Download on exception: ' + url);
-      response = await http.get(url);
+      response = await this.downloadUrl(url);
     }
 
     profiler('Download JW End');
-    let $ = cheerio.load(response.data);
+    let $ = cheerio.load(response);
     if (!isChinese) {
       newLanguage = String(url.replace('https://www.jw.org/', '')).split(
         '/',
@@ -48,17 +49,17 @@ export class Downloader {
         const link = `https://www.jw.org${chineseLink.attr('href')}`;
         profiler(`Download JW Start - Chinese - ${this.encodeUrl(link)}`);
         try {
-          response = await http.get(this.encodeUrl(link));
+          response = await this.downloadUrl(this.encodeUrl(link));
         } catch (e) {
           if (e.response.status === 404) {
-            response = await http.get(link);
+            response = await this.downloadUrl(link);
           } else {
             throw e;
           }
         }
 
         profiler('Download JW End - Chinese');
-        $ = cheerio.load(response.data);
+        $ = cheerio.load(response);
       }
     }
 
@@ -126,6 +127,24 @@ export class Downloader {
     profiler('End');
 
     return parsedDownload;
+  }
+
+  protected async downloadUrl(url: string) {
+    const curl = new Curl();
+    curl.setOpt('URL', url);
+    curl.setOpt('FOLLOWLOCATION', true);
+    return new Promise((done, reject) => {
+      curl.on('end', (statusCode, body, headers) => {
+        curl.close.bind(curl);
+        done(body);
+      });
+
+      curl.on('error', () => {
+        curl.close.bind(curl);
+        reject();
+      });
+      curl.perform();
+    });
   }
 
   protected encodeUrl(url: string) {
