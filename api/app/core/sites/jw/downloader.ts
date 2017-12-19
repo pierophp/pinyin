@@ -19,7 +19,7 @@ export class Downloader {
     ];
     let isChinese = false;
     let newLanguage: string = '';
-    chineseSites.forEach((chineseSite) => {
+    chineseSites.forEach(chineseSite => {
       if (url.substring(0, chineseSite.length) === chineseSite) {
         isChinese = true;
       }
@@ -39,7 +39,9 @@ export class Downloader {
     profiler('Download JW End');
     let $ = cheerio.load(response.data);
     if (!isChinese) {
-      newLanguage = String(url.replace('https://www.jw.org/', '')).split('/')[0];
+      newLanguage = String(url.replace('https://www.jw.org/', '')).split(
+        '/',
+      )[0];
 
       const chineseLink = $(`link[hreflang="cmn-han${ideogramType}"]`);
       if (chineseLink.length > 0) {
@@ -94,45 +96,49 @@ export class Downloader {
       }
     }
     profiler('Pinyin Start');
-    await bluebird.map(parsedDownload.text, async (item, i) => {
-      if (item.type === 'img') {
-        return;
-      }
+    await bluebird.map(
+      parsedDownload.text,
+      async (item, i) => {
+        if (item.type === 'img') {
+          return;
+        }
 
-      if (item.type === 'box-img') {
-        return;
-      }
+        if (item.type === 'box-img') {
+          return;
+        }
 
-      if (!item.text) {
-        item.text = '';
-      }
+        if (!item.text) {
+          item.text = '';
+        }
 
-      const ideograms = item.text.split(' ');
-      const pinyin = await UnihanSearch.toPinyin(ideograms);
-      const pinynReturn: any[] = [];
-      pinyin.forEach((pinyinItem) => {
-        pinynReturn.push(pinyinItem.pinyin);
-      });
+        const ideograms = item.text.split(' ');
+        const pinyin = await UnihanSearch.toPinyin(ideograms);
+        const pinynReturn: any[] = [];
+        pinyin.forEach(pinyinItem => {
+          pinynReturn.push(pinyinItem.pinyin);
+        });
 
-      parsedDownload.text[i].pinyin = pinynReturn;
-    }, { concurrency: 4 });
+        parsedDownload.text[i].pinyin = pinynReturn;
+      },
+      { concurrency: 4 },
+    );
 
     profiler('End');
 
     return parsedDownload;
+  }
+
+  protected encodeUrl(url: string) {
+    let newUrl = 'https://www.jw.org/';
+    if (url.substr(0, newUrl.length) !== newUrl) {
+      return url;
     }
 
-    protected encodeUrl(url: string) {
-      let newUrl = 'https://www.jw.org/';
-      if (url.substr(0, newUrl.length) !== newUrl) {
-        return url;
-      }
-  
-      const urlParts = url.replace(newUrl, '').split('/');
-      urlParts.forEach((urlPart) => {
-        newUrl += encodeURIComponent(urlPart);
-        newUrl += '/';
-      });
-      return newUrl;
-    }
+    const urlParts = url.replace(newUrl, '').split('/');
+    urlParts.forEach(urlPart => {
+      newUrl += encodeURIComponent(urlPart);
+      newUrl += '/';
+    });
+    return newUrl;
+  }
 }

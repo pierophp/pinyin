@@ -8,3 +8,4 @@ api/deploy-local.sh
 api/yarn-error.log
 ui/yarn-error.log
 node_modules/
+yarn-error.log

@@ -5,140 +5,174 @@ import { http } from '../../../helpers/http';
 import * as UnihanSearch from '../../../services/UnihanSearch';
 
 export class Parser {
-    protected text: any[] = [];
-    protected figcaptionsText: any[] = [];
-    protected isChinese: boolean;
+  protected text: any[] = [];
+  protected figcaptionsText: any[] = [];
+  protected isChinese: boolean;
 
-    public async parse($, isChinese: boolean) {
-        const downloadResponse: any = {};
-        this.text = [];
-        this.isChinese = isChinese;
-        this.figcaptionsText = [];
-    
-        $('.viewOptions').remove();
-        $('noscript').remove();
-        $('#docSubVideo').remove();
-    
-        downloadResponse.audio = null;
-        let media = $('.jsAudioPlayer a');
-        if (isChinese && media.length > 0) {
-          downloadResponse.audio = media.attr('href');
-        } else if (isChinese) {
-          media = $('.jsAudioFormat a');
-          if (media.length > 0) {
-            try {
-              let titleWithoutSpaces = replaceall(' ', '', this.getText($, $('article header h1')));
-              replaceIdeogramsToSpace.forEach((item) => {
-                titleWithoutSpaces = replaceall(item, '', titleWithoutSpaces);
-              });
-              const responseAudio = await http.get(this.encodeUrl(media.attr('data-jsonurl')));
-              responseAudio.data.files.CHS.MP3.some((file) => {
-                let audioTitleWithoutSpaces = replaceall(' ', '', file.title);
-                replaceIdeogramsToSpace.forEach((item) => {
-                  audioTitleWithoutSpaces = replaceall(item, '', audioTitleWithoutSpaces);
-                });
-    
-                if (titleWithoutSpaces === audioTitleWithoutSpaces) {
-                  downloadResponse.audio = file.file.url;
-                  return true;
-                }
-    
-                return false;
-              });
-            } catch (e) {
-              // eslint-disable-next-line
-              console.log(e.message);
+  public async parse($, isChinese: boolean) {
+    const downloadResponse: any = {};
+    this.text = [];
+    this.isChinese = isChinese;
+    this.figcaptionsText = [];
+
+    $('.viewOptions').remove();
+    $('noscript').remove();
+    $('#docSubVideo').remove();
+
+    downloadResponse.audio = null;
+    let media = $('.jsAudioPlayer a');
+    if (isChinese && media.length > 0) {
+      downloadResponse.audio = media.attr('href');
+    } else if (isChinese) {
+      media = $('.jsAudioFormat a');
+      if (media.length > 0) {
+        try {
+          let titleWithoutSpaces = replaceall(
+            ' ',
+            '',
+            this.getText($, $('article header h1')),
+          );
+          replaceIdeogramsToSpace.forEach(item => {
+            titleWithoutSpaces = replaceall(item, '', titleWithoutSpaces);
+          });
+          const responseAudio = await http.get(
+            this.encodeUrl(media.attr('data-jsonurl')),
+          );
+          responseAudio.data.files.CHS.MP3.some(file => {
+            let audioTitleWithoutSpaces = replaceall(' ', '', file.title);
+            replaceIdeogramsToSpace.forEach(item => {
+              audioTitleWithoutSpaces = replaceall(
+                item,
+                '',
+                audioTitleWithoutSpaces,
+              );
+            });
+
+            if (titleWithoutSpaces === audioTitleWithoutSpaces) {
+              downloadResponse.audio = file.file.url;
+              return true;
             }
-          }
+
+            return false;
+          });
+        } catch (e) {
+          // eslint-disable-next-line
+          console.log(e.message);
         }
-    
-        const mainImage = $('.lsrBannerImage');
-        if (mainImage.length) {
+      }
+    }
+
+    const mainImage = $('.lsrBannerImage');
+    if (mainImage.length) {
+      this.text.push({
+        large: $(mainImage)
+          .find('span')
+          .attr('data-zoom'),
+        small: $(mainImage)
+          .find('span')
+          .attr('data-img-size-lg'),
+        type: 'img',
+      });
+    }
+
+    this.text.push({
+      text: this.getText($, $('article header h1')),
+      type: 'h1',
+    });
+
+    let mainElement = $('article > .docSubContent');
+    if (!mainElement.length) {
+      mainElement = $('article #bibleText');
+    }
+
+    if (!mainElement.length) {
+      mainElement = $('article .docSubContent');
+    }
+
+    mainElement.children().each((i, children) => {
+      if ($(children).hasClass('blockTeach')) {
+        const boxH2 = $(children).find('aside h2');
+        if (boxH2 && $(boxH2).text()) {
           this.text.push({
-            large: $(mainImage).find('span').attr('data-zoom'),
-            small: $(mainImage).find('span').attr('data-img-size-lg'),
-            type: 'img',
+            text: this.getText($, boxH2),
+            type: 'h2',
           });
         }
-    
-        this.text.push({
-          text: this.getText($, $('article header h1')),
-          type: 'h1',
-        });
-    
-        let mainElement = $('article > .docSubContent');
-        if (!mainElement.length) {
-          mainElement = $('article #bibleText');
-        }
-    
-        if (!mainElement.length) {
-          mainElement = $('article .docSubContent');
-        }
-    
-        mainElement.children().each((i, children) => {
-          if ($(children).hasClass('blockTeach')) {
-            const boxH2 = $(children).find('aside h2');
+
+        this.parseBlock($, $(children).find('.boxContent'));
+      } else if ($(children).hasClass('bodyTxt')) {
+        $(children)
+          .children()
+          .each((j, subChildren) => {
+            const boxH2 = $(subChildren).children('h2');
             if (boxH2 && $(boxH2).text()) {
               this.text.push({
                 text: this.getText($, boxH2),
                 type: 'h2',
               });
             }
-    
-            this.parseBlock($, $(children).find('.boxContent'));
-          } else if ($(children).hasClass('bodyTxt')) {
-            $(children).children().each((j, subChildren) => {
-              const boxH2 = $(subChildren).children('h2');
-              if (boxH2 && $(boxH2).text()) {
-                this.text.push({
-                  text: this.getText($, boxH2),
-                  type: 'h2',
-                });
-              }
-    
-              $(subChildren).children('div').children().each((k, subChildren02) => {
+
+            $(subChildren)
+              .children('div')
+              .children()
+              .each((k, subChildren02) => {
                 this.parseBlock($, subChildren02);
               });
-            });
-          } else if ($(children).hasClass('article')) {
-            $(children).children().each((j, subChildren) => {
-              if ($(subChildren).hasClass('questions')) {
-                $(subChildren).children().each((k, subChildren02) => {
+          });
+      } else if ($(children).hasClass('article')) {
+        $(children)
+          .children()
+          .each((j, subChildren) => {
+            if ($(subChildren).hasClass('questions')) {
+              $(subChildren)
+                .children()
+                .each((k, subChildren02) => {
                   if ($(subChildren02).get(0).tagName === 'h2') {
                     this.text.push({
                       text: this.getText($, subChildren02),
                       type: 'box-h2',
                     });
                   } else if ($(subChildren02).get(0).tagName === 'ul') {
-                    $(subChildren02).children().each((l, subChildren03) => {
-                      this.parseContent($, subChildren03, 'box');
-                    });
+                    $(subChildren02)
+                      .children()
+                      .each((l, subChildren03) => {
+                        this.parseContent($, subChildren03, 'box');
+                      });
                   } else {
                     this.parseContent($, subChildren02, 'box');
                   }
                 });
-              } else {
-                this.parseBlock($, subChildren);
-              }
-            });
-          } else {
-            this.parseBlock($, children);
-          }
-        });
-    
-        downloadResponse.text = this.text;
-        return downloadResponse;
-    }
+            } else {
+              this.parseBlock($, subChildren);
+            }
+          });
+      } else {
+        this.parseBlock($, children);
+      }
+    });
+
+    downloadResponse.text = this.text;
+    return downloadResponse;
+  }
 
   public parseBlock($, element) {
-    if ($(element).attr('class') && $(element).attr('class').indexOf('boxSupplement') !== -1) {
+    if (
+      $(element).attr('class') &&
+      $(element)
+        .attr('class')
+        .indexOf('boxSupplement') !== -1
+    ) {
       //
       const boxFigure = $(element).find('.fullBleed figure');
       if (boxFigure.length) {
         this.text.push({
           type: 'box-img',
-          large: $(boxFigure).find('span').attr('data-zoom'),
-          small: $(boxFigure).find('span').attr('data-img-size-lg'),
+          large: $(boxFigure)
+            .find('span')
+            .attr('data-zoom'),
+          small: $(boxFigure)
+            .find('span')
+            .attr('data-img-size-lg'),
         });
       }
 
@@ -151,17 +185,24 @@ export class Parser {
       }
 
       if ($(element).find('.boxContent').length > 0) {
-        $(element).find('.boxContent').children().each((i, subChildren) => {
-          if ($(subChildren).get(0).tagName === 'ul') {
-            $(subChildren).children().each((j, subChildrenLi) => {
-              $(subChildrenLi).children().each((k, subChildrenLiContent) => {
-                this.parseContent($, subChildrenLiContent, 'box');
-              });
-            });
-          } else {
-            this.parseContent($, subChildren, 'box');
-          }
-        });
+        $(element)
+          .find('.boxContent')
+          .children()
+          .each((i, subChildren) => {
+            if ($(subChildren).get(0).tagName === 'ul') {
+              $(subChildren)
+                .children()
+                .each((j, subChildrenLi) => {
+                  $(subChildrenLi)
+                    .children()
+                    .each((k, subChildrenLiContent) => {
+                      this.parseContent($, subChildrenLiContent, 'box');
+                    });
+                });
+            } else {
+              this.parseContent($, subChildren, 'box');
+            }
+          });
       } else {
         const subBoxH2 = $(element).find('table caption');
         if (subBoxH2 && $(subBoxH2).text()) {
@@ -171,14 +212,23 @@ export class Parser {
           });
         }
 
-        $(element).find('table tr').each((j, subChildrenTr) => {
-          this.parseContent($, subChildrenTr, 'box');
-        });
+        $(element)
+          .find('table tr')
+          .each((j, subChildrenTr) => {
+            this.parseContent($, subChildrenTr, 'box');
+          });
       }
-    } else if ($(element).attr('class') && $(element).attr('class').indexOf('groupFootnote') !== -1) {
-      $(element).children().each((l, subChildren) => {
-        this.parseContent($, subChildren, 'foot');
-      });
+    } else if (
+      $(element).attr('class') &&
+      $(element)
+        .attr('class')
+        .indexOf('groupFootnote') !== -1
+    ) {
+      $(element)
+        .children()
+        .each((l, subChildren) => {
+          this.parseContent($, subChildren, 'foot');
+        });
     } else {
       this.parseContent($, element, '');
     }
@@ -211,15 +261,23 @@ export class Parser {
         imgType = 'img';
       }
 
-      let large = $(figure).find('span').attr('data-zoom');
-      let small = $(figure).find('span').attr('data-img-size-lg');
+      let large = $(figure)
+        .find('span')
+        .attr('data-zoom');
+      let small = $(figure)
+        .find('span')
+        .attr('data-img-size-lg');
 
       if (!large) {
-        large = $(figure).find('img').attr('src');
+        large = $(figure)
+          .find('img')
+          .attr('src');
       }
 
       if (!small) {
-        small = $(figure).find('img').attr('src');
+        small = $(figure)
+          .find('img')
+          .attr('src');
       }
 
       this.text.push({
@@ -258,7 +316,7 @@ export class Parser {
       return;
     }
 
-    this.explodeLines(text).forEach((line) => {
+    this.explodeLines(text).forEach(line => {
       if (!line) {
         return;
       }
@@ -290,8 +348,16 @@ export class Parser {
     let footNoteId = null;
     if (footNotes.length > 0 && this.isChinese) {
       footNotes.each((i, footNote) => {
-        footNoteId = replaceall('#footnote', '', $(footNote).attr('data-anchor')).trim();
-        text = replaceall($.html(footNote), `#FOOTNOTE${$(footNote).html()}`, text);
+        footNoteId = replaceall(
+          '#footnote',
+          '',
+          $(footNote).attr('data-anchor'),
+        ).trim();
+        text = replaceall(
+          $.html(footNote),
+          `#FOOTNOTE${$(footNote).html()}`,
+          text,
+        );
       });
     }
 
@@ -304,11 +370,17 @@ export class Parser {
         const bibleChapter = bibleLink[7];
         const bibleVerses: any[] = [];
         const bibleVersesLinks = bibleLink[8].split('-');
-        bibleVersesLinks.forEach((bibleVersesLink) => {
+        bibleVersesLinks.forEach(bibleVersesLink => {
           bibleVerses.push(parseInt(bibleVersesLink.substr(-3), 10));
         });
 
-        text = replaceall($.html(bible), `BI#[${bibleBooks[bibleBook]}:${bibleChapter}:${bibleVerses.join('-')}]#BI${$(bible).html()}`, text);
+        text = replaceall(
+          $.html(bible),
+          `BI#[${bibleBooks[bibleBook]}:${bibleChapter}:${bibleVerses.join(
+            '-',
+          )}]#BI${$(bible).html()}`,
+          text,
+        );
       });
     }
 
@@ -320,14 +392,15 @@ export class Parser {
     text = replaceall('<wbr>', ' ', text);
     text = replaceall('<p>', '\r\n<p>', text);
     text = replaceall('<li>', '\r\n<li>', text);
-    text = $('<textarea />').html(text).text();
+    text = $('<textarea />')
+      .html(text)
+      .text();
     text = text.replace(/[\u200B-\u200D\uFEFF]/g, ' '); // replace zero width space to space
     text = replaceall(String.fromCharCode(160), ' ', text); // Convert NO-BREAK SPACE to SPACE
     text = replaceall(String.fromCharCode(8201), ' ', text); // Convert THIN SPACE to SPACE
 
     text = replaceall('//STRONG-OPEN//', '<b>', text);
     text = replaceall('//STRONG-CLOSE//', '</b>', text);
-
 
     if (!this.isChinese) {
       return this.trim(text);
@@ -336,10 +409,10 @@ export class Parser {
     const lines = text.trim().split('\r\n');
 
     let newText = '';
-    lines.forEach((line) => {
+    lines.forEach(line => {
       let lineText = '';
       let verifyText = line;
-      replaceIdeogramsToSpace.forEach((item) => {
+      replaceIdeogramsToSpace.forEach(item => {
         verifyText = replaceall(`${item} `, item, verifyText);
       });
 
@@ -360,28 +433,35 @@ export class Parser {
 
       // separate by numbers
       lineText = lineText
-          .split(/(\d+)/)
-          .map((item) => {
-            if (numberRegex.test(item)) {
-              item = ` ${item}${specialWord} `;
-            }
-            return item;
-          })
-          .join('');
+        .split(/(\d+)/)
+        .map(item => {
+          if (numberRegex.test(item)) {
+            item = ` ${item}${specialWord} `;
+          }
+          return item;
+        })
+        .join('');
 
-      replaceIdeogramsToSpace.forEach((item) => {
+      replaceIdeogramsToSpace.forEach(item => {
         lineText = replaceall(item, ` ${item}${specialWord} `, lineText);
       });
 
       lineText = replaceall('< b >', '<b>', lineText);
       lineText = replaceall('< /b >', '</b>', lineText);
 
-      lineText = replaceall(`<${specialWord} b >${specialWord}`, '<b>', lineText);
-      lineText = replaceall(`<${specialWord} /b >${specialWord}`, '</b>', lineText);
+      lineText = replaceall(
+        `<${specialWord} b >${specialWord}`,
+        '<b>',
+        lineText,
+      );
+      lineText = replaceall(
+        `<${specialWord} /b >${specialWord}`,
+        '</b>',
+        lineText,
+      );
 
       lineText = replaceall('<b>', ' <b> ', lineText);
       lineText = replaceall('</b>', ' </b> ', lineText);
-
 
       // remove double spaces
       if (lineText) {
@@ -393,12 +473,15 @@ export class Parser {
 
       let joinSpecial = '';
 
-      ideograms.forEach((ideogram) => {
+      ideograms.forEach(ideogram => {
         if (ideogram === specialWord) {
           return;
         }
 
-        if (ideogram.substring(ideogram.length - specialWord.length) === specialWord) {
+        if (
+          ideogram.substring(ideogram.length - specialWord.length) ===
+          specialWord
+        ) {
           joinSpecial += ideogram.replace(specialWord, '');
           return;
         } else if (joinSpecial) {
@@ -415,20 +498,19 @@ export class Parser {
 
       lineText = ` ${ideogramsFiltered.join(' ')} `;
 
-      const wordsToReplace = [
-        '各地',
-        '可见',
-        '称为',
-      ];
+      const wordsToReplace = ['各地', '可见', '称为'];
 
-      wordsToReplace.forEach((word) => {
+      wordsToReplace.forEach(word => {
         const replaceWord = ` ${word.split('').join(' ')} `;
         lineText = replaceall(replaceWord, ` ${word} `, lineText);
       });
 
-
       if (footNoteId) {
-        lineText = replaceall('# FOOTNOTE', ` #FOOTNOTE-${footNoteId}-`, lineText);
+        lineText = replaceall(
+          '# FOOTNOTE',
+          ` #FOOTNOTE-${footNoteId}-`,
+          lineText,
+        );
         lineText = replaceall('- *', '-*', lineText);
       }
 
@@ -457,17 +539,16 @@ export class Parser {
   }
 
   protected encodeUrl(url: string) {
-      let newUrl = 'https://www.jw.org/';
-      if (url.substr(0, newUrl.length) !== newUrl) {
-        return url;
-      }
-  
-      const urlParts = url.replace(newUrl, '').split('/');
-      urlParts.forEach((urlPart) => {
-        newUrl += encodeURIComponent(urlPart);
-        newUrl += '/';
-      });
-      return newUrl;
+    let newUrl = 'https://www.jw.org/';
+    if (url.substr(0, newUrl.length) !== newUrl) {
+      return url;
     }
 
+    const urlParts = url.replace(newUrl, '').split('/');
+    urlParts.forEach(urlPart => {
+      newUrl += encodeURIComponent(urlPart);
+      newUrl += '/';
+    });
+    return newUrl;
+  }
 }
