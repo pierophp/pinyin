@@ -148,7 +148,7 @@ export default {
       const fileChangeTimestamp = state.fileChangeTimestamp;
       LocalStorage.save(fileKey, data.content);
       http
-        .post(`files/save?filename=${data.filename}.json`, {
+        .post(`files/save?filename=${data.filename}.json&type=file`, {
           content: JSON.stringify({ lines: data.content, hasSeparator: 0 }),
         })
         .then(() => {

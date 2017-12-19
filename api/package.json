@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon -e js,ts,json",
     "build": "tsc",
-    "server": "node server.js",
+    "server": "node app/server.js",
     "knex": "node node_modules/knex/src/bin/cli.js",
     "test": "node node_modules/karma/bin/karma start karma.conf.js",
     "lint": "node node_modules/eslint/bin/eslint --ext .js app",

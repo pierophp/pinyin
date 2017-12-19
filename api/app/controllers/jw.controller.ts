@@ -1,13 +1,16 @@
-const express = require('express');
+import * as express from 'express';
+import * as JWDownloader from '../services/JWDownloader';
+import { Downloader} from '../core/sites/jw/downloader';
 
-const JWDownloader = require('../services/JWDownloader');
+
 
 // eslint-disable-next-line new-cap
 const router = express.Router();
 
 router.get('/download', async (req, res) => {
+  const downloader = new Downloader();
   try {
-    const response = await JWDownloader
+    const response: any = await downloader
         .download(req.query.url, req.query.language, req.query.ideogramType);
     res.send({ status: 200, audio: response.audio, text: response.text });
   } catch (e) {

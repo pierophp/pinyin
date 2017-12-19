@@ -8,6 +8,7 @@ import isChinese from 'src/helpers/is-chinese';
 async function parseJW(link) {
   const options = OptionsManager.getOptions();
   const response = await http.get(`jw/download?url=${link}&language=${options.translationLanguage}&ideogramType=${options.ideogramType}`);
+
   return response.data;
 }
 
@@ -42,6 +43,8 @@ export default async function (content) {
     content = replaceall('+', '', content);
     lines = await parseContent(content);
   }
+
+  console.log('lines', lines);
 
   const rows = await Promise.map(lines, async (line) => {
     if (typeof line === 'string') {
@@ -134,6 +137,8 @@ export default async function (content) {
   if (isJwOrg) {
     rows[0][0].line.url = content;
   }
+
+  console.log('rows', rows);
 
   return rows;
 }
