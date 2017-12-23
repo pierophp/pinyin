@@ -13,13 +13,15 @@ module.exports = function passportConfig(passport) {
       .where({
         id,
       })
-      .then((data) => {
+      .then(data => {
         done(null, data[0]);
       });
   });
 
   if (!env.google_client_id || !env.google_client_secret) {
-    throw new Error('define google_client_id and google_client_secret in your env.js file');
+    throw new Error(
+      'define google_client_id and google_client_secret in your env.js file',
+    );
   }
 
   const googleOpts = {
@@ -28,39 +30,41 @@ module.exports = function passportConfig(passport) {
     callbackURL: `${env.front_url}/`,
   };
 
-  passport.use(new GoogleStrategy(googleOpts,
-    (token, refreshToken, profile, done) => {
+  passport.use(
+    new GoogleStrategy(googleOpts, (token, refreshToken, profile, done) => {
       process.nextTick(() => {
         knex('user')
           .where({
             provider: 'google',
             profile_id: profile.id,
           })
-          .then((data) => {
+          .then(data => {
             if (data.length > 0) {
               done(null, data[0]);
               return;
             }
 
-            knex('user').insert({
-              provider: 'google',
-              profile_id: profile.id,
-              token,
-              name: profile.displayName,
-              email: profile.emails[0].value,
-              created_at: new Date(),
-            }).then(() => {
-              knex('user')
-                .where({
-                  provider: 'google',
-                  profile_id: profile.id,
-                })
-                .then(user => done(null, user[0])
-                );
-            });
+            knex('user')
+              .insert({
+                provider: 'google',
+                profile_id: profile.id,
+                token,
+                name: profile.displayName,
+                email: profile.emails[0].value,
+                created_at: new Date(),
+              })
+              .then(() => {
+                knex('user')
+                  .where({
+                    provider: 'google',
+                    profile_id: profile.id,
+                  })
+                  .then(user => done(null, user[0]));
+              });
           });
       });
-    }));
+    }),
+  );
 
   const baiduOpts = {
     clientID: env.baidu_client_id,
@@ -68,15 +72,15 @@ module.exports = function passportConfig(passport) {
     callbackURL: `${env.front_url}#/login/baidu`,
   };
 
-  passport.use(new BaiduStrategy(baiduOpts,
-    (token, refreshToken, profile, done) => {
+  passport.use(
+    new BaiduStrategy(baiduOpts, (token, refreshToken, profile, done) => {
       process.nextTick(() => {
         knex('user')
           .where({
             provider: 'baidu',
             profile_id: profile.id,
           })
-          .then((data) => {
+          .then(data => {
             if (data.length > 0) {
               done(null, data[0]);
               return;
@@ -87,23 +91,25 @@ module.exports = function passportConfig(passport) {
               name = profile.username;
             }
 
-            knex('user').insert({
-              provider: 'baidu',
-              profile_id: profile.id,
-              token,
-              name,
-              email: profile.username,
-              created_at: new Date(),
-            }).then(() => {
-              knex('user')
-                .where({
-                  provider: 'baidu',
-                  profile_id: profile.id,
-                })
-                .then(user => done(null, user[0])
-                );
-            });
+            knex('user')
+              .insert({
+                provider: 'baidu',
+                profile_id: profile.id,
+                token,
+                name,
+                email: profile.username,
+                created_at: new Date(),
+              })
+              .then(() => {
+                knex('user')
+                  .where({
+                    provider: 'baidu',
+                    profile_id: profile.id,
+                  })
+                  .then(user => done(null, user[0]));
+              });
           });
       });
-    }));
+    }),
+  );
 };

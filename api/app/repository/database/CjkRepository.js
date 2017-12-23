@@ -8,6 +8,12 @@ const UnihanSearch = require('../../services/UnihanSearch');
 const profiler = require('../../helpers/profiler');
 
 module.exports = class CjkRepository extends BaseRepository {
+  static async findAll() {
+    await knex('cjk')
+      .where()
+      .limit(10);
+  }
+
   static async searchPronunciationByWord(ideograms) {
     const ideogramConverted = UnihanSearch.convertIdeogramsToUtf16(ideograms);
     let response = null;
@@ -50,8 +56,7 @@ module.exports = class CjkRepository extends BaseRepository {
         .where('id', '=', cjk.id)
         .update(cjk);
     } else {
-      await knex('cjk')
-        .insert(cjk);
+      await knex('cjk').insert(cjk);
     }
   }
 
@@ -73,7 +78,7 @@ module.exports = class CjkRepository extends BaseRepository {
 
     let i = 0;
 
-    await Promise.mapSeries(items, async (item) => {
+    await Promise.mapSeries(items, async item => {
       let ideograms = UnihanSearch.convertUtf16ToIdeograms(item.ideogram);
       ideograms = replaceall('%', '', ideograms);
       if (!ideograms) {
@@ -84,17 +89,19 @@ module.exports = class CjkRepository extends BaseRepository {
 
       profiler(`${i} - ${ideograms}`);
 
-      const phrases = await PhraseRepository.findByLanguageAndRlike(language, ideograms);
+      const phrases = await PhraseRepository.findByLanguageAndRlike(
+        language,
+        ideograms,
+      );
       if (phrases.length === 0) {
         return;
       }
 
-      await Promise.mapSeries(phrases, async (phrase) => {
-        await knex('cjk_has_phrase')
-          .insert({
-            cjk_id: item.id,
-            phrase_id: phrase.id,
-          });
+      await Promise.mapSeries(phrases, async phrase => {
+        await knex('cjk_has_phrase').insert({
+          cjk_id: item.id,
+          phrase_id: phrase.id,
+        });
       });
     });
   }

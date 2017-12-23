@@ -28,11 +28,12 @@ const importFile = function importFile() {
 };
 
 const downloadFile = function downloadFile() {
-  const src = 'http://1914:144000@www.3lines.org/languages/portuguese/DicPortugues.txt';
+  const src =
+    'http://1914:144000@www.3lines.org/languages/portuguese/DicPortugues.txt';
 
   const download = wget.download(src, filename);
 
-  download.on('error', (err) => {
+  download.on('error', err => {
     // eslint-disable-next-line
     console.log(`Error: ${err}`);
   });

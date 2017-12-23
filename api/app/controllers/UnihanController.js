@@ -30,19 +30,18 @@ router.get('/search', async (req, res) => {
     .orderBy('usage', 'DESC')
     .select('id', 'pronunciation', 'ideogram', 'frequency', 'usage');
 
-  Promise.join(mostUsedPromise, lessUsedPromise,
-    (mostUsed, lessUsed) => {
-      const result = {};
-      result.items = mostUsed;
-      result.lessUsed = lessUsed;
-      res.setHeader('Content-Type', 'application/json');
-      res.send(JSON.stringify(result));
-    });
+  Promise.join(mostUsedPromise, lessUsedPromise, (mostUsed, lessUsed) => {
+    const result = {};
+    result.items = mostUsed;
+    result.lessUsed = lessUsed;
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(result));
+  });
 });
 
 router.post('/to_pinyin', (req, res) => {
   const ideograms = req.body.ideograms;
-  UnihanSearch.toPinyin(ideograms).then((result) => {
+  UnihanSearch.toPinyin(ideograms).then(result => {
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(result));
   });
@@ -50,7 +49,7 @@ router.post('/to_pinyin', (req, res) => {
 
 router.post('/to_pinyin_all', (req, res) => {
   const ideograms = req.body.ideograms;
-  UnihanSearch.toPinyin(ideograms, { pinyinAll: true }).then((result) => {
+  UnihanSearch.toPinyin(ideograms, { pinyinAll: true }).then(result => {
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(result));
   });
@@ -58,7 +57,7 @@ router.post('/to_pinyin_all', (req, res) => {
 
 router.get('/dictionary_search', (req, res) => {
   const ideograms = req.query.search;
-  UnihanSearch.searchToDictionaryList(ideograms).then((result) => {
+  UnihanSearch.searchToDictionaryList(ideograms).then(result => {
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(result));
   });
@@ -78,7 +77,7 @@ router.get('/dictionary', (req, res) => {
     search.id = req.query.id;
   }
 
-  UnihanSearch.searchToDictionary(search).then((result) => {
+  UnihanSearch.searchToDictionary(search).then(result => {
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(result));
   });
@@ -90,49 +89,49 @@ router.post('/save', async (req, res) => {
     return;
   }
 
-  const ideogram = UnihanSearch
-        .convertIdeogramsToUtf16(await opencc.traditionalToSimplified(req.body.ideograms));
+  const ideogram = UnihanSearch.convertIdeogramsToUtf16(
+    await opencc.traditionalToSimplified(req.body.ideograms),
+  );
   const pronunciation = req.body.pinyin.toLowerCase();
 
   let response = await knex('cjk')
-        .where({
-          ideogram,
-          pronunciation,
-        })
-        .select('id');
+    .where({
+      ideogram,
+      pronunciation,
+    })
+    .select('id');
 
   if (!response.length) {
     response = await knex('cjk')
-          .where({
-            ideogram,
-            main: 1,
-          })
-          .select('id');
+      .where({
+        ideogram,
+        main: 1,
+      })
+      .select('id');
   }
 
   if (response.length) {
     const id = response[0].id;
     await knex('cjk')
-        .where('id', '=', id)
-        .update({
-          definition_pt: JSON.stringify(req.body.dictionary),
-        });
+      .where('id', '=', id)
+      .update({
+        definition_pt: JSON.stringify(req.body.dictionary),
+      });
   } else {
     const pronunciationUnaccented = removeDiacritics(pronunciation);
-    await knex('cjk')
-        .insert({
-          ideogram,
-          main: 1,
-          pronunciation,
-          pronunciation_unaccented: pronunciationUnaccented,
-          language_id: 1,
-          simplified: 1,
-          hsk: 999,
-          type: 'W',
-          usage: 0,
-          created_at: new Date(),
-          definition_pt: JSON.stringify(req.body.dictionary),
-        });
+    await knex('cjk').insert({
+      ideogram,
+      main: 1,
+      pronunciation,
+      pronunciation_unaccented: pronunciationUnaccented,
+      language_id: 1,
+      simplified: 1,
+      hsk: 999,
+      type: 'W',
+      usage: 0,
+      created_at: new Date(),
+      definition_pt: JSON.stringify(req.body.dictionary),
+    });
 
     const cacheKey = `PINYIN_${ideogram}`;
 
@@ -143,6 +142,5 @@ router.post('/save', async (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify({}));
 });
-
 
 module.exports = router;

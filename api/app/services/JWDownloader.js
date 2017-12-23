@@ -24,13 +24,18 @@ module.exports = class JwDownloader {
 
     const words = [];
 
-    await Promise.mapSeries(links, async (letterurl) => {
+    await Promise.mapSeries(links, async letterurl => {
       response = await axios.get(this.encodeUrl(letterurl));
       $ = cheerio.load(response.data);
       $('.directory li a').each((i, wordLink) => {
-        const href = $(wordLink).attr('href').split('/');
+        const href = $(wordLink)
+          .attr('href')
+          .split('/');
         const id = href[href.length - 1];
-        const title = $(wordLink).find('.title').text().trim();
+        const title = $(wordLink)
+          .find('.title')
+          .text()
+          .trim();
         words.push({
           id,
           title,
@@ -54,11 +59,13 @@ module.exports = class JwDownloader {
       }
 
       $ = cheerio.load(response.data);
-      words[i].translation = $('article #p1 strong').text().trim();
+      words[i].translation = $('article #p1 strong')
+        .text()
+        .trim();
     });
 
     let csvBible = 'character;id;translation\n';
-    words.forEach((word) => {
+    words.forEach(word => {
       csvBible += `${word.title};${word.id};${word.translation}\n`;
     });
 
@@ -72,13 +79,16 @@ module.exports = class JwDownloader {
     const content = await fs.readFileAsync(filenameBibleTotal);
     const lines = content.toString().split('\n');
     let csvPinyin = 'word;total;type\n';
-    await Promise.mapSeries(lines, async (line) => {
+    await Promise.mapSeries(lines, async line => {
       const values = line.split(';');
       let pinyin = await UnihanSearch.searchByWord(values[0]);
       let type = 'database';
       if (!pinyin) {
         pinyin = UnihanSearch.parseResultByIdeograms(
-          await UnihanSearch.searchByIdeograms(values[0]), values[0], null, {}
+          await UnihanSearch.searchByIdeograms(values[0]),
+          values[0],
+          null,
+          {},
         ).pinyin;
         type = 'generated';
       }
@@ -98,23 +108,31 @@ module.exports = class JwDownloader {
     let $ = cheerio.load(response.data);
     const bibles = [];
     $('.bibleBook .fullName').each((i, bibleChildren) => {
-      bibles.push($(bibleChildren).text().trim());
+      bibles.push(
+        $(bibleChildren)
+          .text()
+          .trim(),
+      );
     });
 
     const words = {};
     const wordsVerses = [];
 
-    await Promise.mapSeries(bibles, async (bible) => {
+    await Promise.mapSeries(bibles, async bible => {
       const urlChapter = `https://www.jw.org/cmn-hans/出版物/圣经/bi12/圣经经卷/${bible}/`;
       response = await axios.get(this.encodeUrl(urlChapter));
       $ = cheerio.load(response.data);
       const chapters = [];
       $('.chapters .chapter').each((j, bibleChapterChildren) => {
-        chapters.push($(bibleChapterChildren).text().trim());
+        chapters.push(
+          $(bibleChapterChildren)
+            .text()
+            .trim(),
+        );
       });
       // eslint-disable-next-line
       console.log(bible);
-      await Promise.mapSeries(chapters, async (chapter) => {
+      await Promise.mapSeries(chapters, async chapter => {
         // eslint-disable-next-line
         console.log(chapter);
         const url = `https://www.jw.org/cmn-hans/出版物/圣经/bi12/圣经经卷/${bible}/${chapter}/`;
@@ -130,40 +148,49 @@ module.exports = class JwDownloader {
         $ = cheerio.load(response.data);
 
         $('#bibleText .verse').each((i, children) => {
-          let verse = $(children).find('.verseNum').text().trim();
+          let verse = $(children)
+            .find('.verseNum')
+            .text()
+            .trim();
           if (!verse) {
             verse = 1;
           }
 
-          $(children).find('u').each((j, subChildren) => {
-            const word = $(subChildren).text().trim();
+          $(children)
+            .find('u')
+            .each((j, subChildren) => {
+              const word = $(subChildren)
+                .text()
+                .trim();
 
-            if (words[word] === undefined) {
-              words[word] = 0;
-            }
-            wordsVerses.push({
-              bible,
-              chapter,
-              verse,
-              word,
+              if (words[word] === undefined) {
+                words[word] = 0;
+              }
+              wordsVerses.push({
+                bible,
+                chapter,
+                verse,
+                word,
+              });
+
+              words[word] += 1;
             });
-
-            words[word] += 1;
-          });
         });
       });
     });
 
     let csvBible = 'bible;chapter;verse;word\n';
-    wordsVerses.forEach((wordVerse) => {
-      csvBible += `${wordVerse.bible};${wordVerse.chapter};${wordVerse.verse};${wordVerse.word}\n`;
+    wordsVerses.forEach(wordVerse => {
+      csvBible += `${wordVerse.bible};${wordVerse.chapter};${wordVerse.verse};${
+        wordVerse.word
+      }\n`;
     });
 
     const filenameBible = `${dirname}bible_words.csv`;
     await fs.writeFileAsync(filenameBible, csvBible);
 
     let csvBibleTotal = 'word;total\n';
-    Object.keys(words).forEach((key) => {
+    Object.keys(words).forEach(key => {
       csvBibleTotal += `${key};${words[key]}\n`;
     });
 
@@ -177,17 +204,24 @@ module.exports = class JwDownloader {
     let $ = cheerio.load(response.data);
     const bibles = [];
     $('.bibleBook .fullName').each((i, bibleChildren) => {
-      bibles.push($(bibleChildren).text().trim());
+      bibles.push(
+        $(bibleChildren)
+          .text()
+          .trim(),
+      );
     });
 
-
-    await Promise.mapSeries(bibles, async (bible) => {
+    await Promise.mapSeries(bibles, async bible => {
       const urlChapter = `${urlBible}${bible}/`;
       response = await axios.get(this.encodeUrl(urlChapter));
       $ = cheerio.load(response.data);
       const chapters = [];
       $('.chapters .chapter').each((j, bibleChapterChildren) => {
-        chapters.push($(bibleChapterChildren).text().trim());
+        chapters.push(
+          $(bibleChapterChildren)
+            .text()
+            .trim(),
+        );
       });
 
       const bibleEnglish = Object.keys(bibleChapters)[bibleBooks[bible] - 1];
@@ -201,10 +235,12 @@ module.exports = class JwDownloader {
       const biblePath = `${__dirname}/../../../ui/static/bible/cmn-hans/`;
       const biblePathTraditional = `${__dirname}/../../../ui/static/bible/cmn-hant/`;
 
-      await Promise.mapSeries(chapters, async (chapter) => {
+      await Promise.mapSeries(chapters, async chapter => {
         let chapterTraditionalExists = true;
         try {
-          await fs.statAsync(`${biblePathTraditional}${bibleEnglish}/${chapter}.json`);
+          await fs.statAsync(
+            `${biblePathTraditional}${bibleEnglish}/${chapter}.json`,
+          );
         } catch (e) {
           chapterTraditionalExists = false;
         }
@@ -215,7 +251,10 @@ module.exports = class JwDownloader {
 
         // eslint-disable-next-line
         console.log(chapter);
-        const chapterContent = await fs.readFileAsync(`${biblePath}${bibleEnglish}/${chapter}.json`, 'utf8');
+        const chapterContent = await fs.readFileAsync(
+          `${biblePath}${bibleEnglish}/${chapter}.json`,
+          'utf8',
+        );
         const chapterObject = JSON.parse(chapterContent);
         const chapterObjectTraditional = JSON.parse(chapterContent);
 
@@ -237,8 +276,13 @@ module.exports = class JwDownloader {
         $ = cheerio.load(response.data);
 
         $('#bibleText .verse').each((i, children) => {
-          $(children).find('.superscription').remove();
-          let verse = $(children).find('.verseNum').text().trim();
+          $(children)
+            .find('.superscription')
+            .remove();
+          let verse = $(children)
+            .find('.verseNum')
+            .text()
+            .trim();
           if (!verse) {
             verse = 1;
           }
@@ -251,7 +295,10 @@ module.exports = class JwDownloader {
             return;
           }
 
-          let verseText = $(children).text().trim().replace(/\s/g, '');
+          let verseText = $(children)
+            .text()
+            .trim()
+            .replace(/\s/g, '');
           verseText = replaceall('+', '', verseText);
           verseText = replaceall('*', '', verseText);
           verseText = replaceall(String.fromCharCode(8288), '', verseText);
@@ -261,16 +308,28 @@ module.exports = class JwDownloader {
               continue;
             }
 
-            if (bibleEnglish === 'mark' && chapter === '16' && verse === '8' && lineIndex === 1) {
+            if (
+              bibleEnglish === 'mark' &&
+              chapter === '16' &&
+              verse === '8' &&
+              lineIndex === 1
+            ) {
               return;
             }
 
-            if (bibleEnglish === 'habakkuk' && chapter === '3' && verse === '19' && lineIndex === 18) {
+            if (
+              bibleEnglish === 'habakkuk' &&
+              chapter === '3' &&
+              verse === '19' &&
+              lineIndex === 18
+            ) {
               return;
             }
 
-            const blockContentSimplified = chapterObject.lines[lineIndex][blockIndex];
-            let blockContent = chapterObjectTraditional.lines[lineIndex][blockIndex];
+            const blockContentSimplified =
+              chapterObject.lines[lineIndex][blockIndex];
+            let blockContent =
+              chapterObjectTraditional.lines[lineIndex][blockIndex];
             const space = String.fromCharCode(160);
 
             const wordsToChange = [
@@ -326,25 +385,33 @@ module.exports = class JwDownloader {
               },
             ];
 
-
             for (const wordToChangeId of Object.keys(wordsToChange)) {
               const wordToChange = wordsToChange[wordToChangeId];
 
-              if (blockInlineIndex === 0 && blockContent.c === wordToChange.c && replaceall(space, '', blockContent.p.toLowerCase()) === replaceall(space, '', wordToChange.p)) {
+              if (
+                blockInlineIndex === 0 &&
+                blockContent.c === wordToChange.c &&
+                replaceall(space, '', blockContent.p.toLowerCase()) ===
+                  replaceall(space, '', wordToChange.p)
+              ) {
                 blockContentSimplified.c = wordToChange.nc;
                 blockContentSimplified.p = wordToChange.p;
 
                 blockContent.c = wordToChange.nc;
                 blockContent.p = wordToChange.p;
 
-                chapterObject.lines[lineIndex][blockIndex] = blockContentSimplified;
+                chapterObject.lines[lineIndex][
+                  blockIndex
+                ] = blockContentSimplified;
                 simplifiedChanged = true;
               }
             }
 
             blockContent = blockContent.c.trim().split('');
             blockContent[blockInlineIndex] = verseText[vId];
-            chapterObjectTraditional.lines[lineIndex][blockIndex].c = blockContent.join('');
+            chapterObjectTraditional.lines[lineIndex][
+              blockIndex
+            ].c = blockContent.join('');
 
             blockInlineIndex += 1;
             if (blockInlineIndex === blockContent.length) {
@@ -352,13 +419,14 @@ module.exports = class JwDownloader {
               blockIndex += 1;
             }
 
-            if (blockIndex === chapterObjectTraditional.lines[lineIndex].length) {
+            if (
+              blockIndex === chapterObjectTraditional.lines[lineIndex].length
+            ) {
               blockIndex = 0;
               lineIndex += 1;
             }
           }
         });
-
 
         try {
           await fs.statAsync(`${biblePathTraditional}${bibleEnglish}`);
@@ -367,10 +435,16 @@ module.exports = class JwDownloader {
         }
 
         if (simplifiedChanged) {
-          await fs.writeFileAsync(`${biblePath}${bibleEnglish}/${chapter}.json`, JSON.stringify(chapterObject));
+          await fs.writeFileAsync(
+            `${biblePath}${bibleEnglish}/${chapter}.json`,
+            JSON.stringify(chapterObject),
+          );
         }
 
-        await fs.writeFileAsync(`${biblePathTraditional}${bibleEnglish}/${chapter}.json`, JSON.stringify(chapterObjectTraditional));
+        await fs.writeFileAsync(
+          `${biblePathTraditional}${bibleEnglish}/${chapter}.json`,
+          JSON.stringify(chapterObjectTraditional),
+        );
       });
     });
   }
@@ -403,7 +477,11 @@ module.exports = class JwDownloader {
       $ = cheerio.load(response.data);
       const chapters = [];
       $('.chapters .chapter').each((j, bibleChapterChildren) => {
-        chapters.push($(bibleChapterChildren).text().trim());
+        chapters.push(
+          $(bibleChapterChildren)
+            .text()
+            .trim(),
+        );
       });
 
       const bibleEnglish = Object.keys(bibleChapters)[bibleIndex];
@@ -415,7 +493,7 @@ module.exports = class JwDownloader {
 
       const biblePath = `${__dirname}/../../../ui/static/bible/${language}/`;
 
-      await Promise.mapSeries(chapters, async (chapter) => {
+      await Promise.mapSeries(chapters, async chapter => {
         // eslint-disable-next-line
         console.log(chapter);
         let chapterExists = true;
@@ -451,7 +529,9 @@ module.exports = class JwDownloader {
         chapterObject.lines[0][0].line.pinyinSpaced = 1;
 
         $('#bibleText .verse').each((i, children) => {
-          $(children).find('.superscription').remove();
+          $(children)
+            .find('.superscription')
+            .remove();
 
           if ($(children).find('.first').length) {
             lineIndex += 1;
@@ -460,12 +540,17 @@ module.exports = class JwDownloader {
             blockIndex += 1;
           }
 
-          let verse = $(children).find('.verseNum').text().trim();
+          let verse = $(children)
+            .find('.verseNum')
+            .text()
+            .trim();
           if (!verse) {
             verse = 1;
           }
 
-          let verseText = $(children).text().trim();
+          let verseText = $(children)
+            .text()
+            .trim();
           verseText = replaceall('+', '', verseText);
           verseText = replaceall('*', '', verseText);
 
@@ -488,9 +573,9 @@ module.exports = class JwDownloader {
           blockIndex += 1;
           chapterObject.lines[lineIndex][blockIndex] = {};
           chapterObject.lines[lineIndex][blockIndex].p = verseTextArray
-              .splice(1)
-              .join(splitChar)
-              .trim();
+            .splice(1)
+            .join(splitChar)
+            .trim();
         });
 
         try {
@@ -499,7 +584,10 @@ module.exports = class JwDownloader {
           await fs.mkdirAsync(`${biblePath}${bibleEnglish}`);
         }
 
-        await fs.writeFileAsync(`${biblePath}${bibleEnglish}/${chapter}.json`, JSON.stringify(chapterObject));
+        await fs.writeFileAsync(
+          `${biblePath}${bibleEnglish}/${chapter}.json`,
+          JSON.stringify(chapterObject),
+        );
       });
     });
   }
@@ -507,30 +595,42 @@ module.exports = class JwDownloader {
   static async loadTracks() {
     const languages = ['CH', 'CHS'];
     const videosInserted = {};
-    await Promise.mapSeries(languages, async (language) => {
-      const response = await axios.get(`https://data.jw-api.org/mediator/v1/categories/${language}/VideoOnDemand?detailed=1`);
+    await Promise.mapSeries(languages, async language => {
+      const response = await axios.get(
+        `https://data.jw-api.org/mediator/v1/categories/${language}/VideoOnDemand?detailed=1`,
+      );
       const categories = response.data.category.subcategories;
-      await Promise.mapSeries(categories, async (category) => {
-        const res = await axios.get(`https://data.jw-api.org/mediator/v1/categories/${language}/${category.key}?detailed=1`);
+      await Promise.mapSeries(categories, async category => {
+        const res = await axios.get(
+          `https://data.jw-api.org/mediator/v1/categories/${language}/${
+            category.key
+          }?detailed=1`,
+        );
         const subcategories = res.data.category.subcategories;
 
-        await Promise.mapSeries(subcategories, async (subcategory) => {
+        await Promise.mapSeries(subcategories, async subcategory => {
           if (subcategory.key.substr(-8) === 'Featured') {
             return;
           }
-          const url = `https://data.jw-api.org/mediator/v1/categories/${language}/${subcategory.key}?detailed=0`;
+          const url = `https://data.jw-api.org/mediator/v1/categories/${language}/${
+            subcategory.key
+          }?detailed=0`;
           try {
             const subRes = await axios.get(url);
 
-            await Promise.mapSeries(subRes.data.category.media, async (media) => {
+            await Promise.mapSeries(subRes.data.category.media, async media => {
               if (!media) {
                 return;
               }
 
-              await Promise.mapSeries(media.files, async (file) => {
+              await Promise.mapSeries(media.files, async file => {
                 if (file.subtitles !== undefined) {
-                  const urlParts = media.files[0].progressiveDownloadURL.split('/');
-                  const video = urlParts[urlParts.length - 1].replace(/_r(.*)P/g, '').replace('.mp4', '');
+                  const urlParts = media.files[0].progressiveDownloadURL.split(
+                    '/',
+                  );
+                  const video = urlParts[urlParts.length - 1]
+                    .replace(/_r(.*)P/g, '')
+                    .replace('.mp4', '');
                   if (videosInserted[video]) {
                     return;
                   }
@@ -569,7 +669,9 @@ module.exports = class JwDownloader {
 
   static async track(url, type) {
     const urlParts = url.split('/');
-    const filename = urlParts[urlParts.length - 1].replace(/_r(.*)P/g, '').replace('.mp4', '');
+    const filename = urlParts[urlParts.length - 1]
+      .replace(/_r(.*)P/g, '')
+      .replace('.mp4', '');
     const videoTrack = await knex('video_track').where({ video: filename });
 
     if (videoTrack.length === 0) {
@@ -590,7 +692,7 @@ module.exports = class JwDownloader {
 
     const lines = response.data.split('\n');
     let i = 0;
-    const trackList = await Promise.map(lines, async (line) => {
+    const trackList = await Promise.map(lines, async line => {
       const lineSplit = line.split('-->');
       if (lineSplit.length > 1) {
         i += 1;
@@ -602,7 +704,7 @@ module.exports = class JwDownloader {
           const ideograms = UnihanSearch.segment(line);
           const pinyinList = await UnihanSearch.toPinyin(ideograms);
           let newLine = '<ruby>';
-          pinyinList.forEach((pinyin) => {
+          pinyinList.forEach(pinyin => {
             if (showIdeograms) {
               newLine += `${pinyin.ideogram}`;
             }
@@ -613,7 +715,6 @@ module.exports = class JwDownloader {
             }
           });
           newLine += '</ruby>';
-
 
           return newLine;
         }
@@ -627,7 +728,6 @@ module.exports = class JwDownloader {
     return trackList.join('\n');
   }
 
- 
   static encodeUrl(url) {
     let newUrl = 'https://www.jw.org/';
     if (url.substr(0, newUrl.length) !== newUrl) {
@@ -635,7 +735,7 @@ module.exports = class JwDownloader {
     }
 
     const urlParts = url.replace(newUrl, '').split('/');
-    urlParts.forEach((urlPart) => {
+    urlParts.forEach(urlPart => {
       newUrl += encodeURIComponent(urlPart);
       newUrl += '/';
     });

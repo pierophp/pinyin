@@ -7,13 +7,12 @@ const router = express.Router();
 
 router.get('/', (req, res) => {
   ChineseToolsDownloader.download(req.query.word, 'pt')
-  .then((text) => {
-    res.send({ status: 200, text });
-  })
-  .catch((e) => {
-    res.send({ status: 500, error: e.message });
-  });
+    .then(text => {
+      res.send({ status: 200, text });
+    })
+    .catch(e => {
+      res.send({ status: 500, error: e.message });
+    });
 });
 
 module.exports = router;
-

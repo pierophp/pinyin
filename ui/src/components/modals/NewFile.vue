@@ -6,13 +6,15 @@
       </md-speed-dial-target>
 
       <md-speed-dial-content>
-        <md-button class="md-icon-button md-primary" @click.native="openDialog('file')">
+        <md-button class="md-icon-button md-accent" @click.native="openDialog('dir')" :title="$t('folder')">
+          <md-icon>folder</md-icon>
+        </md-button>
+
+        <md-button class="md-icon-button md-primary" @click.native="openDialog('file')" :title="$t('file')">
           <md-icon>note</md-icon>
         </md-button>
 
-        <md-button class="md-icon-button md-accent" @click.native="openDialog('dir')">
-          <md-icon>folder</md-icon>
-        </md-button>
+
       </md-speed-dial-content>
     </md-speed-dial>
 

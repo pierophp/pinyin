@@ -36,11 +36,12 @@ const unzipFile = function unzipFile() {
 };
 
 const downloadFile = function downloadFile() {
-  const src = 'http://www.mdbg.net/chindict/export/cedict/cedict_1_0_ts_utf-8_mdbg.zip';
+  const src =
+    'http://www.mdbg.net/chindict/export/cedict/cedict_1_0_ts_utf-8_mdbg.zip';
 
   const download = wget.download(src, filenameZip);
 
-  download.on('error', (err) => {
+  download.on('error', err => {
     // eslint-disable-next-line
     console.log(`Error: ${err}`);
   });

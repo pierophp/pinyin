@@ -33,8 +33,8 @@ module.exports = class RepositoryManager {
   }
 
   static async newTransaction() {
-    return new Promise((resolve) => {
-      knex.transaction((t) => {
+    return new Promise(resolve => {
+      knex.transaction(t => {
         transaction = t;
         resolve(t);
       });
@@ -42,8 +42,8 @@ module.exports = class RepositoryManager {
   }
 
   static async beginTransaction() {
-    return new Promise((resolve) => {
-      knex.transaction((t) => {
+    return new Promise(resolve => {
+      knex.transaction(t => {
         resolve(t);
       });
     });

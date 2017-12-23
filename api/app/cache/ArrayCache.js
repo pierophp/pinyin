@@ -6,7 +6,7 @@ module.exports = class ArrayCache {
   }
 
   static async has(cacheKey) {
-    return (cache[cacheKey] !== undefined && cache[cacheKey] !== '');
+    return cache[cacheKey] !== undefined && cache[cacheKey] !== '';
   }
 
   static async set(cacheKey, cacheValue) {

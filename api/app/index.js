@@ -11,13 +11,7 @@ const cors = require('cors');
 const jwt = require('express-jwt');
 
 const app = express();
-// let AWSXRay = null;
 if (process.env.NODE_ENV === 'production') {
-  // AWSXRAY
-  // eslint-disable-next-line global-require
-  // AWSXRay = require('aws-xray-sdk');
-  // app.use(AWSXRay.express.openSegment());
-
   // RAVEN - SENTRY
   // eslint-disable-next-line global-require
   const Raven = require('raven');
@@ -60,9 +54,5 @@ app.use(bodyParser.json({ limit: '5mb' }));
 
 require('./routes')(app, passport);
 require('./config/passport')(passport);
-
-if (process.env.NODE_ENV === 'production') {
-  // app.use(AWSXRay.express.closeSegment());
-}
 
 module.exports = app;

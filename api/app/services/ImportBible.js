@@ -90,7 +90,7 @@ module.exports = class ImportBible {
     let chapterNum = '';
     let bookId = '';
 
-    await Promise.mapSeries(result, async(item) => {
+    await Promise.mapSeries(result, async item => {
       if (chapterNum !== item.chapter_num || bookId !== item.book_id) {
         lines.push(line);
 
@@ -101,7 +101,10 @@ module.exports = class ImportBible {
             await fs.mkdirAsync(`${biblePath}${bibleKeys[bookId]}`);
           }
 
-          await fs.writeFileAsync(`${biblePath}${bibleKeys[bookId]}/${chapterNum}.json`, JSON.stringify({ lines }));
+          await fs.writeFileAsync(
+            `${biblePath}${bibleKeys[bookId]}/${chapterNum}.json`,
+            JSON.stringify({ lines }),
+          );
         }
 
         lines = [];
@@ -114,73 +117,90 @@ module.exports = class ImportBible {
       let verseIndex = 0;
       const divContainer = $('div');
       $('table').each((i, table) => {
-        $(table).find('tr').each((j, tr) => {
-          $(tr).find('td').each((k, td) => {
-            const blocksTemp = [];
+        $(table)
+          .find('tr')
+          .each((j, tr) => {
+            $(tr)
+              .find('td')
+              .each((k, td) => {
+                const blocksTemp = [];
 
-            verseIndex += 1;
+                verseIndex += 1;
 
-            const blockChar = $(td).find('p.c1').text().trim();
+                const blockChar = $(td)
+                  .find('p.c1')
+                  .text()
+                  .trim();
 
-            let block = {
-              c: '',
-            };
+                let block = {
+                  c: '',
+                };
 
-            if (verseIndex === 1 && line.length === 0) {
-              block.line = {};
-              block.line.pinyinSpaced = 1;
-            }
-
-            if (verseIndex === 1) {
-              block.v = item.verse_num;
-            }
-
-            const pinyin = $(td).find('p.r1');
-            if (pinyin.length) {
-              const pinyinTextList = pinyin.text().trim().split(String.fromCharCode(160));
-              let charId = 0;
-
-              pinyinTextList.forEach((pinyinItem, itemId) => {
-                const pinyinList = separatePinyinInSyllables(pinyinItem);
-                if (itemId > 0) {
-                  block = {
-                    c: '',
-                  };
+                if (verseIndex === 1 && line.length === 0) {
+                  block.line = {};
+                  block.line.pinyinSpaced = 1;
                 }
 
-                pinyinList.forEach(() => {
-                  block.c += blockChar[charId];
-                  charId += 1;
-                });
+                if (verseIndex === 1) {
+                  block.v = item.verse_num;
+                }
 
-                if (!pinyinItem) {
+                const pinyin = $(td).find('p.r1');
+                if (pinyin.length) {
+                  const pinyinTextList = pinyin
+                    .text()
+                    .trim()
+                    .split(String.fromCharCode(160));
+                  let charId = 0;
+
+                  pinyinTextList.forEach((pinyinItem, itemId) => {
+                    const pinyinList = separatePinyinInSyllables(pinyinItem);
+                    if (itemId > 0) {
+                      block = {
+                        c: '',
+                      };
+                    }
+
+                    pinyinList.forEach(() => {
+                      block.c += blockChar[charId];
+                      charId += 1;
+                    });
+
+                    if (!pinyinItem) {
+                      block.c = blockChar;
+                    }
+
+                    block.p = pinyinList.join(String.fromCharCode(160));
+
+                    blocksTemp.push(block);
+                  });
+                } else {
                   block.c = blockChar;
+                  blocksTemp.push(block);
                 }
 
-                block.p = pinyinList.join(String.fromCharCode(160));
+                if (
+                  $(divContainer).hasClass('n') &&
+                  verseIndex === 1 &&
+                  line.length
+                ) {
+                  lines.push(line);
+                  line = [];
+                }
 
-                blocksTemp.push(block);
+                blocksTemp.forEach(blockItem => {
+                  line.push(blockItem);
+                });
               });
-            } else {
-              block.c = blockChar;
-              blocksTemp.push(block);
-            }
-
-            if ($(divContainer).hasClass('n') && verseIndex === 1 && line.length) {
-              lines.push(line);
-              line = [];
-            }
-
-            blocksTemp.forEach((blockItem) => {
-              line.push(blockItem);
-            });
           });
-        });
       });
     });
 
     lines.push(line);
 
-    await fs.writeFileAsync(`${biblePath}${bibleKeys[bookId]}/${chapterNum}.json`, JSON.stringify({ lines }));
+    await fs.writeFileAsync(
+      `${biblePath}${bibleKeys[bookId]}/${chapterNum}.json`,
+      JSON.stringify({ lines }),
+    );
   }
 };

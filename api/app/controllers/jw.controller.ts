@@ -1,8 +1,6 @@
 import * as express from 'express';
 import * as JWDownloader from '../services/JWDownloader';
-import { Downloader} from '../core/sites/jw/downloader';
-
-
+import { Downloader } from '../core/sites/jw/downloader';
 
 // eslint-disable-next-line new-cap
 const router = express.Router();
@@ -10,8 +8,11 @@ const router = express.Router();
 router.get('/download', async (req, res) => {
   const downloader = new Downloader();
   try {
-    const response: any = await downloader
-        .download(req.query.url, req.query.language, req.query.ideogramType);
+    const response: any = await downloader.download(
+      req.query.url,
+      req.query.language,
+      req.query.ideogramType,
+    );
     res.send({ status: 200, audio: response.audio, text: response.text });
   } catch (e) {
     // eslint-disable-next-line
@@ -22,17 +23,16 @@ router.get('/download', async (req, res) => {
 
 router.get('/track', (req, res) => {
   JWDownloader.track(req.query.url, req.query.type)
-  .then((track) => {
-    res.setHeader('Content-Type', 'text/vtt; charset=utf-8');
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.send(track);
-  })
-  .catch((e) => {
-    // eslint-disable-next-line
-    console.log(e.message);
-    res.send({ status: 500, error: e.message });
-  });
+    .then(track => {
+      res.setHeader('Content-Type', 'text/vtt; charset=utf-8');
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.send(track);
+    })
+    .catch(e => {
+      // eslint-disable-next-line
+      console.log(e.message);
+      res.send({ status: 500, error: e.message });
+    });
 });
 
 module.exports = router;
-

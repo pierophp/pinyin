@@ -11,6 +11,9 @@ module.exports = class PhraseRepository extends BaseRepository {
   }
 
   static async findByLanguageAndRlike(language, rlike) {
-    return await DatabasePhraseRepository.findByLanguageAndRlike(language, rlike);
+    return await DatabasePhraseRepository.findByLanguageAndRlike(
+      language,
+      rlike,
+    );
   }
 };

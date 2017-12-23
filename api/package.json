@@ -11,7 +11,8 @@
     "test": "node node_modules/karma/bin/karma start karma.conf.js",
     "lint": "node node_modules/eslint/bin/eslint --ext .js app",
     "lint-fix": "node node_modules/eslint/bin/eslint --fix --ext .js app",
-    "test-node": "node node_modules/.bin/mocha --reporter spec tests/server"
+    "test-node": "node node_modules/.bin/mocha --reporter spec tests/server",
+    "console": "NODE_ENV=production ts-node ./app/console.ts"
   },
   "engines": {
     "node": ">=8.0"
@@ -19,8 +20,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/yargs": "^10.0.0",
     "adm-zip": "^0.4.7",
-    "aws-xray-sdk": "^1.1.0",
     "axios": "^0.15.3",
     "axios-retry": "^3.0.1",
     "bluebird": "^3.4.0",
@@ -30,6 +31,7 @@
     "commander": "^2.9.0",
     "cors": "^2.8.1",
     "diacritics": "^1.2.3",
+    "elasticsearch": "^14.0.0",
     "express": "^4.13.4",
     "express-jwt": "^5.1.0",
     "fast-csv": "^2.4.0",
@@ -57,10 +59,13 @@
     "ts-node": "^3.3.0",
     "typescript": "^2.6.1",
     "wget": "0.0.1",
-    "xml2js": "^0.4.16"
+    "xml2js": "^0.4.16",
+    "yargs": "^10.0.3"
   },
   "devDependencies": {
+    "@types/elasticsearch": "^5.0.19",
     "@types/express": "^4.0.39",
+    "@types/knex": "^0.0.67",
     "@types/node": "^8.0.53",
     "chai": "^3.5.0",
     "eslint": "^3.6.1",

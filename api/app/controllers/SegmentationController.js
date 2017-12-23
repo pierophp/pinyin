@@ -1,7 +1,6 @@
 const express = require('express');
 const UnihanSearch = require('../services/UnihanSearch');
 
-
 // eslint-disable-next-line new-cap
 const router = express.Router();
 
@@ -11,4 +10,3 @@ router.post('/segment', (req, res) => {
 });
 
 module.exports = router;
-
