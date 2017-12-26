@@ -1,6 +1,6 @@
 import * as env from '../../../env';
 import { Client } from 'elasticsearch';
-
+import { convertUtf16ToIdeograms } from '../../services/UnihanSearch';
 let client;
 
 export class ElasticsearchProvider {
@@ -48,6 +48,63 @@ export class ElasticsearchProvider {
         mappings,
       },
     });
+  }
+
+  protected async getUpdateDocument(dictionary: any): Promise<any> {
+    return {
+      id: dictionary.id,
+      ideogram: convertUtf16ToIdeograms(dictionary.ideogram), // @todo Convert
+      pronunciation: dictionary.pronunciation,
+      pronunciationUnaccented: dictionary.pronunciation_unaccented,
+      dictionary: {
+        unihan: dictionary.definition_unihan,
+        cedict: dictionary.definition_cedict,
+        pt: dictionary.definition_pt,
+        ctPt: dictionary.definition_ct_pt,
+        ctEn: dictionary.definition_ct_en,
+        ctEs: dictionary.definition_ct_es,
+      },
+      type: dictionary.type,
+      simplified: dictionary.simplified ? true : false,
+      traditional: dictionary.traditional ? true : false,
+      main: dictionary.main ? true : false,
+      usage: dictionary.usage,
+      hsk: dictionary.hsk,
+      createdAt: dictionary.created_at,
+      updatedAt: dictionary.updated_at,
+    };
+  }
+
+  public async saveMany(dictionaryList: any[]) {
+    const body: any[] = [];
+    for (const dictionary of dictionaryList) {
+      body.push({
+        update: {
+          _index: this.getIndex(),
+          _type: this.getType(),
+          _id: String(dictionary.id),
+        },
+      });
+
+      // console.log('document', this.getUpdateDocument(dictionary));
+
+      body.push({
+        doc: await this.getUpdateDocument(dictionary),
+        doc_as_upsert: true,
+      });
+    }
+
+    const response = await this.getClient().bulk({
+      index: this.getIndex(),
+      type: this.getType(),
+      body,
+    });
+
+    if (response.errors) {
+      for (const item of response.items) {
+        console.log(item);
+      }
+    }
   }
 
   protected getIndex(): string {

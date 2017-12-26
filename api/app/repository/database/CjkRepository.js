@@ -9,9 +9,11 @@ const profiler = require('../../helpers/profiler');
 
 module.exports = class CjkRepository extends BaseRepository {
   static async findAll() {
-    await knex('cjk')
-      .where()
-      .limit(10);
+    return await knex('cjk')
+      .where({})
+      // .limit(10)
+      .orderBy('frequency', 'ASC')
+      .select();
   }
 
   static async searchPronunciationByWord(ideograms) {

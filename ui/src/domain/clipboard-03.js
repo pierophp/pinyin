@@ -7,17 +7,21 @@ import isChinese from 'src/helpers/is-chinese';
 
 async function parseJW(link) {
   const options = OptionsManager.getOptions();
-  const response = await http.get(`jw/download?url=${link}&language=${options.translationLanguage}&ideogramType=${options.ideogramType}`);
+  const response = await http.get(
+    `jw/download?url=${link}&language=${
+      options.translationLanguage
+    }&ideogramType=${options.ideogramType}`,
+  );
 
   return response.data;
 }
 
 function parseContent(content) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const lines = content
       .split('\n')
-      .filter((line) => line)
-      .filter((line) => {
+      .filter(line => line)
+      .filter(line => {
         if (line.match(/(\d{2}):(\d{4}):(\d{2})/)) {
           return null;
         }
@@ -29,7 +33,7 @@ function parseContent(content) {
   });
 }
 
-export default async function (content) {
+export default async function(content) {
   const siteJwOrg = 'https://www.jw.org';
   const isJwOrg = content.trim().substr(0, siteJwOrg.length) === siteJwOrg;
 
@@ -44,15 +48,16 @@ export default async function (content) {
     lines = await parseContent(content);
   }
 
-  console.log('lines', lines);
-
-  const rows = await Promise.map(lines, async (line) => {
+  const rows = await Promise.map(lines, async line => {
     if (typeof line === 'string') {
       line = { text: line };
     }
 
     const row = [];
-    if (line.type !== undefined && (line.type === 'img' || line.type === 'box-img')) {
+    if (
+      line.type !== undefined &&
+      (line.type === 'img' || line.type === 'box-img')
+    ) {
       row.push({
         p: '',
         c: '',
@@ -82,7 +87,8 @@ export default async function (content) {
 
       let footnote = null;
       const footNoteVerify = '#FOOTNOTE-';
-      const isFootnote = char.substr(0, footNoteVerify.length) === footNoteVerify;
+      const isFootnote =
+        char.substr(0, footNoteVerify.length) === footNoteVerify;
       if (isFootnote) {
         const footNoteSplit = char.split('-');
         footnote = footNoteSplit[1];
@@ -137,8 +143,6 @@ export default async function (content) {
   if (isJwOrg) {
     rows[0][0].line.url = content;
   }
-
-  console.log('rows', rows);
 
   return rows;
 }

@@ -18,7 +18,7 @@
     "node": ">=8.0"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@types/yargs": "^10.0.0",
     "adm-zip": "^0.4.7",
