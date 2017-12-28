@@ -10,57 +10,25 @@ export class Parser {
   protected isChinese: boolean;
 
   public async parse($, isChinese: boolean) {
-    const downloadResponse: any = {};
-    this.text = [];
     this.isChinese = isChinese;
-    this.figcaptionsText = [];
 
     $('.viewOptions').remove();
     $('noscript').remove();
     $('#docSubVideo').remove();
+    $('#docSubImg').remove();
 
-    downloadResponse.audio = null;
-    let media = $('.jsAudioPlayer a');
-    if (isChinese && media.length > 0) {
-      downloadResponse.audio = media.attr('href');
-    } else if (isChinese) {
-      media = $('.jsAudioFormat a');
-      if (media.length > 0) {
-        try {
-          let titleWithoutSpaces = replaceall(
-            ' ',
-            '',
-            this.getText($, $('article header h1')),
-          );
-          replaceIdeogramsToSpace.forEach(item => {
-            titleWithoutSpaces = replaceall(item, '', titleWithoutSpaces);
-          });
-          const responseAudio = await http.get(
-            this.encodeUrl(media.attr('data-jsonurl')),
-          );
-          responseAudio.data.files.CHS.MP3.some(file => {
-            let audioTitleWithoutSpaces = replaceall(' ', '', file.title);
-            replaceIdeogramsToSpace.forEach(item => {
-              audioTitleWithoutSpaces = replaceall(
-                item,
-                '',
-                audioTitleWithoutSpaces,
-              );
-            });
-
-            if (titleWithoutSpaces === audioTitleWithoutSpaces) {
-              downloadResponse.audio = file.file.url;
-              return true;
-            }
-
-            return false;
-          });
-        } catch (e) {
-          // eslint-disable-next-line
-          console.log(e.message);
-        }
-      }
+    if ($('.toc').length > 0) {
+      return await this.getSummary($);
     }
+
+    return this.getContent($);
+  }
+
+  public async getContent($) {
+    const downloadResponse: any = {};
+    this.text = [];
+    downloadResponse.audio = await this.getAudio($);
+    this.figcaptionsText = [];
 
     const mainImage = $('.lsrBannerImage');
     if (mainImage.length) {
@@ -153,6 +121,73 @@ export class Parser {
 
     downloadResponse.text = this.text;
     return downloadResponse;
+  }
+
+  public async getSummary($) {
+    const downloadResponse: any = { text: [], links: [] };
+    const items = $('.synopsis h2 a');
+    items.each((i, item) => {
+      downloadResponse.links.push($(item).attr('href'));
+    });
+    return downloadResponse;
+  }
+
+  public async getAudio($) {
+    let media = $('.jsAudioPlayer a');
+    if (this.isChinese && media.length > 0) {
+      return media.attr('href');
+    } else if (this.isChinese) {
+      media = $('.jsAudioFormat a');
+      if (media.length === 0) {
+        return null;
+      }
+
+      try {
+        let titleWithoutSpaces = replaceall(
+          ' ',
+          '',
+          this.getText($, $('article header h1')),
+        );
+        replaceIdeogramsToSpace.forEach(item => {
+          titleWithoutSpaces = replaceall(item, '', titleWithoutSpaces);
+        });
+
+        if (!titleWithoutSpaces) {
+          return null;
+        }
+
+        const responseAudio = await http.get(
+          this.encodeUrl(media.attr('data-jsonurl')),
+        );
+
+        let fileUrl = null;
+
+        responseAudio.data.files.CHS.MP3.some(file => {
+          let audioTitleWithoutSpaces = replaceall(' ', '', file.title);
+          replaceIdeogramsToSpace.forEach(item => {
+            audioTitleWithoutSpaces = replaceall(
+              item,
+              '',
+              audioTitleWithoutSpaces,
+            );
+          });
+
+          if (audioTitleWithoutSpaces.contains(titleWithoutSpaces)) {
+            fileUrl = file.file.url;
+            return true;
+          }
+
+          return false;
+        });
+
+        return fileUrl;
+      } catch (e) {
+        // eslint-disable-next-line
+        console.log(e.message);
+      }
+    }
+
+    return null;
   }
 
   public parseBlock($, element) {

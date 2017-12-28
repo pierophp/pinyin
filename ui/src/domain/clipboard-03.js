@@ -33,7 +33,7 @@ function parseContent(content) {
   });
 }
 
-export default async function(content) {
+export default async function (content) {
   const siteJwOrg = 'https://www.jw.org';
   const isJwOrg = content.trim().substr(0, siteJwOrg.length) === siteJwOrg;
 

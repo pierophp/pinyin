@@ -7,7 +7,12 @@ import * as bluebird from 'bluebird';
 import { Curl } from 'node-libcurl';
 
 export class Downloader {
-  public async download(url: string, language: string, ideogramType: string) {
+  public async download(
+    url: string,
+    language: string,
+    ideogramType: string,
+    convertPinyin: boolean = true,
+  ) {
     profiler(`Download JW Start - ${this.encodeUrl(url)}`);
 
     if (!ideogramType) {
@@ -38,6 +43,7 @@ export class Downloader {
     }
 
     profiler('Download JW End');
+
     let $ = cheerio.load(response);
     if (!isChinese) {
       newLanguage = String(url.replace('https://www.jw.org/', '')).split(
@@ -96,33 +102,61 @@ export class Downloader {
         });
       }
     }
-    profiler('Pinyin Start');
-    await bluebird.map(
-      parsedDownload.text,
-      async (item, i) => {
-        if (item.type === 'img') {
-          return;
-        }
 
-        if (item.type === 'box-img') {
-          return;
-        }
+    if (parsedDownload.links) {
+      profiler('Getting links');
+      const responseLinks: any = { links: [] };
+      await bluebird.map(
+        parsedDownload.links,
+        async (link: any, i) => {
+          const linkResponse = await this.download(
+            this.decodeUrl(`https://www.jw.org${link}`),
+            language,
+            ideogramType,
+            convertPinyin,
+          );
 
-        if (!item.text) {
-          item.text = '';
-        }
+          responseLinks.links.push({
+            link: this.decodeUrl(`https://www.jw.org${link}`),
+            content: linkResponse,
+          });
+        },
+        { concurrency: 4 },
+      );
 
-        const ideograms = item.text.split(' ');
-        const pinyin = await UnihanSearch.toPinyin(ideograms);
-        const pinynReturn: any[] = [];
-        pinyin.forEach(pinyinItem => {
-          pinynReturn.push(pinyinItem.pinyin);
-        });
+      return responseLinks;
+    }
 
-        parsedDownload.text[i].pinyin = pinynReturn;
-      },
-      { concurrency: 4 },
-    );
+    if (convertPinyin) {
+      profiler('Pinyin Start');
+
+      await bluebird.map(
+        parsedDownload.text,
+        async (item: any, i) => {
+          if (item.type === 'img') {
+            return;
+          }
+
+          if (item.type === 'box-img') {
+            return;
+          }
+
+          if (!item.text) {
+            item.text = '';
+          }
+
+          const ideograms = item.text.split(' ');
+          const pinyin = await UnihanSearch.toPinyin(ideograms);
+          const pinynReturn: any[] = [];
+          pinyin.forEach(pinyinItem => {
+            pinynReturn.push(pinyinItem.pinyin);
+          });
+
+          parsedDownload.text[i].pinyin = pinynReturn;
+        },
+        { concurrency: 4 },
+      );
+    }
 
     profiler('End');
 
@@ -156,6 +190,20 @@ export class Downloader {
     const urlParts = url.replace(newUrl, '').split('/');
     urlParts.forEach(urlPart => {
       newUrl += encodeURIComponent(urlPart);
+      newUrl += '/';
+    });
+    return newUrl;
+  }
+
+  protected decodeUrl(url: string) {
+    let newUrl = 'https://www.jw.org/';
+    if (url.substr(0, newUrl.length) !== newUrl) {
+      return url;
+    }
+
+    const urlParts = url.replace(newUrl, '').split('/');
+    urlParts.forEach(urlPart => {
+      newUrl += decodeURIComponent(urlPart);
       newUrl += '/';
     });
     return newUrl;

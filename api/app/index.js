@@ -37,6 +37,7 @@ app.use(
       '/unihan/dictionary_search',
       '/segmentation/segment',
       '/jw/download',
+      '/jw/frequency',
       '/jw/track',
       '/chinese-tools',
       '/hanzi-writer',

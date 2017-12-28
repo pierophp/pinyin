@@ -6,7 +6,7 @@ import clipboard03 from 'src/domain/clipboard-03';
 import clipboard04 from 'src/domain/clipboard-04';
 import LocalStorage from 'src/helpers/local-storage';
 import replaceall from 'replaceall';
-
+import { trimStart } from 'lodash';
 import * as types from './types';
 
 function sortFiles(files) {
@@ -157,7 +157,7 @@ export default {
           }
         })
         .catch(error => commit(types.FILE_MUTATION_FAILURE, error));
-    })();
+    }());
   },
 
   [types.FILE_ACTION_CONVERT_TO_PINYIN]({ commit, state }, data) {
@@ -262,12 +262,14 @@ export default {
       filename += '.json';
     }
 
+    const path = `${trimStart(dirname, '/')}${data.filename}`;
+
     http
       .post(`files/save?filename=${filename}&type=${type}&dirname=${dirname}`, {
         content: JSON.stringify({ lines: [] }),
       })
       .then(() => {
-        state.files.push({ path: filename, type: 'file' });
+        state.files.push({ dirname, filename: data.filename, path, type: 'file' });
         sortFiles(state.files);
         LocalStorage.save('files', state.files);
       })

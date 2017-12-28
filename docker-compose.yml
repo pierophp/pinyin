@@ -38,36 +38,36 @@ services:
       - ./:/home/node/pinyin
     command: "yarn dev"
 
-  pinyin_elasticsearch:
-    hostname: elasticsearch
-    container_name: pinyin_elasticsearch
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.1.1
-    environment:
-      - cluster.name=docker-cluster
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    ports:
-      - "9200:9200"
-    volumes:
-      - ./docker/data/elasticsearch:/usr/share/elasticsearch/data
+  # pinyin_elasticsearch:
+  #   hostname: elasticsearch
+  #   container_name: pinyin_elasticsearch
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:6.1.1
+  #   environment:
+  #     - cluster.name=docker-cluster
+  #     - bootstrap.memory_lock=true
+  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #   ports:
+  #     - "9200:9200"
+  #   volumes:
+  #     - ./docker/data/elasticsearch:/usr/share/elasticsearch/data
 
-  pinyin_kibana:
-    hostname: kibana
-    container_name: pinyin_kibana
-    image: docker.elastic.co/kibana/kibana:6.1.1
-    environment:
-      -  ELASTICSEARCH_URL=http://pinyin_elasticsearch:9200
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    links:
-      - pinyin_elasticsearch
-    ports:
-      - "5601:5601"
+  # pinyin_kibana:
+  #   hostname: kibana
+  #   container_name: pinyin_kibana
+  #   image: docker.elastic.co/kibana/kibana:6.1.1
+  #   environment:
+  #     -  ELASTICSEARCH_URL=http://pinyin_elasticsearch:9200
+  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #   links:
+  #     - pinyin_elasticsearch
+  #   ports:
+  #     - "5601:5601"
 
