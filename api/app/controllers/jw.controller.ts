@@ -49,7 +49,7 @@ router.get('/frequency', async (req, res) => {
     const frequency = new Frequency();
 
     res.send(
-      await frequency.getFrequency(downloadResponse, req.query.publication),
+      await frequency.getFrequency(downloadResponse, req.query.url),
     );
   } catch (e) {
     // eslint-disable-next-line

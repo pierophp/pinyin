@@ -1,11 +1,12 @@
 import * as isChinese from '../../../../../shared/helpers/is-chinese';
 import * as replaceIdeogramsToSpace from '../../../../../shared/helpers/special-ideograms-chars';
 import * as replaceall from 'replaceall';
-import { orderBy } from 'lodash';
+import { orderBy, trimEnd } from 'lodash';
 import * as knex from '../../../services/knex';
 import * as UnihanSearch from '../../../services/UnihanSearch';
+
 export class Frequency {
-  public async getFrequency(response, publicationCode) {
+  public async getFrequency(response, url) {
     const words: any = {};
     if (response.text) {
       for (const t of response.text) {
@@ -29,6 +30,10 @@ export class Frequency {
         total: words[key],
       });
     });
+
+    const publicationCode = trimEnd(url, '/')
+      .split('/')
+      .pop();
 
     for (const word of wordsList) {
       const publicationFrequency = await knex('publication_frequency').where({
