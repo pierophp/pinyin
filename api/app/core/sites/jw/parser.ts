@@ -127,7 +127,10 @@ export class Parser {
     const downloadResponse: any = { text: [], links: [] };
     const items = $('.synopsis h2 a');
     items.each((i, item) => {
-      downloadResponse.links.push($(item).attr('href'));
+      downloadResponse.links.push({
+        link: $(item).attr('href'),
+        title: this.getText($, item),
+      });
     });
     return downloadResponse;
   }
@@ -183,7 +186,7 @@ export class Parser {
         return fileUrl;
       } catch (e) {
         // eslint-disable-next-line
-        console.log(e.message);
+        console.log(e);
       }
     }
 

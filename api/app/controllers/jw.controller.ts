@@ -31,7 +31,7 @@ router.get('/download', async (req, res) => {
     res.send(response);
   } catch (e) {
     // eslint-disable-next-line
-    console.log(e);
+    console.log('controller download error', e);
     res.send({ status: 500, error: e.message, e });
   }
 });

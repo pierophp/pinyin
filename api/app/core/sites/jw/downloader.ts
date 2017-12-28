@@ -108,16 +108,21 @@ export class Downloader {
       const responseLinks: any = { links: [] };
       await bluebird.map(
         parsedDownload.links,
-        async (link: any, i) => {
+        async (l: any, i) => {
+          const jwLink = l.link.includes('https://www.jw.org')
+            ? l.link
+            : `https://www.jw.org${l.link}`;
+
           const linkResponse = await this.download(
-            this.decodeUrl(`https://www.jw.org${link}`),
+            this.decodeUrl(jwLink),
             language,
             ideogramType,
             convertPinyin,
           );
 
           responseLinks.links.push({
-            link: this.decodeUrl(`https://www.jw.org${link}`),
+            title: l.title,
+            link: this.decodeUrl(jwLink),
             content: linkResponse,
           });
         },
