@@ -87,6 +87,14 @@ export class Frequency {
       }
 
       words[part] += 1;
+
+      for (const ideogram of part) {
+        if (!words[ideogram]) {
+          words[ideogram] = 0;
+        }
+
+        words[ideogram] += 1;
+      }
     });
   }
 }
