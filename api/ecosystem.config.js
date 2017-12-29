@@ -47,7 +47,7 @@ const postDeployCommands = [
       ? '/var/www/api.pinyin/current/api'
       : '/var/www/api.pinyin.staging/current/api'
   }`,
-  'cp -R ../../source/api/app/data ../../source/api/dist/api/app/data',
+  '[ -d ../../source/api/dist/ ] && cp -R ../../source/api/app/data ../../source/api/dist/api/app/data',
   'cp ../../env/* .',
   'yarn install --production',
   'yarn build',

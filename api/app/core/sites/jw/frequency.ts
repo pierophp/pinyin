@@ -16,6 +16,10 @@ export class Frequency {
 
     if (response.links) {
       for (const link of response.links) {
+        if (!link.content.text) {
+          console.log('content not found for line ', link);
+        }
+
         for (const t of link.content.text) {
           this.getFrequencyByText(t, words);
         }

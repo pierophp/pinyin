@@ -17,7 +17,7 @@ export class Parser {
     $('#docSubVideo').remove();
     $('#docSubImg').remove();
 
-    if ($('.toc').length > 0) {
+    if ($('.toc').length > 0 && $('article .docSubContent').length === 0) {
       return await this.getSummary($);
     }
 
