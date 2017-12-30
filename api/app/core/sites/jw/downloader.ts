@@ -5,6 +5,7 @@ import { Parser } from './parser';
 import * as UnihanSearch from '../../../services/UnihanSearch';
 import * as bluebird from 'bluebird';
 import { Curl } from 'node-libcurl';
+import { orderBy } from 'lodash';
 
 export class Downloader {
   public async download(
@@ -130,6 +131,8 @@ export class Downloader {
         },
         { concurrency: 4 },
       );
+
+      responseLinks.links = orderBy(responseLinks.links, ['number']);
 
       return responseLinks;
     }

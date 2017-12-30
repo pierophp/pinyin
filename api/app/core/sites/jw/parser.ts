@@ -149,6 +149,7 @@ export class Parser {
         title,
         title_pinyin: (await UnihanSearch.toPinyin(title))
           .map(item => item.pinyin)
+          .filter(item => item.trim() !== '')
           .join(String.fromCharCode(160)),
       });
     }
