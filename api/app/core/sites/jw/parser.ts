@@ -3,6 +3,7 @@ import * as replaceIdeogramsToSpace from '../../../../../shared/helpers/special-
 import * as bibleBooks from '../../../../../shared/data/bible/bible';
 import { http } from '../../../helpers/http';
 import * as UnihanSearch from '../../../services/UnihanSearch';
+import { padStart } from 'lodash';
 
 export class Parser {
   protected text: any[] = [];
@@ -17,7 +18,10 @@ export class Parser {
     $('#docSubVideo').remove();
     $('#docSubImg').remove();
 
-    if ($('.toc').length > 0 && $('article .docSubContent').length === 0) {
+    if (
+      ($('.toc').length > 0 && $('article .docSubContent').length === 0) ||
+      $('#musicTOC').length > 0
+    ) {
       return await this.getSummary($);
     }
 
@@ -125,13 +129,30 @@ export class Parser {
 
   public async getSummary($) {
     const downloadResponse: any = { text: [], links: [] };
-    const items = $('.synopsis h2 a');
+    let items = $('.synopsis h2 a');
+    if (items.length === 0) {
+      items = $('.musicList .fileTitle a');
+    }
+
+    const itemsList: any[] = [];
     items.each((i, item) => {
+      itemsList.push(item);
+    });
+
+    let i = 0;
+    for (const item of itemsList) {
+      i += 1;
+      const title = this.getText($, item);
       downloadResponse.links.push({
         link: $(item).attr('href'),
-        title: this.getText($, item),
+        number: padStart(String(i), 3, '0'),
+        title,
+        title_pinyin: (await UnihanSearch.toPinyin(title))
+          .map(item => item.pinyin)
+          .join(String.fromCharCode(160)),
       });
-    });
+    }
+
     return downloadResponse;
   }
 

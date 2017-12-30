@@ -121,7 +121,9 @@ export class Downloader {
           );
 
           responseLinks.links.push({
+            number: l.number,
             title: l.title,
+            title_pinyin: l.title_pinyin,
             link: this.decodeUrl(jwLink),
             content: linkResponse,
           });
