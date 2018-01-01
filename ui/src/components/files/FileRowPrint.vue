@@ -7,6 +7,7 @@
       :pinyin="block.p"
       :character="block.c"
       :isBold="block.isBold ? 1 : 0"
+      :isItalic="block.isItalic ? 1 : 0"
       :highlight="block.h"
       :line-index="lineIndex"
       :block-index="index"

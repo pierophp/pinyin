@@ -449,6 +449,8 @@ export class Parser {
     text = replaceall('+', '', text);
     text = replaceall('<strong>', '//STRONG-OPEN//', text);
     text = replaceall('</strong>', '//STRONG-CLOSE//', text);
+    text = replaceall('<em>', '//ITALIC-OPEN//', text);
+    text = replaceall('</em>', '//ITALIC-CLOSE//', text);
     text = replaceall('<wbr>', ' ', text);
     text = replaceall('<p>', '\r\n<p>', text);
     text = replaceall('<li>', '\r\n<li>', text);
@@ -460,7 +462,9 @@ export class Parser {
     text = replaceall(String.fromCharCode(8201), ' ', text); // Convert THIN SPACE to SPACE
 
     text = replaceall('//STRONG-OPEN//', '<b>', text);
-    text = replaceall('//STRONG-CLOSE//', '</b>', text);
+    text = replaceall('//STRONG-CLOSE//', '</b>', text);    
+    text = replaceall('//ITALIC-OPEN//', '<i>', text);
+    text = replaceall('//ITALIC-CLOSE//', '</i>', text);
 
     if (!this.isChinese) {
       return this.trim(text);
@@ -506,6 +510,7 @@ export class Parser {
         lineText = replaceall(item, ` ${item}${specialWord} `, lineText);
       });
 
+      // bold
       lineText = replaceall('< b >', '<b>', lineText);
       lineText = replaceall('< /b >', '</b>', lineText);
 
@@ -522,6 +527,24 @@ export class Parser {
 
       lineText = replaceall('<b>', ' <b> ', lineText);
       lineText = replaceall('</b>', ' </b> ', lineText);
+
+      // italic
+      lineText = replaceall('< i >', '<i>', lineText);
+      lineText = replaceall('< /i >', '</i>', lineText);
+
+      lineText = replaceall(
+        `<${specialWord} i >${specialWord}`,
+        '<i>',
+        lineText,
+      );
+      lineText = replaceall(
+        `<${specialWord} /i >${specialWord}`,
+        '</i>',
+        lineText,
+      );
+
+      lineText = replaceall('<i>', ' <i> ', lineText);
+      lineText = replaceall('</i>', ' </i> ', lineText);
 
       // remove double spaces
       if (lineText) {

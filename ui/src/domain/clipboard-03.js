@@ -72,6 +72,8 @@ export default async function (content) {
     const ideograms = line.text.split(' ');
 
     let isBold = 0;
+    let isItalic = 0;
+
     let bible = '';
 
     ideograms.forEach((char, i) => {
@@ -82,6 +84,16 @@ export default async function (content) {
 
       if (char === '</b>') {
         isBold = 0;
+        return;
+      }
+
+      if (char === '<i>') {
+        isItalic = 1;
+        return;
+      }
+
+      if (char === '</i>') {
+        isItalic = 0;
         return;
       }
 
@@ -115,6 +127,10 @@ export default async function (content) {
 
       if (isBold === 1) {
         item.isBold = isBold;
+      }
+
+      if (isItalic === 1) {
+        item.isItalic = isItalic;
       }
 
       if (footnote) {

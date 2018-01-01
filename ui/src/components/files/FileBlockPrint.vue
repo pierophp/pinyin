@@ -13,7 +13,7 @@
       </span>
     </div>
 
-    <div class="character" :data-highlight="highlight" :data-line="lineIndex" :data-block="blockIndex" :class="classBold" v-if="!block.small && !block.footnote && !block.noIdeogram">
+    <div class="character" :data-highlight="highlight" :data-line="lineIndex" :data-block="blockIndex" :class="[classBold, classItalic]" v-if="!block.small && !block.footnote && !block.noIdeogram">
       <ideograms-show :pinyin="pinyin" :character="character" :useSpaces="true"/>
     </div>
 
@@ -24,162 +24,172 @@
 </template>
 
 <script>
-  import separatePinyinInSyllables from 'src/helpers/separate-pinyin-in-syllables';
-  import IdeogramsShow from 'src/components/ideograms/Show';
-  import OptionsManager from 'src/domain/options-manager';
+import separatePinyinInSyllables from 'src/helpers/separate-pinyin-in-syllables';
+import IdeogramsShow from 'src/components/ideograms/Show';
+import OptionsManager from 'src/domain/options-manager';
 
-  import {
-    mapActions,
-  } from 'vuex';
+import { mapActions } from 'vuex';
 
-  import {
-    FILE_ACTION_CAN_HIDE_PINYIN,
-  } from 'src/data/file/types';
+import { FILE_ACTION_CAN_HIDE_PINYIN } from 'src/data/file/types';
 
-  export default {
-    name: 'file-block-print',
-    components: {
-      IdeogramsShow,
+export default {
+  name: 'file-block-print',
+  components: {
+    IdeogramsShow,
+  },
+  data() {
+    return {
+      classHighlight: '',
+      classExtra: '',
+      classBold: '',
+      classItalic: '',
+      printData: [],
+      pinyinStyleObject: {},
+    };
+  },
+  props: {
+    pinyin: '',
+    character: '',
+    lineIndex: {
+      type: Number,
+      default: 0,
     },
-    data() {
-      return {
-        classHighlight: '',
-        classExtra: '',
-        classBold: '',
-        printData: [],
-        pinyinStyleObject: {},
-      };
+    blockIndex: {
+      type: Number,
+      default: 0,
     },
-    props: {
-      pinyin: '',
-      character: '',
-      lineIndex: {
-        type: Number,
-        default: 0,
-      },
-      blockIndex: {
-        type: Number,
-        default: 0,
-      },
-      isBold: {
-        default: 0,
-      },
-      highlight: '',
-      block: '',
+    isBold: {
+      default: 0,
     },
-    watch: {
-      pinyin() {
-        this.updateRender();
-      },
-
-      character() {
-        this.updateRender();
-      },
-
-      highlight() {
-        this.updateRender();
-      },
+    isItalic: {
+      default: 0,
     },
-    created() {
+    highlight: '',
+    block: '',
+  },
+  watch: {
+    pinyin() {
       this.updateRender();
     },
-    methods: {
-      ...mapActions({
-        canHidePinyin: FILE_ACTION_CAN_HIDE_PINYIN,
-      }),
-      openFootnote(footnote) {
-        this.$emit('open-footnote', {
-          footnote,
-        });
-      },
 
-      openImage(src) {
-        this.$emit('open-image', {
-          src,
-        });
-      },
-
-      async updateRender() {
-        const options = OptionsManager.getOptions();
-        this.classHighlight = `highlight-${this.highlight ? this.highlight : ''}`;
-        this.classBold = '';
-        if (this.isBold === 1) {
-          this.classBold = 'bold';
-        }
-
-        this.classExtra = '';
-        if (this.block.v) {
-          this.classExtra = 'verse';
-          if (this.block.v === 1) {
-            this.classExtra = 'chapter';
-          }
-        }
-
-        const printData = [];
-        const chars = this.character.toString();
-
-        let withoutPinyn = true;
-        const pinyin = separatePinyinInSyllables(this.pinyin, true);
-
-        for (let i = 0; i < chars.length; i += 1) {
-          let newPinyin = '';
-          let pinyinClass = '';
-          let hidePinyin = false;
-          if (options.pinyinHide === '1') {
-            // eslint-disable-next-line
-            hidePinyin = (await this.canHidePinyin(chars[i]) || pinyin[i] === undefined || pinyin[i] === '');
-          } else if (options.pinyinHide === '2') {
-            // eslint-disable-next-line
-            hidePinyin = (await this.canHidePinyin(chars) || pinyin[i] === undefined || pinyin[i] === '');
-          }
-
-          if (options.type !== '3' && hidePinyin) {
-            pinyinClass = 'hide-pinyin';
-            newPinyin = '&nbsp;';
-          } else if (pinyin[i]) {
-            withoutPinyn = false;
-            newPinyin = pinyin[i];
-          } else {
-            withoutPinyn = false;
-            newPinyin = ' ';
-          }
-
-          printData.push({
-            pinyinClass,
-            character: chars[i],
-            pinyin: newPinyin,
-          });
-        }
-
-        if (withoutPinyn) {
-          printData.forEach((item, i) => {
-            printData[i].pinyinClass = '';
-            printData[i].pinyin = '';
-          });
-        }
-
-        this.pinyinStyleObject = {};
-        if (withoutPinyn) {
-          this.pinyinStyleObject.height = 'auto';
-        }
-
-        if (chars.length === 0) {
-          printData.push({
-            pinyinClass: '',
-            character: '',
-            pinyin: `${this.pinyin}&nbsp;`,
-          });
-        }
-
-        this.printData = printData;
-      },
+    character() {
+      this.updateRender();
     },
-  };
+
+    highlight() {
+      this.updateRender();
+    },
+  },
+  created() {
+    this.updateRender();
+  },
+  methods: {
+    ...mapActions({
+      canHidePinyin: FILE_ACTION_CAN_HIDE_PINYIN,
+    }),
+    openFootnote(footnote) {
+      this.$emit('open-footnote', {
+        footnote,
+      });
+    },
+
+    openImage(src) {
+      this.$emit('open-image', {
+        src,
+      });
+    },
+
+    async updateRender() {
+      const options = OptionsManager.getOptions();
+      this.classHighlight = `highlight-${this.highlight ? this.highlight : ''}`;
+      this.classBold = '';
+      if (this.isBold === 1) {
+        this.classBold = 'bold';
+      }
+
+      this.classItalic = '';
+      if (this.isItalic === 1) {
+        this.classItalic = 'italic';
+      }
+
+      this.classExtra = '';
+      if (this.block.v) {
+        this.classExtra = 'verse';
+        if (this.block.v === 1) {
+          this.classExtra = 'chapter';
+        }
+      }
+
+      const printData = [];
+      const chars = this.character.toString();
+
+      let withoutPinyn = true;
+      const pinyin = separatePinyinInSyllables(this.pinyin, true);
+
+      for (let i = 0; i < chars.length; i += 1) {
+        let newPinyin = '';
+        let pinyinClass = '';
+        let hidePinyin = false;
+        if (options.pinyinHide === '1') {
+          // eslint-disable-next-line
+          hidePinyin =
+            (await this.canHidePinyin(chars[i])) ||
+            pinyin[i] === undefined ||
+            pinyin[i] === '';
+        } else if (options.pinyinHide === '2') {
+          // eslint-disable-next-line
+          hidePinyin =
+            (await this.canHidePinyin(chars)) ||
+            pinyin[i] === undefined ||
+            pinyin[i] === '';
+        }
+
+        if (options.type !== '3' && hidePinyin) {
+          pinyinClass = 'hide-pinyin';
+          newPinyin = '&nbsp;';
+        } else if (pinyin[i]) {
+          withoutPinyn = false;
+          newPinyin = pinyin[i];
+        } else {
+          withoutPinyn = false;
+          newPinyin = ' ';
+        }
+
+        printData.push({
+          pinyinClass,
+          character: chars[i],
+          pinyin: newPinyin,
+        });
+      }
+
+      if (withoutPinyn) {
+        printData.forEach((item, i) => {
+          printData[i].pinyinClass = '';
+          printData[i].pinyin = '';
+        });
+      }
+
+      this.pinyinStyleObject = {};
+      if (withoutPinyn) {
+        this.pinyinStyleObject.height = 'auto';
+      }
+
+      if (chars.length === 0) {
+        printData.push({
+          pinyinClass: '',
+          character: '',
+          pinyin: `${this.pinyin}&nbsp;`,
+        });
+      }
+
+      this.printData = printData;
+    },
+  },
+};
 </script>
 
 <style>
 .new-line {
   margin-top: 15px;
 }
-
 </style>
