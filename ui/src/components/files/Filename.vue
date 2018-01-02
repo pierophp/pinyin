@@ -1,5 +1,5 @@
 <template>
-<span>
+<span class="filename-container">
     <span v-if="filenameRender">{{ filenameRender }}</span>
     <file-row-print
       v-if="!filenameRender"
@@ -69,24 +69,24 @@ export default {
 </script>
 
 <style>
-.line {
+.filename-container .line {
   display: block;
 }
 
-.block {
+.filename-container .block {
   display: inline-block;
   width: auto;
 }
 
-.block:hover {
+.filename-container .block:hover {
   background: inherit;
 }
 
-.block .ideogram-show span {
+.filename-container .block .ideogram-show span {
   font-size: 20px !important;
 }
 
-.pinyin span {
+.filename-container .pinyin span {
   background: inherit;
 }
 </style>
