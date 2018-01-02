@@ -126,4 +126,6 @@ export default {
   share: 'Share',
   file: 'File',
   folder: 'Folder',
+  new: 'New',
+  name: 'Name',
 };

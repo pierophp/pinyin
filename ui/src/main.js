@@ -14,7 +14,8 @@ import RavenVue from 'raven-js/plugins/vue';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-social/bootstrap-social.css';
 import 'font-awesome/css/font-awesome.min.css';
-import 'src/css/vue-material.scss';
+import 'vue-material/dist/vue-material.min.css';
+import 'vue-material/dist/theme/default.css';
 import 'src/css/default.css';
 import 'src/css/bootstrap-callout.css';
 import 'src/css/fonts/material-icons.css';
@@ -33,12 +34,14 @@ import localePt from 'src/data/locale/pt';
 import FileContainer from 'src/components/files/FileContainer';
 
 export default async function loadMain(moduleName) {
-
   const routerMethod = (await import('src/router')).default;
 
   const routes = (await import(`src/routes/${moduleName}`)).default;
 
-  const router = routerMethod(routes, (await import(`src/app/${moduleName}`)).default);
+  const router = routerMethod(
+    routes,
+    (await import(`src/app/${moduleName}`)).default,
+  );
 
   Vue.use(VueI18n);
   Vue.use(VueMaterial);
@@ -69,10 +72,9 @@ export default async function loadMain(moduleName) {
       router,
     });
 
-    Raven
-    .config('https://c66b5a8acf4440d796646fdab764969a@sentry.io/245293')
-    .addPlugin(RavenVue, Vue)
-    .install();
+    Raven.config('https://c66b5a8acf4440d796646fdab764969a@sentry.io/245293')
+      .addPlugin(RavenVue, Vue)
+      .install();
   }
 
   const Main = Vue.extend(App);
@@ -81,4 +83,4 @@ export default async function loadMain(moduleName) {
     router,
     store: await store(),
   }).$mount('#app');
-};
+}

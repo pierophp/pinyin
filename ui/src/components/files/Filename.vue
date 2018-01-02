@@ -26,6 +26,11 @@ export default {
     };
   },
 
+  watch: {
+    filename() {
+      this.update();
+    },
+  },
   props: {
     filename: '',
   },

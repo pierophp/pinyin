@@ -283,7 +283,7 @@ export default {
           dirname,
           filename: data.filename,
           path,
-          type: 'file',
+          type,
         });
         sortFiles(state.files);
         LocalStorage.save('files', state.files);

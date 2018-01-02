@@ -98,7 +98,7 @@ export default {
         return [];
       }
 
-      return this.files.filter(item => item.dirname === this.dirname);
+      return [].concat(this.files).filter(item => item.dirname === this.dirname);
     },
 
     ...mapGetters({

@@ -1,30 +1,24 @@
 <template>
   <div>
-    <md-speed-dial class="md-bottom-right">
-      <md-speed-dial-target>
-        <md-icon>add</md-icon>
-      </md-speed-dial-target>
-
-      <md-speed-dial-content>
-        <md-button class="md-icon-button md-accent" @click.native="openDialog('dir')" :title="$t('folder')">
-          <md-icon>folder</md-icon>
-        </md-button>
-
-        <md-button class="md-icon-button md-primary" @click.native="openDialog('file')" :title="$t('file')">
-          <md-icon>note</md-icon>
-        </md-button>
-
-
-      </md-speed-dial-content>
-    </md-speed-dial>
+    <md-button class="md-fab md-fab-bottom-right" @click.native="openDialog()">
+      <md-icon>add</md-icon>
+    </md-button>
 
     <md-dialog md-open-from="#newFileModal" md-close-to="#newFileModal" ref="modal" @md-opened="onOpen" :md-active.sync="modalOpen" :md-fullscreen="false">
-      <md-dialog-title>{{ $t('new_file') }}</md-dialog-title>
+      <md-dialog-title>{{ $t('new') }}</md-dialog-title>
 
-      <md-dialog-content>
-         <md-field>
-          <label>{{ $t('filename') }}</label>
-          <md-input :placeholder="$t('filename')" v-model="filename" ref="inputFilename"></md-input>
+      <md-dialog-content >
+        <md-field>
+          <label>{{ $t('type') }}</label>
+           <md-select v-model="type" name="type" md-dense id="select-type">
+            <md-option value="file">{{ $t('file') }}</md-option>
+            <md-option value="dir">{{ $t('folder') }}</md-option>
+          </md-select>
+        </md-field>
+
+        <md-field>
+          <label>{{ $t('name') }}</label>
+          <md-input :placeholder="$t('name')" v-model="filename" ref="inputFilename"></md-input>
         </md-field>
       </md-dialog-content>
 
@@ -45,7 +39,7 @@ export default {
   name: 'modal-new-file',
   data() {
     return {
-      type: '',
+      type: 'file',
       filename: '',
       modalOpen: false,
     };
@@ -60,9 +54,8 @@ export default {
       });
       this.filename = '';
     },
-    openDialog(type) {
+    openDialog() {
       this.modalOpen = true;
-      this.type = type;
     },
     closeDialog() {
       this.modalOpen = false;
@@ -78,3 +71,9 @@ export default {
   },
 };
 </script>
+
+<style>
+.md-select-menu {
+  z-index: 1000 !important;
+}
+</style>

@@ -124,4 +124,6 @@ export default {
   share: 'Compartilhar',
   file: 'Arquivo',
   folder: 'Pasta',
+  new: 'Novo',
+  name: 'Nome',
 };
