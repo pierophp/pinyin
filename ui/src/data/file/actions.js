@@ -97,6 +97,10 @@ export default {
     let lines = [];
     if (LocalStorage.has(fileKey)) {
       lines = LocalStorage.get(fileKey);
+
+      if (!Array.isArray(lines)) {
+        lines = [];
+      }
     }
 
     commit(types.FILE_MUTATION_SET_FULL_FILE, lines);
@@ -249,9 +253,10 @@ export default {
     if (fileContent.files) {
       for (const file of fileContent.files) {
         state.fileChangeTimestamp = Date.now();
+
         await dispatch(types.FILE_ACTION_SAVE, {
           filename: `${data.filename}/${file.filename}`,
-          content: file.content,
+          content: file.rows,
         });
       }
     } else {
@@ -272,7 +277,7 @@ export default {
       filename += '.json';
     }
 
-    const path = `${trimStart(dirname, '/')}${data.filename}`;
+    const path = `${trimStart(dirname, '/')}/${data.filename}`;
 
     http
       .post(`files/save?filename=${filename}&type=${type}&dirname=${dirname}`, {

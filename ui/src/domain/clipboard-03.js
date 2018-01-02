@@ -167,7 +167,7 @@ export default async function(content) {
         lines = link.content.text;
         audio = link.content.audio;
 
-        const rows = parseSite(lines, audio, isJwOrg, content);
+        const rows = await parseSite(lines, audio, isJwOrg, content);
 
         files.push({ filename, rows });
       }
@@ -182,7 +182,7 @@ export default async function(content) {
     lines = await parseContent(content);
   }
 
-  const rows = parseSite(lines, audio, isJwOrg, content);
+  const rows = await parseSite(lines, audio, isJwOrg, content);
 
   return rows;
 }
