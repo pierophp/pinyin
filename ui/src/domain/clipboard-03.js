@@ -33,21 +33,7 @@ function parseContent(content) {
   });
 }
 
-export default async function (content) {
-  const siteJwOrg = 'https://www.jw.org';
-  const isJwOrg = content.trim().substr(0, siteJwOrg.length) === siteJwOrg;
-
-  let lines;
-  let audio = null;
-  if (isJwOrg) {
-    const jwContent = await parseJW(content);
-    lines = jwContent.text;
-    audio = jwContent.audio;
-  } else {
-    content = replaceall('+', '', content);
-    lines = await parseContent(content);
-  }
-
+async function parseSite(lines, audio, isJwOrg, content) {
   const rows = await Promise.map(lines, async line => {
     if (typeof line === 'string') {
       line = { text: line };
@@ -159,6 +145,44 @@ export default async function (content) {
   if (isJwOrg) {
     rows[0][0].line.url = content;
   }
+
+  return rows;
+}
+
+export default async function(content) {
+  const siteJwOrg = 'https://www.jw.org';
+  const isJwOrg = content.trim().substr(0, siteJwOrg.length) === siteJwOrg;
+
+  let lines;
+  let audio = null;
+  if (isJwOrg) {
+    const jwContent = await parseJW(content);
+    if (jwContent.links) {
+      const files = [];
+      for (const link of jwContent.links) {
+        const filename = `${link.number}|||${link.title}|||${
+          link.title_pinyin
+        }`;
+
+        lines = link.content.text;
+        audio = link.content.audio;
+
+        const rows = parseSite(lines, audio, isJwOrg, content);
+
+        files.push({ filename, rows });
+      }
+
+      return { files };
+    } else {
+      lines = jwContent.text;
+      audio = jwContent.audio;
+    }
+  } else {
+    content = replaceall('+', '', content);
+    lines = await parseContent(content);
+  }
+
+  const rows = parseSite(lines, audio, isJwOrg, content);
 
   return rows;
 }

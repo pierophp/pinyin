@@ -3,6 +3,7 @@ import { AdapterInterface } from 'node-filesystem';
 import { LocalAdapter } from 'node-filesystem';
 import { S3Adapter } from 'node-filesystem';
 import * as AWS from 'aws-sdk';
+
 let dirname = `${__dirname}/../../../storage/`;
 if (env.storage_path) {
   dirname = `${env.storage_path}`;
@@ -36,7 +37,6 @@ export class FileManager {
     const adapter = this.getAdapter();
     const basepath = 'files/' + userId;
     const files = await adapter.listContents(basepath, true);
-
     const response: any[] = [];
     files.forEach(file => {
       const item = {

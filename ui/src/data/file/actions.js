@@ -157,7 +157,7 @@ export default {
           }
         })
         .catch(error => commit(types.FILE_MUTATION_FAILURE, error));
-    }());
+    })();
   },
 
   [types.FILE_ACTION_CONVERT_TO_PINYIN]({ commit, state }, data) {
@@ -246,11 +246,21 @@ export default {
   async [types.FILE_ACTION_IMPORT_FILE]({ commit, state, dispatch }, data) {
     commit(types.FILE_MUTATION_SET_FILE_IMPORTING, true);
     const fileContent = await clipboard03(data.content);
-    state.fileChangeTimestamp = Date.now();
-    await dispatch(types.FILE_ACTION_SAVE, {
-      filename: data.filename,
-      content: fileContent,
-    });
+    if (fileContent.files) {
+      for (const file of fileContent.files) {
+        state.fileChangeTimestamp = Date.now();
+        await dispatch(types.FILE_ACTION_SAVE, {
+          filename: `${data.filename}/${file.filename}`,
+          content: file.content,
+        });
+      }
+    } else {
+      state.fileChangeTimestamp = Date.now();
+      await dispatch(types.FILE_ACTION_SAVE, {
+        filename: data.filename,
+        content: fileContent,
+      });
+    }
     commit(types.FILE_MUTATION_SET_FILE_IMPORTING, false);
   },
 
@@ -269,7 +279,12 @@ export default {
         content: JSON.stringify({ lines: [] }),
       })
       .then(() => {
-        state.files.push({ dirname, filename: data.filename, path, type: 'file' });
+        state.files.push({
+          dirname,
+          filename: data.filename,
+          path,
+          type: 'file',
+        });
         sortFiles(state.files);
         LocalStorage.save('files', state.files);
       })

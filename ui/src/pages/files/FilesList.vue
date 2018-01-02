@@ -17,7 +17,7 @@
             </md-button>
 
             <div class="md-list-item-text">
-              {{ file.filename }}
+              <filename :filename="file.filename"/>
             </div>
 
             <md-menu md-size="big" :md-offset-x="menuX" ref="menu" :md-active="fileId === menuFileId">
@@ -25,7 +25,7 @@
                 <md-icon>more_vert</md-icon>
               </md-button>
               <md-menu-content>
-                <md-menu-item @click="openImportDialog(file.path)" v-if="file.type == 'file'">
+                <md-menu-item @click="openImportDialog(file.path)">
                   <md-icon>cloud_upload</md-icon>
                   <span class="md-list-item-text">{{ $t("import_site") }}</span>
                 </md-menu-item>
@@ -59,6 +59,7 @@
 
 <script>
 import NewFileModal from 'src/components/modals/NewFile';
+import Filename from 'src/components/files/Filename';
 import DeleteFileModal from 'src/components/modals/DeleteFile';
 import ImportSiteModal from 'src/components/modals/ImportSite';
 import LoadableContent from 'src/components/common/loading/LoadableContent';
@@ -79,6 +80,7 @@ export default {
     DeleteFileModal,
     ImportSiteModal,
     LoadableContent,
+    Filename,
   },
 
   watch: {
@@ -184,7 +186,7 @@ export default {
         name: 'print',
         params: { filename },
       });
-    },
+    },    
   },
 };
 </script>
