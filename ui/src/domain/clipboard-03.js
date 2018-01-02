@@ -173,10 +173,10 @@ export default async function(content) {
       }
 
       return { files };
-    } else {
-      lines = jwContent.text;
-      audio = jwContent.audio;
     }
+
+    lines = jwContent.text;
+    audio = jwContent.audio;
   } else {
     content = replaceall('+', '', content);
     lines = await parseContent(content);

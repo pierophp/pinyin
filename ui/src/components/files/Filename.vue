@@ -37,30 +37,27 @@ export default {
   methods: {
     update() {
       const fileSplit = this.filename.split('|||');
-      this.filenameRender = '';
+      this.filenameRender = this.filename;
+
       this.line = [];
       if (fileSplit.length === 3) {
+        this.filenameRender = '';
         const pinyinList = fileSplit[2].split(String.fromCharCode(160));
         let i = 0;
         fileSplit[1].split(' ').forEach(word => {
-          let pinyin = [];
+          const pinyin = [];
+          // eslint-disable-next-line
           for (const w of word) {
             pinyin.push(pinyinList[i]);
             i += 1;
           }
-
-          console.log(word, pinyin.join(String.fromCharCode(160)));
 
           this.line.push({
             c: word,
             p: pinyin.join(String.fromCharCode(160)),
           });
         });
-
-        return;
       }
-
-      this.filenameRender = this.filename;
     },
   },
 };

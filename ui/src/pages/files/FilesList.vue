@@ -186,7 +186,7 @@ export default {
         name: 'print',
         params: { filename },
       });
-    },    
+    },
   },
 };
 </script>
