@@ -167,35 +167,50 @@ export class ElasticsearchProvider {
             ],
             should: [
               {
-                term: {
-                  ideogram: {
-                    value: term,
-                    boost: 10.0,
-                  },
+                bool: {
+                  filter: [
+                    {
+                      term: {
+                        ideogram: {
+                          value: term,
+                          boost: 10.0,
+                        },
+                      },
+                    },
+                  ],
                 },
               },
               {
-                match: {
-                  ideogram: {
-                    value: term,
-                    boost: 8.0,
-                  },
+                bool: {
+                  filter: [
+                    {
+                      match: {
+                        ideogram: term,
+                      },
+                    },
+                  ],
                 },
               },
               {
-                match: {
-                  pronunciation: {
-                    value: term,
-                    boost: 7.0,
-                  },
+                bool: {
+                  filter: [
+                    {
+                      match: {
+                        pronunciation: term,
+                      },
+                    },
+                  ],
                 },
               },
               {
-                match: {
-                  pronunciationUnaccented: {
-                    value: term,
-                    boost: 6.0,
-                  },
+                bool: {
+                  filter: [
+                    {
+                      match: {
+                        pronunciationUnaccented: term,
+                      },
+                    },
+                  ],
                 },
               },
             ],
