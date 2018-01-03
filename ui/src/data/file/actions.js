@@ -259,6 +259,8 @@ export default {
           content: file.rows,
         });
       }
+
+      await dispatch(types.FILES_ACTION_FETCH);
     } else {
       state.fileChangeTimestamp = Date.now();
       await dispatch(types.FILE_ACTION_SAVE, {

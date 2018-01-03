@@ -2,6 +2,7 @@
   <div class="files-wrapper">
     <div class="files-container">
       <loadable-content :loading="loading">
+        <folder-structure/>
         <md-list class="md-double-line">
           <md-list-item v-for="(file, fileId) in filesList" @click="openOptions(fileId, $event)" v-bind:key="fileId">
             <md-button class="md-icon-button list-icon" v-if="file.type === 'file'">
@@ -29,11 +30,11 @@
                   <md-icon>cloud_upload</md-icon>
                   <span class="md-list-item-text">{{ $t("import_site") }}</span>
                 </md-menu-item>
-                <md-menu-item @click="visualizationMode(file.path)" v-if="file.type == 'file'">
+                <md-menu-item @click="visualizationMode(file.filename, file.dirname)" v-if="file.type == 'file'">
                   <md-icon>visibility</md-icon>
                   <span class="md-list-item-text">{{ $t("visualization_mode") }}</span>
                 </md-menu-item>
-                <md-menu-item @click="goToFile(file.path)" v-if="file.type == 'file'">
+                <md-menu-item @click="goToFile(file.filename, file.dirname)" v-if="file.type == 'file'">
                   <md-icon>edit</md-icon>
                   <span class="md-list-item-text">{{ $t("edition_mode") }}</span>
                 </md-menu-item>
@@ -60,6 +61,7 @@
 <script>
 import NewFileModal from 'src/components/modals/NewFile';
 import Filename from 'src/components/files/Filename';
+import FolderStructure from 'src/components/files/FolderStructure';
 import DeleteFileModal from 'src/components/modals/DeleteFile';
 import ImportSiteModal from 'src/components/modals/ImportSite';
 import LoadableContent from 'src/components/common/loading/LoadableContent';
@@ -81,6 +83,7 @@ export default {
     ImportSiteModal,
     LoadableContent,
     Filename,
+    FolderStructure,
   },
 
   watch: {
@@ -98,7 +101,9 @@ export default {
         return [];
       }
 
-      return [].concat(this.files).filter(item => item.dirname === this.dirname);
+      return []
+        .concat(this.files)
+        .filter(item => item.dirname === this.dirname);
     },
 
     ...mapGetters({
@@ -146,7 +151,7 @@ export default {
       }
     },
 
-    goToFile(filename) {
+    goToFile(filename, dirname) {
       this.redirect = true;
       if (!this.redirect) {
         return;
@@ -155,6 +160,7 @@ export default {
       this.$router.push({
         name: 'file',
         params: { filename },
+        query: { d: `/${dirname}` },
       });
     },
 
@@ -163,8 +169,6 @@ export default {
         name: 'files',
         query: { d: `/${dirname}` },
       });
-
-      this.reloadDirname();
     },
     openOptions(fileId, e) {
       this.menuX = (window.innerWidth - (e.clientX + 100)) * -1;
@@ -181,10 +185,11 @@ export default {
       this.importFilename = file;
       this.$refs.importModal.openDialog();
     },
-    visualizationMode(filename) {
+    visualizationMode(filename, dirname) {
       this.$router.push({
         name: 'print',
         params: { filename },
+        query: { d: `/${dirname}` },
       });
     },
   },

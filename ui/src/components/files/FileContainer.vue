@@ -4,7 +4,10 @@
     <image-zoom :src="imageZoom" ref="imageZoom"/>
     <div class="print-scroll">
       <div class="print" :class="[sizeClass, typeClass, ideogramSpacedClass]">
-        <h2 v-if="filename">{{filename}}</h2>
+        <folder-structure :show-last="true"/>
+        <h2 v-if="filename && filename.split('|||').length != 3">
+          {{filename}}
+        </h2>
         <div v-for="(line, lineIndex) in lines" :key="lineIndex">
           <div v-if="lineIndex === 0 && line && line[0].line !== undefined && line[0].line.audio !== undefined">
             <audio :src="line[0].line.audio" controls/>
@@ -45,6 +48,7 @@ import HighlightModal from 'src/components/modals/Highlight';
 import BibleModal from 'src/components/modals/Bible';
 import OptionsManager from 'src/domain/options-manager';
 import ImageZoom from 'src/components/common/ImageZoom';
+import FolderStructure from 'src/components/files/FolderStructure';
 
 import { mapActions, mapGetters } from 'vuex';
 
@@ -67,6 +71,7 @@ export default {
     FootnoteModal,
     BibleModal,
     ImageZoom,
+    FolderStructure,
   },
 
   props: {

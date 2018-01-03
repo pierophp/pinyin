@@ -26,7 +26,7 @@ export default {
   watch: {
     $route() {
       if (this.$route.params.filename) {
-        this.getFile(this.$route.params.filename);
+        this.getFile(`${this.$route.query.d}/${this.$route.params.filename}`);
       }
     },
   },
@@ -39,9 +39,10 @@ export default {
     }),
   },
   mounted() {
+    window.onbeforeunload = () => '';
     this.filename = this.$route.params.filename;
     if (this.filename) {
-      this.getFile(this.filename);
+      this.getFile(`${this.$route.query.d}/${this.$route.params.filename}`);
       this.timer = setInterval(() => {
         this.save({
           filename: this.filename,
@@ -52,6 +53,7 @@ export default {
   },
 
   beforeDestroy() {
+    window.onbeforeunload = null;
     clearInterval(this.timer);
     this.clear();
   },

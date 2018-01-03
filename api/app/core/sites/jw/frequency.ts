@@ -92,6 +92,10 @@ export class Frequency {
 
       words[part] += 1;
 
+      if (part.length === 1) {
+        return;
+      }
+
       for (const ideogram of part) {
         if (!words[ideogram]) {
           words[ideogram] = 0;

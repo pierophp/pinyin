@@ -510,6 +510,11 @@ export class Parser {
         lineText = replaceall(item, ` ${item}${specialWord} `, lineText);
       });
 
+      // remove double spaces
+      if (lineText) {
+        lineText = lineText.replace(/\s{2,}/g, ' ').trim();
+      }
+
       // bold
       lineText = replaceall('< b >', '<b>', lineText);
       lineText = replaceall('< /b >', '</b>', lineText);
@@ -524,6 +529,11 @@ export class Parser {
         '</b>',
         lineText,
       );
+      lineText = replaceall(
+        `<${specialWord} / b >${specialWord}`,
+        '</b>',
+        lineText,
+      );
 
       lineText = replaceall('<b>', ' <b> ', lineText);
       lineText = replaceall('</b>', ' </b> ', lineText);
@@ -535,6 +545,11 @@ export class Parser {
       lineText = replaceall(
         `<${specialWord} i >${specialWord}`,
         '<i>',
+        lineText,
+      );
+      lineText = replaceall(
+        `<${specialWord} / i >${specialWord}`,
+        '</i>',
         lineText,
       );
       lineText = replaceall(
