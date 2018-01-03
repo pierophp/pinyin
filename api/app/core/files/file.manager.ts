@@ -40,12 +40,11 @@ export class FileManager {
     const response: any[] = [];
     files.forEach(file => {
       const item = {
-        path: file.path
-          .split('')
+        path: Array.from(file.path)
           .join('')
           .replace('.json', '')
           .substr(basepath.length + 1),
-        filename: file.filename.split('').join(''),
+        filename: Array.from(file.filename).join(''),
         dirname: file.dirname.substr(basepath.length),
         type: file.type,
       };

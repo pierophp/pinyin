@@ -41,7 +41,7 @@ export default {
       });
     },
     updateDirs() {
-      let dirs = [];
+      const dirs = [];
 
       if (this.$route.query.d) {
         let dirsList = this.$route.query.d.split('/');
@@ -55,7 +55,7 @@ export default {
           });
         }
 
-        dirsList.map(item => {
+        dirsList.forEach(item => {
           path += `/${item}`;
           dirs.push({
             title: item,

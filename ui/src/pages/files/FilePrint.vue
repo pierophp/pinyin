@@ -45,7 +45,7 @@ export default {
       this.getFile(`${this.$route.query.d}/${this.$route.params.filename}`);
       this.timer = setInterval(() => {
         this.save({
-          filename: this.filename,
+          filename: `${this.$route.query.d}/${this.$route.params.filename}`,
           content: this.lines,
         });
       }, 3000);

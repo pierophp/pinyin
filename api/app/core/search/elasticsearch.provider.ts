@@ -86,8 +86,6 @@ export class ElasticsearchProvider {
         },
       });
 
-      // console.log('document', this.getUpdateDocument(dictionary));
-
       body.push({
         doc: await this.getUpdateDocument(dictionary),
         doc_as_upsert: true,
@@ -105,6 +103,109 @@ export class ElasticsearchProvider {
         console.log(item);
       }
     }
+  }
+
+  public async searchToDictionaryListBKP2(term: string) {
+    const response = await this.getClient().search({
+      body: {
+        query: {
+          function_score: {
+            query: {
+              bool: {
+                must: [
+                  { match: { _index: this.getIndex() } },
+                  { match: { _type: this.getType() } },
+                ],
+              },
+            },
+            boost: '5',
+            functions: [
+              {
+                filter: { term: { ideogram: term } },
+                random_score: {},
+                weight: 42,
+              },
+              // {
+              //   filter: { match_phrase: { ideogram: term } },
+              //   random_score: {},
+              //   weight: 40,
+              // },
+              // {
+              //   filter: { match: { ideogram: term } },
+              //   random_score: {},
+              //   weight: 38,
+              // },
+              // {
+              //   filter: { match: { pronunciationUnaccented: term } },
+              //   weight: 35,
+              // },
+              // {
+              //   filter: { match: { pronunciation: term } },
+              //   weight: 30,
+              // },
+            ],
+            max_boost: 42,
+            score_mode: 'max',
+            boost_mode: 'multiply',
+            min_score: 42,
+          },
+        },
+      },
+    });
+
+    return response.hits;
+  }
+
+  public async searchToDictionaryList(term: string) {
+    const response = await this.getClient().search({
+      body: {
+        query: {
+          bool: {
+            must: [
+              { match: { _index: this.getIndex() } },
+              { match: { _type: this.getType() } },
+            ],
+            should: [
+              {
+                term: {
+                  ideogram: {
+                    value: term,
+                    boost: 10.0,
+                  },
+                },
+              },
+              {
+                match: {
+                  ideogram: {
+                    value: term,
+                    boost: 8.0,
+                  },
+                },
+              },
+              {
+                match: {
+                  pronunciation: {
+                    value: term,
+                    boost: 7.0,
+                  },
+                },
+              },
+              {
+                match: {
+                  pronunciationUnaccented: {
+                    value: term,
+                    boost: 6.0,
+                  },
+                },
+              },
+            ],
+            minimum_should_match: 1,
+          },
+        },
+      },
+    });
+
+    return response;
   }
 
   protected getIndex(): string {

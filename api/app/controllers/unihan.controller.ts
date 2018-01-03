@@ -1,11 +1,12 @@
-const express = require('express');
-const UnihanSearch = require('../services/UnihanSearch');
-const knex = require('../services/knex');
-const Promise = require('bluebird');
-const ArrayCache = require('../cache/ArrayCache');
-const RedisCache = require('../cache/RedisCache');
-const removeDiacritics = require('diacritics').remove;
-const opencc = require('node-opencc');
+import * as bluebird from 'bluebird';
+import * as express from 'express';
+import * as UnihanSearch from '../services/UnihanSearch';
+import * as knex from '../services/knex';
+import * as ArrayCache from '../cache/ArrayCache';
+import * as RedisCache from '../cache/RedisCache';
+import { remove as removeDiacritics } from 'diacritics';
+import * as opencc from 'node-opencc';
+import { Dictionary } from '../core/dictionary';
 
 // eslint-disable-next-line new-cap
 const router = express.Router();
@@ -30,8 +31,8 @@ router.get('/search', async (req, res) => {
     .orderBy('usage', 'DESC')
     .select('id', 'pronunciation', 'ideogram', 'frequency', 'usage');
 
-  Promise.join(mostUsedPromise, lessUsedPromise, (mostUsed, lessUsed) => {
-    const result = {};
+  bluebird.join(mostUsedPromise, lessUsedPromise, (mostUsed, lessUsed) => {
+    const result: any = {};
     result.items = mostUsed;
     result.lessUsed = lessUsed;
     res.setHeader('Content-Type', 'application/json');
@@ -55,16 +56,16 @@ router.post('/to_pinyin_all', (req, res) => {
   });
 });
 
-router.get('/dictionary_search', (req, res) => {
-  const ideograms = req.query.search;
-  UnihanSearch.searchToDictionaryList(ideograms).then(result => {
-    res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify(result));
-  });
+router.get('/dictionary_search', async (req, res) => {
+  const dictionary = new Dictionary();
+  const result = await dictionary.search(req.query.search);
+  
+  res.setHeader('Content-Type', 'application/json');
+  res.send(JSON.stringify(result));
 });
 
 router.get('/dictionary', (req, res) => {
-  const search = {};
+  const search: any = {};
   if (req.query.ideograms !== undefined) {
     search.ideograms = req.query.ideograms;
   }
@@ -83,7 +84,7 @@ router.get('/dictionary', (req, res) => {
   });
 });
 
-router.post('/save', async (req, res) => {
+router.post('/save', async (req: any, res) => {
   if (!req.user.admin) {
     res.status(403);
     return;
