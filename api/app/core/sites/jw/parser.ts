@@ -149,7 +149,6 @@ export class Parser {
         title,
         title_pinyin: (await UnihanSearch.toPinyin(title))
           .map(item => item.pinyin)
-          .filter(item => item.trim() !== '')
           .join(String.fromCharCode(160)),
       });
     }
@@ -462,7 +461,7 @@ export class Parser {
     text = replaceall(String.fromCharCode(8201), ' ', text); // Convert THIN SPACE to SPACE
 
     text = replaceall('//STRONG-OPEN//', '<b>', text);
-    text = replaceall('//STRONG-CLOSE//', '</b>', text);    
+    text = replaceall('//STRONG-CLOSE//', '</b>', text);
     text = replaceall('//ITALIC-OPEN//', '<i>', text);
     text = replaceall('//ITALIC-CLOSE//', '</i>', text);
 
