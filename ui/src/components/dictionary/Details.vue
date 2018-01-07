@@ -57,80 +57,78 @@
 </template>
 
 <script>
-  import http from 'src/helpers/http';
-  import User from 'src/domain/user';
+import http from 'src/helpers/http';
+import User from 'src/domain/user';
 
-  export default {
-    name: 'dictionary-details',
-    watch: {
-      dictionary() {
-        this.dictionaryEntry = this.getDictionaryEntry();
-      },
+export default {
+  name: 'dictionary-details',
+  watch: {
+    dictionary() {
+      this.dictionaryEntry = this.getDictionaryEntry();
     },
-    data() {
-      return {
-        editing: false,
-        dictionaryEntry: this.getDictionaryEntry(),
-        user: User.getUser(),
-      };
+  },
+  data() {
+    return {
+      editing: false,
+      dictionaryEntry: this.getDictionaryEntry(),
+      user: User.getUser(),
+    };
+  },
+  methods: {
+    getDictionaryEntry() {
+      let dictionaryEntry = '';
+      if (!this.dictionary.pt) {
+        this.dictionary.pt = [];
+      }
+
+      this.dictionary.pt.forEach(entry => {
+        dictionaryEntry += `${entry}\n`;
+      });
+
+      dictionaryEntry = dictionaryEntry.trim('\n');
+
+      return dictionaryEntry;
     },
-    methods: {
-      getDictionaryEntry() {
-        let dictionaryEntry = '';
-        if (!this.dictionary.pt) {
-          this.dictionary.pt = [];
-        }
-
-        this.dictionary.pt.forEach((entry) => {
-          dictionaryEntry += `${entry}\n`;
-        });
-
-        dictionaryEntry = dictionaryEntry.trim('\n');
-
-        return dictionaryEntry;
-      },
-      cancelEdit() {
-        this.editing = false;
-        this.$emit('change-show', this.editing);
-      },
-      edit() {
-        this.editing = true;
-        this.$emit('change-show', this.editing);
-      },
-      save() {
-        http
+    cancelEdit() {
+      this.editing = false;
+      this.$emit('change-show', this.editing);
+    },
+    edit() {
+      this.editing = true;
+      this.$emit('change-show', this.editing);
+    },
+    save() {
+      const dictionatyList = this.dictionaryEntry
+        .split('\n')
+        .filter(item => item);
+        
+      http
         .post('unihan/save', {
           pinyin: this.pinyin,
           ideograms: this.dictionary.ideograms,
-          dictionary: this.dictionaryEntry.split('\n'),
+          dictionary: dictionatyList,
         })
         .then(() => {
-          this.dictionary.pt = this.dictionaryEntry.split('\n');
+          this.dictionary.pt = dictionatyList;
           this.editing = false;
           this.$emit('change-show', this.editing);
         });
-      },
     },
-    props: {
-      pinyin: {
-
-      },
-      ideograms: {
-
-      },
-      dictionary: {
-
-      },
-    },
-  };
+  },
+  props: {
+    pinyin: {},
+    ideograms: {},
+    dictionary: {},
+  },
+};
 </script>
 
 <style>
-.dict-block .md-input-container{
+.dict-block .md-input-container {
   margin-top: 0 !important;
 }
 
-.dict-block textarea{
+.dict-block textarea {
   height: 250px !important;
 }
 </style>

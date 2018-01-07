@@ -351,7 +351,7 @@
   flex-shrink: 0;
 }
 .bottom-bar .md-menu {
-  margin-left: -25px;
+  margin-left: -20px;
 }
 .bottom-bar-pinyin{
   font-size: 15px;
