@@ -385,7 +385,13 @@ module.exports = class UnihanSearch {
     return 0;
   }
   static segment(text) {
-    return nodejieba.cut(text);
+    return nodejieba.cut(text).filter(item => {
+      item = replaceall(String.fromCharCode(160), '', item); // Convert NO-BREAK SPACE to SPACE
+      item = replaceall(String.fromCharCode(8201), '', item); // Convert THIN SPACE to SPACE
+      item = replaceall(String.fromCharCode(8203), '', item); // Zero Width Space
+      
+      return item.trim();
+    });
   }
 
   static parseResultByIdeograms(ideogramsList, ideograms, nextWord, options) {

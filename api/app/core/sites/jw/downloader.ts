@@ -58,11 +58,7 @@ export class Downloader {
         try {
           response = await this.downloadUrl(this.encodeUrl(link));
         } catch (e) {
-          if (e.response.status === 404) {
-            response = await this.downloadUrl(link);
-          } else {
-            throw e;
-          }
+          response = await this.downloadUrl(link);
         }
 
         profiler('Download JW End - Chinese');
@@ -179,6 +175,11 @@ export class Downloader {
     curl.setOpt('FOLLOWLOCATION', true);
     return new Promise((done, reject) => {
       curl.on('end', (statusCode, body, headers) => {
+        if (statusCode > 400) {
+          reject();
+          return;
+        }
+        
         curl.close.bind(curl);
         done(body);
       });
@@ -200,8 +201,11 @@ export class Downloader {
     const urlParts = url.replace(newUrl, '').split('/');
     urlParts.forEach(urlPart => {
       newUrl += encodeURIComponent(urlPart);
-      newUrl += '/';
+      if (urlPart) {
+        newUrl += '/';
+      }
     });
+
     return newUrl;
   }
 

@@ -102,7 +102,7 @@ async function parseSite(lines, audio, isJwOrg, content) {
       }
 
       const item = {
-        p: line.pinyin[i],
+        p: line.pinyin ? line.pinyin[i] : '',
         c: char,
       };
 
