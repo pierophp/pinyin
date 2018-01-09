@@ -26,61 +26,64 @@
 </template>
 
 <script>
-  import http from 'src/helpers/http';
-  import LoadableContent from 'src/components/common/loading/LoadableContent';
-  import TraditionalSimplifiedShow from 'src/components/ideograms/TraditionalSimplifiedShow';
-  import replaceall from 'replaceall';
+import http from 'src/helpers/http';
+import LoadableContent from 'src/components/common/loading/LoadableContent';
+import TraditionalSimplifiedShow from 'src/components/ideograms/TraditionalSimplifiedShow';
+import replaceall from 'replaceall';
 
-  export default {
-    name: 'dicionary-search',
-    components: {
-      LoadableContent,
-      TraditionalSimplifiedShow,
+export default {
+  name: 'dicionary-search',
+  components: {
+    LoadableContent,
+    TraditionalSimplifiedShow,
+  },
+  data() {
+    return {
+      searchValue: '',
+      entries: [],
+      loading: false,
+      noResults: false,
+    };
+  },
+  watch: {
+    searchValue() {
+      this.search(this.searchValue);
     },
-    data() {
-      return {
-        searchValue: '',
-        entries: [],
-        loading: false,
-        noResults: false,
-      };
-    },
-    watch: {
-      searchValue() {
+  },
+  created() {
+    setTimeout(() => {
+      this.$refs.inputSearch.$el.focus();
+      this.$refs.inputSearch.$el.setSelectionRange(0, 1000);
+    }, 500);
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.searchValue = this.$route.query.search;
+      if (this.searchValue) {
         this.search(this.searchValue);
-      },
-    },
-    created() {
-      setTimeout(() => {
-        this.$refs.inputSearch.$el.focus();
-        this.$refs.inputSearch.$el.setSelectionRange(0, 1000);
-      }, 500);
-    },
-    mounted() {
-      this.$nextTick(() => {
-        this.searchValue = this.$route.query.search;
-        if (this.searchValue) {
-          this.search(this.searchValue);
-        }
-      });
-    },
-    methods: {
-      search(value) {
-        const that = this;
-        (function search() {
-          const searchValue = value;
-          setTimeout(() => {
-            if (searchValue === that.searchValue && searchValue) {
-              that.noResults = false;
-              that.loading = true;
-              http
+      }
+    });
+  },
+  methods: {
+    search(value) {
+      const that = this;
+      (function search() {
+        const searchValue = value;
+        setTimeout(() => {
+          if (searchValue === that.searchValue && searchValue) {
+            that.noResults = false;
+            that.loading = true;
+            http
               .get('unihan/dictionary_search', {
                 params: {
                   search: value,
                 },
               })
-              .then((response) => {
-                if (replaceall(' ', '', value) === response.data.search) {
+              .then(response => {
+                if (
+                  replaceall(' ', '', value) ===
+                  replaceall(' ', '', response.data.search)
+                ) {
                   that.entries = response.data.entries;
                   that.loading = false;
                   if (that.entries.length === 0) {
@@ -88,35 +91,35 @@
                   }
                 }
               });
-            }
+          }
 
-            if (!searchValue) {
-              that.entries = [];
-              that.noResults = false;
-            }
-          }, 400);
-        }());
+          if (!searchValue) {
+            that.entries = [];
+            that.noResults = false;
+          }
+        }, 400);
+      })();
 
-        this.$router.push({
-          path: this.$route.path,
-          query: {
-            search: value,
-          },
-        });
-      },
-      details(id) {
-        this.$router.push({
-          name: 'dictionary-details',
-          query: {
-            search: this.searchValue,
-          },
-          params: {
-            id,
-          },
-        });
-      },
+      this.$router.push({
+        path: this.$route.path,
+        query: {
+          search: value,
+        },
+      });
     },
-  };
+    details(id) {
+      this.$router.push({
+        name: 'dictionary-details',
+        query: {
+          search: this.searchValue,
+        },
+        params: {
+          id,
+        },
+      });
+    },
+  },
+};
 </script>
 
 <style>
@@ -135,7 +138,7 @@
 }
 
 .dictionary-container .ideogram {
-  font-size:20px;
+  font-size: 20px;
 }
 
 .dictionary-container .md-list .ideogram-show span {
