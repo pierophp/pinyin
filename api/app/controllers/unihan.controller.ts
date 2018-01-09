@@ -58,8 +58,11 @@ router.post('/to_pinyin_all', (req, res) => {
 
 router.get('/dictionary_search', async (req, res) => {
   const dictionary = new Dictionary();
-  const result = await dictionary.search(req.query.search);
-  
+  const result = await dictionary.search(
+    req.query.search,
+    req.query.debug ? true : false,
+  );
+
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify(result));
 });

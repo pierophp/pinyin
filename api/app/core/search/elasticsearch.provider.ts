@@ -58,6 +58,12 @@ export class ElasticsearchProvider {
   }
 
   protected async getUpdateDocument(dictionary: any): Promise<any> {
+    const cedict = JSON.parse(dictionary.definition_cedict);
+    const pt = JSON.parse(dictionary.definition_pt);
+    const ctPt = JSON.parse(dictionary.definition_ct_pt);
+    const ctEn = JSON.parse(dictionary.definition_ct_en);
+    const ctEs = JSON.parse(dictionary.definition_ct_es);
+
     return {
       id: dictionary.id,
       ideogram: convertUtf16ToIdeograms(dictionary.ideogram),
@@ -68,11 +74,11 @@ export class ElasticsearchProvider {
       pronunciationUnaccentedKeyword: dictionary.pronunciation_unaccented,
       dictionary: {
         unihan: dictionary.definition_unihan,
-        cedict: dictionary.definition_cedict,
-        pt: dictionary.definition_pt,
-        ctPt: dictionary.definition_ct_pt,
-        ctEn: dictionary.definition_ct_en,
-        ctEs: dictionary.definition_ct_es,
+        cedict: cedict ? cedict.join(' ||| ') : null,
+        pt: pt ? pt.join(' ||| ') : null,
+        ctPt: ctPt ? ctPt.join(' ||| ') : null,
+        ctEn: ctEn ? ctEn.join(' ||| ') : null,
+        ctEs: ctEs ? ctEs.join(' ||| ') : null,
       },
       type: dictionary.type,
       simplified: dictionary.simplified ? true : false,
@@ -119,7 +125,7 @@ export class ElasticsearchProvider {
     }
   }
 
-  public async searchToDictionaryList(term: string) {
+  public async searchToDictionaryList(term: string, debug: boolean) {
     const whereList = [
       {
         type: 'term',
@@ -242,13 +248,14 @@ export class ElasticsearchProvider {
       },
     };
 
-    // console.log(JSON.stringify(query, null, 2));
-
     const response = await this.getClient().search({
       body: { query },
     });
 
-    // return response.hits;
+    if (debug) {
+      console.info(JSON.stringify(query, null, 2));
+      return response.hits;
+    }
 
     return {
       entries: response.hits.hits.map((item: any) => {

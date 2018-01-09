@@ -10,7 +10,7 @@ export class ElasticsearchSyncCommand implements CommandModule {
 
   public async handler(argv: Argv) {
     const dictionary = (await CjkRepository.findAll()).filter(item => {
-      return item.type === 'W' || (item.type === 'C' || item.frequency < 999);
+      return item.type === 'W' || (item.type === 'C' && item.frequency < 999);
     });
     const dictionaryChunkList = chunk(dictionary, 500);
 
