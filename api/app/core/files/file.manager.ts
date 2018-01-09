@@ -39,12 +39,13 @@ export class FileManager {
     const files = await adapter.listContents(basepath, true);
     const response: any[] = [];
     files.forEach(file => {
+      if (file.basename === '.DS_Store') {
+        return;
+      }
+
       const item = {
-        path: Array.from(file.path)
-          .join('')
-          .replace('.json', '')
-          .substr(basepath.length + 1),
-        filename: Array.from(file.filename).join(''),
+        path: file.path.replace('.json', '').substr(basepath.length + 1),
+        filename: file.filename,
         dirname: file.dirname.substr(basepath.length),
         type: file.type,
       };

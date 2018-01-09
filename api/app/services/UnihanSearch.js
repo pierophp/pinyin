@@ -389,7 +389,7 @@ module.exports = class UnihanSearch {
       item = replaceall(String.fromCharCode(160), '', item); // Convert NO-BREAK SPACE to SPACE
       item = replaceall(String.fromCharCode(8201), '', item); // Convert THIN SPACE to SPACE
       item = replaceall(String.fromCharCode(8203), '', item); // Zero Width Space
-      
+
       return item.trim();
     });
   }
@@ -436,6 +436,8 @@ module.exports = class UnihanSearch {
       '>': ' ',
       '〈': ' ',
       '〉': ' ',
+      '●': ' ',
+      '○': ' ',
       1: ' ',
       2: ' ',
       3: ' ',

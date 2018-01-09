@@ -1,6 +1,7 @@
 import * as env from '../../../env';
 import { Client } from 'elasticsearch';
 import { convertUtf16ToIdeograms } from '../../services/UnihanSearch';
+
 let client;
 
 export class ElasticsearchProvider {
@@ -11,8 +12,11 @@ export class ElasticsearchProvider {
       properties: {
         id: { type: 'integer' },
         ideogram: { type: 'text' },
+        ideogramKeyword: { type: 'keyword' },
         pronunciation: { type: 'text' },
+        pronunciationKeyword: { type: 'keyword' },
         pronunciationUnaccented: { type: 'text' },
+        pronunciationUnaccentedKeyword: { type: 'keyword' },
         'dictionary.unihan': { type: 'text' },
         'dictionary.cedict': { type: 'text' },
         'dictionary.pt': { type: 'text' },
@@ -22,9 +26,12 @@ export class ElasticsearchProvider {
         type: { type: 'keyword' },
         simplified: { type: 'boolean' },
         traditional: { type: 'boolean' },
-        main: { type: 'boolean' },
+        main: { type: 'integer' },
         usage: { type: 'integer' },
+        frequency: { type: 'integer' },
+        frequencyInverse: { type: 'integer' },
         hsk: { type: 'integer' },
+        hskInverse: { type: 'integer' },
         createdAt: {
           type: 'date',
           format: 'strict_date_optional_time||epoch_millis',
@@ -53,9 +60,12 @@ export class ElasticsearchProvider {
   protected async getUpdateDocument(dictionary: any): Promise<any> {
     return {
       id: dictionary.id,
-      ideogram: convertUtf16ToIdeograms(dictionary.ideogram), // @todo Convert
+      ideogram: convertUtf16ToIdeograms(dictionary.ideogram),
       pronunciation: dictionary.pronunciation,
       pronunciationUnaccented: dictionary.pronunciation_unaccented,
+      ideogramKeyword: convertUtf16ToIdeograms(dictionary.ideogram),
+      pronunciationKeyword: dictionary.pronunciation,
+      pronunciationUnaccentedKeyword: dictionary.pronunciation_unaccented,
       dictionary: {
         unihan: dictionary.definition_unihan,
         cedict: dictionary.definition_cedict,
@@ -67,9 +77,13 @@ export class ElasticsearchProvider {
       type: dictionary.type,
       simplified: dictionary.simplified ? true : false,
       traditional: dictionary.traditional ? true : false,
-      main: dictionary.main ? true : false,
-      usage: dictionary.usage,
-      hsk: dictionary.hsk,
+      main: dictionary.main ? 1 : 0,
+      usage: dictionary.usage || 0,
+      frequency: dictionary.frequency || 0,
+      frequencyInverse:
+        10 - (dictionary.frequency === 999 ? 10 : dictionary.frequency),
+      hsk: dictionary.hsk === 999 ? 0 : dictionary.hsk,
+      hskInverse: 10 - (dictionary.hsk === 999 ? 10 : dictionary.hsk),
       createdAt: dictionary.created_at,
       updatedAt: dictionary.updated_at,
     };
@@ -105,122 +119,147 @@ export class ElasticsearchProvider {
     }
   }
 
-  public async searchToDictionaryListBKP2(term: string) {
-    const response = await this.getClient().search({
-      body: {
-        query: {
-          function_score: {
-            query: {
-              bool: {
-                must: [
-                  { match: { _index: this.getIndex() } },
-                  { match: { _type: this.getType() } },
-                ],
-              },
-            },
-            boost: '5',
-            functions: [
-              {
-                filter: { term: { ideogram: term } },
-                random_score: {},
-                weight: 42,
-              },
-              // {
-              //   filter: { match_phrase: { ideogram: term } },
-              //   random_score: {},
-              //   weight: 40,
-              // },
-              // {
-              //   filter: { match: { ideogram: term } },
-              //   random_score: {},
-              //   weight: 38,
-              // },
-              // {
-              //   filter: { match: { pronunciationUnaccented: term } },
-              //   weight: 35,
-              // },
-              // {
-              //   filter: { match: { pronunciation: term } },
-              //   weight: 30,
-              // },
-            ],
-            max_boost: 42,
-            score_mode: 'max',
-            boost_mode: 'multiply',
-            min_score: 42,
+  public async searchToDictionaryList(term: string) {
+    const whereList = [
+      {
+        type: 'term',
+        field: 'ideogramKeyword',
+        score: '50',
+      },
+      {
+        type: 'match_phrase',
+        field: 'ideogram',
+        score: '40',
+      },
+      {
+        type: 'term',
+        field: 'pronunciationKeyword',
+        score: '38',
+      },
+      {
+        type: 'match_phrase',
+        field: 'pronunciation',
+        score: '36',
+      },
+      {
+        type: 'term',
+        field: 'pronunciationUnaccentedKeyword',
+        score: '34',
+      },
+      {
+        type: 'match_phrase',
+        field: 'pronunciationUnaccented',
+        score: '32',
+      },
+      {
+        type: 'match_phrase',
+        field: 'dictionary.pt',
+        score: '20',
+      },
+      {
+        type: 'match_phrase',
+        field: 'dictionary.ctPt',
+        score: '18',
+      },
+      {
+        type: 'match_phrase',
+        field: 'dictionary.ctEs',
+        score: '16',
+      },
+      {
+        type: 'match_phrase',
+        field: 'dictionary.cedict',
+        score: '14',
+      },
+      {
+        type: 'match_phrase',
+        field: 'dictionary.ctEn',
+        score: '12',
+      },
+      {
+        type: 'match_phrase',
+        field: 'dictionary.unihan',
+        score: '10',
+      },
+    ];
+
+    const scoreFormulaList = [
+      '(_score * $score)',
+      "doc['main'].value",
+      "(doc['hskInverse'].value * 3)",
+      "(doc['frequencyInverse'].value * 2)",
+      "(doc['usage'].value / 1000)",
+    ];
+
+    const scoreFormula = scoreFormulaList.join(' + ');
+
+    const whereShould: any[] = [];
+    const scoreFunctions: any[] = [];
+    for (const where of whereList) {
+      const searchContainer: any = {
+        bool: {
+          filter: [],
+        },
+      };
+      const searchFilter: any = {};
+      const searchCondition: any = {};
+      searchCondition[where.field] = term;
+      searchFilter[where.type] = searchCondition;
+      searchContainer.bool.filter.push(searchFilter);
+      whereShould.push(searchContainer);
+
+      const scoreCondition: any = {};
+      scoreCondition[where.field] = term;
+
+      const scoreFilter: any = {};
+      scoreFilter[where.type] = scoreCondition;
+
+      scoreFunctions.push({
+        filter: scoreFilter,
+        script_score: {
+          script: {
+            source: scoreFormula.replace('$score', where.score),
           },
         },
-      },
-    });
+      });
+    }
 
-    return response.hits;
-  }
-
-  public async searchToDictionaryList(term: string) {
-    const response = await this.getClient().search({
-      body: {
+    const query = {
+      function_score: {
         query: {
           bool: {
             must: [
               { match: { _index: this.getIndex() } },
               { match: { _type: this.getType() } },
+              { match: { simplified: true } },
             ],
-            should: [
-              {
-                bool: {
-                  filter: [
-                    {
-                      term: {
-                        ideogram: {
-                          value: term,
-                          boost: 10.0,
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                bool: {
-                  filter: [
-                    {
-                      match: {
-                        ideogram: term,
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                bool: {
-                  filter: [
-                    {
-                      match: {
-                        pronunciation: term,
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                bool: {
-                  filter: [
-                    {
-                      match: {
-                        pronunciationUnaccented: term,
-                      },
-                    },
-                  ],
-                },
-              },
-            ],
+
+            should: whereShould,
             minimum_should_match: 1,
           },
         },
+        functions: scoreFunctions,
       },
+    };
+
+    // console.log(JSON.stringify(query, null, 2));
+
+    const response = await this.getClient().search({
+      body: { query },
     });
 
-    return response;
+    // return response.hits;
+
+    return {
+      entries: response.hits.hits.map((item: any) => {
+        return {
+          id: item._source.id,
+          pronunciation: item._source.pronunciation,
+          ideogram: item._source.ideogram,
+        };
+      }),
+      search: term,
+    };
   }
 
   protected getIndex(): string {

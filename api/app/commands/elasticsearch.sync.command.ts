@@ -9,7 +9,9 @@ export class ElasticsearchSyncCommand implements CommandModule {
   public describe = 'Sync all indices on Elasticsearch';
 
   public async handler(argv: Argv) {
-    const dictionary = await CjkRepository.findAll();
+    const dictionary = (await CjkRepository.findAll()).filter(item => {
+      return item.type === 'W' || (item.type === 'C' || item.frequency < 999);
+    });
     const dictionaryChunkList = chunk(dictionary, 500);
 
     const provider = new ElasticsearchProvider();
@@ -19,8 +21,6 @@ export class ElasticsearchSyncCommand implements CommandModule {
     for (const dictionaryList of dictionaryChunkList) {
       await provider.saveMany(dictionaryList);
     }
-
-    //console.log(dictionaryChunkList);
 
     process.exit();
   }

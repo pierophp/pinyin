@@ -4,6 +4,7 @@ import * as bibleBooks from '../../../../../shared/data/bible/bible';
 import { http } from '../../../helpers/http';
 import * as UnihanSearch from '../../../services/UnihanSearch';
 import { padStart } from 'lodash';
+import * as separatePinyinInSyllables from '../../../../../shared/helpers/separate-pinyin-in-syllables';
 
 export class Parser {
   protected text: any[] = [];
@@ -143,12 +144,17 @@ export class Parser {
     for (const item of itemsList) {
       i += 1;
       const title = this.getText($, item);
+
       downloadResponse.links.push({
         link: $(item).attr('href'),
         number: padStart(String(i), 3, '0'),
         title,
-        title_pinyin: (await UnihanSearch.toPinyin(title))
-          .map(item => item.pinyin)
+        title_pinyin: (await UnihanSearch.toPinyin(title.split(' ')))
+          .map(item => {
+            return separatePinyinInSyllables(item.pinyin).join(
+              String.fromCharCode(160),
+            );
+          })
           .join(String.fromCharCode(160)),
       });
     }
@@ -459,7 +465,7 @@ export class Parser {
     text = text.replace(/[\u200B-\u200D\uFEFF]/g, ' '); // replace zero width space to space
     text = replaceall(String.fromCharCode(160), ' ', text); // Convert NO-BREAK SPACE to SPACE
     text = replaceall(String.fromCharCode(8201), ' ', text); // Convert THIN SPACE to SPACE
-    text = replaceall(String.fromCharCode(8203), '' , text); // Zero Width Space
+    text = replaceall(String.fromCharCode(8203), '', text); // Zero Width Space
 
     text = replaceall('//STRONG-OPEN//', '<b>', text);
     text = replaceall('//STRONG-CLOSE//', '</b>', text);

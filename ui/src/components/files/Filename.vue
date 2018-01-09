@@ -1,5 +1,5 @@
 <template>
-<span class="filename-container">
+<span class="filename-container no-print">
     <span v-if="filenameRender">{{ filenameRender }}</span>
     <file-row-print
       v-if="!filenameRender"
