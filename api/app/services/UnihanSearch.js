@@ -94,7 +94,7 @@ module.exports = class UnihanSearch {
       cjkList = _.uniqBy([].concat(cjkList, cjkListLike), 'id');
     }
 
-    await Promise.map(cjkList, async entry => {
+    await Promise.mapSeries(cjkList, async entry => {
       entry.ideogram = UnihanSearch.convertUtf16ToIdeograms(entry.ideogram);
       entry.ideogramTraditional = await opencc.simplifiedToTraditional(
         entry.ideogram,

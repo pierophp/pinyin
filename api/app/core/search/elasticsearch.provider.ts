@@ -1,6 +1,7 @@
 import * as env from '../../../env';
 import { Client } from 'elasticsearch';
 import { convertUtf16ToIdeograms } from '../../services/UnihanSearch';
+import * as opencc from 'node-opencc';
 
 let client;
 
@@ -257,14 +258,21 @@ export class ElasticsearchProvider {
       return response.hits;
     }
 
+    const entries: any[] = [];
+    for (const item of response.hits.hits) {
+      const source: any = item._source;
+      entries.push({
+        id: source.id,
+        pronunciation: source.pronunciation,
+        ideogram: source.ideogram,
+        ideogramTraditional: await opencc.simplifiedToTraditional(
+          source.ideogram,
+        ),
+      });
+    }
+
     return {
-      entries: response.hits.hits.map((item: any) => {
-        return {
-          id: item._source.id,
-          pronunciation: item._source.pronunciation,
-          ideogram: item._source.ideogram,
-        };
-      }),
+      entries,
       search: term,
     };
   }
