@@ -1,5 +1,5 @@
-const express = require('express');
-const axios = require('axios');
+import * as express from 'express';
+import axios from 'axios';
 
 // eslint-disable-next-line new-cap
 const router = express.Router();

@@ -61,29 +61,44 @@ export class ElasticsearchProvider {
             analyzer: {
               analyzer_pt: {
                 tokenizer: 'standard',
-                filter: ['lowercase', 'stemmer_plural_pt', 'asciifolding'],
+                filter: [
+                  'word_delimiter',
+                  'lowercase',
+                  'stemmer_brazilian',
+                  'asciifolding',
+                ],
               },
               analyzer_en: {
                 tokenizer: 'standard',
-                filter: ['lowercase', 'stemmer_plural_en', 'asciifolding'],
+                filter: [
+                  'word_delimiter',
+                  'lowercase',
+                  'stemmer_english',
+                  'asciifolding',
+                ],
               },
               analyzer_es: {
                 tokenizer: 'standard',
-                filter: ['lowercase', 'stemmer_plural_es', 'asciifolding'],
+                filter: [
+                  'word_delimiter',
+                  'lowercase',
+                  'stemmer_spanish',
+                  'asciifolding',
+                ],
               },
             },
             filter: {
-              stemmer_plural_pt: {
+              stemmer_brazilian: {
                 type: 'stemmer',
-                name: 'minimal_portuguese',
+                language: 'brazilian',
               },
-              stemmer_plural_en: {
+              stemmer_english: {
                 type: 'stemmer',
                 name: 'minimal_english',
               },
-              stemmer_plural_es: {
+              stemmer_spanish: {
                 type: 'stemmer',
-                name: 'minimal_spanish',
+                name: 'light_spanish',
               },
             },
           },
@@ -289,8 +304,10 @@ export class ElasticsearchProvider {
     });
 
     if (debug) {
-      console.info(JSON.stringify(query, null, 2));
-      return response.hits;
+      return {
+        hits: response.hits,
+        query,
+      };
     }
 
     const entries: any[] = [];
