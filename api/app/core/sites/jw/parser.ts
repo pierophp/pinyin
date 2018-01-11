@@ -157,7 +157,7 @@ export class Parser {
             }
 
             const pinyinSeparated = separatePinyinInSyllables(item.pinyin);
-            
+
             return pinyinSeparated.join(String.fromCharCode(160));
           })
           .join(String.fromCharCode(160)),
@@ -577,6 +577,7 @@ export class Parser {
         lineText = lineText.replace(/\s{2,}/g, ' ').trim();
       }
 
+
       const ideograms = lineText.split(' ');
       const ideogramsFiltered: any[] = [];
 
@@ -628,6 +629,8 @@ export class Parser {
         lineText = lineText.replace(/([1-9])(）)/g, '$1 $2');
         lineText = replaceall('BI #[', ' BI#[', lineText);
         lineText = replaceall(']# BI', ']#BI ', lineText);
+        lineText = replaceall('B I #[', 'BI#[', lineText);
+        lineText = replaceall(']# B I', ']#BI', lineText);
         lineText = lineText.replace(/\s{2,}/g, ' ').trim();
       }
 

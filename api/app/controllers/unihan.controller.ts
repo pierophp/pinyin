@@ -96,6 +96,7 @@ router.post('/save', async (req: any, res) => {
   const ideogram = UnihanSearch.convertIdeogramsToUtf16(
     await opencc.traditionalToSimplified(req.body.ideograms),
   );
+  
   const pronunciation = req.body.pinyin.toLowerCase();
 
   let response = await knex('cjk')
