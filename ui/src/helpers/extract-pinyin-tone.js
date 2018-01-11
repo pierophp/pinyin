@@ -31,8 +31,8 @@ export default function(pinyin) {
     ù: 4,
     ǜ: 4,
   };
-
-  for (const letter of pinyin) {
+  
+  for (const letter of pinyin.normalize()) {
     if (tones[letter]) {
       return tones[letter];
     }
