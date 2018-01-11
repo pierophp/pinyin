@@ -9,6 +9,7 @@ export class ElasticsearchProvider {
   public async createStructure() {
     const type = this.getType();
     const mappings: any = {};
+
     mappings[type] = {
       properties: {
         id: { type: 'integer' },
@@ -18,28 +19,30 @@ export class ElasticsearchProvider {
         pronunciationKeyword: { type: 'keyword' },
         pronunciationUnaccented: { type: 'text' },
         pronunciationUnaccentedKeyword: { type: 'keyword' },
-        'dictionary.unihan': { type: 'text' },
-        'dictionary.cedict': { type: 'text' },
-        'dictionary.pt': { type: 'text' },
-        'dictionary.ctPt': { type: 'text' },
-        'dictionary.ctEn': { type: 'text' },
-        'dictionary.ctEs': { type: 'text' },
+        'dictionary.unihan': { type: 'text', analyzer: 'analyzer_en' },
+        'dictionary.cedict': { type: 'text', analyzer: 'analyzer_en' },
+        'dictionary.pt': { type: 'text', analyzer: 'analyzer_pt' },
+        'dictionary.ctPt': { type: 'text', analyzer: 'analyzer_pt' },
+        'dictionary.ctEn': { type: 'text', analyzer: 'analyzer_en' },
+        'dictionary.ctEs': { type: 'text', analyzer: 'analyzer_es' },
         type: { type: 'keyword' },
         simplified: { type: 'boolean' },
         traditional: { type: 'boolean' },
-        main: { type: 'integer' },
-        usage: { type: 'integer' },
-        frequency: { type: 'integer' },
-        frequencyInverse: { type: 'integer' },
-        hsk: { type: 'integer' },
-        hskInverse: { type: 'integer' },
+        main: { type: 'integer', index: false },
+        usage: { type: 'integer', index: false },
+        frequency: { type: 'integer', index: false },
+        frequencyInverse: { type: 'integer', index: false },
+        hsk: { type: 'integer', index: false },
+        hskInverse: { type: 'integer', index: false },
         createdAt: {
           type: 'date',
           format: 'strict_date_optional_time||epoch_millis',
+          index: false,
         },
         updatedAt: {
           type: 'date',
           format: 'strict_date_optional_time||epoch_millis',
+          index: false,
         },
       },
     };
@@ -53,6 +56,38 @@ export class ElasticsearchProvider {
     await this.getClient().indices.create({
       index: this.getIndex(),
       body: {
+        settings: {
+          analysis: {
+            analyzer: {
+              analyzer_pt: {
+                tokenizer: 'standard',
+                filter: ['lowercase', 'stemmer_plural_pt', 'asciifolding'],
+              },
+              analyzer_en: {
+                tokenizer: 'standard',
+                filter: ['lowercase', 'stemmer_plural_en', 'asciifolding'],
+              },
+              analyzer_es: {
+                tokenizer: 'standard',
+                filter: ['lowercase', 'stemmer_plural_es', 'asciifolding'],
+              },
+            },
+            filter: {
+              stemmer_plural_pt: {
+                type: 'stemmer',
+                name: 'minimal_portuguese',
+              },
+              stemmer_plural_en: {
+                type: 'stemmer',
+                name: 'minimal_english',
+              },
+              stemmer_plural_es: {
+                type: 'stemmer',
+                name: 'minimal_spanish',
+              },
+            },
+          },
+        },
         mappings,
       },
     });
