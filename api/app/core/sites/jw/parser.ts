@@ -5,6 +5,7 @@ import { http } from '../../../helpers/http';
 import * as UnihanSearch from '../../../services/UnihanSearch';
 import { padStart } from 'lodash';
 import * as separatePinyinInSyllables from '../../../../../shared/helpers/separate-pinyin-in-syllables';
+import * as isChinese from '../../../../../shared/helpers/is-chinese';
 
 export class Parser {
   protected text: any[] = [];
@@ -151,9 +152,13 @@ export class Parser {
         title,
         title_pinyin: (await UnihanSearch.toPinyin(title.split(' ')))
           .map(item => {
-            return separatePinyinInSyllables(item.pinyin).join(
-              String.fromCharCode(160),
-            );
+            if (!isChinese(item.ideogram)) {
+              return item.pinyin.split('').join(String.fromCharCode(160));
+            }
+
+            const pinyinSeparated = separatePinyinInSyllables(item.pinyin);
+            
+            return pinyinSeparated.join(String.fromCharCode(160));
           })
           .join(String.fromCharCode(160)),
       });
