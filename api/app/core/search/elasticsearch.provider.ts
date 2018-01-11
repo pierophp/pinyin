@@ -123,9 +123,9 @@ export class ElasticsearchProvider {
       usage: dictionary.usage || 0,
       frequency: dictionary.frequency || 0,
       frequencyInverse:
-        10 - (dictionary.frequency === 999 ? 10 : dictionary.frequency),
+        10 - (dictionary.frequency === 999 ? 9 : dictionary.frequency),
       hsk: dictionary.hsk === 999 ? 0 : dictionary.hsk,
-      hskInverse: 10 - (dictionary.hsk === 999 ? 10 : dictionary.hsk),
+      hskInverse: 10 - (dictionary.hsk === 999 ? 9 : dictionary.hsk),
       createdAt: dictionary.created_at,
       updatedAt: dictionary.updated_at,
     };
@@ -228,9 +228,9 @@ export class ElasticsearchProvider {
     const scoreFormulaList = [
       '(_score * $score)',
       "doc['main'].value",
-      "(doc['hskInverse'].value * 3)",
-      "(doc['frequencyInverse'].value * 2)",
-      "(doc['usage'].value / 1000)",
+      "(doc['hskInverse'].value * 0.03)",
+      "(doc['frequencyInverse'].value * 0.02)",
+      "(doc['usage'].value * 0.0001)",
     ];
 
     const scoreFormula = scoreFormulaList.join(' + ');
@@ -260,7 +260,7 @@ export class ElasticsearchProvider {
         filter: scoreFilter,
         script_score: {
           script: {
-            source: scoreFormula.replace('$score', where.score),
+            source: `Math.log(${scoreFormula.replace('$score', where.score)})`,
           },
         },
       });
