@@ -2,7 +2,7 @@ import { chunk } from 'lodash';
 import { Argv, CommandModule } from 'yargs';
 
 import { ElasticsearchProvider } from '../core/search/elasticsearch.provider';
-import * as CjkRepository from '../repository/CjkRepository';
+import { CjkRepository } from '../repository/cjk.repository';
 
 export class ElasticsearchSyncCommand implements CommandModule {
   public command = 'elasticsearch:sync';

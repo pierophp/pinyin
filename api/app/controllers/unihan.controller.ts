@@ -4,6 +4,7 @@ import * as UnihanSearch from '../services/UnihanSearch';
 import * as knex from '../services/knex';
 import * as ArrayCache from '../cache/ArrayCache';
 import * as RedisCache from '../cache/RedisCache';
+import { CjkRepository } from '../repository/cjk.repository';
 import { remove as removeDiacritics } from 'diacritics';
 import * as opencc from 'node-opencc';
 import { Dictionary } from '../core/dictionary';
@@ -96,7 +97,7 @@ router.post('/save', async (req: any, res) => {
   const ideogram = UnihanSearch.convertIdeogramsToUtf16(
     await opencc.traditionalToSimplified(req.body.ideograms),
   );
-  
+
   const pronunciation = req.body.pinyin.toLowerCase();
 
   let response = await knex('cjk')
@@ -117,14 +118,13 @@ router.post('/save', async (req: any, res) => {
 
   if (response.length) {
     const id = response[0].id;
-    await knex('cjk')
-      .where('id', '=', id)
-      .update({
-        definition_pt: JSON.stringify(req.body.dictionary),
-      });
+    await CjkRepository.save({
+      id,
+      definition_pt: JSON.stringify(req.body.dictionary),
+    });
   } else {
     const pronunciationUnaccented = removeDiacritics(pronunciation);
-    await knex('cjk').insert({
+    await CjkRepository.save({
       ideogram,
       main: 1,
       pronunciation,

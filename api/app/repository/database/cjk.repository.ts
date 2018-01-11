@@ -1,13 +1,15 @@
-const Promise = require('bluebird');
-const replaceall = require('replaceall');
-const BaseRepository = require('./BaseRepository');
-const LanguageRepository = require('../LanguageRepository');
-const PhraseRepository = require('../PhraseRepository');
-const knex = require('../../services/knex');
-const UnihanSearch = require('../../services/UnihanSearch');
-const profiler = require('../../helpers/profiler');
+import * as bluebird from 'bluebird';
+import * as replaceall from 'replaceall';
+import * as BaseRepository from './BaseRepository';
+import * as LanguageRepository from '../LanguageRepository';
+import * as PhraseRepository from '../PhraseRepository';
+import * as knex from '../../services/knex';
+import * as UnihanSearch from '../../services/UnihanSearch';
+import * as profiler from '../../helpers/profiler';
 
-module.exports = class CjkRepository extends BaseRepository {
+import { ElasticsearchProvider } from '../../core/search/elasticsearch.provider';
+
+export class CjkRepository extends BaseRepository {
   static async findAll() {
     return await knex('cjk')
       .where({})
@@ -18,7 +20,7 @@ module.exports = class CjkRepository extends BaseRepository {
 
   static async searchPronunciationByWord(ideograms) {
     const ideogramConverted = UnihanSearch.convertIdeogramsToUtf16(ideograms);
-    let response = null;
+    let response: any = null;
     if (ideograms.length === 1) {
       response = await knex('cjk')
         .where({
@@ -50,16 +52,26 @@ module.exports = class CjkRepository extends BaseRepository {
     return null;
   }
 
-  static async save(cjk) {
+  static async save(params) {
     // let action = 'insert';
-    if (cjk.id) {
-      // action = 'update';
+
+    if (params.id) {
       await knex('cjk')
-        .where('id', '=', cjk.id)
-        .update(cjk);
+        .where('id', '=', params.id)
+        .update(params);
     } else {
-      await knex('cjk').insert(cjk);
+      params.id = (await knex('cjk')
+        .insert(params)
+        .returning('id'))[0];
     }
+
+    const cjk = (await knex('cjk').where({
+      id: params.id,
+    }))[0];
+
+    const elasticsearchProvider = new ElasticsearchProvider();
+
+    await elasticsearchProvider.saveMany([cjk]);
   }
 
   static async referencePhrases() {
@@ -80,7 +92,7 @@ module.exports = class CjkRepository extends BaseRepository {
 
     let i = 0;
 
-    await Promise.mapSeries(items, async item => {
+    await bluebird.mapSeries(items, async (item: any) => {
       let ideograms = UnihanSearch.convertUtf16ToIdeograms(item.ideogram);
       ideograms = replaceall('%', '', ideograms);
       if (!ideograms) {
@@ -99,7 +111,7 @@ module.exports = class CjkRepository extends BaseRepository {
         return;
       }
 
-      await Promise.mapSeries(phrases, async phrase => {
+      await bluebird.mapSeries(phrases, async (phrase: any) => {
         await knex('cjk_has_phrase').insert({
           cjk_id: item.id,
           phrase_id: phrase.id,
@@ -107,4 +119,4 @@ module.exports = class CjkRepository extends BaseRepository {
       });
     });
   }
-};
+}

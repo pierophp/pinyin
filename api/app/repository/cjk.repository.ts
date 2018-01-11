@@ -1,7 +1,7 @@
-const BaseRepository = require('./BaseRepository');
-const DatabaseCjkRepository = require('./database/CjkRepository');
+import * as BaseRepository from './BaseRepository';
+import { CjkRepository as DatabaseCjkRepository } from './database/cjk.repository';
 
-module.exports = class CjkRepository extends BaseRepository {
+export class CjkRepository extends BaseRepository {
   static async findAll() {
     return DatabaseCjkRepository.findAll();
   }
@@ -17,4 +17,4 @@ module.exports = class CjkRepository extends BaseRepository {
   static async referencePhrases() {
     return DatabaseCjkRepository.referencePhrases();
   }
-};
+}
