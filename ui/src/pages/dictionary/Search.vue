@@ -5,6 +5,11 @@
       <md-icon>pageview</md-icon>
       <label>{{ $t("search") }}</label>
       <md-input type="text" ref="inputSearch" autofocus v-model="searchValue"></md-input>
+      <div class="clean-dictionaty">
+        <md-button class="md-icon-button md-clear md-input-action" @click.native="clear()">
+          <md-icon>clear</md-icon>
+        </md-button>
+      </div>
     </md-field>
   </form>
   <div>
@@ -65,6 +70,12 @@ export default {
     });
   },
   methods: {
+    clear(value) {
+      this.searchValue = '';
+      this.entries = [];
+      this.loading = false;
+      this.$refs.inputSearch.$el.focus();
+    },
     search(value) {
       const that = this;
       (function search() {
