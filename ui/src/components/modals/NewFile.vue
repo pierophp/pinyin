@@ -44,6 +44,11 @@ export default {
       modalOpen: false,
     };
   },
+  watch: {
+    type() {
+      this.$refs.inputFilename.$el.focus();
+    },
+  },
   methods: {
     confirm() {
       this.closeDialog('newFileModal');

@@ -131,9 +131,9 @@ export class Parser {
 
   public async getSummary($) {
     const downloadResponse: any = { text: [], links: [] };
-    let items = $('.synopsis h2 a');
+    let items = $('.synopsis .syn-body');
     if (items.length === 0) {
-      items = $('.musicList .fileTitle a');
+      items = $('.musicList');
     }
 
     const itemsList: any[] = [];
@@ -144,10 +144,26 @@ export class Parser {
     let i = 0;
     for (const item of itemsList) {
       i += 1;
-      const title = this.getText($, item);
+
+      let link = $(item).find('h2 a');
+      if (link.length === 0) {
+        link = $(item).find('.fileTitle a');
+      }
+
+      const subtitle = $(item).find('.contextTitle');
+
+      let title = this.getText($, link);
+      
+      console.log(title);
+
+      if (subtitle.length) {
+        title = this.getText($, subtitle) + ' - ' + title;
+      }
+
+      console.log($(link).attr('href'));
 
       downloadResponse.links.push({
-        link: $(item).attr('href'),
+        link: $(link).attr('href'),
         number: padStart(String(i), 3, '0'),
         title,
         title_pinyin: (await UnihanSearch.toPinyin(title.split(' ')))
@@ -576,7 +592,6 @@ export class Parser {
       if (lineText) {
         lineText = lineText.replace(/\s{2,}/g, ' ').trim();
       }
-
 
       const ideograms = lineText.split(' ');
       const ideogramsFiltered: any[] = [];

@@ -106,6 +106,10 @@ export class Downloader {
       await bluebird.map(
         parsedDownload.links,
         async (l: any, i) => {
+          if (!l.link) {
+            return;
+          }
+
           const jwLink = l.link.includes('https://www.jw.org')
             ? l.link
             : `https://www.jw.org${l.link}`;
@@ -179,7 +183,7 @@ export class Downloader {
           reject();
           return;
         }
-        
+
         curl.close.bind(curl);
         done(body);
       });
