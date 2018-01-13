@@ -210,6 +210,7 @@ export default {
         '--character-font-size',
         this.options.ideogramSize,
       );
+      
       document.body.style.setProperty(
         '--pinyin-font-size',
         this.options.pinyinSize,
@@ -229,6 +230,7 @@ export default {
     openModal(add) {
       this.$refs.addRemoveCharacterModal.openDialog(add);
     },
+
     openBottomBar(block) {
       this.$refs.fileBottomBar.open(block);
     },

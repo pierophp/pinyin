@@ -101,7 +101,7 @@ export default {
       const dictionatyList = this.dictionaryEntry
         .split('\n')
         .filter(item => item);
-        
+
       http
         .post('unihan/save', {
           pinyin: this.pinyin,

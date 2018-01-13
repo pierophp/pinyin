@@ -14,7 +14,7 @@
     </div>
 
     <div class="character" :data-highlight="highlight" :data-line="lineIndex" :data-block="blockIndex" :class="[classBold, classItalic]" v-if="!block.small && !block.footnote && !block.noIdeogram">
-      <ideograms-show :pinyin="pinyin" :character="character" :useSpaces="true"/>
+      <ideograms-show :pinyin="pinyin" :character="character" :useSpaces="true" ref="ideogram-show"/>
     </div>
 
     <div class="character footnote" v-if="block.footnote" @click.prevent="openFootnote(block.footnote)">
@@ -45,6 +45,7 @@ export default {
       classItalic: '',
       printData: [],
       pinyinStyleObject: {},
+      updating: false,
     };
   },
   props: {
@@ -69,14 +70,23 @@ export default {
   },
   watch: {
     pinyin() {
+      if (this.updating) {
+        return;
+      }
       this.updateRender();
     },
 
     character() {
+      if (this.updating) {
+        return;
+      }
       this.updateRender();
     },
 
     highlight() {
+      if (this.updating) {
+        return;
+      }
       this.updateRender();
     },
   },
@@ -100,6 +110,7 @@ export default {
     },
 
     async updateRender() {
+      this.updating = true;
       const options = OptionsManager.getOptions();
       this.classHighlight = `highlight-${this.highlight ? this.highlight : ''}`;
       this.classBold = '';
@@ -183,6 +194,12 @@ export default {
       }
 
       this.printData = printData;
+
+      if (this.$refs['ideogram-show']) {
+        this.$refs['ideogram-show'].updateRender();
+      }
+
+      this.updating = false;
     },
   },
 };

@@ -25,15 +25,6 @@ export default {
     pinyin: '',
     character: '',
   },
-  watch: {
-    pinyin() {
-      this.updateRender();
-    },
-
-    character() {
-      this.updateRender();
-    },
-  },
   created() {
     this.updateRender();
   },

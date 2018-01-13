@@ -70,7 +70,7 @@ export default {
     });
   },
   methods: {
-    clear(value) {
+    clear() {
       this.searchValue = '';
       this.entries = [];
       this.loading = false;

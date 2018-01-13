@@ -14,8 +14,11 @@ import RavenVue from 'raven-js/plugins/vue';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-social/bootstrap-social.css';
 import 'font-awesome/css/font-awesome.min.css';
-import 'vue-material/dist/vue-material.min.css';
-import 'vue-material/dist/theme/default.css';
+// import 'vue-material/dist/vue-material.min.css';
+// import 'vue-material/dist/theme/default.css';
+import 'src/css/vue-material/vue-material.min.css';
+import 'src/css/vue-material/default.css';
+
 import 'src/css/default.css';
 import 'src/css/bootstrap-callout.css';
 import 'src/css/fonts/material-icons.css';
