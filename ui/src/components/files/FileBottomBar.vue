@@ -2,7 +2,7 @@
   <div>
     <div class="bottom-bar" v-if="show">
       <span class="ideogram-link" v-for="(data,index) in printData" @click.prevent="openModal(data.characterLink)" :key="index">
-        <ideograms-show :pinyin="data.pinyin" :character="data.character"/>
+        <ideograms-show :pinyin="data.pinyin" :character="data.character" ref="ideogram-show"/>
       </span>
 
       <span class="bottom-bar-pinyin">{{ block.pinyin }}</span>
@@ -110,233 +110,246 @@
 </template>
 
 <script>
-  import http from 'src/helpers/http';
-  import DictionaryDetails from 'src/components/dictionary/Details';
-  import IdeogramsShow from 'src/components/ideograms/Show';
-  import Links from 'src/components/ideograms/Links';
-  import OptionsManager from 'src/domain/options-manager';
-  import MobileDetect from 'mobile-detect';
-  import separatePinyinInSyllables from 'src/helpers/separate-pinyin-in-syllables';
-  import replaceall from 'replaceall';
-  import pinyinHelper from 'src/helpers/pinyin';
-  import ForvoModal from 'src/components/modals/Forvo';
+import http from 'src/helpers/http';
+import DictionaryDetails from 'src/components/dictionary/Details';
+import IdeogramsShow from 'src/components/ideograms/Show';
+import Links from 'src/components/ideograms/Links';
+import OptionsManager from 'src/domain/options-manager';
+import MobileDetect from 'mobile-detect';
+import separatePinyinInSyllables from 'src/helpers/separate-pinyin-in-syllables';
+import replaceall from 'replaceall';
+import pinyinHelper from 'src/helpers/pinyin';
+import ForvoModal from 'src/components/modals/Forvo';
 
-  import {
-    mapActions,
-    mapMutations,
-    mapGetters,
-  } from 'vuex';
+import { mapActions, mapMutations, mapGetters } from 'vuex';
 
-  import {
-    FILE_ACTION_JOIN_LEFT,
-    FILE_ACTION_SEPARATE,
-    FILE_MUTATION_SET_MY_CJK_TEMP,
-    FILE_MUTATION_UPDATE_PINYIN,
-    FILE_GETTER_MY_CJK,
-  } from 'src/data/file/types';
+import {
+  FILE_ACTION_JOIN_LEFT,
+  FILE_ACTION_SEPARATE,
+  FILE_MUTATION_SET_MY_CJK_TEMP,
+  FILE_MUTATION_UPDATE_PINYIN,
+  FILE_GETTER_MY_CJK,
+} from 'src/data/file/types';
 
-  const md = new MobileDetect(window.navigator.userAgent);
+const md = new MobileDetect(window.navigator.userAgent);
 
-  export default {
-    name: 'file-bottom-bar',
-    data() {
-      return {
-        editPinyin: '',
-        separateCharacter: '',
-        show: false,
-        tempDictCharacter: null,
-        block: {},
-        printData: {},
-        modalDictionaryOpen: false,
-        modalSeparateOpen: false,
-        modalEditOpen: false,
-        clipboardOpen: false,
-        dictionary: {
-          pt: null,
-          unihan: null,
-          cedict: null,
-          chinese_tools_pt: null,
-          chinese_tools_es: null,
-          chinese_tools_en: null,
-        },
-      };
+export default {
+  name: 'file-bottom-bar',
+  data() {
+    return {
+      editPinyin: '',
+      separateCharacter: '',
+      show: false,
+      tempDictCharacter: null,
+      block: {},
+      printData: {},
+      modalDictionaryOpen: false,
+      modalSeparateOpen: false,
+      modalEditOpen: false,
+      clipboardOpen: false,
+      dictionary: {
+        pt: null,
+        unihan: null,
+        cedict: null,
+        chinese_tools_pt: null,
+        chinese_tools_es: null,
+        chinese_tools_en: null,
+      },
+    };
+  },
+  components: {
+    DictionaryDetails,
+    IdeogramsShow,
+    Links,
+    ForvoModal,
+  },
+  computed: {
+    ...mapGetters({
+      myCjk: FILE_GETTER_MY_CJK,
+    }),
+  },
+
+  watch: {
+    editPinyin() {
+      this.changeEditPinyin(this.editPinyin);
     },
-    components: {
-      DictionaryDetails,
-      IdeogramsShow,
-      Links,
-      ForvoModal,
-    },
-    computed: {
-      ...mapGetters({
-        myCjk: FILE_GETTER_MY_CJK,
-      }),
-    },
+  },
 
-    watch: {
-      editPinyin() {
-        this.changeEditPinyin(this.editPinyin);
-      },
+  methods: {
+    ...mapActions({
+      joinLeft: FILE_ACTION_JOIN_LEFT,
+      separateAction: FILE_ACTION_SEPARATE,
+    }),
+    ...mapMutations({
+      setMyCjkTemp: FILE_MUTATION_SET_MY_CJK_TEMP,
+      updatePinyin: FILE_MUTATION_UPDATE_PINYIN,
+    }),
+
+    openLinkMenu() {
+      this.$refs.links.open();
     },
 
-    methods: {
-      ...mapActions({
-        joinLeft: FILE_ACTION_JOIN_LEFT,
-        separateAction: FILE_ACTION_SEPARATE,
-      }),
-      ...mapMutations({
-        setMyCjkTemp: FILE_MUTATION_SET_MY_CJK_TEMP,
-        updatePinyin: FILE_MUTATION_UPDATE_PINYIN,
-      }),
+    changeShow(show) {
+      this.show = !show;
+      const action = show ? 'remove' : 'add';
+      document.body.classList[action]('has-bottom-bar');
+    },
 
-      openLinkMenu() {
-        this.$refs.links.open();
-      },
+    separate() {
+      this.separateCharacter = this.block.character;
+      this.modalSeparateOpen = true;
+    },
 
-      changeShow(show) {
-        this.show = !show;
-        const action = show ? 'remove' : 'add';
-        document.body.classList[action]('has-bottom-bar');
-      },
+    confirmSeparate() {
+      this.separateAction({
+        ...this.block,
+        separateCharacter: this.separateCharacter,
+      });
+      this.modalSeparateOpen = false;
+    },
 
-      separate() {
-        this.separateCharacter = this.block.character;
-        this.modalSeparateOpen = true;
-      },
+    edit() {
+      this.editPinyin = this.block.pinyin;
+      this.modalEditOpen = true;
+    },
 
-      confirmSeparate() {
-        this.separateAction({ ...this.block, separateCharacter: this.separateCharacter });
-        this.modalSeparateOpen = false;
-      },
+    confirmEdit() {
+      this.updatePinyin({ ...this.block, pinyin: this.editPinyin });
+      this.modalEditOpen = false;
+    },
 
-      edit() {
-        this.editPinyin = this.block.pinyin;
-        this.modalEditOpen = true;
-      },
+    changeEditPinyin(pinyin) {
+      this.editPinyin = pinyinHelper(pinyin);
+    },
 
-      confirmEdit() {
-        this.updatePinyin({ ...this.block, pinyin: this.editPinyin });
-        this.modalEditOpen = false;
-      },
+    close() {
+      document.body.classList.remove('has-bottom-bar');
+      this.show = false;
+    },
 
-      changeEditPinyin(pinyin) {
-        this.editPinyin = pinyinHelper(pinyin);
-      },
+    open(block) {
+      document.body.classList.add('has-bottom-bar');
+      this.show = true;
+      if (md.mobile() && this.tempDictCharacter === block.character) {
+        block.openDictionary = true;
+      }
 
-      close() {
-        document.body.classList.remove('has-bottom-bar');
-        this.show = false;
-      },
-
-      open(block) {
-        document.body.classList.add('has-bottom-bar');
-        this.show = true;
-        if (md.mobile() && this.tempDictCharacter === block.character) {
-          block.openDictionary = true;
+      this.block = block;
+      block.pinyin = replaceall(
+        String.fromCharCode(160),
+        '',
+        block.pinyin || '',
+      );
+      this.tempDictCharacter = block.character;
+      const pinyin = separatePinyinInSyllables(block.pinyin);
+      setTimeout(() => {
+        this.tempDictCharacter = null;
+      }, 2000);
+      const chars = block.character.toString();
+      const printData = [];
+      const options = OptionsManager.getOptions();
+      for (let i = 0; i < chars.length; i += 1) {
+        let characterLink = chars[i];
+        if (options.pinyinHide === '2') {
+          characterLink = chars;
         }
 
-        this.block = block;
-        block.pinyin = replaceall(String.fromCharCode(160), '', block.pinyin || '');
-        this.tempDictCharacter = block.character;
-        const pinyin = separatePinyinInSyllables(block.pinyin);
-        setTimeout(() => {
-          this.tempDictCharacter = null;
-        }, 2000);
-        const chars = block.character.toString();
-        const printData = [];
-        const options = OptionsManager.getOptions();
-        for (let i = 0; i < chars.length; i += 1) {
-          let characterLink = chars[i];
-          if (options.pinyinHide === '2') {
-            characterLink = chars;
+        let pinyinSeparated = '';
+        if (pinyin[i]) {
+          pinyinSeparated = pinyin[i].trim();
+        }
+
+        printData.push({
+          pinyin: pinyinSeparated,
+          character: chars[i],
+          characterLink,
+        });
+      }
+
+      this.printData = printData;
+
+      if (block.openDictionary) {
+        this.loadDictionary();
+      }
+
+      if (this.$refs['ideogram-show']) {
+        this.$nextTick(() => {
+          for (const ideogramShow of this.$refs['ideogram-show']) {
+            ideogramShow.updateRender();
           }
+        });
+      }
+    },
 
-          let pinyinSeparated = '';
-          if (pinyin[i]) {
-            pinyinSeparated = pinyin[i].trim();
-          }
+    openModal(character) {
+      let add = true;
+      if (this.myCjk[character] !== undefined) {
+        add = false;
+      }
 
-          printData.push({
-            pinyin: pinyinSeparated,
-            character: chars[i],
-            characterLink,
-          });
-        }
+      this.setMyCjkTemp(character);
+      this.$emit('open-modal', add);
+    },
 
-        this.printData = printData;
-
-        if (block.openDictionary) {
-          this.loadDictionary();
-        }
-      },
-
-      openModal(character) {
-        let add = true;
-        if (this.myCjk[character] !== undefined) {
-          add = false;
-        }
-
-        this.setMyCjkTemp(character);
-        this.$emit('open-modal', add);
-      },
-
-      loadDictionary() {
-        http
+    loadDictionary() {
+      http
         .get('unihan/dictionary', {
           params: {
             ideograms: this.block.character,
             pinyin: this.block.pinyin,
           },
         })
-        .then((response) => {
-          const isSimplifiedEquals = response.data.ideograms === this.block.character;
-          const isTradiaionalEquals = response.data.ideogramsTraditional === this.block.character;
+        .then(response => {
+          const isSimplifiedEquals =
+            response.data.ideograms === this.block.character;
+          const isTradiaionalEquals =
+            response.data.ideogramsTraditional === this.block.character;
           if (!isSimplifiedEquals && !isTradiaionalEquals) {
             return;
           }
           this.dictionary = response.data;
           this.modalDictionaryOpen = true;
         });
-      },
+    },
 
-      openPinyinList() {
-        http
+    openPinyinList() {
+      http
         .post('unihan/to_pinyin_all', {
           ideograms: [this.block.character],
         })
-        .then((response) => {
+        .then(response => {
           // eslint-disable-next-line
           console.log(response.data);
         });
-      },
-
-      clipboardSuccess() {
-        this.clipboardOpen = true;
-      },
-
-      openSound() {
-        this.openDialog('dialogForvo');
-      },
-
-      openDialog(ref) {
-        this.$refs[ref].open();
-      },
-      closeDialog(ref) {
-        this.$refs.dictionaryDetails.cancelEdit();
-        this.show = true;
-        this.$refs[ref].close();
-      },
-      onOpen() {
-        // eslint-disable-next-line
-        console.log('Opened');
-      },
-
-      onClose(type) {
-        // eslint-disable-next-line
-        console.log('Closed', type);
-      },
     },
-  };
+
+    clipboardSuccess() {
+      this.clipboardOpen = true;
+    },
+
+    openSound() {
+      this.openDialog('dialogForvo');
+    },
+
+    openDialog(ref) {
+      this.$refs[ref].open();
+    },
+    closeDialog(ref) {
+      this.$refs.dictionaryDetails.cancelEdit();
+      this.show = true;
+      this.$refs[ref].close();
+    },
+    onOpen() {
+      // eslint-disable-next-line
+      console.log('Opened');
+    },
+
+    onClose(type) {
+      // eslint-disable-next-line
+      console.log('Closed', type);
+    },
+  },
+};
 </script>
 
 <style>
@@ -353,7 +366,7 @@
 .bottom-bar .md-menu {
   margin-left: -20px;
 }
-.bottom-bar-pinyin{
+.bottom-bar-pinyin {
   font-size: 15px;
 }
 
@@ -368,7 +381,7 @@
 }
 
 .sound-btn i,
-.clipboard-btn i{
+.clipboard-btn i {
   width: 20px !important;
   min-width: 20px !important;
   height: 20px !important;
@@ -376,7 +389,7 @@
   font-size: 20px !important;
 }
 
-.bottom-bar #menu-pinyin .md-menu .md-button{
+.bottom-bar #menu-pinyin .md-menu .md-button {
   margin: 6px 0;
   padding: 0 6px;
 }
@@ -387,14 +400,14 @@
 
 .dict-title {
   font-weight: bold;
-  font-size:18px;
+  font-size: 18px;
 }
 
-.dict-block{
+.dict-block {
   padding-bottom: 10px;
 }
 
-.bottom-bar .md-button{
+.bottom-bar .md-button {
   min-width: auto;
 }
 </style>
