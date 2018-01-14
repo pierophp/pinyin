@@ -19,60 +19,94 @@
     </div>
   </div>
 
-  <div v-if="dictionary.glosbe_pt">
-    <div class="dict-title">GLOSBE - PT</div>
-    <div class="dict-block">
-      <div v-for="(glosbe_pt, dictId) in dictionary.glosbe_pt" v-bind:key="dictId">{{ glosbe_pt }}</div>
-    </div>
-  </div>
 
   <div v-if="dictionary.chinese_tools_pt">
-    <div class="dict-title">Chinese Tools - PT</div>
+    <div class="dict-title">
+      <a :href="'http://www.a-china.info/dicionario'" target="_blank">
+        Chinese Tools - PT
+      </a>
+    </div>
     <div class="dict-block">
       <div v-for="(chinese_tools_pt, dictId) in dictionary.chinese_tools_pt" v-bind:key="dictId">{{ chinese_tools_pt }}</div>
     </div>
   </div>
 
-  <div v-if="dictionary.glosbe_es">
-    <div class="dict-title">GLOSBE - ES</div>
+  <div v-if="dictionary.glosbe_pt && dictionary.glosbe_pt.length">
+    <div class="dict-title">
+      <a :href="'https://glosbe.com/zh/pt/' + dictionary.ideograms" target="_blank">
+        GLOSBE - PT
+      </a>
+    </div>
     <div class="dict-block">
-      <div v-for="(glosbe_es, dictId) in dictionary.glosbe_es" v-bind:key="dictId">{{ glosbe_es }}</div>
+      <div v-for="(glosbe_pt, dictId) in dictionary.glosbe_pt" v-bind:key="dictId">{{ glosbe_pt }}</div>
     </div>
   </div>
 
   <div v-if="dictionary.chinese_tools_es">
-    <div class="dict-title">Chinese Tools - ES</div>
+    <div class="dict-title">
+      <a :href="'http://www.chino-china.com/diccionario'" target="_blank">
+        Chinese Tools - ES
+      </a>
+    </div>
     <div class="dict-block">
       <div v-for="(chinese_tools_es, dictId) in dictionary.chinese_tools_es" v-bind:key="dictId">{{ chinese_tools_es }}</div>
     </div>
   </div>
 
+  <div v-if="dictionary.glosbe_es && dictionary.glosbe_es.length">
+    <div class="dict-title">
+      <a :href="'https://glosbe.com/zh/es/' + dictionary.ideograms" target="_blank">
+        GLOSBE - ES
+      </a>
+    </div>
+    <div class="dict-block">
+      <div v-for="(glosbe_es, dictId) in dictionary.glosbe_es" v-bind:key="dictId">{{ glosbe_es }}</div>
+    </div>
+  </div>
 
   <div v-if="dictionary.unihan">
-    <div class="dict-title">Unihan</div>
+    <div class="dict-title">
+      <a :href="'https://www.unicode.org/cgi-bin/GetUnihanData.pl?codepoint=' + dictionary.ideograms" target="_blank">
+        Unihan
+      </a>
+    </div>
     <div class="dict-block">
       <div v-for="(unihan, dictId) in dictionary.unihan" v-bind:key="dictId">{{ unihan }}</div>
     </div>
   </div>
-
+  
   <div v-if="dictionary.cedict">
-    <div class="dict-title">CC-CEDICT</div>
+    <div class="dict-title">
+      <a :href="'https://cc-cedict.org/editor/editor.php?handler=QueryDictionary&amp;querydictionary_search=' + dictionary.ideograms" target="_blank">
+        CC-CEDICT
+      </a>
+    </div>
     <div  class="dict-block">
       <div v-for="(cedict, dictId) in dictionary.cedict" v-bind:key="dictId">{{ cedict }}</div>
     </div>
   </div>
 
-  <div v-if="dictionary.glosbe_en">
-    <div class="dict-title">GLOSBE - EN</div>
+
+  <div v-if="dictionary.chinese_tools_en">
+    <div class="dict-title">
+      <a :href="'http://www.chinese-tools.com/tools/dictionary.html'" target="_blank">
+        Chinese Tools - EN
+      </a>
+    </div>
     <div class="dict-block">
-      <div v-for="(glosbe_en, dictId) in dictionary.glosbe_en" v-bind:key="dictId">{{ glosbe_en }}</div>
+      <div v-for="(chinese_tools_en, dictId) in dictionary.chinese_tools_en" v-bind:key="dictId">{{ chinese_tools_en }}</div>
     </div>
   </div>
 
-  <div v-if="dictionary.chinese_tools_en">
-    <div class="dict-title">Chinese Tools - EN</div>
+
+  <div v-if="dictionary.glosbe_en && dictionary.glosbe_en.length">
+    <div class="dict-title">
+      <a :href="'https://glosbe.com/zh/en/' + dictionary.ideograms" target="_blank">
+        GLOSBE - EN
+      </a>
+    </div>
     <div class="dict-block">
-      <div v-for="(chinese_tools_en, dictId) in dictionary.chinese_tools_en" v-bind:key="dictId">{{ chinese_tools_en }}</div>
+      <div v-for="(glosbe_en, dictId) in dictionary.glosbe_en" v-bind:key="dictId">{{ glosbe_en }}</div>
     </div>
   </div>
   </div>
@@ -139,13 +173,16 @@ export default {
   },
   props: {
     pinyin: {},
-    ideograms: {},
     dictionary: {},
   },
 };
 </script>
 
 <style>
+.dict-title a {
+  color: #000 !important;
+}
+
 .dict-block .md-input-container {
   margin-top: 0 !important;
 }

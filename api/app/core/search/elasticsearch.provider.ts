@@ -25,6 +25,9 @@ export class ElasticsearchProvider {
         'dictionary.ctPt': { type: 'text', analyzer: 'analyzer_pt' },
         'dictionary.ctEn': { type: 'text', analyzer: 'analyzer_en' },
         'dictionary.ctEs': { type: 'text', analyzer: 'analyzer_es' },
+        'dictionary.glosbePt': { type: 'text', analyzer: 'analyzer_pt' },
+        'dictionary.glosbeEn': { type: 'text', analyzer: 'analyzer_en' },
+        'dictionary.glosbeEs': { type: 'text', analyzer: 'analyzer_es' },
         type: { type: 'keyword' },
         simplified: { type: 'boolean' },
         traditional: { type: 'boolean' },
@@ -111,9 +114,14 @@ export class ElasticsearchProvider {
   protected async getUpdateDocument(dictionary: any): Promise<any> {
     const cedict = JSON.parse(dictionary.definition_cedict);
     const pt = JSON.parse(dictionary.definition_pt);
+    
     const ctPt = JSON.parse(dictionary.definition_ct_pt);
     const ctEn = JSON.parse(dictionary.definition_ct_en);
     const ctEs = JSON.parse(dictionary.definition_ct_es);
+
+    const glosbePt = JSON.parse(dictionary.definition_glosbe_pt);
+    const glosbeEn = JSON.parse(dictionary.definition_glosbe_en);
+    const glosbeEs = JSON.parse(dictionary.definition_glosbe_es);
 
     return {
       id: dictionary.id,
@@ -130,6 +138,9 @@ export class ElasticsearchProvider {
         ctPt: ctPt ? ctPt.join(' ||| ') : null,
         ctEn: ctEn ? ctEn.join(' ||| ') : null,
         ctEs: ctEs ? ctEs.join(' ||| ') : null,
+        glosbePt: glosbePt ? glosbePt.join(' ||| ') : null,
+        glosbeEn: glosbeEn ? glosbeEn.join(' ||| ') : null,
+        glosbeEs: glosbeEs ? glosbeEs.join(' ||| ') : null,
       },
       type: dictionary.type,
       simplified: dictionary.simplified ? true : false,
@@ -220,8 +231,18 @@ export class ElasticsearchProvider {
       },
       {
         type: 'match_phrase',
+        field: 'dictionary.glosbePt',
+        score: '17',
+      },
+      {
+        type: 'match_phrase',
         field: 'dictionary.ctEs',
         score: '16',
+      },
+      {
+        type: 'match_phrase',
+        field: 'dictionary.glosbeEs',
+        score: '15',
       },
       {
         type: 'match_phrase',
@@ -232,6 +253,11 @@ export class ElasticsearchProvider {
         type: 'match_phrase',
         field: 'dictionary.ctEn',
         score: '12',
+      },
+      {
+        type: 'match_phrase',
+        field: 'dictionary.glosbeEn',
+        score: '11',
       },
       {
         type: 'match_phrase',

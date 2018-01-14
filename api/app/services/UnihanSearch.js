@@ -11,6 +11,7 @@ const ChineseToolsDownloader = require('../services/ChineseToolsDownloader');
 const GlosbeDownloader = require('../services/GlosbeDownloader');
 const fs = Promise.promisifyAll(require('fs'));
 const opencc = require('node-opencc');
+const { CjkRepository } = require('../repository/cjk.repository');
 
 nodejieba.load({
   userDict: `${__dirname}/../data/compiled.utf8`,
@@ -270,13 +271,12 @@ module.exports = class UnihanSearch {
             response.chinese_tools_en = chineseToolsEn.split('\n');
           }
 
-          await knex('cjk')
-            .where('id', '=', cjk.id)
-            .update({
-              definition_ct_pt: JSON.stringify(response.chinese_tools_pt),
-              definition_ct_es: JSON.stringify(response.chinese_tools_es),
-              definition_ct_en: JSON.stringify(response.chinese_tools_en),
-            });
+          await CjkRepository.save({
+            id: cjk.id,
+            definition_ct_pt: JSON.stringify(response.chinese_tools_pt),
+            definition_ct_es: JSON.stringify(response.chinese_tools_es),
+            definition_ct_en: JSON.stringify(response.chinese_tools_en),
+          });
         }
       } catch (e) {
         // eslint-disable-next-line
@@ -307,13 +307,12 @@ module.exports = class UnihanSearch {
             response.glosbe_en = glosbeEn;
           }
 
-          await knex('cjk')
-            .where('id', '=', cjk.id)
-            .update({
-              definition_glosbe_pt: JSON.stringify(response.glosbe_pt),
-              definition_glosbe_es: JSON.stringify(response.glosbe_es),
-              definition_glosbe_en: JSON.stringify(response.glosbe_en),
-            });
+          await CjkRepository.save({
+            id: cjk.id,
+            definition_glosbe_pt: JSON.stringify(response.glosbe_pt),
+            definition_glosbe_es: JSON.stringify(response.glosbe_es),
+            definition_glosbe_en: JSON.stringify(response.glosbe_en),
+          });
         }
       } catch (e) {
         // eslint-disable-next-line
