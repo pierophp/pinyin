@@ -8,6 +8,7 @@ const isChinese = require('../../../shared/helpers/is-chinese');
 const ArrayCache = require('../cache/ArrayCache');
 const RedisCache = require('../cache/RedisCache');
 const ChineseToolsDownloader = require('../services/ChineseToolsDownloader');
+const GlosbeDownloader = require('../services/GlosbeDownloader');
 const fs = Promise.promisifyAll(require('fs'));
 const opencc = require('node-opencc');
 
@@ -136,6 +137,9 @@ module.exports = class UnihanSearch {
         'definition_ct_pt',
         'definition_ct_es',
         'definition_ct_en',
+        'definition_glosbe_pt',
+        'definition_glosbe_es',
+        'definition_glosbe_en',
       );
 
     if (cjkList.length === 0 && search.pinyin && search.ideograms) {
@@ -158,6 +162,9 @@ module.exports = class UnihanSearch {
           'definition_ct_pt',
           'definition_ct_es',
           'definition_ct_en',
+          'definition_glosbe_pt',
+          'definition_glosbe_es',
+          'definition_glosbe_en',
         );
     }
 
@@ -175,10 +182,17 @@ module.exports = class UnihanSearch {
     response.chinese_tools_pt = null;
     response.chinese_tools_es = null;
     response.chinese_tools_en = null;
+    response.glosbe_pt = null;
+    response.glosbe_es = null;
+    response.glosbe_en = null;
 
     let chineseToolsPt = null;
     let chineseToolsEs = null;
     let chineseToolsEn = null;
+
+    let glosbePt = null;
+    let glosbeEs = null;
+    let glosbeEn = null;
 
     await Promise.map(cjkList, async cjk => {
       const ideograms = UnihanSearch.convertUtf16ToIdeograms(cjk.ideogram);
@@ -220,6 +234,18 @@ module.exports = class UnihanSearch {
         response.chinese_tools_en = JSON.parse(cjk.definition_ct_en);
       }
 
+      if (cjk.definition_glosbe_pt) {
+        response.glosbe_pt = JSON.parse(cjk.definition_glosbe_pt);
+      }
+
+      if (cjk.definition_glosbe_es) {
+        response.glosbe_es = JSON.parse(cjk.definition_glosbe_es);
+      }
+
+      if (cjk.definition_glosbe_en) {
+        response.glosbe_en = JSON.parse(cjk.definition_glosbe_en);
+      }
+
       try {
         if (
           !cjk.definition_ct_pt &&
@@ -255,6 +281,43 @@ module.exports = class UnihanSearch {
       } catch (e) {
         // eslint-disable-next-line
         console.log('Chinese Tools Error: ' + e.message);
+      }
+
+      try {
+        if (
+          !cjk.definition_glosbe_pt &&
+          !cjk.definition_glosbe_es &&
+          !cjk.definition_glosbe_en
+        ) {
+          [glosbePt, glosbeEs, glosbeEn] = await Promise.all([
+            GlosbeDownloader.download(ideograms, 'por'),
+            GlosbeDownloader.download(ideograms, 'spa'),
+            GlosbeDownloader.download(ideograms, 'eng'),
+          ]);
+
+          if (glosbePt) {
+            response.glosbe_pt = glosbePt;
+          }
+
+          if (glosbeEs) {
+            response.glosbe_es = glosbeEs;
+          }
+
+          if (glosbeEn) {
+            response.glosbe_en = glosbeEn;
+          }
+
+          await knex('cjk')
+            .where('id', '=', cjk.id)
+            .update({
+              definition_glosbe_pt: JSON.stringify(response.glosbe_pt),
+              definition_glosbe_es: JSON.stringify(response.glosbe_es),
+              definition_glosbe_en: JSON.stringify(response.glosbe_en),
+            });
+        }
+      } catch (e) {
+        // eslint-disable-next-line
+        console.log('Glosbe Error: ' + e.message);
       }
     });
 

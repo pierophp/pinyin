@@ -19,10 +19,24 @@
     </div>
   </div>
 
+  <div v-if="dictionary.glosbe_pt">
+    <div class="dict-title">GLOSBE - PT</div>
+    <div class="dict-block">
+      <div v-for="(glosbe_pt, dictId) in dictionary.glosbe_pt" v-bind:key="dictId">{{ glosbe_pt }}</div>
+    </div>
+  </div>
+
   <div v-if="dictionary.chinese_tools_pt">
     <div class="dict-title">Chinese Tools - PT</div>
     <div class="dict-block">
       <div v-for="(chinese_tools_pt, dictId) in dictionary.chinese_tools_pt" v-bind:key="dictId">{{ chinese_tools_pt }}</div>
+    </div>
+  </div>
+
+  <div v-if="dictionary.glosbe_es">
+    <div class="dict-title">GLOSBE - ES</div>
+    <div class="dict-block">
+      <div v-for="(glosbe_es, dictId) in dictionary.glosbe_es" v-bind:key="dictId">{{ glosbe_es }}</div>
     </div>
   </div>
 
@@ -32,6 +46,7 @@
       <div v-for="(chinese_tools_es, dictId) in dictionary.chinese_tools_es" v-bind:key="dictId">{{ chinese_tools_es }}</div>
     </div>
   </div>
+
 
   <div v-if="dictionary.unihan">
     <div class="dict-title">Unihan</div>
@@ -44,6 +59,13 @@
     <div class="dict-title">CC-CEDICT</div>
     <div  class="dict-block">
       <div v-for="(cedict, dictId) in dictionary.cedict" v-bind:key="dictId">{{ cedict }}</div>
+    </div>
+  </div>
+
+  <div v-if="dictionary.glosbe_en">
+    <div class="dict-title">GLOSBE - EN</div>
+    <div class="dict-block">
+      <div v-for="(glosbe_en, dictId) in dictionary.glosbe_en" v-bind:key="dictId">{{ glosbe_en }}</div>
     </div>
   </div>
 
