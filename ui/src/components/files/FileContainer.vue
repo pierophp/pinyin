@@ -4,7 +4,7 @@
     <image-zoom :src="imageZoom" ref="imageZoom"/>
     <div class="print-scroll">
       <div class="print" :class="[sizeClass, typeClass, ideogramSpacedClass]">
-        <folder-structure :show-last="true"/>
+        <folder-structure :show-last="true" v-if="parent"/>
         <h2 v-if="filename && filename.split('|||').length != 3">
           {{filename}}
         </h2>
