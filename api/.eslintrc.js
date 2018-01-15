@@ -13,7 +13,7 @@ module.exports = {
     'no-continue': 0,
     'no-param-reassign': 0,
     'arrow-body-style': 0,
-    'arrow-parens': 'as-needed',
+    'arrow-parens': 0,
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
   },

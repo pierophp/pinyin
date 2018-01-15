@@ -1,9 +1,10 @@
 import * as env from '../../../env';
 import { Client } from 'elasticsearch';
-import { convertUtf16ToIdeograms } from '../../services/UnihanSearch';
+import { IdeogramsConverter } from '../converter/ideograms.converter';
 import * as opencc from 'node-opencc';
 
 let client;
+const ideogramsConverter = new IdeogramsConverter();
 
 export class ElasticsearchProvider {
   public async createStructure() {
@@ -114,7 +115,7 @@ export class ElasticsearchProvider {
   protected async getUpdateDocument(dictionary: any): Promise<any> {
     const cedict = JSON.parse(dictionary.definition_cedict);
     const pt = JSON.parse(dictionary.definition_pt);
-    
+
     const ctPt = JSON.parse(dictionary.definition_ct_pt);
     const ctEn = JSON.parse(dictionary.definition_ct_en);
     const ctEs = JSON.parse(dictionary.definition_ct_es);
@@ -125,10 +126,12 @@ export class ElasticsearchProvider {
 
     return {
       id: dictionary.id,
-      ideogram: convertUtf16ToIdeograms(dictionary.ideogram),
+      ideogram: ideogramsConverter.convertUtf16ToIdeograms(dictionary.ideogram),
       pronunciation: dictionary.pronunciation,
       pronunciationUnaccented: dictionary.pronunciation_unaccented,
-      ideogramKeyword: convertUtf16ToIdeograms(dictionary.ideogram),
+      ideogramKeyword: ideogramsConverter.convertUtf16ToIdeograms(
+        dictionary.ideogram,
+      ),
       pronunciationKeyword: dictionary.pronunciation,
       pronunciationUnaccentedKeyword: dictionary.pronunciation_unaccented,
       dictionary: {
