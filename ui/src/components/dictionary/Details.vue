@@ -21,8 +21,11 @@
 
 
   <div v-if="dictionary.chinese_tools_pt">
+    <form action="http://www.chinese-tools.com/tools/chinese-portuguese-dictionary.html" method="POST" target="_blank" id="form-ct-pt">
+      <input type="hidden" name="dico" :value="dictionary.ideograms" />
+    </form>
     <div class="dict-title">
-      <a :href="'http://www.a-china.info/dicionario'" target="_blank">
+      <a href="javascript:void(o)" @click="openChineseTools('pt')">
         Chinese Tools - PT
       </a>
     </div>
@@ -43,8 +46,11 @@
   </div>
 
   <div v-if="dictionary.chinese_tools_es">
+    <form action="http://www.chinese-tools.com/tools/chinese-spanish-dictionary.html" method="POST" target="_blank" id="form-ct-es">
+      <input type="hidden" name="dico" :value="dictionary.ideograms" />
+    </form>
     <div class="dict-title">
-      <a :href="'http://www.chino-china.com/diccionario'" target="_blank">
+      <a href="javascript:void(o)" @click="openChineseTools('es')">
         Chinese Tools - ES
       </a>
     </div>
@@ -74,7 +80,7 @@
       <div v-for="(unihan, dictId) in dictionary.unihan" v-bind:key="dictId">{{ unihan }}</div>
     </div>
   </div>
-  
+
   <div v-if="dictionary.cedict">
     <div class="dict-title">
       <a :href="'https://cc-cedict.org/editor/editor.php?handler=QueryDictionary&amp;querydictionary_search=' + dictionary.ideograms" target="_blank">
@@ -88,8 +94,11 @@
 
 
   <div v-if="dictionary.chinese_tools_en">
+    <form action="http://www.chinese-tools.com/tools/dictionary.html" method="POST" target="_blank" id="form-ct-en">
+      <input type="hidden" name="dico" :value="dictionary.ideograms" />
+    </form>
     <div class="dict-title">
-      <a :href="'http://www.chinese-tools.com/tools/dictionary.html'" target="_blank">
+      <a href="javascript:void(o)" @click="openChineseTools('en')">
         Chinese Tools - EN
       </a>
     </div>
@@ -131,6 +140,9 @@ export default {
     };
   },
   methods: {
+    openChineseTools(language) {
+      document.getElementById(`form-ct-${language}`).submit();
+    },
     getDictionaryEntry() {
       let dictionaryEntry = '';
       if (!this.dictionary.pt) {

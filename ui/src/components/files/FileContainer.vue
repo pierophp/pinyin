@@ -210,7 +210,7 @@ export default {
         '--character-font-size',
         this.options.ideogramSize,
       );
-      
+
       document.body.style.setProperty(
         '--pinyin-font-size',
         this.options.pinyinSize,
