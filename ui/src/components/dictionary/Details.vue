@@ -25,7 +25,7 @@
       <input type="hidden" name="dico" :value="dictionary.ideograms" />
     </form>
     <div class="dict-title">
-      <a href="javascript:void(o)" @click="openChineseTools('pt')">
+      <a href="javascript:void(0)" @click="openChineseTools('pt')">
         Chinese Tools - PT
       </a>
     </div>
@@ -50,7 +50,7 @@
       <input type="hidden" name="dico" :value="dictionary.ideograms" />
     </form>
     <div class="dict-title">
-      <a href="javascript:void(o)" @click="openChineseTools('es')">
+      <a href="javascript:void(0)" @click="openChineseTools('es')">
         Chinese Tools - ES
       </a>
     </div>
@@ -98,7 +98,7 @@
       <input type="hidden" name="dico" :value="dictionary.ideograms" />
     </form>
     <div class="dict-title">
-      <a href="javascript:void(o)" @click="openChineseTools('en')">
+      <a href="javascript:void(0)" @click="openChineseTools('en')">
         Chinese Tools - EN
       </a>
     </div>
