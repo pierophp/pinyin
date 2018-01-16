@@ -69,10 +69,10 @@ export default {
     const appOptions = this.$router.options.appOptions;
     return {
       hasShare: navigator.share,
-      showEditor: appOptions.title === 'app.editor',
-      showBible: appOptions.title === 'app.bible',
-      showDictionary: appOptions.title === 'app.dictionary',
-      showVideos: appOptions.title === 'app.videos',
+      showEditor: appOptions.title !== 'app.editor',
+      showBible: appOptions.title !== 'app.bible',
+      showDictionary: appOptions.title !== 'app.dictionary',
+      showVideos: appOptions.title !== 'app.videos',
     };
   },
   methods: {

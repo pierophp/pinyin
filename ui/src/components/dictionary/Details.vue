@@ -92,7 +92,6 @@
     </div>
   </div>
 
-
   <div v-if="dictionary.chinese_tools_en">
     <form action="http://www.chinese-tools.com/tools/dictionary.html" method="POST" target="_blank" id="form-ct-en">
       <input type="hidden" name="dico" :value="dictionary.ideograms" />
