@@ -279,7 +279,12 @@ export default {
       filename += '.json';
     }
 
-    const path = `${trimStart(dirname, '/')}/${data.filename}`;
+    let path = '';
+    if (trimStart(dirname, '/')) {
+      path = `${trimStart(dirname, '/')}/`;
+    }
+
+    path += data.filename;
 
     http
       .post(`files/save?filename=${filename}&type=${type}&dirname=${dirname}`, {
@@ -293,6 +298,7 @@ export default {
           type,
         });
         sortFiles(state.files);
+
         LocalStorage.save('files', state.files);
       })
       .catch(error => commit(types.FILE_MUTATION_FAILURE, error));

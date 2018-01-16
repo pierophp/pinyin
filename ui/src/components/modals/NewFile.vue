@@ -46,7 +46,9 @@ export default {
   },
   watch: {
     type() {
-      this.$refs.inputFilename.$el.focus();
+      setTimeout(() => {
+        this.$refs.inputFilename.$el.focus();
+      }, 100);
     },
   },
   methods: {
