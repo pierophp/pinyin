@@ -1,6 +1,7 @@
 const Promise = require('bluebird');
 const cheerio = require('cheerio');
-const axios = require('../helpers/http');
+const { http } = require('../helpers/http');
+const { Encoder } = require('../core/sites/jw/encoder');
 const profiler = require('../helpers/profiler');
 const knex = require('./knex');
 const replaceall = require('replaceall');
@@ -13,9 +14,10 @@ const axiosRetry = require('axios-retry');
 
 module.exports = class JwDownloader {
   static async getInsight() {
+    const encoder = new Encoder();
     const dirname = `${__dirname}/../../storage/`;
     const url = 'https://wol.jw.org/cmn-Hans/wol/lv/r23/lp-chs/0/2';
-    let response = await axios.get(this.encodeUrl(url));
+    let response = await axios.get(encoder.encodeUrl(url));
     let $ = cheerio.load(response.data);
     const links = [];
     $('.directory li a').each((i, letterLink) => {
@@ -25,7 +27,7 @@ module.exports = class JwDownloader {
     const words = [];
 
     await Promise.mapSeries(links, async letterurl => {
-      response = await axios.get(this.encodeUrl(letterurl));
+      response = await axios.get(encoder.encodeUrl(letterurl));
       $ = cheerio.load(response.data);
       $('.directory li a').each((i, wordLink) => {
         const href = $(wordLink)
@@ -49,7 +51,7 @@ module.exports = class JwDownloader {
       // cmn-hant
       const wordUrl = `https://wol.jw.org/cmn-Hant/wol/d/r24/lp-ch/${word.id}`;
       try {
-        response = await axios.get(this.encodeUrl(wordUrl));
+        response = await axios.get(encoder.encodeUrl(wordUrl));
       } catch (e) {
         // eslint-disable-next-line
         console.log(wordUrl);
@@ -102,9 +104,10 @@ module.exports = class JwDownloader {
   }
 
   static async getBibleNames() {
+    const encoder = new Encoder();
     const dirname = `${__dirname}/../../storage/`;
     const urlBible = 'https://www.jw.org/cmn-hans/出版物/圣经/bi12/圣经经卷';
-    let response = await axios.get(this.encodeUrl(urlBible));
+    let response = await axios.get(encoder.encodeUrl(urlBible));
     let $ = cheerio.load(response.data);
     const bibles = [];
     $('.bibleBook .fullName').each((i, bibleChildren) => {
@@ -120,7 +123,7 @@ module.exports = class JwDownloader {
 
     await Promise.mapSeries(bibles, async bible => {
       const urlChapter = `https://www.jw.org/cmn-hans/出版物/圣经/bi12/圣经经卷/${bible}/`;
-      response = await axios.get(this.encodeUrl(urlChapter));
+      response = await axios.get(encoder.encodeUrl(urlChapter));
       $ = cheerio.load(response.data);
       const chapters = [];
       $('.chapters .chapter').each((j, bibleChapterChildren) => {
@@ -137,7 +140,7 @@ module.exports = class JwDownloader {
         console.log(chapter);
         const url = `https://www.jw.org/cmn-hans/出版物/圣经/bi12/圣经经卷/${bible}/${chapter}/`;
         try {
-          response = await axios.get(this.encodeUrl(url));
+          response = await axios.get(encoder.encodeUrl(url));
         } catch (e) {
           // eslint-disable-next-line
           console.log(e);
@@ -199,8 +202,9 @@ module.exports = class JwDownloader {
   }
 
   static async getTraditionalBible() {
+    const encoder = new Encoder();
     const urlBible = 'https://www.jw.org/cmn-hant/出版物/聖經/bi12/聖經經卷/';
-    let response = await axios.get(this.encodeUrl(urlBible));
+    let response = await axios.get(encoder.encodeUrl(urlBible));
     let $ = cheerio.load(response.data);
     const bibles = [];
     $('.bibleBook .fullName').each((i, bibleChildren) => {
@@ -213,7 +217,7 @@ module.exports = class JwDownloader {
 
     await Promise.mapSeries(bibles, async bible => {
       const urlChapter = `${urlBible}${bible}/`;
-      response = await axios.get(this.encodeUrl(urlChapter));
+      response = await axios.get(encoder.encodeUrl(urlChapter));
       $ = cheerio.load(response.data);
       const chapters = [];
       $('.chapters .chapter').each((j, bibleChapterChildren) => {
@@ -265,7 +269,7 @@ module.exports = class JwDownloader {
 
         const url = `${urlBible}${bible}/${chapter}/`;
         try {
-          response = await axios.get(this.encodeUrl(url));
+          response = await axios.get(encoder.encodeUrl(url));
         } catch (e) {
           // eslint-disable-next-line
           console.log(e);
@@ -450,6 +454,7 @@ module.exports = class JwDownloader {
   }
 
   static async getLanguageBible() {
+    const encoder = new Encoder();
     const language = 'de';
     const urlBible = {
       pt: 'https://www.jw.org/pt/publicacoes/biblia/nwt/livros/',
@@ -464,7 +469,7 @@ module.exports = class JwDownloader {
 
     axiosRetry(axios, { retries: 5 });
 
-    let response = await axios.get(this.encodeUrl(urlBible[language]));
+    let response = await axios.get(encoder.encodeUrl(urlBible[language]));
     let $ = cheerio.load(response.data);
     const bibles = [];
     $('.bibleBook').each((i, bibleChildren) => {
@@ -473,7 +478,7 @@ module.exports = class JwDownloader {
 
     await Promise.mapSeries(bibles, async (bible, bibleIndex) => {
       const urlChapter = `https://jw.org${bible}/`;
-      response = await axios.get(this.encodeUrl(urlChapter));
+      response = await axios.get(encoder.encodeUrl(urlChapter));
       $ = cheerio.load(response.data);
       const chapters = [];
       $('.chapters .chapter').each((j, bibleChapterChildren) => {
@@ -512,7 +517,7 @@ module.exports = class JwDownloader {
 
         const url = `${urlChapter}/${chapter}/`;
         try {
-          response = await axios.get(this.encodeUrl(url));
+          response = await axios.get(encoder.encodeUrl(url));
         } catch (e) {
           // eslint-disable-next-line
           console.log(e);
@@ -668,6 +673,8 @@ module.exports = class JwDownloader {
   }
 
   static async track(url, type) {
+    const encoder = new Encoder();
+
     const urlParts = url.split('/');
     const filename = urlParts[urlParts.length - 1]
       .replace(/_r(.*)P/g, '')
@@ -688,7 +695,7 @@ module.exports = class JwDownloader {
       showPinyin = false;
     }
 
-    const response = await axios.get(this.encodeUrl(videoTrack[0].track_url));
+    const response = await http.get(encoder.encodeUrl(videoTrack[0].track_url));
 
     const lines = response.data.split('\n');
     let i = 0;
@@ -726,19 +733,5 @@ module.exports = class JwDownloader {
     });
 
     return trackList.join('\n');
-  }
-
-  static encodeUrl(url) {
-    let newUrl = 'https://www.jw.org/';
-    if (url.substr(0, newUrl.length) !== newUrl) {
-      return url;
-    }
-
-    const urlParts = url.replace(newUrl, '').split('/');
-    urlParts.forEach(urlPart => {
-      newUrl += encodeURIComponent(urlPart);
-      newUrl += '/';
-    });
-    return newUrl;
   }
 };

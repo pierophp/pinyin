@@ -6,6 +6,7 @@ import * as UnihanSearch from '../../../services/UnihanSearch';
 import * as bluebird from 'bluebird';
 import { Curl } from 'node-libcurl';
 import { orderBy } from 'lodash';
+import { Encoder } from './encoder';
 
 export class Downloader {
   public async download(
@@ -14,7 +15,8 @@ export class Downloader {
     ideogramType: string,
     convertPinyin: boolean = true,
   ) {
-    profiler(`Download JW Start - ${this.encodeUrl(url)}`);
+    const encoder = new Encoder();
+    profiler(`Download JW Start - ${encoder.encodeUrl(url)}`);
 
     if (!ideogramType) {
       ideogramType = 's';
@@ -37,7 +39,7 @@ export class Downloader {
     let response;
 
     try {
-      response = await this.downloadUrl(this.encodeUrl(url));
+      response = await this.downloadUrl(encoder.encodeUrl(url));
     } catch (e) {
       profiler('Download on exception: ' + url);
       response = await this.downloadUrl(url);
@@ -54,9 +56,9 @@ export class Downloader {
       const chineseLink = $(`link[hreflang="cmn-han${ideogramType}"]`);
       if (chineseLink.length > 0) {
         const link = `https://www.jw.org${chineseLink.attr('href')}`;
-        profiler(`Download JW Start - Chinese - ${this.encodeUrl(link)}`);
+        profiler(`Download JW Start - Chinese - ${encoder.encodeUrl(link)}`);
         try {
-          response = await this.downloadUrl(this.encodeUrl(link));
+          response = await this.downloadUrl(encoder.encodeUrl(link));
         } catch (e) {
           response = await this.downloadUrl(link);
         }
@@ -115,7 +117,7 @@ export class Downloader {
             : `https://www.jw.org${l.link}`;
 
           const linkResponse = await this.download(
-            this.decodeUrl(jwLink),
+            encoder.decodeUrl(jwLink),
             language,
             ideogramType,
             convertPinyin,
@@ -125,7 +127,7 @@ export class Downloader {
             number: l.number,
             title: l.title,
             title_pinyin: l.title_pinyin,
-            link: this.decodeUrl(jwLink),
+            link: encoder.decodeUrl(jwLink),
             content: linkResponse,
           });
         },
@@ -194,36 +196,5 @@ export class Downloader {
       });
       curl.perform();
     });
-  }
-
-  protected encodeUrl(url: string) {
-    let newUrl = 'https://www.jw.org/';
-    if (url.substr(0, newUrl.length) !== newUrl) {
-      return url;
-    }
-
-    const urlParts = url.replace(newUrl, '').split('/');
-    urlParts.forEach(urlPart => {
-      newUrl += encodeURIComponent(urlPart);
-      if (urlPart) {
-        newUrl += '/';
-      }
-    });
-
-    return newUrl;
-  }
-
-  protected decodeUrl(url: string) {
-    let newUrl = 'https://www.jw.org/';
-    if (url.substr(0, newUrl.length) !== newUrl) {
-      return url;
-    }
-
-    const urlParts = url.replace(newUrl, '').split('/');
-    urlParts.forEach(urlPart => {
-      newUrl += decodeURIComponent(urlPart);
-      newUrl += '/';
-    });
-    return newUrl;
   }
 }
