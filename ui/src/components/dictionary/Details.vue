@@ -1,6 +1,6 @@
 <template>
   <div>
-  <div v-if="dictionary.pt">
+  <div v-if="(dictionary.pt && dictionary.pt.length) || user.admin">
     <div class="dict-title">PT</div>
     <div class="dict-block">
       <div v-if="!editing" >
