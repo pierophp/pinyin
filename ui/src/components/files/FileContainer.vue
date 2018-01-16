@@ -8,8 +8,8 @@
         <h2 v-if="filename && filename.split('|||').length != 3">
           {{filename}}
         </h2>
-        <div v-for="(line, lineIndex) in lines" :key="lineIndex">
-          <div v-if="lineIndex === 0 && line && line[0].line !== undefined && line[0].line.audio !== undefined">
+        <template v-for="(line, lineIndex) in lines">
+          <div v-if="lineIndex === 0 && line && line[0].line !== undefined && line[0].line.audio !== undefined"  :key="lineIndex">
             <audio :src="line[0].line.audio" controls/>
           </div>
           <file-row-print
@@ -18,8 +18,9 @@
             @click.native="openBottomBarClick"
             @open-image="openImage"
             @open-footnote="openFootnote"
-            ref="fileRowPrint"/>
-        </div>
+            ref="fileRowPrint"
+            :key="lineIndex"/>
+        </template>
         <div class="loading-container">
           <md-progress-spinner md-mode="indeterminate" v-if="fileLoading"></md-progress-spinner>
         </div>
