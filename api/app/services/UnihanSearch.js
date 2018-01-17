@@ -5,17 +5,20 @@ const replaceall = require('replaceall');
 const knex = require('./knex');
 const separatePinyinInSyllables = require('../../../shared/helpers/separate-pinyin-in-syllables');
 const isChinese = require('../../../shared/helpers/is-chinese');
-const ArrayCache = require('../cache/ArrayCache');
-const RedisCache = require('../cache/RedisCache');
+const { ArrayCache } = require('../cache/array.cache');
+const { RedisCache } = require('../cache/redis.cache');
+
 const ChineseToolsDownloader = require('../services/ChineseToolsDownloader');
 const GlosbeDownloader = require('../services/GlosbeDownloader');
 const fs = Promise.promisifyAll(require('fs'));
-const opencc = require('node-opencc');
+const { IdeogramsConverter } = require('../core/converter/ideograms.converter');
 const { CjkRepository } = require('../repository/cjk.repository');
 
 nodejieba.load({
   userDict: `${__dirname}/../data/compiled.utf8`,
 });
+
+const ideogramsConverter = new IdeogramsConverter();
 
 module.exports = class UnihanSearch {
   static getChangeToneRules() {
@@ -37,7 +40,7 @@ module.exports = class UnihanSearch {
     let cjkList = [];
 
     if (isChinese(search)) {
-      const simplifiedIdeogram = await opencc.traditionalToSimplified(search);
+      const simplifiedIdeogram = await ideogramsConverter.traditionalToSimplified(search);
 
       cjkList = await knex('cjk')
         .where({
@@ -98,7 +101,7 @@ module.exports = class UnihanSearch {
 
     await Promise.mapSeries(cjkList, async entry => {
       entry.ideogram = UnihanSearch.convertUtf16ToIdeograms(entry.ideogram);
-      entry.ideogramTraditional = await opencc.simplifiedToTraditional(
+      entry.ideogramTraditional = await ideogramsConverter.simplifiedToTraditional(
         entry.ideogram,
       );
       return entry;
@@ -110,7 +113,7 @@ module.exports = class UnihanSearch {
   static async searchToDictionary(search) {
     let where = {};
     if (search.ideograms !== undefined) {
-      const simplifiedIdeogram = await opencc.traditionalToSimplified(
+      const simplifiedIdeogram = await ideogramsConverter.traditionalToSimplified(
         search.ideograms,
       );
       where.ideogram = UnihanSearch.convertIdeogramsToUtf16(simplifiedIdeogram);
@@ -145,7 +148,7 @@ module.exports = class UnihanSearch {
 
     if (cjkList.length === 0 && search.pinyin && search.ideograms) {
       where = {};
-      const simplifiedIdeogram = await opencc.traditionalToSimplified(
+      const simplifiedIdeogram = await ideogramsConverter.traditionalToSimplified(
         search.ideograms,
       );
       where.ideogram = UnihanSearch.convertIdeogramsToUtf16(simplifiedIdeogram);
@@ -172,7 +175,7 @@ module.exports = class UnihanSearch {
     const response = {};
     response.ideograms = search.ideograms;
     if (search.ideograms) {
-      response.ideogramsTraditional = await opencc.simplifiedToTraditional(
+      response.ideogramsTraditional = await ideogramsConverter.simplifiedToTraditional(
         search.ideograms,
       );
     }
@@ -200,7 +203,7 @@ module.exports = class UnihanSearch {
       response.pronunciation = cjk.pronunciation;
       response.ideograms = ideograms;
       if (!response.ideogramsTraditional) {
-        response.ideogramsTraditional = await opencc.simplifiedToTraditional(
+        response.ideogramsTraditional = await ideogramsConverter.simplifiedToTraditional(
           ideograms,
         );
       }

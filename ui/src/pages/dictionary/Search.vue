@@ -84,6 +84,7 @@ export default {
           if (searchValue === that.searchValue && searchValue) {
             that.noResults = false;
             that.loading = true;
+            that.entries = [];
             http
               .get('unihan/dictionary_search', {
                 params: {

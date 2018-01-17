@@ -2,12 +2,14 @@ import * as bluebird from 'bluebird';
 import * as express from 'express';
 import * as UnihanSearch from '../services/UnihanSearch';
 import * as knex from '../services/knex';
-import * as ArrayCache from '../cache/ArrayCache';
-import * as RedisCache from '../cache/RedisCache';
+import { ArrayCache } from '../cache/array.cache';
+import { RedisCache } from '../cache/redis.cache';
 import { CjkRepository } from '../repository/cjk.repository';
 import { remove as removeDiacritics } from 'diacritics';
-import * as opencc from 'node-opencc';
 import { Dictionary } from '../core/dictionary';
+import { IdeogramsConverter } from '../core/converter/ideograms.converter';
+
+const ideogramsConverter = new IdeogramsConverter();
 
 // eslint-disable-next-line new-cap
 const router = express.Router();
@@ -95,7 +97,7 @@ router.post('/save', async (req: any, res) => {
   }
 
   const ideogram = UnihanSearch.convertIdeogramsToUtf16(
-    await opencc.traditionalToSimplified(req.body.ideograms),
+    await ideogramsConverter.traditionalToSimplified(req.body.ideograms),
   );
 
   const pronunciation = req.body.pinyin.toLowerCase();

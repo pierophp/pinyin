@@ -1,6 +1,6 @@
 const BaseRepository = require('./BaseRepository');
 const DatabaseLanguageRepository = require('./database/LanguageRepository');
-const ArrayCache = require('../cache/ArrayCache');
+const { ArrayCache } = require('../cache/array.cache');
 
 module.exports = class LanguageRepository extends BaseRepository {
   static async findOneByCode(code) {

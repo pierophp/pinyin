@@ -1,6 +1,6 @@
 let cache = {};
 
-module.exports = class ArrayCache {
+export class ArrayCache {
   static async get(cacheKey) {
     return cache[cacheKey];
   }
@@ -20,4 +20,4 @@ module.exports = class ArrayCache {
   static async forget(cacheKey) {
     delete cache[cacheKey];
   }
-};
+}

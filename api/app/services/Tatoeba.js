@@ -8,11 +8,14 @@ const LanguageRepository = require('../repository/LanguageRepository');
 const PhraseRepository = require('../repository/PhraseRepository');
 const UnihanSearch = require('../services/UnihanSearch');
 const profiler = require('../helpers/profiler');
-const opencc = require('node-opencc');
+const { IdeogramsConverter } = require('../core/converter/ideograms.converter');
+
 const separatePinyinInSyllables = require('../../../shared/helpers/separate-pinyin-in-syllables');
 const exec = require('child-process-promise').exec;
 
 const path = require('path');
+
+const ideogramsConverter = new IdeogramsConverter();
 
 const languages = {
   por: 'pt',
@@ -102,7 +105,7 @@ module.exports = class Tatoeba {
           let pronunciation = '';
 
           if (languageCode === 'cmn') {
-            phrase = await opencc.traditionalToSimplified(phrase);
+            phrase = await ideogramsConverter.traditionalToSimplified(phrase);
             const ideograms = UnihanSearch.segment(phrase);
             const ideogramsList = [];
             let ideogramsTemp = '';

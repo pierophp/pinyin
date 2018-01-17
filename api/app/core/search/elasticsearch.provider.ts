@@ -1,8 +1,8 @@
 import * as env from '../../../env';
 import { Client } from 'elasticsearch';
 import { IdeogramsConverter } from '../converter/ideograms.converter';
-import * as opencc from 'node-opencc';
 import * as isChinese from '../../../../shared/helpers/is-chinese';
+import * as bluebird from 'bluebird';
 
 let client;
 const ideogramsConverter = new IdeogramsConverter();
@@ -63,6 +63,21 @@ export class ElasticsearchProvider {
       body: {
         settings: {
           analysis: {
+            filter: {
+              stemmer_brazilian: {
+                type: 'stemmer',
+                // language: 'brazilian',
+                name: 'light_portuguese',
+              },
+              stemmer_english: {
+                type: 'stemmer',
+                name: 'minimal_english',
+              },
+              stemmer_spanish: {
+                type: 'stemmer',
+                name: 'light_spanish',
+              },
+            },
             analyzer: {
               analyzer_pt: {
                 tokenizer: 'standard',
@@ -90,20 +105,6 @@ export class ElasticsearchProvider {
                   'stemmer_spanish',
                   'asciifolding',
                 ],
-              },
-            },
-            filter: {
-              stemmer_brazilian: {
-                type: 'stemmer',
-                language: 'brazilian',
-              },
-              stemmer_english: {
-                type: 'stemmer',
-                name: 'minimal_english',
-              },
-              stemmer_spanish: {
-                type: 'stemmer',
-                name: 'light_spanish',
               },
             },
           },
@@ -347,18 +348,21 @@ export class ElasticsearchProvider {
       };
     }
 
-    const entries: any[] = [];
-    for (const item of response.hits.hits) {
-      const source: any = item._source;
-      entries.push({
-        id: source.id,
-        pronunciation: source.pronunciation,
-        ideogram: source.ideogram,
-        ideogramTraditional: await opencc.simplifiedToTraditional(
-          source.ideogram,
-        ),
-      });
-    }
+    const entries: any[] = await bluebird.map(
+      response.hits.hits,
+      async (item: any) => {
+        const source: any = item._source;
+        return {
+          id: source.id,
+          pronunciation: source.pronunciation,
+          ideogram: source.ideogram,
+          ideogramTraditional: await ideogramsConverter.simplifiedToTraditional(
+            source.ideogram,
+          ),
+        };
+      },
+      { concurrency: 10 },
+    );
 
     return {
       entries,

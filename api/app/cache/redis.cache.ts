@@ -1,13 +1,13 @@
-const Promise = require('bluebird');
-const redis = require('redis');
-const env = require('../../env');
+import * as bluebird from 'bluebird';
+import * as redis from 'redis';
+import * as env from '../../env';
 
-Promise.promisifyAll(redis.RedisClient.prototype);
+bluebird.promisifyAll(redis.RedisClient.prototype);
 const redisClient = redis.createClient({
   host: env.redis_host,
 });
 
-module.exports = class RedisCache {
+export class RedisCache {
   static async get(cacheKey) {
     return await redisClient.getAsync(cacheKey);
   }
@@ -16,7 +16,7 @@ module.exports = class RedisCache {
     return await redisClient.existsAsync(cacheKey);
   }
 
-  static async set(cacheKey, cacheValue, expires) {
+  static async set(cacheKey, cacheValue, expires?) {
     await redisClient.set(cacheKey, cacheValue);
     if (expires) {
       await redisClient.expire(cacheKey, expires);
@@ -26,4 +26,4 @@ module.exports = class RedisCache {
   static async forget(cacheKey) {
     await redisClient.delAsync(cacheKey);
   }
-};
+}
