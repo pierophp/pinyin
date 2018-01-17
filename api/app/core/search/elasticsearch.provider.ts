@@ -2,6 +2,7 @@ import * as env from '../../../env';
 import { Client } from 'elasticsearch';
 import { IdeogramsConverter } from '../converter/ideograms.converter';
 import * as opencc from 'node-opencc';
+import * as isChinese from '../../../../shared/helpers/is-chinese';
 
 let client;
 const ideogramsConverter = new IdeogramsConverter();
@@ -191,83 +192,90 @@ export class ElasticsearchProvider {
   }
 
   public async searchToDictionaryList(term: string, debug: boolean) {
-    const whereList = [
-      {
-        type: 'term',
-        field: 'ideogramKeyword',
-        score: '50',
-      },
-      {
-        type: 'match_phrase',
-        field: 'ideogram',
-        score: '40',
-      },
-      {
-        type: 'term',
-        field: 'pronunciationKeyword',
-        score: '38',
-      },
-      {
-        type: 'match_phrase',
-        field: 'pronunciation',
-        score: '36',
-      },
-      {
-        type: 'term',
-        field: 'pronunciationUnaccentedKeyword',
-        score: '34',
-      },
-      {
-        type: 'match_phrase',
-        field: 'pronunciationUnaccented',
-        score: '32',
-      },
-      {
-        type: 'match_phrase',
-        field: 'dictionary.pt',
-        score: '20',
-      },
-      {
-        type: 'match_phrase',
-        field: 'dictionary.ctPt',
-        score: '18',
-      },
-      {
-        type: 'match_phrase',
-        field: 'dictionary.glosbePt',
-        score: '17',
-      },
-      {
-        type: 'match_phrase',
-        field: 'dictionary.ctEs',
-        score: '16',
-      },
-      {
-        type: 'match_phrase',
-        field: 'dictionary.glosbeEs',
-        score: '15',
-      },
-      {
-        type: 'match_phrase',
-        field: 'dictionary.cedict',
-        score: '14',
-      },
-      {
-        type: 'match_phrase',
-        field: 'dictionary.ctEn',
-        score: '12',
-      },
-      {
-        type: 'match_phrase',
-        field: 'dictionary.glosbeEn',
-        score: '11',
-      },
-      {
-        type: 'match_phrase',
-        field: 'dictionary.unihan',
-        score: '10',
-      },
-    ];
+    let whereList: any[] = [];
+
+    if (isChinese(term)) {
+      whereList = [
+        {
+          type: 'term',
+          field: 'ideogramKeyword',
+          score: '50',
+        },
+        {
+          type: 'match_phrase',
+          field: 'ideogram',
+          score: '40',
+        },
+      ];
+    } else {
+      whereList = [
+        {
+          type: 'term',
+          field: 'pronunciationKeyword',
+          score: '38',
+        },
+        {
+          type: 'match_phrase',
+          field: 'pronunciation',
+          score: '36',
+        },
+        {
+          type: 'term',
+          field: 'pronunciationUnaccentedKeyword',
+          score: '34',
+        },
+        {
+          type: 'match_phrase',
+          field: 'pronunciationUnaccented',
+          score: '32',
+        },
+        {
+          type: 'match_phrase',
+          field: 'dictionary.pt',
+          score: '20',
+        },
+        {
+          type: 'match_phrase',
+          field: 'dictionary.ctPt',
+          score: '18',
+        },
+        {
+          type: 'match_phrase',
+          field: 'dictionary.glosbePt',
+          score: '17',
+        },
+        {
+          type: 'match_phrase',
+          field: 'dictionary.ctEs',
+          score: '16',
+        },
+        {
+          type: 'match_phrase',
+          field: 'dictionary.glosbeEs',
+          score: '15',
+        },
+        {
+          type: 'match_phrase',
+          field: 'dictionary.cedict',
+          score: '14',
+        },
+        {
+          type: 'match_phrase',
+          field: 'dictionary.ctEn',
+          score: '12',
+        },
+        {
+          type: 'match_phrase',
+          field: 'dictionary.glosbeEn',
+          score: '11',
+        },
+        {
+          type: 'match_phrase',
+          field: 'dictionary.unihan',
+          score: '10',
+        },
+      ];
+    }
 
     const scoreFormulaList = [
       '(_score * $score)',
@@ -334,7 +342,7 @@ export class ElasticsearchProvider {
 
     if (debug) {
       return {
-        hits: response.hits,
+        response,
         query,
       };
     }
