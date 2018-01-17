@@ -25,7 +25,7 @@ export class IdeogramsConverter {
     const cacheKey = `SIMPLIFIED_TO_TRADITIONAL_${ideogram}`;
     let response = await RedisCache.get(cacheKey);
     if (response) {
-      return;
+      return response;
     }
 
     response = await opencc.simplifiedToTraditional(ideogram);
@@ -37,7 +37,7 @@ export class IdeogramsConverter {
     const cacheKey = `TRADITIONAL_TO_SIMPLIFIED_${ideogram}`;
     let response = await RedisCache.get(cacheKey);
     if (response) {
-      return;
+      return response;
     }
 
     response = await opencc.traditionalToSimplified(ideogram);
