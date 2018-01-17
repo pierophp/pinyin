@@ -200,12 +200,12 @@ export class ElasticsearchProvider {
         {
           type: 'term',
           field: 'ideogramKeyword',
-          score: '50',
+          score: '80',
         },
         {
           type: 'match_phrase',
           field: 'ideogram',
-          score: '40',
+          score: '78',
         },
       ];
     } else {
@@ -213,22 +213,22 @@ export class ElasticsearchProvider {
         {
           type: 'term',
           field: 'pronunciationKeyword',
-          score: '38',
+          score: '76',
         },
         {
           type: 'match_phrase',
           field: 'pronunciation',
-          score: '36',
+          score: '74',
         },
         {
           type: 'term',
           field: 'pronunciationUnaccentedKeyword',
-          score: '34',
+          score: '72',
         },
         {
           type: 'match_phrase',
           field: 'pronunciationUnaccented',
-          score: '32',
+          score: '70',
         },
         {
           type: 'match_phrase',
@@ -281,9 +281,9 @@ export class ElasticsearchProvider {
     const scoreFormulaList = [
       '(_score * $score)',
       "doc['main'].value",
-      "(doc['hskInverse'].value * 0.03)",
-      "(doc['frequencyInverse'].value * 0.02)",
-      "(doc['usage'].value * 0.0001)",
+      "(doc['hskInverse'].value * 0.003)",
+      "(doc['frequencyInverse'].value * 0.002)",
+      "(doc['usage'].value * 0.00001)",
     ];
 
     const scoreFormula = scoreFormulaList.join(' + ');
@@ -313,7 +313,7 @@ export class ElasticsearchProvider {
         filter: scoreFilter,
         script_score: {
           script: {
-            source: `Math.log(${scoreFormula.replace('$score', where.score)})`,
+            source: `${scoreFormula.replace('$score', where.score)}`,
           },
         },
       });
@@ -338,7 +338,7 @@ export class ElasticsearchProvider {
     };
 
     const response = await this.getClient().search({
-      body: { query },
+      body: { size: 50, query },
     });
 
     if (debug) {
@@ -359,6 +359,7 @@ export class ElasticsearchProvider {
           ideogramTraditional: await ideogramsConverter.simplifiedToTraditional(
             source.ideogram,
           ),
+          score: item._score,
         };
       },
       { concurrency: 10 },
