@@ -5,12 +5,20 @@
     </md-button>
 
     <md-dialog md-open-from="#newFileModal" md-close-to="#newFileModal" ref="modal" @md-opened="onOpen" :md-active.sync="modalOpen" :md-fullscreen="false">
-      <md-dialog-title>{{ $t('new_file') }}</md-dialog-title>
+      <md-dialog-title>{{ $t('new') }}</md-dialog-title>
 
-      <md-dialog-content>
-         <md-field>
-          <label>{{ $t('filename') }}</label>
-          <md-input :placeholder="$t('filename')" v-model="filename" ref="inputFilename"></md-input>
+      <md-dialog-content >
+        <md-field>
+          <label>{{ $t('type') }}</label>
+           <md-select v-model="type" name="type" md-dense id="select-type">
+            <md-option value="file">{{ $t('file') }}</md-option>
+            <md-option value="dir">{{ $t('folder') }}</md-option>
+          </md-select>
+        </md-field>
+
+        <md-field>
+          <label>{{ $t('name') }}</label>
+          <md-input :placeholder="$t('name')" v-model="filename" ref="inputFilename"></md-input>
         </md-field>
       </md-dialog-content>
 
@@ -23,44 +31,56 @@
 </template>
 
 <script>
-  import {
-      mapActions,
-    } from 'vuex';
+import { mapActions } from 'vuex';
 
-  import {
-    FILE_ACTION_NEW_FILE,
-  } from 'src/data/file/types';
+import { FILE_ACTION_NEW_FILE } from 'src/data/file/types';
 
-  export default {
-    name: 'modal-new-file',
-    data() {
-      return {
-        filename: '',
-        modalOpen: false,
-      };
+export default {
+  name: 'modal-new-file',
+  data() {
+    return {
+      type: 'file',
+      filename: '',
+      modalOpen: false,
+    };
+  },
+  watch: {
+    type() {
+      setTimeout(() => {
+        this.$refs.inputFilename.$el.focus();
+      }, 100);
     },
-    methods: {
-      confirm() {
-        this.closeDialog('newFileModal');
-        this.newFile({
-          filename: this.filename,
-        });
-        this.filename = '';
-      },
-      openDialog() {
-        this.modalOpen = true;
-      },
-      closeDialog() {
-        this.modalOpen = false;
-      },
-      onOpen() {
-        setTimeout(() => {
-          this.$refs.inputFilename.$el.focus();
-        }, 100);
-      },
-      ...mapActions({
-        newFile: FILE_ACTION_NEW_FILE,
-      }),
+  },
+  methods: {
+    confirm() {
+      this.closeDialog('newFileModal');
+      this.newFile({
+        filename: this.filename,
+        type: this.type,
+        dirname: this.$route.query.d ? this.$route.query.d : '/',
+      });
+      this.filename = '';
     },
-  };
+    openDialog() {
+      this.modalOpen = true;
+    },
+    closeDialog() {
+      this.modalOpen = false;
+    },
+    onOpen() {
+      setTimeout(() => {
+        this.$refs.inputFilename.$el.focus();
+      }, 100);
+    },
+    ...mapActions({
+      newFile: FILE_ACTION_NEW_FILE,
+    }),
+  },
+};
 </script>
+
+<style>
+.md-select-menu {
+  z-index: 1000 !important;
+}
+</style>

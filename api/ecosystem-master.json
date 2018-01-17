@@ -2,7 +2,7 @@
   "apps": [
     {
       "name": "Pinyin",
-      "script": "server.js",
+      "script": "dist/api/app/server.js",
       "env": {
         "COMMON_VARIABLE": "true"
       },

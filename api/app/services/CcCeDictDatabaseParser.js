@@ -6,7 +6,6 @@ const fs = require('fs');
 const replaceall = require('replaceall');
 
 module.exports = class CcCeDictDatabaseParser {
-
   static loadFile(file) {
     return new Promise((resolve, reject) => {
       const promises = [];
@@ -14,15 +13,15 @@ module.exports = class CcCeDictDatabaseParser {
       function processPromisses() {
         // eslint-disable-next-line
         console.log('Promise process init');
-        Promise.map(promises, promiseImport =>
-          promiseImport()
-        , {
+        Promise.map(promises, promiseImport => promiseImport(), {
           concurrency: 2,
-        }).then(() => {
-          resolve();
-        }).error(() => {
-          reject();
-        });
+        })
+          .then(() => {
+            resolve();
+          })
+          .error(() => {
+            reject();
+          });
       }
 
       const ideogramList = [];
@@ -41,10 +40,10 @@ module.exports = class CcCeDictDatabaseParser {
 
         let pronunciation = '';
         const pronunciationList = parts[0]
-                      .split('[')[1]
-                      .replace(']', '')
-                      .toLowerCase()
-                      .split(' ');
+          .split('[')[1]
+          .replace(']', '')
+          .toLowerCase()
+          .split(' ');
 
         const vogals = ['a', 'e', 'o'];
         pronunciationList.forEach((p, index) => {
@@ -58,10 +57,13 @@ module.exports = class CcCeDictDatabaseParser {
 
         pronunciation = replaceall('u:', 'ü', pronunciation);
 
-        const pronunciationUnaccented = pronunciation.replace(new RegExp('[12345]', 'g'), '');
-        pronunciation = UnihanSearch
-                            .pinyinTonesNumbersToAccents(pronunciation)
-                            .replace(new RegExp('5', 'g'), '');
+        const pronunciationUnaccented = pronunciation.replace(
+          new RegExp('[12345]', 'g'),
+          '',
+        );
+        pronunciation = UnihanSearch.pinyinTonesNumbersToAccents(
+          pronunciation,
+        ).replace(new RegExp('5', 'g'), '');
 
         const key = ideogram + pronunciation;
 
@@ -98,7 +100,9 @@ module.exports = class CcCeDictDatabaseParser {
           }
 
           ideogram = UnihanSearch.convertIdeogramsToUtf16(ideogram);
-          ideogramTraditional = UnihanSearch.convertIdeogramsToUtf16(ideogramTraditional);
+          ideogramTraditional = UnihanSearch.convertIdeogramsToUtf16(
+            ideogramTraditional,
+          );
 
           let traditional = 0;
           if (ideogramTraditional === ideogram) {
@@ -137,11 +141,12 @@ module.exports = class CcCeDictDatabaseParser {
               pronunciation,
             });
 
-
           if (dataCjk.length === 0) {
             await knex('cjk').insert(toInsert);
           } else {
-            await knex('cjk').where('id', '=', dataCjk[0].id).update(toUpdate);
+            await knex('cjk')
+              .where('id', '=', dataCjk[0].id)
+              .update(toUpdate);
           }
 
           if (ideogramTraditional !== ideogram) {
@@ -149,11 +154,11 @@ module.exports = class CcCeDictDatabaseParser {
             variants.push(ideogram);
 
             dataCjk = await knex('cjk')
-            .select('id')
-            .where({
-              ideogram: ideogramTraditional,
-              pronunciation,
-            });
+              .select('id')
+              .where({
+                ideogram: ideogramTraditional,
+                pronunciation,
+              });
 
             if (dataCjk.length === 0) {
               toInsert.ideogram = ideogramTraditional;
@@ -168,7 +173,9 @@ module.exports = class CcCeDictDatabaseParser {
               toUpdate.traditional = 1;
               toUpdate.variants = JSON.stringify(variants);
 
-              await knex('cjk').where('id', '=', dataCjk[0].id).update(toUpdate);
+              await knex('cjk')
+                .where('id', '=', dataCjk[0].id)
+                .update(toUpdate);
             }
           }
         };
@@ -184,7 +191,7 @@ module.exports = class CcCeDictDatabaseParser {
         processPromisses();
       });
 
-      lineReader.on('line', (line) => {
+      lineReader.on('line', line => {
         if (line[0] === '#') {
           return;
         }
@@ -200,4 +207,3 @@ module.exports = class CcCeDictDatabaseParser {
     });
   }
 };
-

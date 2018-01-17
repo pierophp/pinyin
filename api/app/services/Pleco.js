@@ -16,12 +16,12 @@ module.exports = class Pleco {
     }
     const result = await knex('cjk').whereRaw('definition_pt IS NOT NULL');
     let resultFile = '';
-    result.forEach((entry) => {
+    result.forEach(entry => {
       let definition = JSON.parse(entry.definition_pt);
       definition = definition.join(String.fromCharCode(60081));
       const pinyin = separatePinyinInSyllables(entry.pronunciation);
       let pinyinTones = '';
-      pinyin.forEach((syllable) => {
+      pinyin.forEach(syllable => {
         let tone = extractPinyinTone(syllable);
         if (tone === 0) {
           tone = 5;

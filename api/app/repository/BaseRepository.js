@@ -1,4 +1,1 @@
-
-module.exports = class BaseRepository {
-
-};
+module.exports = class BaseRepository {};

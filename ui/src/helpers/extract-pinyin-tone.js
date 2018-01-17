@@ -1,29 +1,39 @@
-export default function (pinyin) {
+export default function(pinyin) {
   if (pinyin === undefined) {
     return 0;
   }
 
   pinyin = pinyin.toLowerCase();
 
-  const tones = [{
-    tone: 1,
-    letters: ['ā', 'ē', 'ī', 'ō', 'ū', 'ǖ'],
-  }, {
-    tone: 2,
-    letters: ['á', 'é', 'í', 'ó', 'ú', 'ǘ'],
-  }, {
-    tone: 3,
-    letters: ['ǎ', 'ě', 'ǐ', 'ǒ', 'ǔ', 'ǚ'],
-  }, {
-    tone: 4,
-    letters: ['à', 'è', 'ì', 'ò', 'ù', 'ǜ'],
-  }];
-
-  for (const tone of tones) {
-    for (const letter of tone.letters) {
-      if (pinyin.indexOf(letter) > -1) {
-        return tone.tone;
-      }
+  const tones = {
+    ā: 1,
+    ē: 1,
+    ī: 1,
+    ō: 1,
+    ū: 1,
+    ǖ: 1,
+    á: 2,
+    é: 2,
+    í: 2,
+    ó: 2,
+    ú: 2,
+    ǘ: 2,
+    ǎ: 3,
+    ě: 3,
+    ǐ: 3,
+    ǒ: 3,
+    ǔ: 3,
+    ǚ: 3,
+    à: 4,
+    è: 4,
+    ì: 4,
+    ò: 4,
+    ù: 4,
+    ǜ: 4,
+  };
+  for (const letter of pinyin.normalize()) {
+    if (tones[letter]) {
+      return tones[letter];
     }
   }
 

@@ -1,6 +1,5 @@
-
 exports.up = function(knex, Promise) {
-  return knex.schema.createTable('user', function (table) {
+  return knex.schema.createTable('user', function(table) {
     table.increments();
     table.string('name');
     table.string('email', 100);
@@ -10,9 +9,7 @@ exports.up = function(knex, Promise) {
     table.string('token');
     table.index('token');
     table.timestamps();
-    });
+  });
 };
 
-exports.down = function(knex, Promise) {
-
-};
+exports.down = function(knex, Promise) {};

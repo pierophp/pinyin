@@ -6,13 +6,17 @@ const replaceall = require('replaceall');
 module.exports = class ChineseToolsDownloader {
   static async download(word, language) {
     const urls = {
-      pt: 'http://www.chinese-tools.com/tools/chinese-portuguese-dictionary.html',
+      pt:
+        'http://www.chinese-tools.com/tools/chinese-portuguese-dictionary.html',
       es: 'http://www.chinese-tools.com/tools/chinese-spanish-dictionary.html',
       en: 'http://www.chinese-tools.com/tools/dictionary.html',
     };
 
-    const response = await axios.post(urls[language], querystring.stringify({ dico: word }),
-      { timeout: 2500 });
+    const response = await axios.post(
+      urls[language],
+      querystring.stringify({ dico: word }),
+      { timeout: 2500 },
+    );
 
     const $ = cheerio.load(response.data);
     const element = $('.ctdico_entry .ctdico_def');
@@ -22,7 +26,9 @@ module.exports = class ChineseToolsDownloader {
 
     let text = $(element).html();
     text = replaceall('</a>', '</a> ', text);
-    text = $('<textarea />').html(text).text();
+    text = $('<textarea />')
+      .html(text)
+      .text();
     return text;
   }
 };

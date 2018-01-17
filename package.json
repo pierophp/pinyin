@@ -1,0 +1,9 @@
+{
+  "license": "MIT",
+  "scripts": {
+    "prettier": "prettier"
+  },
+  "devDependencies": {
+    "prettier": "^1.9.2"
+  }
+}

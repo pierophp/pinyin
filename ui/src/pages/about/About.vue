@@ -64,32 +64,32 @@
 
 <script>
 export default {
-    name: 'about',
-    data() {
-      const appOptions = this.$router.options.appOptions;
-      return {
-        hasShare: navigator.share,
-        showEditor: appOptions.title === 'app.editor' ? false : true,
-        showBible: appOptions.title === 'app.bible' ? false : true,
-        showDictionary: appOptions.title === 'app.dictionary' ? false : true,
-        showVideos: appOptions.title === 'app.videos' ? false : true,
-      };
-    },
-    methods: {
-      async share() {
-        if (!navigator.share) {
-          return;
-        }
+  name: 'about',
+  data() {
+    const appOptions = this.$router.options.appOptions;
+    return {
+      hasShare: navigator.share,
+      showEditor: appOptions.title !== 'app.editor',
+      showBible: appOptions.title !== 'app.bible',
+      showDictionary: appOptions.title !== 'app.dictionary',
+      showVideos: appOptions.title !== 'app.videos',
+    };
+  },
+  methods: {
+    async share() {
+      if (!navigator.share) {
+        return;
+      }
 
-        const url = window.location.href.split('#/')[0];
+      const url = window.location.href.split('#/')[0];
 
-        await navigator.share({
-          text: this.$t(this.$router.options.appOptions.title),
-          url,
-        });
-      },
+      await navigator.share({
+        text: this.$t(this.$router.options.appOptions.title),
+        url,
+      });
     },
-  };
+  },
+};
 </script>
 
 <style>
@@ -114,7 +114,7 @@ export default {
 
 .other-apps-item {
   width: 50%;
-  padding-bottom:10px;
+  padding-bottom: 10px;
   font-size: 20px;
 }
 

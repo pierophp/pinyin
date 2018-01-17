@@ -26,7 +26,7 @@
   } from 'src/data/file/types';
 
   export default {
-    name: 'modal-delete-file',
+    name: 'modal-import-site',
     data() {
       return {
         siteUrl: '',

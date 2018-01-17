@@ -36,7 +36,8 @@ const unzipFile = function unzipFile() {
 };
 
 const downloadFile = function downloadFile() {
-  const src = 'http://www.unicode.org/Public/UCD/latest/ucdxml/ucd.unihan.flat.zip';
+  const src =
+    'http://www.unicode.org/Public/UCD/latest/ucdxml/ucd.unihan.flat.zip';
 
   try {
     fs.statSync(filenameZip);
@@ -47,7 +48,7 @@ const downloadFile = function downloadFile() {
 
   const download = wget.download(src, filenameZip);
 
-  download.on('error', (err) => {
+  download.on('error', err => {
     // eslint-disable-next-line
     console.log(`Error: ${err}`);
   });

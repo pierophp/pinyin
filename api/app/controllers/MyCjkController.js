@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
     .orderBy('usage', 'DESC');
 
   const ideograms = [];
-  result.forEach((item) => {
+  result.forEach(item => {
     item.ideogram = UnihanSearch.convertUtf16ToIdeograms(item.ideogram);
     ideograms.push(item);
   });
@@ -42,15 +42,23 @@ router.get('/report', (req, res) => {
   }
 
   knex('cjk')
-    .select(knex.raw('cjk.frequency, COUNT(*) as total, COUNT(my_cjk.id) total_my, round(COUNT(my_cjk.id) / COUNT(*) * 100) percent'))
+    .select(
+      knex.raw(
+        'cjk.frequency, COUNT(*) as total, COUNT(my_cjk.id) total_my, round(COUNT(my_cjk.id) / COUNT(*) * 100) percent',
+      ),
+    )
     .leftJoin('my_cjk', function leftJoin() {
-      this.on('my_cjk.cjk_id', '=', 'cjk.id').on('my_cjk.user_id', '=', req.user.id);
+      this.on('my_cjk.cjk_id', '=', 'cjk.id').on(
+        'my_cjk.user_id',
+        '=',
+        req.user.id,
+      );
     })
     .where(where)
     .groupBy('cjk.frequency')
-    .then((report) => {
+    .then(report => {
       let total = 0;
-      report.forEach((item) => {
+      report.forEach(item => {
         total += item.total_my;
       });
       res.send({ total, report });
@@ -74,15 +82,23 @@ router.get('/report_words', async (req, res) => {
   }
 
   const report = await knex('cjk')
-    .select(knex.raw('cjk.hsk, COUNT(cjk.id) as total, COUNT(my_cjk.id) total_my, round(COUNT(my_cjk.id) / COUNT(*) * 100) percent'))
+    .select(
+      knex.raw(
+        'cjk.hsk, COUNT(cjk.id) as total, COUNT(my_cjk.id) total_my, round(COUNT(my_cjk.id) / COUNT(*) * 100) percent',
+      ),
+    )
     .leftJoin('my_cjk', function leftJoin() {
-      this.on('my_cjk.cjk_id', '=', 'cjk.id').on('my_cjk.user_id', '=', req.user.id);
+      this.on('my_cjk.cjk_id', '=', 'cjk.id').on(
+        'my_cjk.user_id',
+        '=',
+        req.user.id,
+      );
     })
     .where(where)
     .groupBy('cjk.hsk');
 
   let total = 0;
-  report.forEach((item) => {
+  report.forEach(item => {
     total += item.total_my;
   });
 
@@ -110,14 +126,18 @@ router.get('/report_unknown', async (req, res) => {
   const result = await knex('cjk')
     .select('my_cjk.id', 'cjk.ideogram', 'cjk.frequency', 'cjk.pronunciation')
     .leftJoin('my_cjk', function leftJoin() {
-      this.on('my_cjk.cjk_id', '=', 'cjk.id').on('my_cjk.user_id', '=', req.user.id);
+      this.on('my_cjk.cjk_id', '=', 'cjk.id').on(
+        'my_cjk.user_id',
+        '=',
+        req.user.id,
+      );
     })
     .where(where)
     .whereNull('my_cjk.id')
     .limit(2500);
 
   const ideograms = [];
-  result.forEach((item) => {
+  result.forEach(item => {
     item.ideogram = UnihanSearch.convertUtf16ToIdeograms(item.ideogram);
     ideograms.push(item);
   });
@@ -143,17 +163,20 @@ router.get('/report_known', async (req, res) => {
     where.traditional = 1;
   }
 
-
   const result = await knex('cjk')
     .select('my_cjk.id', 'cjk.ideogram', 'cjk.frequency', 'cjk.pronunciation')
     .join('my_cjk', function leftJoin() {
-      this.on('my_cjk.cjk_id', '=', 'cjk.id').on('my_cjk.user_id', '=', req.user.id);
+      this.on('my_cjk.cjk_id', '=', 'cjk.id').on(
+        'my_cjk.user_id',
+        '=',
+        req.user.id,
+      );
     })
     .where(where)
     .limit(2500);
 
   const ideograms = [];
-  result.forEach((item) => {
+  result.forEach(item => {
     item.ideogram = UnihanSearch.convertUtf16ToIdeograms(item.ideogram);
     ideograms.push(item);
   });
@@ -181,14 +204,18 @@ router.get('/report_unknown_words', async (req, res) => {
   const result = await knex('cjk')
     .select('my_cjk.id', 'cjk.ideogram', 'cjk.hsk', 'cjk.pronunciation')
     .leftJoin('my_cjk', function leftJoin() {
-      this.on('my_cjk.cjk_id', '=', 'cjk.id').on('my_cjk.user_id', '=', req.user.id);
+      this.on('my_cjk.cjk_id', '=', 'cjk.id').on(
+        'my_cjk.user_id',
+        '=',
+        req.user.id,
+      );
     })
     .where(where)
     .whereNull('my_cjk.id')
     .limit(2500);
 
   const ideograms = [];
-  result.forEach((item) => {
+  result.forEach(item => {
     item.ideogram = UnihanSearch.convertUtf16ToIdeograms(item.ideogram);
     ideograms.push(item);
   });
@@ -213,17 +240,20 @@ router.get('/report_known_words', async (req, res) => {
     where.traditional = 1;
   }
 
-
   const result = await knex('cjk')
     .select('my_cjk.id', 'cjk.ideogram', 'cjk.hsk', 'cjk.pronunciation')
     .join('my_cjk', function leftJoin() {
-      this.on('my_cjk.cjk_id', '=', 'cjk.id').on('my_cjk.user_id', '=', req.user.id);
+      this.on('my_cjk.cjk_id', '=', 'cjk.id').on(
+        'my_cjk.user_id',
+        '=',
+        req.user.id,
+      );
     })
     .where(where)
     .limit(2500);
 
   const ideograms = [];
-  result.forEach((item) => {
+  result.forEach(item => {
     item.ideogram = UnihanSearch.convertUtf16ToIdeograms(item.ideogram);
     ideograms.push(item);
   });
@@ -233,7 +263,9 @@ router.get('/report_known_words', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-    const ideogramConverted = UnihanSearch.convertIdeogramsToUtf16(req.body.ideogram);
+    const ideogramConverted = UnihanSearch.convertIdeogramsToUtf16(
+      req.body.ideogram,
+    );
 
     let result = await knex('cjk')
       .where({
@@ -247,19 +279,18 @@ router.post('/', async (req, res) => {
 
     if (result.length === 0) {
       result = await knex('cjk')
-      .where({
-        ideogram: ideogramConverted,
-      })
-      .orderBy('frequency', 'ASC')
-      .orderBy('usage', 'DESC')
-      .select('id');
+        .where({
+          ideogram: ideogramConverted,
+        })
+        .orderBy('frequency', 'ASC')
+        .orderBy('usage', 'DESC')
+        .select('id');
     }
 
-    await knex('my_cjk')
-      .insert({
-        cjk_id: result[0].id,
-        user_id: req.user.id,
-      });
+    await knex('my_cjk').insert({
+      cjk_id: result[0].id,
+      user_id: req.user.id,
+    });
 
     res.send({ status: 'SUCCESS' });
   } catch (e) {
@@ -273,18 +304,19 @@ router.post('/', async (req, res) => {
 
 router.delete('/', async (req, res) => {
   try {
-    const ideogramConverted = UnihanSearch.convertIdeogramsToUtf16(req.body.ideogram);
+    const ideogramConverted = UnihanSearch.convertIdeogramsToUtf16(
+      req.body.ideogram,
+    );
     const result = await knex('cjk')
-    .where({
-      ideogram: ideogramConverted,
-    })
-    .orderBy('frequency', 'ASC')
-    .orderBy('usage', 'DESC')
-    .select('id');
-
+      .where({
+        ideogram: ideogramConverted,
+      })
+      .orderBy('frequency', 'ASC')
+      .orderBy('usage', 'DESC')
+      .select('id');
 
     const ids = [];
-    result.forEach((item) => {
+    result.forEach(item => {
       ids.push(item.id);
     });
 

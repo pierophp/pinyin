@@ -7,7 +7,6 @@ const fs = require('fs');
 const replaceall = require('replaceall');
 
 module.exports = class ThreeLinesDatabaseParser {
-
   static saveWord(pinyin, ideograms) {
     pinyin = replaceall('_', '', pinyin);
     let ideogramsConverted = '';
@@ -16,20 +15,22 @@ module.exports = class ThreeLinesDatabaseParser {
       ideogramsConverted += ideograms[i].charCodeAt(0).toString(16);
     }
 
-    return new Promise((resolve) => {
-      knex('cjk').insert({
-        ideogram: ideogramsConverted,
-        pronunciation: pinyin,
-        pronunciation_unaccented: removeDiacritics(pinyin),
-        definition: '',
-        frequency: 1,
-        language_id: 1,
-        type: 'W',
-        usage: 0,
-        created_at: new Date(),
-      }).then(() => {
-        resolve();
-      });
+    return new Promise(resolve => {
+      knex('cjk')
+        .insert({
+          ideogram: ideogramsConverted,
+          pronunciation: pinyin,
+          pronunciation_unaccented: removeDiacritics(pinyin),
+          definition: '',
+          frequency: 1,
+          language_id: 1,
+          type: 'W',
+          usage: 0,
+          created_at: new Date(),
+        })
+        .then(() => {
+          resolve();
+        });
     });
   }
 
@@ -40,15 +41,15 @@ module.exports = class ThreeLinesDatabaseParser {
       function processPromisses() {
         // eslint-disable-next-line
         console.log('Promise process init');
-        Promise.map(promises, promiseImport =>
-          promiseImport()
-        , {
+        Promise.map(promises, promiseImport => promiseImport(), {
           concurrency: 2,
-        }).then(() => {
-          resolve();
-        }).error(() => {
-          reject();
-        });
+        })
+          .then(() => {
+            resolve();
+          })
+          .error(() => {
+            reject();
+          });
       }
 
       const ideogramList = [];
@@ -76,10 +77,13 @@ module.exports = class ThreeLinesDatabaseParser {
 
         // pronunciation = replaceall('u:', 'ü', pronunciation);
 
-        const pronunciationUnaccented = pronunciation.replace(new RegExp('[12345]', 'g'), '');
-        pronunciation = UnihanSearch
-                            .pinyinTonesNumbersToAccents(pronunciation)
-                            .replace(new RegExp('5', 'g'), '');
+        const pronunciationUnaccented = pronunciation.replace(
+          new RegExp('[12345]', 'g'),
+          '',
+        );
+        pronunciation = UnihanSearch.pinyinTonesNumbersToAccents(
+          pronunciation,
+        ).replace(new RegExp('5', 'g'), '');
 
         const key = ideogram + pronunciation;
 
@@ -107,7 +111,7 @@ module.exports = class ThreeLinesDatabaseParser {
                 ideogram,
                 pronunciation,
               })
-              .then((dataCjk) => {
+              .then(dataCjk => {
                 if (dataCjk.length === 0) {
                   const toInsert = {
                     ideogram,
@@ -125,7 +129,7 @@ module.exports = class ThreeLinesDatabaseParser {
                     .then(() => {
                       resolveImport();
                     })
-                    .error((err) => {
+                    .error(err => {
                       // eslint-disable-next-line
                       console.log(err);
                       rejectImport();
@@ -161,7 +165,7 @@ module.exports = class ThreeLinesDatabaseParser {
         processPromisses();
       });
 
-      lineReader.on('line', (line) => {
+      lineReader.on('line', line => {
         if (line.trim().substr(0, 11) === 'Traditional') {
           return;
         }
@@ -177,4 +181,3 @@ module.exports = class ThreeLinesDatabaseParser {
     });
   }
 };
-

@@ -42,8 +42,10 @@ export default {
   },
   add_ideogram: 'Add Ideogram',
   remove_ideogram: 'Remove Ideogram',
-  confirmation_add_ideogram: 'Would you like to add "{ideogram}" to your known list?',
-  confirmation_remove_ideogram: 'Would you like to remove "{ideogram}" to your known list?',
+  confirmation_add_ideogram:
+    'Would you like to add "{ideogram}" to your known list?',
+  confirmation_remove_ideogram:
+    'Would you like to remove "{ideogram}" to your known list?',
   my_total: 'My Total',
   my_ideograms: 'My ideograms',
   summary: 'Summary',
@@ -118,7 +120,12 @@ export default {
   confirmation: 'Confirmation',
   confirmation_download_bible: 'Would you like to download the Bible?',
   confirmation_delete_bible: 'Would you like to delete the Bible?',
-  about_text: 'For questions or suggestions, send an email to pinyineditor@gmail.com',
+  about_text:
+    'For questions or suggestions, send an email to pinyineditor@gmail.com',
   other_apps: 'Other Apps',
   share: 'Share',
+  file: 'File',
+  folder: 'Folder',
+  new: 'New',
+  name: 'Name',
 };

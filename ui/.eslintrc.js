@@ -5,28 +5,30 @@ module.exports = {
   },
   parser: 'babel-eslint',
   parserOptions: {
-    sourceType: 'module'
+    sourceType: 'module',
   },
   extends: 'airbnb-base',
   // required to lint *.vue files
-  plugins: [
-    'html'
-  ],
+  plugins: ['html'],
   // check if imports actually resolve
-  'settings': {
+  settings: {
     'import/resolver': {
-      'webpack': {
-        'config': 'build/webpack.base.conf.js'
-      }
-    }
+      webpack: {
+        config: 'build/webpack.base.conf.js',
+      },
+    },
   },
   // add your custom rules here
-  'rules': {
+  rules: {
     // don't require .vue extension when importing
-    'import/extensions': ['error', 'always', {
-      'js': 'never',
-      'vue': 'never'
-    }],
+    'import/extensions': [
+      'error',
+      'always',
+      {
+        js: 'never',
+        vue: 'never',
+      },
+    ],
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
 
@@ -37,13 +39,15 @@ module.exports = {
     // allow using this on classes
     'class-methods-use-this': 0,
     'no-restricted-syntax': 0,
-
+    'no-await-in-loop': 0,
+    'space-before-function-paren': 0,
+    'wrap-iife': 0,
   },
-  'globals': {
-      '$': true,
-      'document': true,
-      'location': true,
-      'window': true,
-      'navigator': true,
-  }
-}
+  globals: {
+    $: true,
+    document: true,
+    location: true,
+    window: true,
+    navigator: true,
+  },
+};

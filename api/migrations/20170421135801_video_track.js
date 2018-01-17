@@ -1,6 +1,5 @@
-
 exports.up = function(knex, Promise) {
-  return knex.schema.createTable('video_track', function (table) {
+  return knex.schema.createTable('video_track', function(table) {
     table.increments();
     table.string('video', 100);
     table.unique('video');
@@ -10,6 +9,4 @@ exports.up = function(knex, Promise) {
   });
 };
 
-exports.down = function(knex, Promise) {
-
-};
+exports.down = function(knex, Promise) {};

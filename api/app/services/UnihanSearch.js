@@ -5,15 +5,20 @@ const replaceall = require('replaceall');
 const knex = require('./knex');
 const separatePinyinInSyllables = require('../../../shared/helpers/separate-pinyin-in-syllables');
 const isChinese = require('../../../shared/helpers/is-chinese');
-const ArrayCache = require('../cache/ArrayCache');
-const RedisCache = require('../cache/RedisCache');
+const { ArrayCache } = require('../cache/array.cache');
+const { RedisCache } = require('../cache/redis.cache');
+
 const ChineseToolsDownloader = require('../services/ChineseToolsDownloader');
+const GlosbeDownloader = require('../services/GlosbeDownloader');
 const fs = Promise.promisifyAll(require('fs'));
-const opencc = require('node-opencc');
+const { IdeogramsConverter } = require('../core/converter/ideograms.converter');
+const { CjkRepository } = require('../repository/cjk.repository');
 
 nodejieba.load({
   userDict: `${__dirname}/../data/compiled.utf8`,
 });
+
+const ideogramsConverter = new IdeogramsConverter();
 
 module.exports = class UnihanSearch {
   static getChangeToneRules() {
@@ -35,56 +40,70 @@ module.exports = class UnihanSearch {
     let cjkList = [];
 
     if (isChinese(search)) {
-      const simplifiedIdeogram = await opencc.traditionalToSimplified(search);
+      const simplifiedIdeogram = await ideogramsConverter.traditionalToSimplified(search);
 
       cjkList = await knex('cjk')
-      .where({
-        ideogram: UnihanSearch.convertIdeogramsToUtf16(simplifiedIdeogram),
-      })
-      .orderBy('main', 'DESC')
-      .orderBy('frequency', 'ASC')
-      .orderBy('hsk', 'ASC')
-      .orderBy('usage', 'DESC')
-      .select('id', 'pronunciation', 'ideogram');
+        .where({
+          ideogram: UnihanSearch.convertIdeogramsToUtf16(simplifiedIdeogram),
+        })
+        .orderBy('main', 'DESC')
+        .orderBy('frequency', 'ASC')
+        .orderBy('hsk', 'ASC')
+        .orderBy('usage', 'DESC')
+        .select('id', 'pronunciation', 'ideogram');
 
       const cjkListLike = await knex('cjk')
-      .where('ideogram', 'LIKE', `${UnihanSearch.convertIdeogramsToUtf16(simplifiedIdeogram)}%`)
-      .orderBy('main', 'DESC')
-      .orderBy('frequency', 'ASC')
-      .orderBy('hsk', 'ASC')
-      .orderBy('usage', 'DESC')
-      .orderBy('ideogram_length', 'ASC')
-      .limit(100)
-      .select(knex.raw('id, pronunciation, ideogram, LENGTH(ideogram) ideogram_length'));
+        .where(
+          'ideogram',
+          'LIKE',
+          `${UnihanSearch.convertIdeogramsToUtf16(simplifiedIdeogram)}%`,
+        )
+        .orderBy('main', 'DESC')
+        .orderBy('frequency', 'ASC')
+        .orderBy('hsk', 'ASC')
+        .orderBy('usage', 'DESC')
+        .orderBy('ideogram_length', 'ASC')
+        .limit(100)
+        .select(
+          knex.raw(
+            'id, pronunciation, ideogram, LENGTH(ideogram) ideogram_length',
+          ),
+        );
 
       cjkList = _.uniqBy([].concat(cjkList, cjkListLike), 'id');
     } else {
       cjkList = await knex('cjk')
-      .where({
-        pronunciation_unaccented: search,
-      })
-      .orderBy('main', 'DESC')
-      .orderBy('frequency', 'ASC')
-      .orderBy('hsk', 'ASC')
-      .orderBy('usage', 'DESC')
-      .select('id', 'pronunciation', 'ideogram');
+        .where({
+          pronunciation_unaccented: search,
+        })
+        .orderBy('main', 'DESC')
+        .orderBy('frequency', 'ASC')
+        .orderBy('hsk', 'ASC')
+        .orderBy('usage', 'DESC')
+        .select('id', 'pronunciation', 'ideogram');
 
       const cjkListLike = await knex('cjk')
-      .where('pronunciation_unaccented', 'LIKE', `${search}%`)
-      .orderBy('main', 'DESC')
-      .orderBy('frequency', 'ASC')
-      .orderBy('hsk', 'ASC')
-      .orderBy('usage', 'DESC')
-      .orderBy('ideogram_length', 'ASC')
-      .limit(100)
-      .select(knex.raw('id, pronunciation, ideogram, LENGTH(ideogram) ideogram_length'));
+        .where('pronunciation_unaccented', 'LIKE', `${search}%`)
+        .orderBy('main', 'DESC')
+        .orderBy('frequency', 'ASC')
+        .orderBy('hsk', 'ASC')
+        .orderBy('usage', 'DESC')
+        .orderBy('ideogram_length', 'ASC')
+        .limit(100)
+        .select(
+          knex.raw(
+            'id, pronunciation, ideogram, LENGTH(ideogram) ideogram_length',
+          ),
+        );
 
       cjkList = _.uniqBy([].concat(cjkList, cjkListLike), 'id');
     }
 
-    await Promise.map(cjkList, async (entry) => {
+    await Promise.mapSeries(cjkList, async entry => {
       entry.ideogram = UnihanSearch.convertUtf16ToIdeograms(entry.ideogram);
-      entry.ideogramTraditional = await opencc.simplifiedToTraditional(entry.ideogram);
+      entry.ideogramTraditional = await ideogramsConverter.simplifiedToTraditional(
+        entry.ideogram,
+      );
       return entry;
     });
 
@@ -94,7 +113,9 @@ module.exports = class UnihanSearch {
   static async searchToDictionary(search) {
     let where = {};
     if (search.ideograms !== undefined) {
-      const simplifiedIdeogram = await opencc.traditionalToSimplified(search.ideograms);
+      const simplifiedIdeogram = await ideogramsConverter.traditionalToSimplified(
+        search.ideograms,
+      );
       where.ideogram = UnihanSearch.convertIdeogramsToUtf16(simplifiedIdeogram);
     }
 
@@ -110,24 +131,53 @@ module.exports = class UnihanSearch {
       .where(where)
       .orderBy('frequency', 'ASC')
       .orderBy('usage', 'DESC')
-      .select('id', 'ideogram', 'pronunciation', 'definition_unihan', 'definition_pt', 'definition_cedict', 'definition_ct_pt', 'definition_ct_es', 'definition_ct_en');
-
+      .select(
+        'id',
+        'ideogram',
+        'pronunciation',
+        'definition_unihan',
+        'definition_pt',
+        'definition_cedict',
+        'definition_ct_pt',
+        'definition_ct_es',
+        'definition_ct_en',
+        'definition_glosbe_pt',
+        'definition_glosbe_es',
+        'definition_glosbe_en',
+      );
 
     if (cjkList.length === 0 && search.pinyin && search.ideograms) {
       where = {};
-      const simplifiedIdeogram = await opencc.traditionalToSimplified(search.ideograms);
+      const simplifiedIdeogram = await ideogramsConverter.traditionalToSimplified(
+        search.ideograms,
+      );
       where.ideogram = UnihanSearch.convertIdeogramsToUtf16(simplifiedIdeogram);
       cjkList = await knex('cjk')
-      .where(where)
-      .orderBy('frequency', 'ASC')
-      .orderBy('usage', 'DESC')
-      .select('id', 'ideogram', 'pronunciation', 'definition_unihan', 'definition_pt', 'definition_cedict', 'definition_ct_pt', 'definition_ct_es', 'definition_ct_en');
+        .where(where)
+        .orderBy('frequency', 'ASC')
+        .orderBy('usage', 'DESC')
+        .select(
+          'id',
+          'ideogram',
+          'pronunciation',
+          'definition_unihan',
+          'definition_pt',
+          'definition_cedict',
+          'definition_ct_pt',
+          'definition_ct_es',
+          'definition_ct_en',
+          'definition_glosbe_pt',
+          'definition_glosbe_es',
+          'definition_glosbe_en',
+        );
     }
 
     const response = {};
     response.ideograms = search.ideograms;
     if (search.ideograms) {
-      response.ideogramsTraditional = await opencc.simplifiedToTraditional(search.ideograms);
+      response.ideogramsTraditional = await ideogramsConverter.simplifiedToTraditional(
+        search.ideograms,
+      );
     }
     response.pronunciation = null;
     response.unihan = null;
@@ -136,17 +186,26 @@ module.exports = class UnihanSearch {
     response.chinese_tools_pt = null;
     response.chinese_tools_es = null;
     response.chinese_tools_en = null;
+    response.glosbe_pt = null;
+    response.glosbe_es = null;
+    response.glosbe_en = null;
 
     let chineseToolsPt = null;
     let chineseToolsEs = null;
     let chineseToolsEn = null;
 
-    await Promise.map(cjkList, async (cjk) => {
+    let glosbePt = null;
+    let glosbeEs = null;
+    let glosbeEn = null;
+
+    await Promise.map(cjkList, async cjk => {
       const ideograms = UnihanSearch.convertUtf16ToIdeograms(cjk.ideogram);
       response.pronunciation = cjk.pronunciation;
       response.ideograms = ideograms;
       if (!response.ideogramsTraditional) {
-        response.ideogramsTraditional = await opencc.simplifiedToTraditional(ideograms);
+        response.ideogramsTraditional = await ideogramsConverter.simplifiedToTraditional(
+          ideograms,
+        );
       }
 
       if (cjk.definition_unihan) {
@@ -161,7 +220,7 @@ module.exports = class UnihanSearch {
         if (!response.cedict) {
           response.cedict = JSON.parse(cjk.definition_cedict);
         } else {
-          JSON.parse(cjk.definition_cedict).forEach((item) => {
+          JSON.parse(cjk.definition_cedict).forEach(item => {
             response.cedict.push(item);
           });
         }
@@ -179,8 +238,24 @@ module.exports = class UnihanSearch {
         response.chinese_tools_en = JSON.parse(cjk.definition_ct_en);
       }
 
+      if (cjk.definition_glosbe_pt) {
+        response.glosbe_pt = JSON.parse(cjk.definition_glosbe_pt);
+      }
+
+      if (cjk.definition_glosbe_es) {
+        response.glosbe_es = JSON.parse(cjk.definition_glosbe_es);
+      }
+
+      if (cjk.definition_glosbe_en) {
+        response.glosbe_en = JSON.parse(cjk.definition_glosbe_en);
+      }
+
       try {
-        if (!cjk.definition_ct_pt && !cjk.definition_ct_es && !cjk.definition_ct_en) {
+        if (
+          !cjk.definition_ct_pt &&
+          !cjk.definition_ct_es &&
+          !cjk.definition_ct_en
+        ) {
           [chineseToolsPt, chineseToolsEs, chineseToolsEn] = await Promise.all([
             ChineseToolsDownloader.download(ideograms, 'pt'),
             ChineseToolsDownloader.download(ideograms, 'es'),
@@ -199,9 +274,8 @@ module.exports = class UnihanSearch {
             response.chinese_tools_en = chineseToolsEn.split('\n');
           }
 
-          await knex('cjk')
-          .where('id', '=', cjk.id)
-          .update({
+          await CjkRepository.save({
+            id: cjk.id,
             definition_ct_pt: JSON.stringify(response.chinese_tools_pt),
             definition_ct_es: JSON.stringify(response.chinese_tools_es),
             definition_ct_en: JSON.stringify(response.chinese_tools_en),
@@ -210,6 +284,42 @@ module.exports = class UnihanSearch {
       } catch (e) {
         // eslint-disable-next-line
         console.log('Chinese Tools Error: ' + e.message);
+      }
+
+      try {
+        if (
+          !cjk.definition_glosbe_pt &&
+          !cjk.definition_glosbe_es &&
+          !cjk.definition_glosbe_en
+        ) {
+          [glosbePt, glosbeEs, glosbeEn] = await Promise.all([
+            GlosbeDownloader.download(ideograms, 'por'),
+            GlosbeDownloader.download(ideograms, 'spa'),
+            GlosbeDownloader.download(ideograms, 'eng'),
+          ]);
+
+          if (glosbePt) {
+            response.glosbe_pt = glosbePt;
+          }
+
+          if (glosbeEs) {
+            response.glosbe_es = glosbeEs;
+          }
+
+          if (glosbeEn) {
+            response.glosbe_en = glosbeEn;
+          }
+
+          await CjkRepository.save({
+            id: cjk.id,
+            definition_glosbe_pt: JSON.stringify(response.glosbe_pt),
+            definition_glosbe_es: JSON.stringify(response.glosbe_es),
+            definition_glosbe_en: JSON.stringify(response.glosbe_en),
+          });
+        }
+      } catch (e) {
+        // eslint-disable-next-line
+        console.log('Glosbe Error: ' + e.message);
       }
     });
 
@@ -222,14 +332,15 @@ module.exports = class UnihanSearch {
     for (let i = 0; i < ideograms.length; i += 1) {
       const ideogramConverted = ideograms[i].charCodeAt(0).toString(16);
 
-      ideogramPromises.push(knex('cjk')
-        .where({
-          ideogram: ideogramConverted,
-          type: 'C',
-        })
-        .orderBy('frequency', 'ASC')
-        .orderBy('usage', 'DESC')
-        .select('id', 'pronunciation')
+      ideogramPromises.push(
+        knex('cjk')
+          .where({
+            ideogram: ideogramConverted,
+            type: 'C',
+          })
+          .orderBy('frequency', 'ASC')
+          .orderBy('usage', 'DESC')
+          .select('id', 'pronunciation'),
       );
     }
 
@@ -309,19 +420,24 @@ module.exports = class UnihanSearch {
   }
 
   static extractPinyinTone(pinyin) {
-    const tones = [{
-      tone: 1,
-      letters: ['ā', 'ē', 'ī', 'ō', 'ū', 'ǖ'],
-    }, {
-      tone: 2,
-      letters: ['á', 'é', 'í', 'ó', 'ú', 'ǘ'],
-    }, {
-      tone: 3,
-      letters: ['ǎ', 'ě', 'ǐ', 'ǒ', 'ǔ', 'ǚ'],
-    }, {
-      tone: 4,
-      letters: ['à', 'è', 'ì', 'ò', 'ù', 'ǜ'],
-    }];
+    const tones = [
+      {
+        tone: 1,
+        letters: ['ā', 'ē', 'ī', 'ō', 'ū', 'ǖ'],
+      },
+      {
+        tone: 2,
+        letters: ['á', 'é', 'í', 'ó', 'ú', 'ǘ'],
+      },
+      {
+        tone: 3,
+        letters: ['ǎ', 'ě', 'ǐ', 'ǒ', 'ǔ', 'ǚ'],
+      },
+      {
+        tone: 4,
+        letters: ['à', 'è', 'ì', 'ò', 'ù', 'ǜ'],
+      },
+    ];
 
     for (const tone of tones) {
       for (const letter of tone.letters) {
@@ -334,7 +450,13 @@ module.exports = class UnihanSearch {
     return 0;
   }
   static segment(text) {
-    return nodejieba.cut(text);
+    return nodejieba.cut(text).filter(item => {
+      item = replaceall(String.fromCharCode(160), '', item); // Convert NO-BREAK SPACE to SPACE
+      item = replaceall(String.fromCharCode(8201), '', item); // Convert THIN SPACE to SPACE
+      item = replaceall(String.fromCharCode(8203), '', item); // Zero Width Space
+
+      return item.trim();
+    });
   }
 
   static parseResultByIdeograms(ideogramsList, ideograms, nextWord, options) {
@@ -379,6 +501,8 @@ module.exports = class UnihanSearch {
       '>': ' ',
       '〈': ' ',
       '〉': ' ',
+      '●': ' ',
+      '○': ' ',
       1: ' ',
       2: ' ',
       3: ' ',
@@ -454,14 +578,29 @@ module.exports = class UnihanSearch {
       Z: ' ',
     };
 
-
     const result = {};
     result.ideogram = '';
     result.pinyin = '';
 
     let i = 0;
 
-    const vogals = ['ā', 'á', 'ǎ', 'à', 'a', 'ē', 'é', 'ě', 'è', 'e', 'ō', 'ó', 'ǒ', 'ò', 'o'];
+    const vogals = [
+      'ā',
+      'á',
+      'ǎ',
+      'à',
+      'a',
+      'ē',
+      'é',
+      'ě',
+      'è',
+      'e',
+      'ō',
+      'ó',
+      'ǒ',
+      'ò',
+      'o',
+    ];
 
     for (const ideogram of ideogramsList) {
       const character = ideograms[i];
@@ -483,7 +622,7 @@ module.exports = class UnihanSearch {
         result.pinyin += ideogram[0].pronunciation;
         if (options.pinyinAll) {
           result.pinyinAll = [];
-          ideogram.forEach((word) => {
+          ideogram.forEach(word => {
             result.pinyinAll.push(word.pronunciation);
           });
         }
@@ -499,13 +638,15 @@ module.exports = class UnihanSearch {
   }
 
   static async toPinyin(ideograms, options = {}) {
-    const result = await Promise.map(ideograms, async (ideogram, ideogramIndex) => {
-      const words = await UnihanSearch.searchByWord(ideogram);
-      const resultBlock = {};
-      if (words) {
-        resultBlock.ideogram = ideogram;
-        resultBlock.pinyin = words;
-        /* @todo Review This
+    const result = await Promise.map(
+      ideograms,
+      async (ideogram, ideogramIndex) => {
+        const words = await UnihanSearch.searchByWord(ideogram);
+        const resultBlock = {};
+        if (words) {
+          resultBlock.ideogram = ideogram;
+          resultBlock.pinyin = words;
+          /* @todo Review This
         if (options.pinyinAll) {
           result.pinyinAll = [];
           words.forEach((word) => {
@@ -514,24 +655,31 @@ module.exports = class UnihanSearch {
         }
         */
 
-        return resultBlock;
-      }
-      let nextWord = '';
-      if (ideograms[ideogramIndex + 1] !== undefined) {
-        nextWord = ideograms[ideogramIndex + 1];
-      }
+          return resultBlock;
+        }
+        let nextWord = '';
+        if (ideograms[ideogramIndex + 1] !== undefined) {
+          nextWord = ideograms[ideogramIndex + 1];
+        }
 
-      const ideogramsList = await UnihanSearch.searchByIdeograms(ideogram);
-      const resultIdeograms = UnihanSearch.parseResultByIdeograms(
-        ideogramsList, ideogram, nextWord, options
-      );
-      const ideogramConverted = UnihanSearch.convertIdeogramsToUtf16(resultIdeograms.ideogram);
-      const cacheKey = `PINYIN_${ideogramConverted}`;
+        const ideogramsList = await UnihanSearch.searchByIdeograms(ideogram);
+        const resultIdeograms = UnihanSearch.parseResultByIdeograms(
+          ideogramsList,
+          ideogram,
+          nextWord,
+          options,
+        );
+        const ideogramConverted = UnihanSearch.convertIdeogramsToUtf16(
+          resultIdeograms.ideogram,
+        );
+        const cacheKey = `PINYIN_${ideogramConverted}`;
 
-      await ArrayCache.set(cacheKey, resultIdeograms.pinyin);
+        await ArrayCache.set(cacheKey, resultIdeograms.pinyin);
 
-      return resultIdeograms;
-    }, { concurrency: 20 });
+        return resultIdeograms;
+      },
+      { concurrency: 20 },
+    );
 
     const changeToneRules = UnihanSearch.getChangeToneRules();
     result.forEach((item, itemIndex) => {
@@ -545,7 +693,12 @@ module.exports = class UnihanSearch {
         if (pinyins[ideogramIndex + 1] !== undefined) {
           nextPronunciation = pinyins[ideogramIndex + 1];
         } else if (result[itemIndex + 1] !== undefined) {
-          const nextLinePinyin = separatePinyinInSyllables(result[itemIndex + 1].pinyin).join(' ').replace("'", '').split(' ');
+          const nextLinePinyin = separatePinyinInSyllables(
+            result[itemIndex + 1].pinyin,
+          )
+            .join(' ')
+            .replace("'", '')
+            .split(' ');
           nextPronunciation = nextLinePinyin[0];
         }
 
@@ -617,7 +770,10 @@ module.exports = class UnihanSearch {
           replacement = toneMap[vowel][toneIdx] + suffix[0];
         }
 
-        text = text.replace(coda, revertToUpperCase(replacement, upperCaseIdxs));
+        text = text.replace(
+          coda,
+          revertToUpperCase(replacement, upperCaseIdxs),
+        );
       }
     }
 
@@ -627,13 +783,14 @@ module.exports = class UnihanSearch {
   static async exportPinyin() {
     const dirname = `${__dirname}/../../storage/`;
 
-    const result = await knex('cjk')
-        .where({
-          type: 'W',
-        });
+    const result = await knex('cjk').where({
+      type: 'W',
+    });
     let csvPinyin = 'ideogram;pinyin\n';
-    result.forEach((cjk) => {
-      csvPinyin += `${this.convertUtf16ToIdeograms(cjk.ideogram)};${cjk.pronunciation}\n`;
+    result.forEach(cjk => {
+      csvPinyin += `${this.convertUtf16ToIdeograms(cjk.ideogram)};${
+        cjk.pronunciation
+      }\n`;
     });
 
     const filenamePinyin = `${dirname}pinyin.csv`;

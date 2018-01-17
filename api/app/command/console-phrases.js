@@ -1,5 +1,5 @@
 const program = require('commander');
-const CjkRepository = require('../repository/CjkRepository');
+const { CjkRepository } = require('../repository/cjk.repository');
 
 program.parse(process.argv);
 

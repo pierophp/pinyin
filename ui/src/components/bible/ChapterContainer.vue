@@ -22,386 +22,428 @@
 </template>
 
 <script>
-  import chaptersData from 'shared/data/bible/chapters';
-  import axios from 'axios';
-  import _ from 'lodash';
-  import OptionsManager from 'src/domain/options-manager';
-  import LocalStorage from 'src/helpers/local-storage';
+import chaptersData from 'shared/data/bible/chapters';
+import axios from 'axios';
+import _ from 'lodash';
+import OptionsManager from 'src/domain/options-manager';
+import LocalStorage from 'src/helpers/local-storage';
+import replaceall from 'replaceall';
 
-  let options = {};
+let options = {};
 
-  export default {
-    name: 'bible-chapter',
-    props: {
-      book: '',
-      chapter: 0,
-      verse: '',
-      parent: false,
+export default {
+  name: 'bible-chapter',
+  props: {
+    book: '',
+    chapter: 0,
+    verse: '',
+    parent: false,
+  },
+  data() {
+    return {
+      lines: [],
+      linesLanguage: [],
+      fullLines: [],
+      fullLinesLanguage: [],
+      showVerses: false,
+      verses: [],
+      selecteds: [],
+      selectedsLanguage: [],
+      versesMap: {},
+      versesMapLanguage: {},
+      fileLoading: false,
+      fileLoadingLanguage: false,
+      showSnackbarNoInternet: false,
+    };
+  },
+  watch: {
+    book() {
+      this.loadBook();
     },
-    data() {
-      return {
-        lines: [],
-        linesLanguage: [],
-        fullLines: [],
-        fullLinesLanguage: [],
-        showVerses: false,
-        verses: [],
-        selecteds: [],
-        selectedsLanguage: [],
-        versesMap: {},
-        versesMapLanguage: {},
-        fileLoading: false,
-        fileLoadingLanguage: false,
-        showSnackbarNoInternet: false,
-      };
+    chapter() {
+      this.loadBook();
     },
-    watch: {
-      book() {
-        this.loadBook();
-      },
-      chapter() {
-        this.loadBook();
-      },
-      verse() {
-        this.loadBook();
-      },
+    verse() {
+      this.loadBook();
     },
-    methods: {
-      clear() {
-        this.selecteds = [];
-        this.selectedsLanguage = [];
-        this.setFileContent([]);
-        this.setFileContentLanguage([]);
-      },
-      selectVerseClick(verse) {
-        this.selectVerse(verse);
-        this.selectVerseLanguage(verse);
-      },
-      setLine(line) {
-        this.$set(this.lines, line.lineIndex, line.line);
-      },
-      setFileContent(lines) {
-        this.lines = lines;
-      },
-      setFileLoading(loading) {
-        this.fileLoading = loading;
-      },
-      setFileContentLanguage(lines) {
-        this.linesLanguage = lines;
-      },
-      setFileLoadingLanguage(loading) {
-        this.fileLoadingLanguage = loading;
-      },
-      openBottomBar(data) {
-        this.$emit('open-bottom-bar', data);
-      },
-      selectAll() {
-        this.setFileLoading(true);
-        this.selecteds = [];
-        this.setFileContent([]);
-        this.setFileContentLanguage([]);
-        this.loadFile(this.fullLines, 0);
-      },
-      selectVerse(verse) {
-        if (this.selecteds.indexOf(verse) === -1) {
-          this.selecteds.push(verse);
-        } else {
-          this.selecteds.remove(this.selecteds.indexOf(verse));
+  },
+  methods: {
+    clear() {
+      this.selecteds = [];
+      this.selectedsLanguage = [];
+      this.setFileContent([]);
+      this.setFileContentLanguage([]);
+    },
+    selectVerseClick(verse) {
+      this.selectVerse(verse);
+      this.selectVerseLanguage(verse);
+    },
+    setLine(line) {
+      this.$set(this.lines, line.lineIndex, line.line);
+    },
+    setFileContent(lines) {
+      this.lines = lines;
+    },
+    setFileLoading(loading) {
+      this.fileLoading = loading;
+    },
+    setFileContentLanguage(lines) {
+      this.linesLanguage = lines;
+    },
+    setFileLoadingLanguage(loading) {
+      this.fileLoadingLanguage = loading;
+    },
+    openBottomBar(data) {
+      this.$emit('open-bottom-bar', data);
+    },
+    selectAll() {
+      this.setFileLoading(true);
+      this.clear();
+      this.loadFile(this.fullLines, 0);
+    },
+    selectVerse(verse) {
+      if (this.selecteds.indexOf(verse) === -1) {
+        this.selecteds.push(verse);
+      } else {
+        this.selecteds.remove(this.selecteds.indexOf(verse));
+      }
+
+      this.selecteds = _.sortBy(this.selecteds);
+
+      const newLines = [];
+
+      const lines = {};
+
+      this.selecteds.forEach(v => {
+        const verseMap = this.versesMap[v];
+        if (!lines[verseMap.line]) {
+          lines[verseMap.line] = {
+            line: verseMap.line,
+            blocks: [],
+          };
         }
 
-        this.selecteds = _.sortBy(this.selecteds);
-
-        const newLines = [];
-
-        const lines = {};
-
-        this.selecteds.forEach((v) => {
-          const verseMap = this.versesMap[v];
-          if (!lines[verseMap.line]) {
-            lines[verseMap.line] = {
-              line: verseMap.line,
-              blocks: [],
-            };
-          }
-
-          for (let i = verseMap.blockStart; i <= verseMap.blockEnd; i += 1) {
-            lines[verseMap.line].blocks.push(this.fullLines[verseMap.line][i]);
-          }
-        });
-
-        // eslint-disable-next-line
-        for (const lineIndex in lines) {
-          const line = lines[lineIndex];
-          newLines.push(line.blocks);
+        for (let i = verseMap.blockStart; i <= verseMap.blockEnd; i += 1) {
+          lines[verseMap.line].blocks.push(this.fullLines[verseMap.line][i]);
         }
+      });
 
-        this.setFileContent(newLines);
-      },
-      selectVerseLanguage(verse) {
-        if (this.selectedsLanguage.indexOf(verse) === -1) {
-          this.selectedsLanguage.push(verse);
-        } else {
-          this.selectedsLanguage.remove(this.selectedsLanguage.indexOf(verse));
-        }
+      // eslint-disable-next-line
+      for (const lineIndex in lines) {
+        const line = lines[lineIndex];
+        newLines.push(line.blocks);
+      }
 
-        this.selectedsLanguage = _.sortBy(this.selectedsLanguage);
+      this.setFileContent(newLines);
+    },
+    selectVerseLanguage(verse) {
+      if (this.selectedsLanguage.indexOf(verse) === -1) {
+        this.selectedsLanguage.push(verse);
+      } else {
+        this.selectedsLanguage.remove(this.selectedsLanguage.indexOf(verse));
+      }
 
-        const newLines = [];
+      this.selectedsLanguage = _.sortBy(this.selectedsLanguage);
 
-        const lines = {};
+      const newLines = [];
 
-        this.selectedsLanguage.forEach((v) => {
-          const verseMap = this.versesMapLanguage[v];
-          if (!verseMap) {
-            return;
-          }
+      const lines = {};
 
-          if (!lines[verseMap.line]) {
-            lines[verseMap.line] = {
-              line: verseMap.line,
-              blocks: [],
-            };
-          }
-
-          for (let i = verseMap.blockStart; i <= verseMap.blockEnd; i += 1) {
-            let words = this.fullLinesLanguage[verseMap.line][i].p.split(' ');
-            if (options.translationLanguage === 'ja') {
-              words = this.fullLinesLanguage[verseMap.line][i].p.split('');
-            }
-            words.forEach((word) => {
-              const block = {};
-              block.c = ' ';
-              block.noIdeogram = true;
-              block.p = word;
-              lines[verseMap.line].blocks.push(block);
-            });
-          }
-        });
-
-        // eslint-disable-next-line
-        for (const lineIndex in lines) {
-          const line = lines[lineIndex];
-          newLines.push(line.blocks);
-        }
-
-        this.setFileContentLanguage(newLines);
-      },
-      parseVerses(lines) {
-        this.versesMap = [];
-        lines.forEach((line, lineIndex) => {
-          let verse = null;
-          line.forEach((block, blockIndex) => {
-            if (block.v) {
-              if (blockIndex > 0) {
-                this.versesMap[block.v - 1].blockEnd = blockIndex - 1;
-              }
-
-              this.versesMap[block.v] = {
-                line: lineIndex,
-                blockStart: blockIndex,
-                blockEnd: null,
-              };
-
-              verse = block.v;
-            }
-          });
-
-          this.versesMap[verse].blockEnd = line.length - 1;
-        });
-      },
-
-      parseVersesLanguage(lines) {
-        this.versesMapLanguage = [];
-        lines.forEach((line, lineIndex) => {
-          let verse = null;
-          line.forEach((block, blockIndex) => {
-            if (block.v) {
-              if (blockIndex > 0) {
-                this.versesMapLanguage[block.v - 1].blockEnd = blockIndex - 1;
-              }
-
-              this.versesMapLanguage[block.v] = {
-                line: lineIndex,
-                blockStart: blockIndex,
-                blockEnd: null,
-              };
-
-              verse = block.v;
-            }
-          });
-
-          if (!verse) {
-            return;
-          }
-          this.versesMapLanguage[verse].blockEnd = line.length - 1;
-        });
-      },
-
-      loadFile(lines, lineIndex) {
-        if (lines.length === lineIndex) {
-          this.setFileLoading(false);
+      this.selectedsLanguage.forEach(v => {
+        const verseMap = this.versesMapLanguage[v];
+        if (!verseMap) {
           return;
         }
 
+        if (!lines[verseMap.line]) {
+          lines[verseMap.line] = {
+            line: verseMap.line,
+            blocks: [],
+          };
+        }
+
+        for (let i = verseMap.blockStart; i <= verseMap.blockEnd; i += 1) {
+          this.fullLinesLanguage[verseMap.line][i].p = replaceall(
+            String.fromCharCode(160),
+            ' ',
+            this.fullLinesLanguage[verseMap.line][i].p,
+          ); // Convert NO-BREAK SPACE to SPACE
+
+          this.fullLinesLanguage[verseMap.line][i].p = replaceall(
+            String.fromCharCode(8201),
+            ' ',
+            this.fullLinesLanguage[verseMap.line][i].p,
+          ); // Convert THIN SPACE to SPACE
+
+          let words = this.fullLinesLanguage[verseMap.line][i].p.split(' ');
+          if (options.translationLanguage === 'ja') {
+            words = this.fullLinesLanguage[verseMap.line][i].p.split('');
+          }
+          words.forEach(word => {
+            const block = {};
+            block.c = ' ';
+            block.noIdeogram = true;
+            block.p = word;
+            lines[verseMap.line].blocks.push(block);
+          });
+        }
+      });
+
+      // eslint-disable-next-line
+      for (const lineIndex in lines) {
         const line = lines[lineIndex];
-        this.setLine({
-          line,
-          lineIndex,
+        newLines.push(line.blocks);
+      }
+
+      this.setFileContentLanguage(newLines);
+    },
+    parseVerses(lines) {
+      this.versesMap = [];
+      lines.forEach((line, lineIndex) => {
+        let verse = null;
+        line.forEach((block, blockIndex) => {
+          if (block.v) {
+            if (blockIndex > 0) {
+              this.versesMap[block.v - 1].blockEnd = blockIndex - 1;
+            }
+
+            this.versesMap[block.v] = {
+              line: lineIndex,
+              blockStart: blockIndex,
+              blockEnd: null,
+            };
+
+            verse = block.v;
+          }
         });
 
-        lineIndex += 1;
-        this.$nextTick(() => {
+        this.versesMap[verse].blockEnd = line.length - 1;
+      });
+    },
+
+    parseVersesLanguage(lines) {
+      this.versesMapLanguage = [];
+      lines.forEach((line, lineIndex) => {
+        let verse = null;
+        line.forEach((block, blockIndex) => {
+          if (block.v) {
+            if (blockIndex > 0) {
+              this.versesMapLanguage[block.v - 1].blockEnd = blockIndex - 1;
+            }
+
+            this.versesMapLanguage[block.v] = {
+              line: lineIndex,
+              blockStart: blockIndex,
+              blockEnd: null,
+            };
+
+            verse = block.v;
+          }
+        });
+
+        if (!verse) {
+          return;
+        }
+        this.versesMapLanguage[verse].blockEnd = line.length - 1;
+      });
+    },
+
+    loadFile(lines, lineIndex) {
+      if (lines.length === lineIndex) {
+        this.setFileLoading(false);
+        return;
+      }
+
+      const line = lines[lineIndex];
+      this.setLine({
+        line,
+        lineIndex,
+      });
+
+      lineIndex += 1;
+      this.$nextTick(() => {
+        requestAnimationFrame(() => {
           requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              this.loadFile(lines, lineIndex);
-            });
+            this.loadFile(lines, lineIndex);
           });
         });
-      },
-
-      async loadBook() {
-        this.setFileContent([]);
-        this.setFileContentLanguage([]);
-        this.verses = [];
-        const CACHE_VERSION = 1;
-        const language = `cmn-han${options.ideogramType}`;
-
-        if (LocalStorage.get(`BIBLE_SAVE_${language}`)) {
-          await window.frames['iframe-storage'].indexedDBOpen();
-          const chapterCache = await window.frames['iframe-storage'].indexedDBGet('bible', `${language}_${this.book}_${this.chapter}`);
-          if (chapterCache) {
-            this.fullLines = JSON.parse(chapterCache.text).lines;
-            this.parseVerses(this.fullLines);
-            if (this.verse) {
-              this.selecteds = [];
-              const splitVerse = this.verse.split('-');
-              const startVerse = splitVerse[0];
-              let endVerse = splitVerse[0];
-              if (splitVerse[1]) {
-                endVerse = splitVerse[1];
-              }
-
-              for (let i = parseInt(startVerse, 10); i <= parseInt(endVerse, 10); i += 1) {
-                this.selectVerse(i);
-              }
-            }
-          }
-        }
-
-        axios.get(`static/bible/${language}/${this.book}/${this.chapter}.json?v=${CACHE_VERSION}`)
-          .then(async (content) => {
-            this.fullLines = content.data.lines;
-            this.parseVerses(content.data.lines);
-            if (this.verse) {
-              this.selecteds = [];
-              const splitVerse = this.verse.split('-');
-              const startVerse = splitVerse[0];
-              let endVerse = splitVerse[0];
-              if (splitVerse[1]) {
-                endVerse = splitVerse[1];
-              }
-
-              for (let i = parseInt(startVerse, 10); i <= parseInt(endVerse, 10); i += 1) {
-                this.selectVerse(i);
-              }
-            }
-
-            if (LocalStorage.get(`BIBLE_SAVE_${language}`)) {
-              await window.frames['iframe-storage'].indexedDBPut('bible', {
-                key: `${language}_${this.book}_${this.chapter}`,
-                language,
-                book: this.book,
-                chapter: this.chapter,
-                text: JSON.stringify(content.data),
-              });
-            }
-          });
-
-        if (LocalStorage.get(`BIBLE_SAVE_${options.translationLanguage}`)) {
-          await window.frames['iframe-storage'].indexedDBOpen();
-          const chapterCache = await window.frames['iframe-storage'].indexedDBGet('bible', `${options.translationLanguage}_${this.book}_${this.chapter}`);
-          if (chapterCache) {
-            this.fullLinesLanguage = JSON.parse(chapterCache.text).lines;
-            this.parseVersesLanguage(this.fullLinesLanguage);
-            if (this.verse) {
-              this.selectedsLanguage = [];
-              const splitVerse = this.verse.split('-');
-              const startVerse = splitVerse[0];
-              let endVerse = splitVerse[0];
-              if (splitVerse[1]) {
-                endVerse = splitVerse[1];
-              }
-
-              for (let i = parseInt(startVerse, 10); i <= parseInt(endVerse, 10); i += 1) {
-                this.selectVerseLanguage(i);
-              }
-            }
-          }
-        }
-
-        axios.get(`static/bible/${options.translationLanguage}/${this.book}/${this.chapter}.json?v=${CACHE_VERSION}`)
-          .then(async (content) => {
-            this.fullLinesLanguage = content.data.lines;
-            this.parseVersesLanguage(content.data.lines);
-            if (this.verse) {
-              this.selectedsLanguage = [];
-              const splitVerse = this.verse.split('-');
-              const startVerse = splitVerse[0];
-              let endVerse = splitVerse[0];
-              if (splitVerse[1]) {
-                endVerse = splitVerse[1];
-              }
-
-              for (let i = parseInt(startVerse, 10); i <= parseInt(endVerse, 10); i += 1) {
-                this.selectVerseLanguage(i);
-              }
-            }
-
-            if (LocalStorage.get(`BIBLE_SAVE_${options.translationLanguage}`)) {
-              await window.frames['iframe-storage'].indexedDBPut('bible', {
-                key: `${options.translationLanguage}_${this.book}_${this.chapter}`,
-                language,
-                book: this.book,
-                chapter: this.chapter,
-                text: JSON.stringify(content.data),
-              });
-            }
-          });
-
-        if (this.verse) {
-          this.showVerses = false;
-        } else {
-          this.showVerses = true;
-        }
-
-        const chapter = chaptersData[this.book][this.chapter - 1];
-        let initial = 1;
-        if (chapter.i) {
-          initial = chapter.i;
-        }
-
-        this.verses = [];
-        for (let i = initial; i <= chapter.t; i += 1) {
-          this.verses.push(i);
-        }
-      },
+      });
     },
-    created() {
-      options = OptionsManager.getOptions();
-    },
-    async mounted() {
+
+    async loadBook() {
+      this.setFileContent([]);
+      this.setFileContentLanguage([]);
+      this.verses = [];
+      const CACHE_VERSION = 1;
       const language = `cmn-han${options.ideogramType}`;
 
-      if (navigator.onLine || LocalStorage.get(`BIBLE_SAVE_${language}`)) {
-        await this.loadBook();
-      } else {
-        this.showSnackbarNoInternet = true;
-        window.addEventListener('online', () => {
-          this.loadBook();
+      if (LocalStorage.get(`BIBLE_SAVE_${language}`)) {
+        await window.frames['iframe-storage'].indexedDBOpen();
+        const chapterCache = await window.frames['iframe-storage'].indexedDBGet(
+          'bible',
+          `${language}_${this.book}_${this.chapter}`,
+        );
+        if (chapterCache) {
+          this.fullLines = JSON.parse(chapterCache.text).lines;
+          this.parseVerses(this.fullLines);
+          if (this.verse) {
+            this.selecteds = [];
+            const splitVerse = this.verse.split('-');
+            const startVerse = splitVerse[0];
+            let endVerse = splitVerse[0];
+            if (splitVerse[1]) {
+              endVerse = splitVerse[1];
+            }
+
+            for (
+              let i = parseInt(startVerse, 10);
+              i <= parseInt(endVerse, 10);
+              i += 1
+            ) {
+              this.selectVerse(i);
+            }
+          }
+        }
+      }
+
+      axios
+        .get(
+          `static/bible/${language}/${this.book}/${this
+            .chapter}.json?v=${CACHE_VERSION}`,
+        )
+        .then(async content => {
+          this.fullLines = content.data.lines;
+          this.parseVerses(content.data.lines);
+          if (this.verse) {
+            this.selecteds = [];
+            const splitVerse = this.verse.split('-');
+            const startVerse = splitVerse[0];
+            let endVerse = splitVerse[0];
+            if (splitVerse[1]) {
+              endVerse = splitVerse[1];
+            }
+
+            for (
+              let i = parseInt(startVerse, 10);
+              i <= parseInt(endVerse, 10);
+              i += 1
+            ) {
+              this.selectVerse(i);
+            }
+          }
+
+          if (LocalStorage.get(`BIBLE_SAVE_${language}`)) {
+            await window.frames['iframe-storage'].indexedDBPut('bible', {
+              key: `${language}_${this.book}_${this.chapter}`,
+              language,
+              book: this.book,
+              chapter: this.chapter,
+              text: JSON.stringify(content.data),
+            });
+          }
         });
+
+      if (LocalStorage.get(`BIBLE_SAVE_${options.translationLanguage}`)) {
+        await window.frames['iframe-storage'].indexedDBOpen();
+        const chapterCache = await window.frames['iframe-storage'].indexedDBGet(
+          'bible',
+          `${options.translationLanguage}_${this.book}_${this.chapter}`,
+        );
+        if (chapterCache) {
+          this.fullLinesLanguage = JSON.parse(chapterCache.text).lines;
+          this.parseVersesLanguage(this.fullLinesLanguage);
+          if (this.verse) {
+            this.selectedsLanguage = [];
+            const splitVerse = this.verse.split('-');
+            const startVerse = splitVerse[0];
+            let endVerse = splitVerse[0];
+            if (splitVerse[1]) {
+              endVerse = splitVerse[1];
+            }
+
+            for (
+              let i = parseInt(startVerse, 10);
+              i <= parseInt(endVerse, 10);
+              i += 1
+            ) {
+              this.selectVerseLanguage(i);
+            }
+          }
+        }
+      }
+
+      axios
+        .get(
+          `static/bible/${options.translationLanguage}/${this.book}/${this
+            .chapter}.json?v=${CACHE_VERSION}`,
+        )
+        .then(async content => {
+          this.fullLinesLanguage = content.data.lines;
+          this.parseVersesLanguage(content.data.lines);
+          if (this.verse) {
+            this.selectedsLanguage = [];
+            const splitVerse = this.verse.split('-');
+            const startVerse = splitVerse[0];
+            let endVerse = splitVerse[0];
+            if (splitVerse[1]) {
+              endVerse = splitVerse[1];
+            }
+
+            for (
+              let i = parseInt(startVerse, 10);
+              i <= parseInt(endVerse, 10);
+              i += 1
+            ) {
+              this.selectVerseLanguage(i);
+            }
+          }
+
+          if (LocalStorage.get(`BIBLE_SAVE_${options.translationLanguage}`)) {
+            await window.frames['iframe-storage'].indexedDBPut('bible', {
+              key: `${options.translationLanguage}_${this.book}_${this
+                .chapter}`,
+              language,
+              book: this.book,
+              chapter: this.chapter,
+              text: JSON.stringify(content.data),
+            });
+          }
+        });
+
+      if (this.verse) {
+        this.showVerses = false;
+      } else {
+        this.showVerses = true;
+      }
+
+      const chapter = chaptersData[this.book][this.chapter - 1];
+      let initial = 1;
+      if (chapter.i) {
+        initial = chapter.i;
+      }
+
+      this.verses = [];
+      for (let i = initial; i <= chapter.t; i += 1) {
+        this.verses.push(i);
       }
     },
-  };
+  },
+  created() {
+    options = OptionsManager.getOptions();
+  },
+  async mounted() {
+    const language = `cmn-han${options.ideogramType}`;
+
+    if (navigator.onLine || LocalStorage.get(`BIBLE_SAVE_${language}`)) {
+      await this.loadBook();
+    } else {
+      this.showSnackbarNoInternet = true;
+      window.addEventListener('online', () => {
+        this.loadBook();
+      });
+    }
+  },
+};
 </script>
 
 <style>
@@ -410,7 +452,7 @@
   flex-direction: column;
   flex-wrap: wrap;
   align-content: flex-start;
-  width:100%;
+  width: 100%;
   overflow: auto;
 }
 
@@ -439,11 +481,11 @@
   user-select: none;
 }
 
-.special-action{
+.special-action {
   background: #4c4a4a;
 }
 
-.special-action i{
+.special-action i {
   color: #fff !important;
 }
 

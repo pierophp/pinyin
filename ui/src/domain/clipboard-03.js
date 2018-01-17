@@ -7,16 +7,21 @@ import isChinese from 'src/helpers/is-chinese';
 
 async function parseJW(link) {
   const options = OptionsManager.getOptions();
-  const response = await http.get(`jw/download?url=${link}&language=${options.translationLanguage}&ideogramType=${options.ideogramType}`);
+  const response = await http.get(
+    `jw/download?url=${link}&language=${
+      options.translationLanguage
+    }&ideogramType=${options.ideogramType}`,
+  );
+
   return response.data;
 }
 
 function parseContent(content) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const lines = content
       .split('\n')
-      .filter((line) => line)
-      .filter((line) => {
+      .filter(line => line)
+      .filter(line => {
         if (line.match(/(\d{2}):(\d{4}):(\d{2})/)) {
           return null;
         }
@@ -28,28 +33,17 @@ function parseContent(content) {
   });
 }
 
-export default async function (content) {
-  const siteJwOrg = 'https://www.jw.org';
-  const isJwOrg = content.trim().substr(0, siteJwOrg.length) === siteJwOrg;
-
-  let lines;
-  let audio = null;
-  if (isJwOrg) {
-    const jwContent = await parseJW(content);
-    lines = jwContent.text;
-    audio = jwContent.audio;
-  } else {
-    content = replaceall('+', '', content);
-    lines = await parseContent(content);
-  }
-
-  const rows = await Promise.map(lines, async (line) => {
+async function parseSite(lines, audio, isJwOrg, content) {
+  const rows = await Promise.map(lines, async line => {
     if (typeof line === 'string') {
       line = { text: line };
     }
 
     const row = [];
-    if (line.type !== undefined && (line.type === 'img' || line.type === 'box-img')) {
+    if (
+      line.type !== undefined &&
+      (line.type === 'img' || line.type === 'box-img')
+    ) {
       row.push({
         p: '',
         c: '',
@@ -64,6 +58,8 @@ export default async function (content) {
     const ideograms = line.text.split(' ');
 
     let isBold = 0;
+    let isItalic = 0;
+
     let bible = '';
 
     ideograms.forEach((char, i) => {
@@ -77,9 +73,20 @@ export default async function (content) {
         return;
       }
 
+      if (char === '<i>') {
+        isItalic = 1;
+        return;
+      }
+
+      if (char === '</i>') {
+        isItalic = 0;
+        return;
+      }
+
       let footnote = null;
       const footNoteVerify = '#FOOTNOTE-';
-      const isFootnote = char.substr(0, footNoteVerify.length) === footNoteVerify;
+      const isFootnote =
+        char.substr(0, footNoteVerify.length) === footNoteVerify;
       if (isFootnote) {
         const footNoteSplit = char.split('-');
         footnote = footNoteSplit[1];
@@ -95,7 +102,7 @@ export default async function (content) {
       }
 
       const item = {
-        p: line.pinyin[i],
+        p: line.pinyin ? line.pinyin[i] : '',
         c: char,
       };
 
@@ -106,6 +113,10 @@ export default async function (content) {
 
       if (isBold === 1) {
         item.isBold = isBold;
+      }
+
+      if (isItalic === 1) {
+        item.isItalic = isItalic;
       }
 
       if (footnote) {
@@ -134,6 +145,44 @@ export default async function (content) {
   if (isJwOrg) {
     rows[0][0].line.url = content;
   }
+
+  return rows;
+}
+
+export default async function(content) {
+  const siteJwOrg = 'https://www.jw.org';
+  const isJwOrg = content.trim().substr(0, siteJwOrg.length) === siteJwOrg;
+
+  let lines;
+  let audio = null;
+  if (isJwOrg) {
+    const jwContent = await parseJW(content);
+    if (jwContent.links) {
+      const files = [];
+      for (const link of jwContent.links) {
+        const filename = `${link.number}|||${link.title}|||${
+          link.title_pinyin
+        }`;
+
+        lines = link.content.text;
+        audio = link.content.audio;
+
+        const rows = await parseSite(lines, audio, isJwOrg, content);
+
+        files.push({ filename, rows });
+      }
+
+      return { files };
+    }
+
+    lines = jwContent.text;
+    audio = jwContent.audio;
+  } else {
+    content = replaceall('+', '', content);
+    lines = await parseContent(content);
+  }
+
+  const rows = await parseSite(lines, audio, isJwOrg, content);
 
   return rows;
 }

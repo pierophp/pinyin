@@ -1,7 +1,7 @@
 <template>
   <div class="hanzi-container">
     <div id="hanzi-controls">
-      <span v-for="(item, itemId) in items" @click="changeIdeogram(itemId)" :class="item.classActive"></span>
+      <span v-for="(item, itemId) in items" v-bind:key="itemId" @click="changeIdeogram(itemId)" :class="item.classActive"></span>
     </div>
 
     <div id="hanzi-writer"></div>
@@ -12,100 +12,97 @@
 </template>
 
 <script>
-  import http from 'src/helpers/http';
-  import HanziWriter from 'hanzi-writer';
+import http from 'src/helpers/http';
+import HanziWriter from 'hanzi-writer';
 
-  export default {
-    name: 'dictionary-stroke-order',
-    watch: {
-      ideograms() {
-        this.update();
-      },
+export default {
+  name: 'dictionary-stroke-order',
+  watch: {
+    ideograms() {
+      this.update();
     },
-    data() {
-      return {
-        items: [],
-        hanziWriterCache: {},
-      };
-    },
-    mounted() {
-      this.writer = new HanziWriter('hanzi-writer', '', {
-        charDataLoader: (char, onComplete) => {
-          if (!char) {
-            return;
-          }
+  },
+  data() {
+    return {
+      items: [],
+      hanziWriterCache: {},
+    };
+  },
+  mounted() {
+    this.writer = new HanziWriter('hanzi-writer', '', {
+      charDataLoader: (char, onComplete) => {
+        if (!char) {
+          return;
+        }
 
-          if (!this.hanziWriterCache[char]) {
-            http
+        if (!this.hanziWriterCache[char]) {
+          http
             .get('hanzi-writer', {
               params: {
                 ideogram: char,
               },
             })
-            .then((response) => {
+            .then(response => {
               if (response.data.response) {
                 onComplete(response.data.response);
                 this.hanziWriterCache[char] = response.data.response;
               }
             });
-          } else {
-            onComplete(this.hanziWriterCache[char]);
-          }
-        },
-        showOutline: true,
-        showCharacter: true,
-        width: 250,
-        height: 250,
-        padding: 0,
-        strokeAnimationDuration: 300, // duration of each stroke in ms
-        delayBetweenStrokes: 500, // delay between drawing subsequent strokes in ms
-        strokeColor: '#555',
-        highlightColor: '#AAF', // color used to highlight strokes as a hint during quizzing
-        outlineColor: '#DDD',
-        drawingColor: '#333', // color of the line drawn by the user during quizzing
+        } else {
+          onComplete(this.hanziWriterCache[char]);
+        }
+      },
+      showOutline: true,
+      showCharacter: true,
+      width: 250,
+      height: 250,
+      padding: 0,
+      strokeAnimationDuration: 300, // duration of each stroke in ms
+      delayBetweenStrokes: 500, // delay between drawing subsequent strokes in ms
+      strokeColor: '#555',
+      highlightColor: '#AAF', // color used to highlight strokes as a hint during quizzing
+      outlineColor: '#DDD',
+      drawingColor: '#333', // color of the line drawn by the user during quizzing
 
-        showHintAfterMisses: 3, // give a hint after this many subsequent mistakes during quizzing
-        highlightOnComplete: true, // flash the character when the quiz is successfully completed
+      showHintAfterMisses: 3, // give a hint after this many subsequent mistakes during quizzing
+      highlightOnComplete: true, // flash the character when the quiz is successfully completed
+    });
+    this.update();
+  },
+  methods: {
+    animate() {
+      this.writer.animateCharacter({
+        onComplete: () => {},
       });
-      this.update();
     },
-    methods: {
-      animate() {
-        this.writer.animateCharacter({
-          onComplete: () => {
-          },
-        });
-      },
-      changeIdeogram(itemId) {
-        this.items.forEach((item, i) => {
-          this.items[i].classActive = '';
-        });
-        this.items[itemId].classActive = 'active';
-        this.writer.setCharacter(this.items[itemId].ideogram);
-      },
-      update() {
-        this.items = [];
-        if (!this.ideograms) {
-          return;
+    changeIdeogram(itemId) {
+      this.items.forEach((item, i) => {
+        this.items[i].classActive = '';
+      });
+      this.items[itemId].classActive = 'active';
+      this.writer.setCharacter(this.items[itemId].ideogram);
+    },
+    update() {
+      this.items = [];
+      if (!this.ideograms) {
+        return;
+      }
+      for (let i = 0; i < this.ideograms.length; i += 1) {
+        if (i === 0) {
+          this.writer.setCharacter(this.ideograms[i]);
         }
-        for (let i = 0; i < this.ideograms.length; i += 1) {
-          if (i === 0) {
-            this.writer.setCharacter(this.ideograms[i]);
-          }
-          const classActive = (i === 0) ? 'active' : '';
-          this.items.push({
-            classActive,
-            ideogram: this.ideograms[i],
-          });
-        }
-      },
+        const classActive = i === 0 ? 'active' : '';
+        this.items.push({
+          classActive,
+          ideogram: this.ideograms[i],
+        });
+      }
     },
-    props: {
-      ideograms: {
-
-      },
-    },
-  };
+  },
+  props: {
+    ideograms: {},
+  },
+};
 </script>
 
 <style>
@@ -127,7 +124,7 @@
   height: 100px;
 }
 
-#hanzi-controls span{
+#hanzi-controls span {
   width: 12px;
   height: 12px;
   border-radius: 100%;
@@ -135,13 +132,13 @@
   display: block;
   margin-bottom: 22px;
   background: #000;
-  opacity: .2;
+  opacity: 0.2;
   cursor: pointer;
   z-index: 1000;
-  transition:all 0.3s ease;
+  transition: all 0.3s ease;
 }
 
-#hanzi-controls span.active{
+#hanzi-controls span.active {
   background: #007aff;
   opacity: 1;
 }
