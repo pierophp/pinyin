@@ -136,7 +136,7 @@ export default {
       .catch(error => commit(types.FILE_MUTATION_FAILURE, error));
   },
 
-  [types.FILE_ACTION_SAVE]({ commit, state }, data) {
+  async [types.FILE_ACTION_SAVE]({ commit, state }, data) {
     if (state.fileChangeTimestamp === null) {
       return;
     }
@@ -148,20 +148,23 @@ export default {
 
     const fileKey = `file_${data.filename}`;
 
-    (function actionSave() {
+    async function actionSave() {
       const fileChangeTimestamp = state.fileChangeTimestamp;
       LocalStorage.save(fileKey, data.content);
-      http
-        .post(`files/save?filename=${data.filename}.json&type=file`, {
+      try {
+        await http.post(`files/save?filename=${data.filename}.json&type=file`, {
           content: JSON.stringify({ lines: data.content, hasSeparator: 0 }),
-        })
-        .then(() => {
-          if (state.fileChangeTimestamp === fileChangeTimestamp) {
-            state.fileChangeTimestamp = null;
-          }
-        })
-        .catch(error => commit(types.FILE_MUTATION_FAILURE, error));
-    })();
+        });
+
+        if (state.fileChangeTimestamp === fileChangeTimestamp) {
+          state.fileChangeTimestamp = null;
+        }
+      } catch (e) {
+        commit(types.FILE_MUTATION_FAILURE, e);
+      }
+    }
+
+    await actionSave();
   },
 
   [types.FILE_ACTION_CONVERT_TO_PINYIN]({ commit, state }, data) {
