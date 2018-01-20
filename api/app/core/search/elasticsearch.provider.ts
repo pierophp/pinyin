@@ -194,6 +194,7 @@ export class ElasticsearchProvider {
 
   public async searchToDictionaryList(term: string, debug: boolean) {
     let whereList: any[] = [];
+    const originalTerm = term;
 
     if (isChinese(term)) {
       whereList = [
@@ -208,6 +209,8 @@ export class ElasticsearchProvider {
           score: '78',
         },
       ];
+
+      term = await ideogramsConverter.traditionalToSimplified(term);
     } else {
       whereList = [
         {
@@ -367,7 +370,7 @@ export class ElasticsearchProvider {
 
     return {
       entries,
-      search: term,
+      search: originalTerm,
     };
   }
 
