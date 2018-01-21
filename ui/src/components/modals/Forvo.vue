@@ -11,25 +11,25 @@
 </template>
 
 <script>
-  export default {
-    name: 'modal-forvo',
-    props: {
-      character: '',
+export default {
+  name: 'modal-forvo',
+  props: {
+    character: '',
+  },
+  data() {
+    return {
+      modalOpen: false,
+    };
+  },
+  methods: {
+    open() {
+      this.modalOpen = true;
     },
-    data() {
-      return {
-        modalOpen: false,
-      };
+    close() {
+      this.modalOpen = false;
     },
-    methods: {
-      open() {
-        this.modalOpen = true;
-      },
-      close() {
-        this.modalOpen = false;
-      },
-    },
-  };
+  },
+};
 </script>
 
 <style>
@@ -39,4 +39,3 @@
   height: 100vh !important;
 }
 </style>
-

@@ -21,29 +21,29 @@
 </template>
 
 <script>
-  import FileRowPrint from 'src/components/files/FileRowPrint';
+import FileRowPrint from 'src/components/files/FileRowPrint';
 
-  export default {
-    name: 'modal-footnote',
-    props: {
-      line: '',
-      lineIndex: '',
+export default {
+  name: 'modal-footnote',
+  props: {
+    line: '',
+    lineIndex: '',
+  },
+  components: {
+    FileRowPrint,
+  },
+  data() {
+    return {
+      modalOpen: false,
+    };
+  },
+  methods: {
+    openDialog() {
+      this.modalOpen = true;
     },
-    components: {
-      FileRowPrint,
+    closeDialog() {
+      this.modalOpen = false;
     },
-    data() {
-      return {
-        modalOpen: false,
-      };
-    },
-    methods: {
-      openDialog() {
-        this.modalOpen = true;
-      },
-      closeDialog() {
-        this.modalOpen = false;
-      },
-    },
-  };
+  },
+};
 </script>

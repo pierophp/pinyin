@@ -27,53 +27,49 @@
 </template>
 
 <script>
-  import {
-      mapActions,
-    } from 'vuex';
+import { mapActions } from 'vuex';
 
-  import {
-    FILE_ACTION_PARSE_PASTE,
-  } from 'src/data/file/types';
+import { FILE_ACTION_PARSE_PASTE } from 'src/data/file/types';
 
-  export default {
-    name: 'modal-file-paste',
-    data() {
-      return {
-        action: '3',
-        textarea: '',
-        modalOpen: false,
-      };
+export default {
+  name: 'modal-file-paste',
+  data() {
+    return {
+      action: '3',
+      textarea: '',
+      modalOpen: false,
+    };
+  },
+  methods: {
+    confirm() {
+      this.closeDialog('filePasteModal');
+      this.parsePaste({
+        action: this.action,
+        content: this.textarea,
+      });
+      this.textarea = '';
     },
-    methods: {
-      confirm() {
-        this.closeDialog('filePasteModal');
-        this.parsePaste({
-          action: this.action,
-          content: this.textarea,
-        });
-        this.textarea = '';
-      },
-      openDialog() {
-        this.modalOpen = true;
-      },
-      closeDialog() {
-        this.modalOpen = false;
-      },
-      onOpen() {
-        setTimeout(() => {
-          this.$refs.textarea.$el.focus();
-        }, 500);
-      },
-      ...mapActions({
-        parsePaste: FILE_ACTION_PARSE_PASTE,
-      }),
+    openDialog() {
+      this.modalOpen = true;
     },
-  };
+    closeDialog() {
+      this.modalOpen = false;
+    },
+    onOpen() {
+      setTimeout(() => {
+        this.$refs.textarea.$el.focus();
+      }, 500);
+    },
+    ...mapActions({
+      parsePaste: FILE_ACTION_PARSE_PASTE,
+    }),
+  },
+};
 </script>
 
 <style>
-.md-dialog-content textarea{
-  width:500px;
+.md-dialog-content textarea {
+  width: 500px;
   min-height: 350px;
   max-height: auto;
 }

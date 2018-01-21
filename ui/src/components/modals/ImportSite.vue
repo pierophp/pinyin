@@ -17,49 +17,45 @@
 </template>
 
 <script>
-  import {
-      mapActions,
-    } from 'vuex';
+import { mapActions } from 'vuex';
 
-  import {
-    FILE_ACTION_IMPORT_FILE,
-  } from 'src/data/file/types';
+import { FILE_ACTION_IMPORT_FILE } from 'src/data/file/types';
 
-  export default {
-    name: 'modal-import-site',
-    data() {
-      return {
-        siteUrl: '',
-        modalOpen: false,
-      };
+export default {
+  name: 'modal-import-site',
+  data() {
+    return {
+      siteUrl: '',
+      modalOpen: false,
+    };
+  },
+  props: {
+    filename: '',
+  },
+  methods: {
+    confirm() {
+      this.closeDialog();
+      this.importFile({
+        content: this.siteUrl,
+        filename: this.filename,
+      });
+      this.siteUrl = '';
     },
-    props: {
-      filename: '',
+    onOpen() {
+      setTimeout(() => {
+        this.$refs.inputUrl.$el.focus();
+      }, 500);
     },
-    methods: {
-      confirm() {
-        this.closeDialog();
-        this.importFile({
-          content: this.siteUrl,
-          filename: this.filename,
-        });
-        this.siteUrl = '';
-      },
-      onOpen() {
-        setTimeout(() => {
-          this.$refs.inputUrl.$el.focus();
-        }, 500);
-      },
-      openDialog() {
-        this.modalOpen = true;
-        this.onOpen();
-      },
-      closeDialog() {
-        this.modalOpen = false;
-      },
-      ...mapActions({
-        importFile: FILE_ACTION_IMPORT_FILE,
-      }),
+    openDialog() {
+      this.modalOpen = true;
+      this.onOpen();
     },
-  };
+    closeDialog() {
+      this.modalOpen = false;
+    },
+    ...mapActions({
+      importFile: FILE_ACTION_IMPORT_FILE,
+    }),
+  },
+};
 </script>

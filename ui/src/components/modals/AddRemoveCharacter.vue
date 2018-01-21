@@ -17,60 +17,55 @@
 </template>
 
 <script>
-  import {
-      mapGetters,
-      mapActions,
-    } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
-  import {
-    FILE_ACTION_ADD_MY_CJK,
-    FILE_ACTION_REMOVE_MY_CJK,
-    FILE_GETTER_MY_CJK_TEMP,
-  } from 'src/data/file/types';
+import {
+  FILE_ACTION_ADD_MY_CJK,
+  FILE_ACTION_REMOVE_MY_CJK,
+  FILE_GETTER_MY_CJK_TEMP,
+} from 'src/data/file/types';
 
-  export default {
-    name: 'modal-add-character',
-    computed: {
-      ...mapGetters({
-        myCjkTemp: FILE_GETTER_MY_CJK_TEMP,
-      }),
+export default {
+  name: 'modal-add-character',
+  computed: {
+    ...mapGetters({
+      myCjkTemp: FILE_GETTER_MY_CJK_TEMP,
+    }),
+  },
+  data() {
+    return {
+      add: true,
+      modalOpen: false,
+    };
+  },
+  methods: {
+    confirm() {
+      this.closeDialog('addCharacterModal');
+      if (this.add) {
+        this.addMyCjk({
+          myCjk: this.myCjkTemp,
+        }).then(() => {
+          this.$emit('add-character', this.myCjkTemp);
+        });
+      } else {
+        this.removeMyCjk({
+          myCjk: this.myCjkTemp,
+        }).then(() => {
+          this.$emit('remove-character', this.myCjkTemp);
+        });
+      }
     },
-    data() {
-      return {
-        add: true,
-        modalOpen: false,
-      };
+    openDialog(add) {
+      this.add = add;
+      this.modalOpen = true;
     },
-    methods: {
-      confirm() {
-        this.closeDialog('addCharacterModal');
-        if (this.add) {
-          this.addMyCjk({
-            myCjk: this.myCjkTemp,
-          })
-          .then(() => {
-            this.$emit('add-character', this.myCjkTemp);
-          });
-        } else {
-          this.removeMyCjk({
-            myCjk: this.myCjkTemp,
-          })
-          .then(() => {
-            this.$emit('remove-character', this.myCjkTemp);
-          });
-        }
-      },
-      openDialog(add) {
-        this.add = add;
-        this.modalOpen = true;
-      },
-      closeDialog() {
-        this.modalOpen = false;
-      },
-      ...mapActions({
-        addMyCjk: FILE_ACTION_ADD_MY_CJK,
-        removeMyCjk: FILE_ACTION_REMOVE_MY_CJK,
-      }),
+    closeDialog() {
+      this.modalOpen = false;
     },
-  };
+    ...mapActions({
+      addMyCjk: FILE_ACTION_ADD_MY_CJK,
+      removeMyCjk: FILE_ACTION_REMOVE_MY_CJK,
+    }),
+  },
+};
 </script>
