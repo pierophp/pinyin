@@ -40,7 +40,9 @@ module.exports = class UnihanSearch {
     let cjkList = [];
 
     if (isChinese(search)) {
-      const simplifiedIdeogram = await ideogramsConverter.traditionalToSimplified(search);
+      const simplifiedIdeogram = await ideogramsConverter.traditionalToSimplified(
+        search,
+      );
 
       cjkList = await knex('cjk')
         .where({
@@ -144,6 +146,7 @@ module.exports = class UnihanSearch {
         'definition_glosbe_pt',
         'definition_glosbe_es',
         'definition_glosbe_en',
+        'hsk',
       );
 
     if (cjkList.length === 0 && search.pinyin && search.ideograms) {
@@ -169,6 +172,7 @@ module.exports = class UnihanSearch {
           'definition_glosbe_pt',
           'definition_glosbe_es',
           'definition_glosbe_en',
+          'hsk',
         );
     }
 
@@ -202,6 +206,8 @@ module.exports = class UnihanSearch {
       const ideograms = UnihanSearch.convertUtf16ToIdeograms(cjk.ideogram);
       response.pronunciation = cjk.pronunciation;
       response.ideograms = ideograms;
+      response.hsk = cjk.hsk;
+
       if (!response.ideogramsTraditional) {
         response.ideogramsTraditional = await ideogramsConverter.simplifiedToTraditional(
           ideograms,
@@ -274,12 +280,12 @@ module.exports = class UnihanSearch {
             response.chinese_tools_en = chineseToolsEn.split('\n');
           }
 
-          await CjkRepository.save({
+          CjkRepository.save({
             id: cjk.id,
             definition_ct_pt: JSON.stringify(response.chinese_tools_pt),
             definition_ct_es: JSON.stringify(response.chinese_tools_es),
             definition_ct_en: JSON.stringify(response.chinese_tools_en),
-          });
+          }).then();
         }
       } catch (e) {
         // eslint-disable-next-line
@@ -310,12 +316,12 @@ module.exports = class UnihanSearch {
             response.glosbe_en = glosbeEn;
           }
 
-          await CjkRepository.save({
+          CjkRepository.save({
             id: cjk.id,
             definition_glosbe_pt: JSON.stringify(response.glosbe_pt),
             definition_glosbe_es: JSON.stringify(response.glosbe_es),
             definition_glosbe_en: JSON.stringify(response.glosbe_en),
-          });
+          }).then();
         }
       } catch (e) {
         // eslint-disable-next-line

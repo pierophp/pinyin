@@ -24,6 +24,6 @@ export default {
   booksExhibitionType,
   booksShowPinyin,
   versesShowAsModal,
-  versesModalVisible: versesShowAsModal && !openChapterOnLoad,
+  versesModalVisible: false,
   openChapterOnLoad,
 };

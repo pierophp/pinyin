@@ -129,7 +129,7 @@ export default {
     // eslint-disable-next-line
     document.addEventListener(
       'selectionchange',
-      function updateSelection(e) {
+      e => {
         e.preventDefault();
         selectionIndex += 1;
         const localSelectionIndex = selectionIndex;

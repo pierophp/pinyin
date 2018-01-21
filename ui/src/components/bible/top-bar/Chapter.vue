@@ -77,10 +77,13 @@ export default {
   },
   created() {
     this.options = OptionsManager.getOptions();
+    if (this.versesShowAsModal && !this.openChapterOnLoad) {
+      this.setVersesModalVisible(true);
+    }
   },
   mounted() {
-    this.versesShowAsModalInput = this.versesShowAsModal ? true : false;
-    this.openChapterOnLoadInput = this.openChapterOnLoad ? true : false;
+    this.versesShowAsModalInput = !!this.versesShowAsModal;
+    this.openChapterOnLoadInput = !!this.openChapterOnLoad;
   },
   methods: {
     ...mapMutations({
