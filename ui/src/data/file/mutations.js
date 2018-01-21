@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import pinyin from 'src/helpers/pinyin';
-import LocalStorage from 'src/helpers/local-storage';
 import separatePinyinInSyllables from 'src/helpers/separate-pinyin-in-syllables';
 import * as types from './types';
 
@@ -299,16 +298,6 @@ export default {
 
   [types.FILE_MUTATION_SET_FULL_FILE](state, fullFile) {
     state.fullFile = fullFile;
-  },
-
-  [types.FILE_MUTATION_SET_BOOKS_EXHIBITION_TYPE](state, booksExhibitionType) {
-    LocalStorage.save('books-exhibition-type', booksExhibitionType);
-    state.booksExhibitionType = booksExhibitionType;
-  },
-
-  [types.FILE_MUTATION_SET_BOOKS_SHOW_PINYIN](state, booksShowPinyin) {
-    LocalStorage.save('books-show-pinyin', booksShowPinyin);
-    state.booksShowPinyin = booksShowPinyin;
   },
 
   [types.FILE_MUTATION_SET_FOOTNOTES](state, lines) {

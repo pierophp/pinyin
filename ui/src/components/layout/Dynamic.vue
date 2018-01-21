@@ -1,5 +1,5 @@
 <template>
-  <div :class="topBarClass">
+  <div :class="[topBarClass, 'top-bar-container']">
     <dictionary-top-bar v-if="topBar == 'dictionary'"/>
     <file-details-top-bar v-if="topBar == 'file-details'"/>
     <file-print-top-bar v-if="topBar == 'file-print'"/>
@@ -9,44 +9,51 @@
     <bible-save-top-bar v-if="topBar == 'bible-save'"/>
   </div>
 </template>
+
 <script>
-  import DictionaryTopBar from 'src/components/dictionary/top-bar/Dictionary';
-  import FileDetailsTopBar from 'src/components/files/top-bar/FileDetails';
-  import FilePrintTopBar from 'src/components/files/top-bar/FilePrint';
-  import BibleBooksTopBar from 'src/components/bible/top-bar/Books';
-  import BibleChaptersTopBar from 'src/components/bible/top-bar/Chapters';
-  import BibleChapterTopBar from 'src/components/bible/top-bar/Chapter';
-  import BibleSaveTopBar from 'src/components/bible/top-bar/Save';
+import DictionaryTopBar from 'src/components/dictionary/top-bar/Dictionary';
+import FileDetailsTopBar from 'src/components/files/top-bar/FileDetails';
+import FilePrintTopBar from 'src/components/files/top-bar/FilePrint';
+import BibleBooksTopBar from 'src/components/bible/top-bar/Books';
+import BibleChaptersTopBar from 'src/components/bible/top-bar/Chapters';
+import BibleChapterTopBar from 'src/components/bible/top-bar/Chapter';
+import BibleSaveTopBar from 'src/components/bible/top-bar/Save';
 
-  export default {
-    components: {
-      DictionaryTopBar,
-      FileDetailsTopBar,
-      FilePrintTopBar,
-      BibleBooksTopBar,
-      BibleChaptersTopBar,
-      BibleChapterTopBar,
-      BibleSaveTopBar,
-    },
-    watch: {
-      $route() {
-        this.topBar = this.$route.meta.topBar;
-        this.topBarClass = 'md-toolbar-section-end';
-        if (this.$route.meta.topBarLeft) {
-          this.topBarClass = '';
-        }
-      },
-    },
-    data() {
-      let topBarClass = 'md-toolbar-section-end';
+export default {
+  components: {
+    DictionaryTopBar,
+    FileDetailsTopBar,
+    FilePrintTopBar,
+    BibleBooksTopBar,
+    BibleChaptersTopBar,
+    BibleChapterTopBar,
+    BibleSaveTopBar,
+  },
+  watch: {
+    $route() {
+      this.topBar = this.$route.meta.topBar;
+      this.topBarClass = 'md-toolbar-section-end';
       if (this.$route.meta.topBarLeft) {
-        topBarClass = '';
+        this.topBarClass = '';
       }
-
-      return {
-        topBarClass,
-        topBar: this.$route.meta.topBar,
-      };
     },
-  };
+  },
+  data() {
+    let topBarClass = 'md-toolbar-section-end';
+    if (this.$route.meta.topBarLeft) {
+      topBarClass = '';
+    }
+
+    return {
+      topBarClass,
+      topBar: this.$route.meta.topBar,
+    };
+  },
+};
 </script>
+
+<style>
+.top-bar-container {
+  width: calc(100% - 46px);
+}
+</style>

@@ -128,4 +128,6 @@ export default {
   folder: 'Folder',
   new: 'New',
   name: 'Name',
+  open_verses_as_popup: 'Open verses as popup',
+  open_chapter_on_load: 'Open chapter on load',
 };
