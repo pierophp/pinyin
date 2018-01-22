@@ -9,7 +9,7 @@
           {{filename}}
         </h2>
         <template v-for="(line, lineIndex) in lines">
-          <div v-if="lineIndex === 0 && line && line[0].line !== undefined && line[0].line.audio !== undefined"  :key="lineIndex">
+          <div v-if="lineIndex === 0 && line && line[0].line !== undefined && line[0].line.audio !== undefined"  :key="'audio-' + lineIndex">
             <audio :src="line[0].line.audio" controls/>
           </div>
           <file-row-print
@@ -19,7 +19,7 @@
             @open-image="openImage"
             @open-footnote="openFootnote"
             ref="fileRowPrint"
-            :key="lineIndex"/>
+            :key="'file-row-' + lineIndex"/>
         </template>
         <div class="loading-container">
           <md-progress-spinner md-mode="indeterminate" v-if="fileLoading"></md-progress-spinner>
