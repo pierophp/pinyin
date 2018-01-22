@@ -126,4 +126,6 @@ export default {
   folder: 'Pasta',
   new: 'Novo',
   name: 'Nome',
+  open_verses_as_popup: 'Abrir versículos como popup',
+  open_chapter_on_load: 'Abrir capítulo ao carregar',
 };

@@ -29,63 +29,59 @@
 </template>
 
 <script>
-  import booksData from 'src/data/bible/books';
-  import booksName from 'src/data/bible/names';
-  import OptionsManager from 'src/domain/options-manager';
+import booksData from 'src/data/bible/books';
+import booksName from 'src/data/bible/names';
+import OptionsManager from 'src/domain/options-manager';
 
-  import {
-    mapGetters,
-  } from 'vuex';
+import { mapGetters } from 'vuex';
 
-  import {
-    FILE_GETTER_BOOKS_SHOW_PINIYN,
-    FILE_GETTER_BOOKS_EXHIBITION_TYPE,
-  } from 'src/data/file/types';
+import {
+  BIBLE_GETTER_BOOKS_SHOW_PINIYN,
+  BIBLE_GETTER_BOOKS_EXHIBITION_TYPE,
+} from 'src/data/bible/types';
 
-  export default {
-    name: 'bible-books',
-    data() {
-      return {
-        options: {},
-        books: booksData,
-      };
+export default {
+  name: 'bible-books',
+  data() {
+    return {
+      options: {},
+      books: booksData,
+    };
+  },
+  methods: {
+    booksName,
+    goTo(link) {
+      this.$router.push(`/bible/${link}`);
     },
-    methods: {
-      booksName,
-      goTo(link) {
-        this.$router.push(`/bible/${link}`);
-      },
+  },
+  computed: {
+    ...mapGetters({
+      booksExhibitionType: BIBLE_GETTER_BOOKS_EXHIBITION_TYPE,
+      showPinyin: BIBLE_GETTER_BOOKS_SHOW_PINIYN,
+    }),
+    exhibitionType() {
+      return `cmn-han${this.options.ideogramType}`;
     },
-    computed: {
-      ...mapGetters({
-        booksExhibitionType: FILE_GETTER_BOOKS_EXHIBITION_TYPE,
-        showPinyin: FILE_GETTER_BOOKS_SHOW_PINIYN,
-      }),
-      exhibitionType() {
-        return `cmn-han${this.options.ideogramType}`;
-      },
-      exhibitionClassPinyin() {
-        if (this.showPinyin) {
-          return 'pinyin';
-        }
+    exhibitionClassPinyin() {
+      if (this.showPinyin) {
+        return 'pinyin';
+      }
 
-        return '';
-      },
-      exhibitionClass() {
-        if (this.booksExhibitionType === '2') {
-          return 'books-container-columns';
-        }
+      return '';
+    },
+    exhibitionClass() {
+      if (this.booksExhibitionType === '2') {
+        return 'books-container-columns';
+      }
 
-        return '';
-      },
+      return '';
     },
-    created() {
-      this.options = OptionsManager.getOptions();
-    },
-    mounted() {
-
-    },
-  };
+  },
+  created() {
+    this.options = OptionsManager.getOptions();
+  },
+  mounted() {},
+};
 </script>
 
 <style>
@@ -107,7 +103,7 @@
   flex-direction: row;
   flex-wrap: wrap;
   align-content: flex-start;
-  width:100%;
+  width: 100%;
   margin-bottom: 25px;
 }
 

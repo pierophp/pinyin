@@ -1,6 +1,6 @@
 <template>
   <span class="bible-chapter-container">
-    <div class="verses-container" v-show="showVerses">
+    <div class="verses-container" v-show="showVerses && !versesShowAsModal">
       <div class="bible-verse special-action" @click="selectAll()">
           <md-icon>done_all</md-icon>
       </div>
@@ -15,6 +15,29 @@
     </div>
 
     <file-container :lines="lines.concat(linesLanguage)" :fullLines="fullLines.concat(fullLinesLanguage)" filename="" :fileLoading="fileLoading" @open-bottom-bar="openBottomBar" :parent="parent" :showHighlight="false"/>
+
+    <md-dialog ref="modal" class="dialog-bible-verses" :md-active.sync="versesModalOpenTemp" :md-fullscreen="false" :md-backdrop="true" v-if="versesShowAsModal && parent">
+      <md-dialog-content>
+        <div class="verses-container" v-show="showVerses">
+          <div class="bible-verse special-action" @click="selectAll()">
+              <md-icon>done_all</md-icon>
+          </div>
+
+          <div class="bible-verse special-action" @click="clear()">
+              <md-icon>delete_sweep</md-icon>
+          </div>
+
+          <div v-for="(verse, verseId) in verses" v-bind:key="verseId" :class="['bible-verse', (selecteds.indexOf(verse) != -1) ? 'selected' : '']" @click="selectVerseClick(verse)">
+              {{ verse }}
+          </div>
+        </div>
+      </md-dialog-content>
+
+      <md-dialog-actions>
+        <md-button class="md-primary" @click.native="closeVersesDialog()">{{ $t('close') }}</md-button>
+      </md-dialog-actions>
+    </md-dialog>
+
     <md-snackbar md-position="center" :md-duration="3000" :md-active.sync="showSnackbarNoInternet">
       <span>{{ $t('no_internet') }}</span>
     </md-snackbar>
@@ -28,6 +51,15 @@ import _ from 'lodash';
 import OptionsManager from 'src/domain/options-manager';
 import LocalStorage from 'src/helpers/local-storage';
 import replaceall from 'replaceall';
+
+import { mapGetters, mapMutations } from 'vuex';
+
+import {
+  BIBLE_GETTER_VERSES_SHOW_AS_MODAL,
+  BIBLE_GETTER_VERSES_MODAL_VISIBLE,
+  BIBLE_GETTER_OPEN_CHAPTER_ON_LOAD,
+  BIBLE_MUTATION_SET_VERSES_MODAL_VISIBLE,
+} from 'src/data/bible/types';
 
 let options = {};
 
@@ -54,7 +86,15 @@ export default {
       fileLoading: false,
       fileLoadingLanguage: false,
       showSnackbarNoInternet: false,
+      versesModalOpenTemp: false,
     };
+  },
+  computed: {
+    ...mapGetters({
+      versesShowAsModal: BIBLE_GETTER_VERSES_SHOW_AS_MODAL,
+      versesModalOpen: BIBLE_GETTER_VERSES_MODAL_VISIBLE,
+      openChapterOnLoad: BIBLE_GETTER_OPEN_CHAPTER_ON_LOAD,
+    }),
   },
   watch: {
     book() {
@@ -66,8 +106,17 @@ export default {
     verse() {
       this.loadBook();
     },
+    versesModalOpenTemp() {
+      this.setVersesModalVisible(this.versesModalOpenTemp);
+    },
+    versesModalOpen() {
+      this.versesModalOpenTemp = this.versesModalOpen;
+    },
   },
   methods: {
+    ...mapMutations({
+      setVersesModalVisible: BIBLE_MUTATION_SET_VERSES_MODAL_VISIBLE,
+    }),
     clear() {
       this.selecteds = [];
       this.selectedsLanguage = [];
@@ -302,14 +351,17 @@ export default {
             ) {
               this.selectVerse(i);
             }
+          } else if (this.openChapterOnLoad) {
+            this.selectAll();
           }
         }
       }
 
       axios
         .get(
-          `static/bible/${language}/${this.book}/${this
-            .chapter}.json?v=${CACHE_VERSION}`,
+          `static/bible/${language}/${this.book}/${
+            this.chapter
+          }.json?v=${CACHE_VERSION}`,
         )
         .then(async content => {
           this.fullLines = content.data.lines;
@@ -330,6 +382,8 @@ export default {
             ) {
               this.selectVerse(i);
             }
+          } else if (this.openChapterOnLoad) {
+            this.selectAll();
           }
 
           if (LocalStorage.get(`BIBLE_SAVE_${language}`)) {
@@ -374,8 +428,9 @@ export default {
 
       axios
         .get(
-          `static/bible/${options.translationLanguage}/${this.book}/${this
-            .chapter}.json?v=${CACHE_VERSION}`,
+          `static/bible/${options.translationLanguage}/${this.book}/${
+            this.chapter
+          }.json?v=${CACHE_VERSION}`,
         )
         .then(async content => {
           this.fullLinesLanguage = content.data.lines;
@@ -400,8 +455,9 @@ export default {
 
           if (LocalStorage.get(`BIBLE_SAVE_${options.translationLanguage}`)) {
             await window.frames['iframe-storage'].indexedDBPut('bible', {
-              key: `${options.translationLanguage}_${this.book}_${this
-                .chapter}`,
+              key: `${options.translationLanguage}_${this.book}_${
+                this.chapter
+              }`,
               language,
               book: this.book,
               chapter: this.chapter,
@@ -427,12 +483,21 @@ export default {
         this.verses.push(i);
       }
     },
+
+    openVersesDialog() {
+      this.setVersesModalVisible(true);
+    },
+    closeVersesDialog() {
+      this.setVersesModalVisible(false);
+    },
   },
   created() {
     options = OptionsManager.getOptions();
   },
   async mounted() {
     const language = `cmn-han${options.ideogramType}`;
+
+    this.versesModalOpenTemp = this.versesModalOpen;
 
     if (navigator.onLine || LocalStorage.get(`BIBLE_SAVE_${language}`)) {
       await this.loadBook();
@@ -491,5 +556,36 @@ export default {
 
 .selected {
   background: #275197;
+}
+
+.dialog-bible-verses {
+  max-width: 90% !important;
+  min-width: 90% !important;
+  max-height: 90% !important;
+}
+
+.dialog-bible-verses .md-dialog-title {
+  margin: 0;
+  padding: 15px 15px 0;
+}
+
+.dialog-bible-verses .md-dialog-content {
+  padding: 2px;
+}
+
+.dialog-bible-verses .md-dialog-actions {
+  min-height: 42px;
+  justify-content: space-between;
+}
+
+.dialog-bible-verses .bible-verse {
+  line-height: 45px;
+  height: 45px;
+  width: 45px;
+  font-size: 16px;
+}
+
+.dialog-bible-verses .verses-container {
+  max-height: inherit;
 }
 </style>

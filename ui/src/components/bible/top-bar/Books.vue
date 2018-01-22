@@ -21,38 +21,35 @@
   </div>
 </template>
 <script>
-  import {
-    mapMutations,
-    mapGetters,
-  } from 'vuex';
+import { mapMutations, mapGetters } from 'vuex';
 
-  import {
-    FILE_GETTER_BOOKS_EXHIBITION_TYPE,
-    FILE_GETTER_BOOKS_SHOW_PINIYN,
-    FILE_MUTATION_SET_BOOKS_EXHIBITION_TYPE,
-    FILE_MUTATION_SET_BOOKS_SHOW_PINYIN,
-  } from 'src/data/file/types';
+import {
+  BIBLE_GETTER_BOOKS_EXHIBITION_TYPE,
+  BIBLE_GETTER_BOOKS_SHOW_PINIYN,
+  BIBLE_MUTATION_SET_BOOKS_EXHIBITION_TYPE,
+  BIBLE_MUTATION_SET_BOOKS_SHOW_PINYIN,
+} from 'src/data/bible/types';
 
-  export default {
-    name: 'bible-books-top-bar',
-    methods: {
-      ...mapMutations({
-        setType: FILE_MUTATION_SET_BOOKS_EXHIBITION_TYPE,
-        setShowPinyin: FILE_MUTATION_SET_BOOKS_SHOW_PINYIN,
-      }),
-    },
-    computed: {
-      ...mapGetters({
-        booksExhibitionType: FILE_GETTER_BOOKS_EXHIBITION_TYPE,
-        showPinyin: FILE_GETTER_BOOKS_SHOW_PINIYN,
-      }),
-    },
-  };
+export default {
+  name: 'bible-books-top-bar',
+  methods: {
+    ...mapMutations({
+      setType: BIBLE_MUTATION_SET_BOOKS_EXHIBITION_TYPE,
+      setShowPinyin: BIBLE_MUTATION_SET_BOOKS_SHOW_PINYIN,
+    }),
+  },
+  computed: {
+    ...mapGetters({
+      booksExhibitionType: BIBLE_GETTER_BOOKS_EXHIBITION_TYPE,
+      showPinyin: BIBLE_GETTER_BOOKS_SHOW_PINIYN,
+    }),
+  },
+};
 </script>
 
 <style>
-div[options="bible-books"] {
-  text-align:right;
+div[options='bible-books'] {
+  text-align: right;
 }
 
 .books-top-bar-container span {

@@ -7,6 +7,7 @@ export default async () => {
   const store = new Vuex.Store({
     modules: {
       FILE: (await import('./file')).default,
+      BIBLE: (await import('./bible')).default,
     },
   });
 

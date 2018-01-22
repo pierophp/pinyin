@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 cd api/
 [[ $TRAVIS_BRANCH = "master" ]] && DEPLOY_ENV="production" || DEPLOY_ENV="staging"
 echo "Deploy Starting: $DEPLOY_ENV"

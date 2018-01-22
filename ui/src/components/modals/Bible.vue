@@ -12,56 +12,56 @@
 </template>
 
 <script>
-  import chaptersData from 'shared/data/bible/chapters';
-  import ChapterContainer from 'src/components/bible/ChapterContainer';
-  import booksName from 'src/data/bible/names';
-  import OptionsManager from 'src/domain/options-manager';
+import chaptersData from 'shared/data/bible/chapters';
+import ChapterContainer from 'src/components/bible/ChapterContainer';
+import booksName from 'src/data/bible/names';
+import OptionsManager from 'src/domain/options-manager';
 
-  export default {
-    name: 'modal-bible',
-    data() {
-      return {
-        options: {},
-        modalOpen: false,
-      };
+export default {
+  name: 'modal-bible',
+  data() {
+    return {
+      options: {},
+      modalOpen: false,
+    };
+  },
+  props: {
+    bookIndex: 0,
+    chapter: 0,
+    verse: 0,
+  },
+  computed: {
+    exhibitionType() {
+      return `cmn-han${this.options.ideogramType}`;
     },
-    props: {
-      bookIndex: 0,
-      chapter: 0,
-      verse: 0,
-    },
-    computed: {
-      exhibitionType() {
-        return `cmn-han${this.options.ideogramType}`;
-      },
-      book() {
-        const key = this.bookIndex - 1;
-        if (key < 0) {
-          return '';
-        }
+    book() {
+      const key = this.bookIndex - 1;
+      if (key < 0) {
+        return '';
+      }
 
-        return Object.keys(chaptersData)[key];
-      },
+      return Object.keys(chaptersData)[key];
     },
-    components: {
-      ChapterContainer,
+  },
+  components: {
+    ChapterContainer,
+  },
+  created() {
+    this.options = OptionsManager.getOptions();
+  },
+  methods: {
+    booksName,
+    openBottomBar(data) {
+      this.$emit('open-bottom-bar', data);
     },
-    created() {
-      this.options = OptionsManager.getOptions();
+    openDialog() {
+      this.modalOpen = true;
     },
-    methods: {
-      booksName,
-      openBottomBar(data) {
-        this.$emit('open-bottom-bar', data);
-      },
-      openDialog() {
-        this.modalOpen = true;
-      },
-      closeDialog() {
-        this.modalOpen = false;
-      },
+    closeDialog() {
+      this.modalOpen = false;
     },
-  };
+  },
+};
 </script>
 
 <style>
@@ -87,6 +87,6 @@
 
 .dialog-bible .bible-title {
   font-size: 19px;
-  color:#000 !important;
+  color: #000 !important;
 }
 </style>

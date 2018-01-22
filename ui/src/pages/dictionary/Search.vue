@@ -105,11 +105,11 @@ export default {
               });
           }
 
-          if (!searchValue) {
+          if (!that.searchValue) {
             that.entries = [];
             that.noResults = false;
           }
-        }, 400);
+        }, 600);
       })();
 
       this.$router.push({
