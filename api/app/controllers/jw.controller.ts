@@ -48,9 +48,7 @@ router.get('/frequency', async (req, res) => {
 
     const frequency = new Frequency();
 
-    res.send(
-      await frequency.getFrequency(downloadResponse, req.query.url),
-    );
+    res.send(await frequency.getFrequency(downloadResponse, req.query.url));
   } catch (e) {
     // eslint-disable-next-line
     console.log(e);
@@ -58,18 +56,17 @@ router.get('/frequency', async (req, res) => {
   }
 });
 
-router.get('/track', (req, res) => {
-  JWDownloader.track(req.query.url, req.query.type)
-    .then(track => {
-      res.setHeader('Content-Type', 'text/vtt; charset=utf-8');
-      res.setHeader('Access-Control-Allow-Origin', '*');
-      res.send(track);
-    })
-    .catch(e => {
-      // eslint-disable-next-line
-      console.log(e.message);
-      res.send({ status: 500, error: e.message });
-    });
+router.get('/track', async (req, res) => {
+  try {
+    const track = await JWDownloader.track(req.query.url, req.query.type);
+    res.setHeader('Content-Type', 'text/vtt; charset=utf-8');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.send(track);
+  } catch (e) {
+    // eslint-disable-next-line
+    console.log(e.message);
+    res.send({ status: 500, error: e.message });
+  }
 });
 
 module.exports = router;

@@ -1,42 +1,57 @@
 <template>
   <div class="video-parent-container" >
-    <div class="video-container" v-show="!showSubtitle">
+    <div class="video-container">
       <loadable-content :loading="loading">
-        <md-field>
-          <label for="size">{{ $t('show') }}</label>
-          <md-select name="size" id="size" v-model="type">
-            <md-option value="a">{{ $t('pinyin_ideograms') }}</md-option>
-            <md-option value="p">{{ $t('pinyin_only') }}</md-option>
-            <md-option value="c">{{ $t('ideograms_only') }}</md-option>
-          </md-select>
-        </md-field>
+        <div class="video-form" v-show="!showSubtitle || !isPhone" >
+          <md-field class="type-form-container">
+            <label for="type">{{ $t('show') }}</label>
+            <md-select name="type" id="type" v-model="type">
+              <md-option value="a">{{ $t('pinyin_ideograms') }}</md-option>
+              <md-option value="p">{{ $t('pinyin_only') }}</md-option>
+              <md-option value="c">{{ $t('ideograms_only') }}</md-option>
+            </md-select>
+          </md-field>
 
-        <md-field>
-            <md-icon>play_circle_outline</md-icon>
-            <label>{{ $t("url") }}</label>
-            <md-input type="text" ref="inputSearch" v-model="videoUrl"></md-input>
-        </md-field>
-        <video :src="videoUrl" controls preload ref="video" v-show="videoUrl">
-        </video>
+          <md-field class="url-form-container">
+              <md-icon>play_circle_outline</md-icon>
+              <label>{{ $t("url") }}</label>
+              <md-input type="text" ref="inputSearch" v-model="videoUrl"></md-input>
+          </md-field>
+        </div>
 
-        <br/><br/>
-        <a :href="downloadLink" v-if="downloadLink" :download="downloadFilename">
-          <md-button v-if="downloadLink" class="md-raised">{{ $t("download_track") }}</md-button>
-        </a>
-        <md-button v-if="downloadLink" class="md-raised md-primary" @click.native="toggleSubtitle">{{ $t("show_track") }}</md-button>
+        <div class="video-exibition-container">
+          <div  v-show="!showSubtitle || !isPhone">
+            <video :src="videoUrl" controls preload ref="video" v-show="videoUrl">
+            </video>
+
+            <br/><br/>
+            <a :href="downloadLink" v-if="downloadLink" :download="downloadFilename">
+              <md-button v-if="downloadLink" class="md-raised">{{ $t("download_track") }}</md-button>
+            </a>
+            <md-button v-if="downloadLink && isPhone" class="md-raised md-primary" @click.native="toggleSubtitle">{{ $t("show_track") }}</md-button>
+            <md-switch v-if="downloadLink" v-model="repeatPhrase" class="md-primary">Repetir Frase</md-switch>
+            <div v-show="repeatPhrase">
+              <md-button class="md-raised md-primary" @click.native="saveStartTime">Tempo Inicial</md-button>
+              <md-button class="md-raised md-primary" @click.native="saveEndTime">Tempo Final</md-button>
+              <md-button class="md-raised md-primary" @click.native="startRepeatPhrase">Iniciar</md-button>
+              <md-button class="md-raised md-primary" @click.native="endRepeatPhrase">Terminar</md-button>
+            </div>
+          </div>
+
+          <div class="editor-container" v-show="showSubtitle">
+            <div v-if="isPhone">
+              <md-button class="md-raised md-accent no-print" @click.native="toggleSubtitle">{{ $t("hide_track") }}</md-button>
+            </div>
+            <video-subtitle :url="videoUrl"/>
+          </div>
+        </div>
       </loadable-content>
-
-      <md-snackbar md-position="center" ref="snackbar" :md-duration="3000">
-        <span>{{ $t("message_no_track") }}</span>
-      </md-snackbar>
     </div>
 
-    <div class="editor-container" v-show="showSubtitle">
-      <div>
-        <md-button class="md-raised md-accent no-print" @click.native="toggleSubtitle">{{ $t("hide_track") }}</md-button>
-      </div>
-      <video-subtitle :url="videoUrl"/>
-    </div>
+    <md-snackbar md-position="center" ref="snackbar" :md-duration="3000">
+      <span>{{ $t("message_no_track") }}</span>
+    </md-snackbar>
+
   </div>
 </template>
 
@@ -45,6 +60,9 @@
   import LoadableContent from 'src/components/common/loading/LoadableContent';
   import webVTTParser from 'src/domain/webvtt-parser';
   import VideoSubtitle from 'src/components/video/Subtitle';
+  import MobileDetect from 'mobile-detect';
+
+  const md = new MobileDetect(window.navigator.userAgent);
 
   export default {
     name: 'video-show',
@@ -56,6 +74,10 @@
       setTimeout(() => {
         this.$refs.inputSearch.$el.focus();
       }, 500);
+
+      if (this.videoUrl) {
+        this.loadVideo(this.videoUrl);
+      }
     },
     watch: {
       videoUrl() {
@@ -91,6 +113,41 @@
       },
       refreshVideo() {
         this.loadVideo(this.videoUrl);
+      },
+      saveStartTime() {
+        const video = this.$refs.video;
+        this.startTime = video.currentTime;
+      },
+      saveEndTime() {
+        const video = this.$refs.video;
+        this.endTime = video.currentTime;
+      },
+      startRepeatPhrase() {
+        if (this.repeatPhraseTimer) {
+          return;
+        }
+
+        const video = this.$refs.video;
+        this.repeatPhraseTimer = setInterval(() => {
+          if (this.endTime) {
+            if (video.currentTime > this.endTime) {
+              this.endRepeatPhrase();
+              setTimeout(() => {
+                this.startRepeatPhrase();
+              }, 2000);
+            }
+          }
+        }, 500);
+
+        video.currentTime = this.startTime;
+        video.play();
+      },
+
+      endRepeatPhrase() {
+        clearInterval(this.repeatPhraseTimer);
+        this.repeatPhraseTimer = null;
+        const video = this.$refs.video;
+        video.pause();
       },
       loadVideo(videoUrl) {
         this.videoUrl = videoUrl;
@@ -145,6 +202,7 @@
             const blob = new Blob([trackContent], { type: 'text/plain' });
             this.downloadLink = window.URL.createObjectURL(blob);
             this.loading = false;
+            this.showSubtitle = !this.isPhone;
             video.play();
           });
       },
@@ -153,11 +211,16 @@
       return {
         downloadLink: '',
         downloadFilename: '',
-        videoUrl: '',
+        videoUrl: 'https://download-a.akamaihd.net/files/media_video/d9/pk_CHS_026_r240P.mp4',
         track: '',
         type: 'a',
         loading: false,
         showSubtitle: false,
+        isPhone: md.phone() !== null,
+        repeatPhrase: false,
+        startTime: 0,
+        endTime: 0,
+        repeatPhraseTimer: null,
       };
     },
   };
@@ -167,6 +230,31 @@
   .video-parent-container{
     display: flex;
     flex: 1;
+  }
+
+  .loadable-content{
+    display:flex;
+    flex-direction: column;
+  }
+
+  .video-form {
+    display: flex;
+  }
+
+  .url-form-container {
+    max-width: 600px;
+  }
+
+  .type-form-container {
+    width: 150px;
+    overflow: hidden;
+    margin-right: 15px;
+  }
+
+  .video-exibition-container {
+    display: flex;
+    overflow: auto;
+    height: calc(100% - 48px - 76px);
   }
 
   .editor-container{

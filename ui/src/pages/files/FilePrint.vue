@@ -1,5 +1,5 @@
 <template>
-  <file-container ref="fileContainer" :lines="lines" :fullLines="fullLines" :filename="filename" :fileLoading="fileLoading" :parent="true"/>
+  <file-container ref="fileContainer" :lines="lines" :fullLines="fullLines" :filename="filename" :fileLoading="fileLoading" :parent="true" :showHighlight="showHighlight"/>
 </template>
 
 <script>
@@ -22,6 +22,16 @@ export default {
       filename: '',
     };
   },
+  props: {
+    askToReload: {
+      type: Boolean,
+      default: true,
+    },
+    showHighlight: {
+      type: Boolean,
+      default: true,
+    },
+  },
 
   watch: {
     $route() {
@@ -39,7 +49,10 @@ export default {
     }),
   },
   mounted() {
-    window.onbeforeunload = () => '';
+    if (this.askToReload) {
+      window.onbeforeunload = () => '';
+    }
+
     this.filename = this.$route.params.filename;
     if (this.filename) {
       this.getFile(`${this.$route.query.d}/${this.$route.params.filename}`);
@@ -53,7 +66,9 @@ export default {
   },
 
   beforeDestroy() {
-    window.onbeforeunload = null;
+    if (this.askToReload) {
+      window.onbeforeunload = null;
+    }
     clearInterval(this.timer);
     this.clear();
   },

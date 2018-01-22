@@ -1,5 +1,5 @@
 <template>
-  <file-print/>
+  <file-print :askToReload="false" :showHighlight="false"/>
 </template>
 
 <script>
