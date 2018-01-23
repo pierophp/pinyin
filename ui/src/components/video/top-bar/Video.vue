@@ -8,7 +8,7 @@
       <md-dialog-title>
         Histórico
       </md-dialog-title>
-      
+
       <md-dialog-content>
         Histórico
       </md-dialog-content>
@@ -26,12 +26,6 @@ export default {
     return {
       modalOpen: false,
     };
-  },
-  created() {
-    this.options = OptionsManager.getOptions();
-    if (this.versesShowAsModal && !this.openChapterOnLoad) {
-      this.setVersesModalVisible(true);
-    }
   },
   methods: {
     openDialog() {
