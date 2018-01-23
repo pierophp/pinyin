@@ -1,1 +1,2 @@
-NODE_ENV=production /var/www/api.pinyin/current/api/app/console jw-track
+cd /var/www/api.pinyin/current/api
+NODE_ENV=production yarn console jw:track

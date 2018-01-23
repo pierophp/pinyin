@@ -51,7 +51,7 @@ export default {
         },
       });
 
-      const tracks = webVTTParser(response.data.split('\n'));
+      const tracks = webVTTParser(response.data.track.split('\n'));
       const lines = [];
 
       tracks.forEach((trackItem) => {

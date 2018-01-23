@@ -38,7 +38,6 @@ app.use(
       '/segmentation/segment',
       '/jw/download',
       '/jw/frequency',
-      '/jw/track',
       '/chinese-tools',
       '/hanzi-writer',
     ],
