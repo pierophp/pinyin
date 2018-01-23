@@ -65,7 +65,7 @@ router.get('/track', async (req: any, res) => {
     res.send(await track.get(req.query.url, req.query.type, req.user.id));
   } catch (e) {
     // eslint-disable-next-line
-    console.log(e.message);
+    console.log(e);
     res.send({ status: 500, error: e.message });
   }
 });

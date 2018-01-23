@@ -19,7 +19,7 @@ export class Track {
     } else {
       videoTrack = await knex('video_track').where({
         code: urlParts[urlParts.length - 1],
-        language: url.indexOf('cmn-hans') !== -1 ? 'CHS' : 'CH',
+        language: url.indexOf('cmn-hant') !== -1 ? 'CH' : 'CHS',
       });
     }
 
@@ -50,6 +50,7 @@ export class Track {
 
     let showPinyin = true;
     let showIdeograms = true;
+    
     if (type === 'p') {
       showIdeograms = false;
     }
@@ -58,42 +59,48 @@ export class Track {
       showPinyin = false;
     }
 
-    const response = await http.get(encoder.encodeUrl(videoTrack[0].track_url));
+    let trackList: any[] = [];
 
-    const lines = response.data.split('\n');
-    let i = 0;
-    const trackList = await bluebird.map(lines, async (line: string) => {
-      const lineSplit = line.split('-->');
-      if (lineSplit.length > 1) {
-        i += 1;
-        return line;
-      }
+    if (videoTrack[0].track_url) {
+      const response = await http.get(
+        encoder.encodeUrl(videoTrack[0].track_url),
+      );
 
-      if (i > 0) {
-        if (line.trim()) {
-          const ideograms = UnihanSearch.segment(line);
-          const pinyinList = await UnihanSearch.toPinyin(ideograms);
-          let newLine = '<ruby>';
-          pinyinList.forEach(pinyin => {
-            if (showIdeograms) {
-              newLine += `${pinyin.ideogram}`;
-            }
-            if (showPinyin) {
-              newLine += ` <rt>${pinyin.pinyin.trim()}</rt> `;
-            } else {
-              newLine += ' <rt> </rt> ';
-            }
-          });
-          newLine += '</ruby>';
+      const lines = response.data.split('\n');
+      let i = 0;
+      trackList = await bluebird.map(lines, async (line: string) => {
+        const lineSplit = line.split('-->');
+        if (lineSplit.length > 1) {
+          i += 1;
+          return line;
+        }
 
-          return newLine;
+        if (i > 0) {
+          if (line.trim()) {
+            const ideograms = UnihanSearch.segment(line);
+            const pinyinList = await UnihanSearch.toPinyin(ideograms);
+            let newLine = '<ruby>';
+            pinyinList.forEach(pinyin => {
+              if (showIdeograms) {
+                newLine += `${pinyin.ideogram}`;
+              }
+              if (showPinyin) {
+                newLine += ` <rt>${pinyin.pinyin.trim()}</rt> `;
+              } else {
+                newLine += ' <rt> </rt> ';
+              }
+            });
+            newLine += '</ruby>';
+
+            return newLine;
+          }
+
+          return line;
         }
 
         return line;
-      }
-
-      return line;
-    });
+      });
+    }
 
     let videoUrl = '';
     const videos = JSON.parse(videoTrack[0].videos);

@@ -50,10 +50,9 @@
       </loadable-content>
     </div>
 
-    <md-snackbar md-position="center" ref="snackbar" :md-duration="3000">
+    <md-snackbar md-position="center" ref="snackbar" :md-duration="3000" :md-active.sync="showSnackbar">
       <span>{{ $t("message_no_track") }}</span>
     </md-snackbar>
-
   </div>
 </template>
 
@@ -188,7 +187,7 @@ export default {
           this.videoUrlExhibition = response.data.url;
           const lines = response.data.track.split('\n');
           if (lines.length === 1) {
-            this.$refs.snackbar.open();
+            this.showSnackbar = true;
             this.loading = false;
             video.play();
             return;
@@ -233,6 +232,7 @@ export default {
       startTime: 0,
       endTime: 0,
       repeatPhraseTimer: null,
+      showSnackbar: false,
     };
   },
 };
