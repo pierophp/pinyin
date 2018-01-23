@@ -1,7 +1,7 @@
-const BaseRepository = require('./BaseRepository');
-const knex = require('../../services/knex');
+import { BaseRepository } from './base.repository';
+import * as knex from '../../services/knex';
 
-module.exports = class PhraseRepository extends BaseRepository {
+export class PhraseRepository extends BaseRepository {
   static async findOneByProviderAndProviderIdLanguageId(
     provider,
     providerId,
@@ -88,4 +88,4 @@ module.exports = class PhraseRepository extends BaseRepository {
       .limit(200)
       .select('id');
   }
-};
+}

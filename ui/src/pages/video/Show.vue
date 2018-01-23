@@ -33,10 +33,11 @@
             <md-button v-if="downloadLink && isPhone && orientation === 'portrait'" class="md-raised md-primary" @click.native="toggleSubtitle">{{ $t("show_track") }}</md-button>
             <md-switch v-if="downloadLink" v-model="repeatPhrase" class="md-primary">Repetir Frase</md-switch>
             <div v-show="repeatPhrase">
-              <md-button class="md-raised md-primary" @click.native="saveStartTime">Tempo Inicial</md-button>
-              <md-button class="md-raised md-primary" @click.native="saveEndTime">Tempo Final</md-button>
+              <md-button class="md-raised" @click.native="saveStartTime">Tempo Inicial</md-button>
+              <md-button class="md-raised" @click.native="saveEndTime">Tempo Final</md-button>
               <md-button class="md-raised md-primary" @click.native="startRepeatPhrase">Iniciar</md-button>
               <md-button class="md-raised md-primary" @click.native="endRepeatPhrase">Terminar</md-button>
+              <md-button class="md-raised md-accent">Frases</md-button>
             </div>
           </div>
 

@@ -1,6 +1,6 @@
-const RepositoryManager = require('./RepositoryManager');
+import { RepositoryManager } from './repository.manager';
 
-module.exports = class BaseRepository {
+export class BaseRepository {
   static async getTransaction() {
     return await RepositoryManager.getTransaction();
   }
@@ -8,4 +8,4 @@ module.exports = class BaseRepository {
   static async getMysqlConnection() {
     return await RepositoryManager.getMysqlConnection();
   }
-};
+}

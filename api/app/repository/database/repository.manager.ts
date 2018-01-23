@@ -1,14 +1,14 @@
-const mysql = require('mysql2/promise');
-const Promise = require('bluebird');
-const knex = require('../../services/knex');
+import * as mysql from 'mysql2/promise';
+import * as knex from '../../services/knex';
+import * as configEnv from '../../../knexfile';
 
 const env = process.env.NODE_ENV || 'development';
-const config = require('../../../knexfile')[env];
+const config = configEnv[env];
 
 let transaction;
 let mysqlConnection;
 
-module.exports = class RepositoryManager {
+export class RepositoryManager {
   static async getTransaction() {
     if (transaction) {
       return transaction;
@@ -61,4 +61,4 @@ module.exports = class RepositoryManager {
     await trx.rollback();
     return await this.newTransaction();
   }
-};
+}

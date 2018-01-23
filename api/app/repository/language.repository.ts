@@ -1,8 +1,8 @@
-const BaseRepository = require('./BaseRepository');
-const DatabaseLanguageRepository = require('./database/LanguageRepository');
-const { ArrayCache } = require('../cache/array.cache');
+import { BaseRepository } from './base.repository';
+import { LanguageRepository as DatabaseLanguageRepository } from './database/language.repository';
+import { ArrayCache } from '../cache/array.cache';
 
-module.exports = class LanguageRepository extends BaseRepository {
+export class LanguageRepository extends BaseRepository {
   static async findOneByCode(code) {
     const cacheKey = `LANGUAGE_${code}`;
     let language = await ArrayCache.get(cacheKey);
@@ -14,4 +14,4 @@ module.exports = class LanguageRepository extends BaseRepository {
     await ArrayCache.set(cacheKey, language);
     return language;
   }
-};
+}
