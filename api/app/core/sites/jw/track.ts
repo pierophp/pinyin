@@ -50,7 +50,7 @@ export class Track {
 
     let showPinyin = true;
     let showIdeograms = true;
-    
+
     if (type === 'p') {
       showIdeograms = false;
     }
@@ -104,19 +104,19 @@ export class Track {
 
     let videoUrl = '';
     const videos = JSON.parse(videoTrack[0].videos);
-    if (videos['720p']) {
+    if (videos && videos['720p']) {
       videoUrl = videos['720p'];
     }
 
-    if (videos['480p'] && !videoUrl) {
+    if (videos && videos['480p'] && !videoUrl) {
       videoUrl = videos['480p'];
     }
 
-    if (videos['360p'] && !videoUrl) {
+    if (videos && videos['360p'] && !videoUrl) {
       videoUrl = videos['360p'];
     }
 
-    if (videos['240p'] && !videoUrl) {
+    if (videos && videos['240p'] && !videoUrl) {
       videoUrl = videos['240p'];
     }
 

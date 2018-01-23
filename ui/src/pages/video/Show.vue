@@ -1,8 +1,8 @@
 <template>
-  <div class="video-parent-container" >
+  <div :class="[orientation, parentClass, 'video-parent-container']">
     <div class="video-container">
       <loadable-content :loading="loading">
-        <div class="video-form" v-show="!showSubtitle || !isPhone" >
+        <div class="video-form" v-show="!showSubtitle || !isPhone || orientation === 'landscape'" >
           <div class="video-form-container" >
             <md-field class="type-form-container">
               <label for="type">{{ $t('show') }}</label>
@@ -22,7 +22,7 @@
         </div>
 
         <div class="video-exibition-container">
-          <div  v-show="!showSubtitle || !isPhone" class="video-player">
+          <div  v-show="!showSubtitle || !isPhone || orientation === 'landscape'" class="video-player">
             <video :src="videoUrlExhibition" controls preload ref="video" v-show="videoUrl">
             </video>
 
@@ -30,7 +30,7 @@
             <a :href="downloadLink" v-if="downloadLink" :download="downloadFilename">
               <md-button v-if="downloadLink" class="md-raised">{{ $t("download_track") }}</md-button>
             </a>
-            <md-button v-if="downloadLink && isPhone" class="md-raised md-primary" @click.native="toggleSubtitle">{{ $t("show_track") }}</md-button>
+            <md-button v-if="downloadLink && isPhone && orientation === 'portrait'" class="md-raised md-primary" @click.native="toggleSubtitle">{{ $t("show_track") }}</md-button>
             <md-switch v-if="downloadLink" v-model="repeatPhrase" class="md-primary">Repetir Frase</md-switch>
             <div v-show="repeatPhrase">
               <md-button class="md-raised md-primary" @click.native="saveStartTime">Tempo Inicial</md-button>
@@ -41,7 +41,7 @@
           </div>
 
           <div class="editor-container" v-show="showSubtitle">
-            <div v-if="isPhone">
+            <div v-if="isPhone && orientation === 'portrait'">
               <md-button class="md-raised md-accent no-print" @click.native="toggleSubtitle">{{ $t("hide_track") }}</md-button>
             </div>
             <video-subtitle :url="videoUrl"/>
@@ -71,6 +71,12 @@ export default {
     LoadableContent,
     VideoSubtitle,
   },
+
+  computed: {
+    parentClass() {
+      return this.isPhone ? 'phone' : '';
+    },
+  },
   mounted() {
     setTimeout(() => {
       this.$refs.inputSearch.$el.focus();
@@ -79,6 +85,13 @@ export default {
     if (this.videoUrl) {
       this.loadVideo(this.videoUrl);
     }
+
+    this.setOrientation();
+
+    window.addEventListener('resize', this.setOrientation);
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.setOrientation);
   },
   watch: {
     videoUrl() {
@@ -89,6 +102,16 @@ export default {
     },
   },
   methods: {
+    setOrientation() {
+      const oldOrientation = this.orientation;
+      this.orientation = window.innerHeight > window.innerWidth ? 'portrait' : 'landscape';
+      this.$nextTick(() => {
+        if (oldOrientation !== this.orientation) {
+          this.initialShowSubtitle();
+        }
+      });
+    },
+
     toggleSubtitle() {
       this.showSubtitle = !this.showSubtitle;
     },
@@ -144,6 +167,10 @@ export default {
       video.play();
     },
 
+    initialShowSubtitle() {
+      this.showSubtitle = !this.isPhone || this.orientation === 'landscape';
+    },
+
     endRepeatPhrase() {
       clearInterval(this.repeatPhraseTimer);
       this.repeatPhraseTimer = null;
@@ -151,6 +178,7 @@ export default {
       video.pause();
     },
     loadVideo(videoUrl) {
+      this.videoUrlExhibition = '';
       if (videoUrl.indexOf('.mp4') !== -1) {
         this.videoUrlExhibition = videoUrl;
       }
@@ -184,7 +212,9 @@ export default {
           },
         })
         .then(response => {
-          this.videoUrlExhibition = response.data.url;
+          if (!this.videoUrlExhibition) {
+            this.videoUrlExhibition = response.data.url;
+          }
           const lines = response.data.track.split('\n');
           if (lines.length === 1) {
             this.showSnackbar = true;
@@ -211,7 +241,7 @@ export default {
           const blob = new Blob([trackContent], { type: 'text/plain' });
           this.downloadLink = window.URL.createObjectURL(blob);
           this.loading = false;
-          this.showSubtitle = !this.isPhone;
+          this.initialShowSubtitle();
           video.play();
         });
     },
@@ -233,6 +263,7 @@ export default {
       endTime: 0,
       repeatPhraseTimer: null,
       showSnackbar: false,
+      orientation: '',
     };
   },
 };
@@ -272,7 +303,17 @@ export default {
 
 .video-player {
   padding: 0 10px;
-  max-width: 360px;
+  max-width: 50vw;
+  max-height: 50vh;
+}
+
+.phone.portrait .video-player {
+  width: 100vw;
+  max-width: 100vw;
+}
+
+.video-player video{
+  width: 100%;
 }
 .editor-container {
   flex-flow: column nowrap;
