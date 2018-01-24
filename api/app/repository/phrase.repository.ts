@@ -1,5 +1,5 @@
 import { BaseRepository } from './base.repository';
-import { PhraseRepository as DatabasePhraseRepository } from './database/phrase.repository');
+import { PhraseRepository as DatabasePhraseRepository } from './database/phrase.repository';
 
 export class PhraseRepository extends BaseRepository {
   static async save(phrase, skipUpdate) {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <md-button class="md-icon-button" @click="openDialog()">
+    <md-button class="md-icon-button" @click="loadHistory()">
       <md-icon>schedule</md-icon>
     </md-button>
 
@@ -10,7 +10,18 @@
       </md-dialog-title>
 
       <md-dialog-content>
-        Histórico
+        <div v-for="(item, itemId) in history" v-bind:key="itemId" class="history-item">
+          <div class="image">
+            <a href="javascript:void(0)" @click="openVideo(item.url)">
+              <img :src="item.images.xs" />
+            </a>
+          </div>
+          <div class="description">
+            <a href="javascript:void(0)" @click="openVideo(item.url)">
+              {{ item.description }}
+            </a>
+          </div>
+        </div>
       </md-dialog-content>
 
       <md-dialog-actions>
@@ -20,14 +31,25 @@
   </div>
 </template>
 <script>
+import http from 'src/helpers/http';
+
 export default {
   name: 'video-top-bar',
   data() {
     return {
       modalOpen: false,
+      history: [],
     };
   },
   methods: {
+    async loadHistory() {
+      const response = await http.get('videos/history');
+      this.history = response.data.history;
+      this.openDialog();
+    },
+    openVideo(url) {
+      console.log(url);
+    },
     openDialog() {
       this.modalOpen = true;
     },
@@ -37,3 +59,23 @@ export default {
   },
 };
 </script>
+
+<style>
+.history-item {
+  padding-bottom: 5px;
+  display: flex;
+}
+
+.history-item .description{
+  padding: 5px;
+}
+
+
+@media (max-width: 600px)
+{
+  .history-item .image {
+    width: 100px;
+  }
+}
+
+</style>
