@@ -83,13 +83,13 @@ export default {
       this.$refs.inputSearch.$el.focus();
     }, 500);
 
-    if (this.videoUrl) {
-      this.loadVideo(this.videoUrl);
-    }
-
     this.setOrientation();
-
     window.addEventListener('resize', this.setOrientation);
+
+    // REMOVE THIS
+    const defaultUrl = 'https://download-a.akamaihd.net/files/media_video/d9/pk_CHS_026_r240P.mp4';
+    this.videoUrl = defaultUrl;
+    // this.loadVideo(defaultUrl);
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.setOrientation);
@@ -248,11 +248,11 @@ export default {
     },
   },
   data() {
+
     return {
       downloadLink: '',
       downloadFilename: '',
-      videoUrl:
-        'https://download-a.akamaihd.net/files/media_video/d9/pk_CHS_026_r240P.mp4',
+      videoUrl: '',
       videoUrlExhibition: '',
       track: '',
       type: 'a',
