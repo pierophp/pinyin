@@ -37,12 +37,12 @@ router.delete('/', async (req: any, res) => {
   if (req.query.type === 'file') {
     await fileManager.deleteFile(
       req.user.id,
-      `${trimStart(req.query.dirname, '/')}/${req.query.filename}`,
+      `${req.query.filename}`,
     );
   } else {
     await fileManager.deleteDir(
       req.user.id,
-      `${trimStart(req.query.dirname, '/')}/${req.query.filename}`,
+      `${req.query.filename}`,
     );
   }
   res.send({});
