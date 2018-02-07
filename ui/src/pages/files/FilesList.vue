@@ -1,5 +1,5 @@
 <template>
-  <div class="files-wrapper">
+  <div class="files-wrapper" ref="fileWrapper">
     <div class="files-container">
       <loadable-content :loading="loading">
         <folder-structure/>
@@ -149,6 +149,10 @@ export default {
       if (this.$route.query.d) {
         this.dirname = this.$route.query.d;
       }
+
+      this.$nextTick(() => {
+        this.$refs.fileWrapper.scrollTo(0,0);
+      });
     },
 
     goToFile(filename, dirname) {
