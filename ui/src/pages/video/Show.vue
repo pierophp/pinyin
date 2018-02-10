@@ -184,7 +184,7 @@ export default {
             this.endRepeatPhrase(false);
             setTimeout(() => {
               if (!this.repeating) {
-                return;
+                return; 
               }
               this.startRepeatPhrase();
             }, 2000);
