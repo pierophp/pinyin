@@ -1,5 +1,13 @@
 <template>
-  <file-container ref="fileContainer" :lines="lines" :fullLines="fullLines" :filename="filename" :fileLoading="fileLoading" :parent="true" :showHighlight="showHighlight"/>
+  <file-container ref="fileContainer" 
+    :lines="lines" 
+    :fullLines="fullLines" 
+    :filename="filename" 
+    :fileLoading="fileLoading" 
+    :parent="true" 
+    :showHighlight="showHighlight"
+    @go-to-video-time="(time) => $emit('go-to-video-time', time)"
+    />
 </template>
 
 <script>

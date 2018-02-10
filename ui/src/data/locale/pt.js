@@ -128,4 +128,9 @@ export default {
   name: 'Nome',
   open_verses_as_popup: 'Abrir versículos como popup',
   open_chapter_on_load: 'Abrir capítulo ao carregar',
+  repeat_phrase: 'Repetir frase',
+  start_time: 'Tempo inicial',
+  end_time: 'Tempo final',
+  start: 'Iniciar',
+  end: 'Terminar'
 };

@@ -31,13 +31,23 @@
               <md-button v-if="downloadLink" class="md-raised">{{ $t("download_track") }}</md-button>
             </a>
             <md-button v-if="downloadLink && isPhone && orientation === 'portrait'" class="md-raised md-primary" @click.native="toggleSubtitle">{{ $t("show_track") }}</md-button>
-            <md-switch v-if="downloadLink" v-model="repeatPhrase" class="md-primary">Repetir Frase</md-switch>
+            <md-switch v-if="downloadLink" v-model="repeatPhrase" class="md-primary">{{ $t("repeat_phrase") }}</md-switch>
             <div v-show="repeatPhrase">
-              <md-button class="md-raised" @click.native="saveStartTime">Tempo Inicial</md-button>
-              <md-button class="md-raised" @click.native="saveEndTime">Tempo Final</md-button>
-              <md-button class="md-raised md-primary" @click.native="startRepeatPhrase">Iniciar</md-button>
-              <md-button class="md-raised md-primary" @click.native="endRepeatPhrase">Terminar</md-button>
-              <md-button class="md-raised md-accent">Frases</md-button>
+              <md-button class="md-raised" @click.native="saveStartTime">
+                {{ $t("start_time") }}
+                <span v-if="startTime !== null"><br/>({{ secondsToHms(startTime) }})</span>
+              </md-button>
+              <md-button class="md-raised" @click.native="saveEndTime">
+                {{ $t("end_time") }}
+                <span v-if="endTime !== null"><br/>({{ secondsToHms(endTime) }})</span>
+              </md-button>
+              <md-button class="md-raised md-primary" 
+                @click.native="startRepeatPhrase" 
+                v-if="!repeating" 
+                :disabled="startTime === null || endTime === null">
+                {{ $t("start") }}
+              </md-button>
+              <md-button class="md-raised md-primary" @click.native="endRepeatPhrase(true)" v-if="repeating">{{ $t("end") }}</md-button>
             </div>
           </div>
 
@@ -45,7 +55,7 @@
             <div v-if="isPhone && orientation === 'portrait'">
               <md-button class="md-raised md-accent no-print" @click.native="toggleSubtitle">{{ $t("hide_track") }}</md-button>
             </div>
-            <video-subtitle :url="videoUrl"/>
+            <video-subtitle :url="videoUrl" @go-to-video-time="goToVideoTime"/>
           </div>
         </div>
       </loadable-content>
@@ -87,7 +97,8 @@ export default {
     window.addEventListener('resize', this.setOrientation);
 
     // REMOVE THIS
-    const defaultUrl = 'https://download-a.akamaihd.net/files/media_video/d9/pk_CHS_026_r240P.mp4';
+    const defaultUrl =
+      'https://download-a.akamaihd.net/files/media_broadcasting/03/jwbcov_CHS_201705_04_r240P.mp4';
     this.videoUrl = defaultUrl;
     // this.loadVideo(defaultUrl);
   },
@@ -103,9 +114,14 @@ export default {
     },
   },
   methods: {
+    goToVideoTime(time) {
+      const video = this.$refs.video;
+      video.currentTime = this.hmsToSecondsOnly(time) - 0.05;
+    },
     setOrientation() {
       const oldOrientation = this.orientation;
-      this.orientation = window.innerHeight > window.innerWidth ? 'portrait' : 'landscape';
+      this.orientation =
+        window.innerHeight > window.innerWidth ? 'portrait' : 'landscape';
       this.$nextTick(() => {
         if (oldOrientation !== this.orientation) {
           this.initialShowSubtitle();
@@ -124,17 +140,24 @@ export default {
 
       return str.replace('.', ',');
     },
-    hmsToSecondsOnly(str) {
-      const p = str.split(':');
-      let s = 0;
-      let m = 1;
+    secondsToHms(seconds) {
+      const date = new Date(null);
+      date.setSeconds(seconds); 
+      return date.toISOString().substr(11, 8);
+    },
 
-      while (p.length > 0) {
-        s += m * parseFloat(p.pop(), 10);
-        m *= 60;
+    hmsToSecondsOnly(time) {
+      const mili = time.split('.');
+      let seconds = mili[0]
+        .split(':')
+        .reverse()
+        .reduce((prev, curr, i) => prev + curr * 60 ** i, 0);
+
+      if (mili[1]) {
+        seconds = `${seconds}.${mili[1]}`;
       }
 
-      return s;
+      return seconds;
     },
     refreshVideo() {
       this.loadVideo(this.videoUrl);
@@ -152,11 +175,13 @@ export default {
         return;
       }
 
+      this.repeating = true;
+
       const video = this.$refs.video;
       this.repeatPhraseTimer = setInterval(() => {
         if (this.endTime) {
           if (video.currentTime > this.endTime) {
-            this.endRepeatPhrase();
+            this.endRepeatPhrase(false);
             setTimeout(() => {
               this.startRepeatPhrase();
             }, 2000);
@@ -172,11 +197,15 @@ export default {
       this.showSubtitle = !this.isPhone || this.orientation === 'landscape';
     },
 
-    endRepeatPhrase() {
+    endRepeatPhrase(cancelRepeating) {
       clearInterval(this.repeatPhraseTimer);
       this.repeatPhraseTimer = null;
       const video = this.$refs.video;
       video.pause();
+
+      if (cancelRepeating) {
+        this.repeating = false;
+      }
     },
     loadVideo(videoUrl) {
       this.videoUrlExhibition = '';
@@ -248,7 +277,6 @@ export default {
     },
   },
   data() {
-
     return {
       downloadLink: '',
       downloadFilename: '',
@@ -260,8 +288,9 @@ export default {
       showSubtitle: false,
       isPhone: md.phone() !== null,
       repeatPhrase: false,
-      startTime: 0,
-      endTime: 0,
+      startTime: null,
+      endTime: null,
+      repeating: false,
       repeatPhraseTimer: null,
       showSnackbar: false,
       orientation: '',
@@ -304,7 +333,7 @@ export default {
 
 .video-player {
   padding: 0 10px;
-  max-width: 50vw;
+  width: 50vw;
   max-height: 50vh;
 }
 
@@ -313,7 +342,7 @@ export default {
   max-width: 100vw;
 }
 
-.video-player video{
+.video-player video {
   width: 100%;
 }
 .editor-container {

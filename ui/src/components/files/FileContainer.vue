@@ -18,6 +18,7 @@
             @click.native="openBottomBarClick"
             @open-image="openImage"
             @open-footnote="openFootnote"
+            @go-to-video-time="(time) => $emit('go-to-video-time', time)"
             ref="fileRowPrint"
             :key="'file-row-' + lineIndex"/>
         </template>

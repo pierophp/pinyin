@@ -1,5 +1,10 @@
 <template>
   <div class="line" :class=[type]>
+    <span v-if="startTime">
+      <md-button class="md-icon-button md-primary" @click="goToVideoTime">
+        <md-icon>play_circle_filled</md-icon>
+      </md-button>
+    </span>
     <file-row-translation :line="line" />
     <file-block-print
       v-for="(block,index) in line"
@@ -23,46 +28,54 @@
 </template>
 
 <script>
-  import FileBlockPrint from 'src/components/files/FileBlockPrint';
-  import FileRowTranslation from 'src/components/files/FileRowTranslation';
+import FileBlockPrint from 'src/components/files/FileBlockPrint';
+import FileRowTranslation from 'src/components/files/FileRowTranslation';
 
-  export default {
-    name: 'file-row',
-    components: {
-      FileBlockPrint,
-      FileRowTranslation,
+export default {
+  name: 'file-row',
+  components: {
+    FileBlockPrint,
+    FileRowTranslation,
+  },
+  data() {
+    return {
+      type: '',
+      startTime: '',
+    };
+  },
+  props: {
+    line: {
+      type: Array,
+      default: () => [],
     },
-    data() {
-      return {
-        type: '',
-      };
+    lineIndex: {
+      default: 0,
     },
-    props: {
-      line: {
-        type: Array,
-        default: () => ([]),
-      },
-      lineIndex: {
-        default: 0,
-      },
+  },
+  created() {
+    this.type = '';
+    if (this.line[0] !== undefined && this.line[0].line !== undefined) {
+      const type = this.line[0].line.type;
+      this.type = `type-${type}`;
+    }
+
+    if (this.line[0] !== undefined && this.line[0].startTime !== undefined) {
+      this.startTime = this.line[0].startTime;
+    }
+  },
+  methods: {
+    goToVideoTime() {
+      this.$emit('go-to-video-time', this.startTime);
     },
-    created() {
-      this.type = '';
-      if (this.line[0] !== undefined && this.line[0].line !== undefined) {
-        const type = this.line[0].line.type;
-        this.type = `type-${type}`;
-      }
+    openImage(image) {
+      this.$emit('open-image', image);
     },
-    methods: {
-      openImage(image) {
-        this.$emit('open-image', image);
-      },
-      openFootnote(footnote) {
-        this.$emit('open-footnote', footnote);
-      },
-      updateBlockRender(blockIndex) {
-        this.$refs.fileBlockPrint[blockIndex].updateRender();
-      },
+    openFootnote(footnote) {
+      this.$emit('open-footnote', footnote);
     },
-  };
+    updateBlockRender(blockIndex) {
+      this.$refs.fileBlockPrint[blockIndex].updateRender();
+    },
+  },
+};
 </script>

@@ -130,4 +130,9 @@ export default {
   name: 'Name',
   open_verses_as_popup: 'Open verses as popup',
   open_chapter_on_load: 'Open chapter on load',
+  repeat_phrase: 'Repeat phrase',
+  start_time: 'Start time',
+  end_time: 'End time',
+  start: 'Start',
+  end: 'End'
 };
