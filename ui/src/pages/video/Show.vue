@@ -183,6 +183,9 @@ export default {
           if (video.currentTime > this.endTime) {
             this.endRepeatPhrase(false);
             setTimeout(() => {
+              if (!this.repeating) {
+                return;
+              }
               this.startRepeatPhrase();
             }, 2000);
           }
