@@ -151,7 +151,7 @@ export default {
       }
 
       this.$nextTick(() => {
-        this.$refs.fileWrapper.scrollTo(0,0);
+        this.$refs.fileWrapper.scrollTo(0, 0);
       });
     },
 
