@@ -135,5 +135,5 @@ export default {
   end_time: 'End time',
   start: 'Start',
   end: 'End',
-  history: 'History'
+  history: 'History',
 };
