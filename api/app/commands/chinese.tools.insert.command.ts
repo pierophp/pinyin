@@ -40,9 +40,9 @@ export class ChineseToolsInsertCommand implements CommandModule {
             continue;
         }
 
-        // AWAIT 5 seconds
+        // AWAIT 10 seconds
         await new Promise((resolve) => {
-          setTimeout(resolve, 5000);
+          setTimeout(resolve, 10000);
         });
       }
       process.exit();

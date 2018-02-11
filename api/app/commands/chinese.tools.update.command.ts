@@ -17,7 +17,7 @@ export class ChineseToolsUpdateCommand implements CommandModule {
   }
 
   public async handler(argv: any) {
-    const language = argv.language;
+    const language = argv.language; 
 
     try {
       const cjks = await CjkRepository.findChineseToolsNotNull(language);
@@ -42,7 +42,7 @@ export class ChineseToolsUpdateCommand implements CommandModule {
 
         // AWAIT 5 seconds
         await new Promise((resolve) => {
-          setTimeout(resolve, 5000);
+          setTimeout(resolve, 10000);
         });
       }
       process.exit();
