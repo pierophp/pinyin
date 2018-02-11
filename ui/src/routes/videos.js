@@ -24,6 +24,10 @@ export default [
     path: '/video',
     name: 'video',
     component: VideoShow,
+    meta: {
+      topBar: 'videos',
+      protected: true,
+    },
   },
   {
     path: '*',

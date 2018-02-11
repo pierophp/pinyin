@@ -1,7 +1,7 @@
-const BaseRepository = require('./BaseRepository');
-const knex = require('../../services/knex');
+import { BaseRepository } from './base.repository';
+import * as knex from '../../services/knex';
 
-module.exports = class LanguageRepository extends BaseRepository {
+export class LanguageRepository extends BaseRepository {
   static async findOneByCode(code) {
     const response = await knex('language')
       // .transacting(await this.getTransaction())
@@ -12,4 +12,4 @@ module.exports = class LanguageRepository extends BaseRepository {
 
     return null;
   }
-};
+}

@@ -1,4 +1,4 @@
-import * as BaseRepository from './BaseRepository';
+import { BaseRepository } from './base.repository';
 import { CjkRepository as DatabaseCjkRepository } from './database/cjk.repository';
 
 export class CjkRepository extends BaseRepository {

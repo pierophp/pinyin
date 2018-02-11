@@ -1,6 +1,7 @@
 <template>
   <div :class="[topBarClass, 'top-bar-container']">
     <dictionary-top-bar v-if="topBar == 'dictionary'"/>
+    <video-top-bar v-if="topBar == 'videos'"/>
     <file-details-top-bar v-if="topBar == 'file-details'"/>
     <file-print-top-bar v-if="topBar == 'file-print'"/>
     <bible-books-top-bar v-if="topBar == 'bible-books'"/>
@@ -12,6 +13,7 @@
 
 <script>
 import DictionaryTopBar from 'src/components/dictionary/top-bar/Dictionary';
+import VideoTopBar from 'src/components/video/top-bar/Video';
 import FileDetailsTopBar from 'src/components/files/top-bar/FileDetails';
 import FilePrintTopBar from 'src/components/files/top-bar/FilePrint';
 import BibleBooksTopBar from 'src/components/bible/top-bar/Books';
@@ -22,6 +24,7 @@ import BibleSaveTopBar from 'src/components/bible/top-bar/Save';
 export default {
   components: {
     DictionaryTopBar,
+    VideoTopBar,
     FileDetailsTopBar,
     FilePrintTopBar,
     BibleBooksTopBar,

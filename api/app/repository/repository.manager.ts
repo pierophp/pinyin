@@ -1,6 +1,6 @@
-const DatabaseRepositoryManager = require('./database/RepositoryManager');
+import { RepositoryManager as DatabaseRepositoryManager } from './database/repository.manager';
 
-module.exports = class RepositoryManager {
+export class RepositoryManager {
   static async beginTransaction() {
     await DatabaseRepositoryManager.beginTransaction();
   }
@@ -12,4 +12,4 @@ module.exports = class RepositoryManager {
   static async rollBack() {
     await DatabaseRepositoryManager.rollBack();
   }
-};
+}

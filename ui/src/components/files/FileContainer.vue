@@ -2,14 +2,14 @@
   <div class="print-container">
     <footnote-modal :line="footnoteLine" :lineIndex="footnoteLineIndex" ref="footnote"/>
     <image-zoom :src="imageZoom" ref="imageZoom"/>
-    <div class="print-scroll">
+    <div class="print-scroll" ref="fileScroll">
       <div class="print" :class="[sizeClass, typeClass, ideogramSpacedClass]">
         <folder-structure :show-last="true" v-if="parent"/>
         <h2 v-if="filename && filename.split('|||').length != 3">
           {{filename}}
         </h2>
         <template v-for="(line, lineIndex) in lines">
-          <div v-if="lineIndex === 0 && line && line[0].line !== undefined && line[0].line.audio !== undefined"  :key="lineIndex">
+          <div v-if="lineIndex === 0 && line && line[0].line !== undefined && line[0].line.audio !== undefined"  :key="'audio-' + lineIndex">
             <audio :src="line[0].line.audio" controls/>
           </div>
           <file-row-print
@@ -18,8 +18,9 @@
             @click.native="openBottomBarClick"
             @open-image="openImage"
             @open-footnote="openFootnote"
+            @go-to-video-time="(time) => $emit('go-to-video-time', time)"
             ref="fileRowPrint"
-            :key="lineIndex"/>
+            :key="'file-row-' + lineIndex"/>
         </template>
         <div class="loading-container">
           <md-progress-spinner md-mode="indeterminate" v-if="fileLoading"></md-progress-spinner>
@@ -112,6 +113,9 @@ export default {
   watch: {
     $route() {
       this.updateCss();
+    },
+    fullLines() {
+      this.$refs.fileScroll.scrollTo(0, 0);
     },
   },
 

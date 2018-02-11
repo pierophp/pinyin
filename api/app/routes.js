@@ -10,4 +10,5 @@ module.exports = function routes(app) {
   app.use('/my-cjk', require('./controllers/MyCjkController'));
   app.use('/chinese-tools', require('./controllers/ChineseToolsController'));
   app.use('/hanzi-writer', require('./controllers/hanzi.writer.controller'));
+  app.use('/videos', require('./controllers/videos.controller'));
 };

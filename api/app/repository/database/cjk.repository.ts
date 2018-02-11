@@ -1,8 +1,8 @@
 import * as bluebird from 'bluebird';
 import * as replaceall from 'replaceall';
-import * as BaseRepository from './BaseRepository';
-import * as LanguageRepository from '../LanguageRepository';
-import * as PhraseRepository from '../PhraseRepository';
+import { BaseRepository } from './base.repository';
+import { LanguageRepository } from '../language.repository';
+import { PhraseRepository } from '../phrase.repository';
 import * as knex from '../../services/knex';
 import * as UnihanSearch from '../../services/UnihanSearch';
 import * as profiler from '../../helpers/profiler';

@@ -623,7 +623,7 @@ export class Parser {
 
       lineText = ` ${ideogramsFiltered.join(' ')} `;
 
-      const wordsToReplace = ['各地', '可见', '称为'];
+      const wordsToReplace = ['各地', '可见', '称为', '处于'];
 
       wordsToReplace.forEach(word => {
         const replaceWord = ` ${word.split('').join(' ')} `;

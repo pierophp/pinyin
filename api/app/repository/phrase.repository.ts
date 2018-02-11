@@ -1,7 +1,7 @@
-const BaseRepository = require('./BaseRepository');
-const DatabasePhraseRepository = require('./database/PhraseRepository');
+import { BaseRepository } from './base.repository';
+import { PhraseRepository as DatabasePhraseRepository } from './database/phrase.repository';
 
-module.exports = class PhraseRepository extends BaseRepository {
+export class PhraseRepository extends BaseRepository {
   static async save(phrase, skipUpdate) {
     await DatabasePhraseRepository.save(phrase, skipUpdate);
   }
@@ -16,4 +16,4 @@ module.exports = class PhraseRepository extends BaseRepository {
       rlike,
     );
   }
-};
+}
