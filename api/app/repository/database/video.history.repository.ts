@@ -15,7 +15,7 @@ export class VideoHistoryRepository extends BaseRepository {
         this.on('video_track.video', '=', 'video_history.video');
       })
       .where({ user_id: userId })
-      .orderBy('video_track.id', 'DESC')
+      .orderBy('video_history.id', 'DESC')
       .limit(50)).map(item => {
       item.images = JSON.parse(item.images);
       return item;

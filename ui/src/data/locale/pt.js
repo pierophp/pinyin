@@ -132,5 +132,6 @@ export default {
   start_time: 'Tempo inicial',
   end_time: 'Tempo final',
   start: 'Iniciar',
-  end: 'Terminar'
+  end: 'Terminar',
+  history: 'Histórico'
 };

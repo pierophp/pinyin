@@ -8,6 +8,7 @@ export default async () => {
     modules: {
       FILE: (await import('./file')).default,
       BIBLE: (await import('./bible')).default,
+      VIDEO: (await import('./video')).default,
     },
   });
 

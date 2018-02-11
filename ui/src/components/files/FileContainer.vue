@@ -2,7 +2,7 @@
   <div class="print-container">
     <footnote-modal :line="footnoteLine" :lineIndex="footnoteLineIndex" ref="footnote"/>
     <image-zoom :src="imageZoom" ref="imageZoom"/>
-    <div class="print-scroll">
+    <div class="print-scroll" ref="fileScroll">
       <div class="print" :class="[sizeClass, typeClass, ideogramSpacedClass]">
         <folder-structure :show-last="true" v-if="parent"/>
         <h2 v-if="filename && filename.split('|||').length != 3">
@@ -113,6 +113,9 @@ export default {
   watch: {
     $route() {
       this.updateCss();
+    },
+    fullLines() {
+      this.$refs.fileScroll.scrollTo(0, 0);
     },
   },
 

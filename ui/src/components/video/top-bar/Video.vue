@@ -6,7 +6,7 @@
 
     <md-dialog :md-active.sync="modalOpen" :md-fullscreen="false" :md-backdrop="true" :md-click-outside-to-close="true">
       <md-dialog-title>
-        Histórico
+        {{ $t('history') }}
       </md-dialog-title>
 
       <md-dialog-content>
@@ -32,6 +32,8 @@
 </template>
 <script>
 import http from 'src/helpers/http';
+import { mapMutations } from 'vuex';
+import { VIDEO_MUTATION_SET_VIDEO_URL } from 'src/data/video/types';
 
 export default {
   name: 'video-top-bar',
@@ -42,13 +44,17 @@ export default {
     };
   },
   methods: {
+    ...mapMutations({
+      setVideoUrl: VIDEO_MUTATION_SET_VIDEO_URL,
+    }),
     async loadHistory() {
       const response = await http.get('videos/history');
       this.history = response.data.history;
       this.openDialog();
     },
     openVideo(url) {
-      console.log(url);
+      this.setVideoUrl(url);
+      this.closeDialog();
     },
     openDialog() {
       this.modalOpen = true;
@@ -66,16 +72,13 @@ export default {
   display: flex;
 }
 
-.history-item .description{
+.history-item .description {
   padding: 5px;
 }
 
-
-@media (max-width: 600px)
-{
+@media (max-width: 600px) {
   .history-item .image {
     width: 100px;
   }
 }
-
 </style>

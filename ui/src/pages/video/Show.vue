@@ -74,6 +74,9 @@ import webVTTParser from 'src/domain/webvtt-parser';
 import VideoSubtitle from 'src/components/video/Subtitle';
 import MobileDetect from 'mobile-detect';
 
+import { mapGetters } from 'vuex';
+import { VIDEO_GETTER_VIDEO_URL } from 'src/data/video/types';
+
 const md = new MobileDetect(window.navigator.userAgent);
 
 export default {
@@ -82,8 +85,10 @@ export default {
     LoadableContent,
     VideoSubtitle,
   },
-
   computed: {
+    ...mapGetters({
+      videoUrlVuex: VIDEO_GETTER_VIDEO_URL,
+    }),
     parentClass() {
       return this.isPhone ? 'phone' : '';
     },
@@ -95,17 +100,14 @@ export default {
 
     this.setOrientation();
     window.addEventListener('resize', this.setOrientation);
-
-    // REMOVE THIS
-    const defaultUrl =
-      'https://download-a.akamaihd.net/files/media_broadcasting/03/jwbcov_CHS_201705_04_r240P.mp4';
-    this.videoUrl = defaultUrl;
-    // this.loadVideo(defaultUrl);
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.setOrientation);
   },
   watch: {
+    videoUrlVuex() {
+      this.videoUrl = this.videoUrlVuex;
+    },
     videoUrl() {
       this.loadVideo(this.videoUrl);
     },
@@ -142,7 +144,7 @@ export default {
     },
     secondsToHms(seconds) {
       const date = new Date(null);
-      date.setSeconds(seconds); 
+      date.setSeconds(seconds);
       return date.toISOString().substr(11, 8);
     },
 
@@ -184,7 +186,7 @@ export default {
             this.endRepeatPhrase(false);
             setTimeout(() => {
               if (!this.repeating) {
-                return; 
+                return;
               }
               this.startRepeatPhrase();
             }, 2000);
@@ -215,7 +217,11 @@ export default {
       this.repeating = false;
       this.startTime = null;
       this.endTime = null;
-      
+      if (this.repeatPhraseTimer) {
+        clearInterval(this.repeatPhraseTimer);
+        this.repeatPhraseTimer = null;
+      }
+
       if (videoUrl.indexOf('.mp4') !== -1) {
         this.videoUrlExhibition = videoUrl;
       }

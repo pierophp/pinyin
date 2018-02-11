@@ -134,5 +134,6 @@ export default {
   start_time: 'Start time',
   end_time: 'End time',
   start: 'Start',
-  end: 'End'
+  end: 'End',
+  history: 'History'
 };
