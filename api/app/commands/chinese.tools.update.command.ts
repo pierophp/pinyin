@@ -39,6 +39,11 @@ export class ChineseToolsUpdateCommand implements CommandModule {
             console.log(e.message);
             continue;
         }
+
+        // AWAIT 5 seconds
+        await new Promise((resolve) => {
+          setTimeout(resolve, 5000);
+        });
       }
       process.exit();
     } catch (e) {

@@ -258,42 +258,6 @@ module.exports = class UnihanSearch {
 
       try {
         if (
-          !cjk.definition_ct_pt &&
-          !cjk.definition_ct_es &&
-          !cjk.definition_ct_en
-        ) {
-          [chineseToolsPt, chineseToolsEs, chineseToolsEn] = await Promise.all([
-            ChineseToolsDownloader.download(ideograms, cjk.pronunciation, 'pt'),
-            ChineseToolsDownloader.download(ideograms, cjk.pronunciation, 'es'),
-            ChineseToolsDownloader.download(ideograms, cjk.pronunciation, 'en'),
-          ]);
-
-          
-            response.chinese_tools_pt = chineseToolsPt;
-          
-
-          
-            response.chinese_tools_es = chineseToolsEs;
-          
-
-
-            response.chinese_tools_en = chineseToolsEn;
-
-
-          CjkRepository.save({
-            id: cjk.id,
-            definition_ct_pt: JSON.stringify(response.chinese_tools_pt),
-            definition_ct_es: JSON.stringify(response.chinese_tools_es),
-            definition_ct_en: JSON.stringify(response.chinese_tools_en),
-          }).then();
-        }
-      } catch (e) {
-        // eslint-disable-next-line
-        console.log('Chinese Tools Error: ' + e.message);
-      }
-
-      try {
-        if (
           !cjk.definition_glosbe_pt &&
           !cjk.definition_glosbe_es &&
           !cjk.definition_glosbe_en
