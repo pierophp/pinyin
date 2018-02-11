@@ -263,22 +263,22 @@ module.exports = class UnihanSearch {
           !cjk.definition_ct_en
         ) {
           [chineseToolsPt, chineseToolsEs, chineseToolsEn] = await Promise.all([
-            ChineseToolsDownloader.download(ideograms, 'pt'),
-            ChineseToolsDownloader.download(ideograms, 'es'),
-            ChineseToolsDownloader.download(ideograms, 'en'),
+            ChineseToolsDownloader.download(ideograms, cjk.pronunciation, 'pt'),
+            ChineseToolsDownloader.download(ideograms, cjk.pronunciation, 'es'),
+            ChineseToolsDownloader.download(ideograms, cjk.pronunciation, 'en'),
           ]);
 
-          if (chineseToolsPt) {
-            response.chinese_tools_pt = chineseToolsPt.split('\n');
-          }
+          
+            response.chinese_tools_pt = chineseToolsPt;
+          
 
-          if (chineseToolsEs) {
-            response.chinese_tools_es = chineseToolsEs.split('\n');
-          }
+          
+            response.chinese_tools_es = chineseToolsEs;
+          
 
-          if (chineseToolsEn) {
-            response.chinese_tools_en = chineseToolsEn.split('\n');
-          }
+
+            response.chinese_tools_en = chineseToolsEn;
+
 
           CjkRepository.save({
             id: cjk.id,

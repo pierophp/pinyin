@@ -18,6 +18,19 @@ export class CjkRepository extends BaseRepository {
       .select();
   }
 
+  static async findChineseToolsNotNull(language): Promise<any[]>  {
+    return await knex('cjk')
+      .whereRaw(`definition_ct_${language} IS NOT NULL`)
+      .select();
+  }
+
+  static async findChineseToolsIsNull(language): Promise<any[]>  {
+    return await knex('cjk')
+      .whereRaw(`definition_ct_${language} IS NULL`)
+      .limit(500)
+      .select();
+  }
+
   static async searchPronunciationByWord(ideograms) {
     const ideogramConverted = UnihanSearch.convertIdeogramsToUtf16(ideograms);
     let response: any = null;

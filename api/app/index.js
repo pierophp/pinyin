@@ -39,6 +39,8 @@ app.use(
       '/jw/download',
       '/jw/frequency',
       '/chinese-tools',
+      '/chinese-tools/update_all',
+      '/chinese-tools/insert_all',
       '/hanzi-writer',
     ],
   }),

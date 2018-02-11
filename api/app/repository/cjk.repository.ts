@@ -6,7 +6,15 @@ export class CjkRepository extends BaseRepository {
     return DatabaseCjkRepository.findAll();
   }
 
-  static async searchPronunciationByWord(ideograms) {
+  static async findChineseToolsNotNull(language): Promise<any[]>  {
+    return DatabaseCjkRepository.findChineseToolsNotNull(language);
+  }
+
+  static async findChineseToolsIsNull(language): Promise<any[]>  {
+    return DatabaseCjkRepository.findChineseToolsIsNull(language);
+  }
+
+  static async searchPronunciationByWord(ideograms){
     return DatabaseCjkRepository.searchPronunciationByWord(ideograms);
   }
 
