@@ -51,7 +51,7 @@ const postDeployCommands = [
   'cp ../../env/* .',
   'yarn install --production',
   'yarn build',
-  'knex migrate:latest --env production',
+  'knex migrate:latest --env production 2>/dev/null',
   `sudo pm2 startOrRestart ecosystem-${
     isProduction ? 'master' : 'staging'
   }.json --env production`,
