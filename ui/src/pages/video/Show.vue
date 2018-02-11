@@ -212,6 +212,10 @@ export default {
     },
     loadVideo(videoUrl) {
       this.videoUrlExhibition = '';
+      this.repeating = false;
+      this.startTime = null;
+      this.endTime = null;
+      
       if (videoUrl.indexOf('.mp4') !== -1) {
         this.videoUrlExhibition = videoUrl;
       }

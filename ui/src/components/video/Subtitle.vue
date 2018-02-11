@@ -44,6 +44,9 @@ export default {
       if (!this.url) {
         return;
       }
+
+      this.setFileContent({ file: [] });
+
       const response = await http.get('jw/track', {
         params: {
           url: this.url,
