@@ -40,7 +40,7 @@ export class ChineseToolsUpdateCommand implements CommandModule {
             continue;
         }
 
-        // AWAIT 5 seconds
+        // AWAIT 10 seconds
         await new Promise((resolve) => {
           setTimeout(resolve, 10000);
         });
