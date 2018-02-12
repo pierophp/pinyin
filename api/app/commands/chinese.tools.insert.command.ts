@@ -24,6 +24,7 @@ export class ChineseToolsInsertCommand implements CommandModule {
 
     try {
       for (const language of languages) {
+        console.log('\n', language);
         const cjks = await CjkRepository.findChineseToolsIsNull(language);
         for (const cjk of cjks) {
           const ideogram = UnihanSearch.convertUtf16ToIdeograms(cjk.ideogram);
