@@ -148,4 +148,8 @@ export default {
   height: 500px;
   border: 0;
 }
+
+.dictionary-container .md-tabs-content {
+  height: auto !important;
+}
 </style>

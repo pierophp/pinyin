@@ -11,13 +11,13 @@ function getUpperCaseIndices(str) {
 function revertToUpperCase(str, indices) {
   const chars = str.split('');
   // eslint-disable-next-line
-  indices.map((idx) => {
+  indices.map(idx => {
     chars[idx] = chars[idx].toUpperCase();
   });
   return chars.join('');
 }
 
-export default function (text) {
+export default function(text) {
   // eslint-disable-next-line
   const tonePtn = /([aeiouvüAEIOUVÜ]{1,2}(n|ng|r|\'er|N|NG|R|\'ER){0,1}[1234])/g;
   const toneMap = {
@@ -45,7 +45,7 @@ export default function (text) {
   };
   const tones = text.match(tonePtn);
   if (tones) {
-    tones.forEach((coda) => {
+    tones.forEach(coda => {
       // eslint-disable-next-line
       const toneIdx = parseInt(coda.slice(-1)) - 1;
       let vowel = coda.slice(0, -1);
@@ -56,10 +56,11 @@ export default function (text) {
       const upperCaseIdxs = getUpperCaseIndices(vowel);
       vowel = vowel.toLowerCase();
       // eslint-disable-next-line
-      const replacement = suffix && toneMap[vowel][toneIdx] + suffix[0] || toneMap[vowel][toneIdx];
+      const replacement =
+        (suffix && toneMap[vowel][toneIdx] + suffix[0]) ||
+        toneMap[vowel][toneIdx];
       text = text.replace(coda, revertToUpperCase(replacement, upperCaseIdxs));
     });
   }
   return text;
 }
-

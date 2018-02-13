@@ -201,212 +201,211 @@
 </template>
 
 <script>
-  import http from 'src/helpers/http';
-  import IdeogramsShow from 'src/components/ideograms/Show';
-  import LoadableContent from 'src/components/common/loading/LoadableContent';
-  import AddRemoveCharacterModal from 'src/components/modals/AddRemoveCharacter';
-  import OptionsManager from 'src/domain/options-manager';
+import http from 'src/helpers/http';
+import IdeogramsShow from 'src/components/ideograms/Show';
+import LoadableContent from 'src/components/common/loading/LoadableContent';
+import AddRemoveCharacterModal from 'src/components/modals/AddRemoveCharacter';
+import OptionsManager from 'src/domain/options-manager';
 
-  import {
-    mapMutations,
-  } from 'vuex';
+import { mapMutations } from 'vuex';
 
-  import {
-    FILE_MUTATION_SET_MY_CJK_TEMP,
-  } from 'src/data/file/types';
+import { FILE_MUTATION_SET_MY_CJK_TEMP } from 'src/data/file/types';
 
-  const options = OptionsManager.getOptions();
+const options = OptionsManager.getOptions();
 
-  export default {
-    name: 'my-cjk-list',
-    data() {
-      return {
-        loading: false,
-        total: 0,
-        totalWords: 0,
-        hsk: 0,
-        frequency: 0,
-        report: [],
-        reportWords: [],
-        reportUnkown: [],
-        selectedCharacter: null,
-        dialogUnknownOpen: false,
-        dialogKnownOpen: false,
-        dialogUnknownWordsOpen: false,
-        dialogKnownWordsOpen: false,
-      };
+export default {
+  name: 'my-cjk-list',
+  data() {
+    return {
+      loading: false,
+      total: 0,
+      totalWords: 0,
+      hsk: 0,
+      frequency: 0,
+      report: [],
+      reportWords: [],
+      reportUnkown: [],
+      selectedCharacter: null,
+      dialogUnknownOpen: false,
+      dialogKnownOpen: false,
+      dialogUnknownWordsOpen: false,
+      dialogKnownWordsOpen: false,
+    };
+  },
+  components: {
+    IdeogramsShow,
+    LoadableContent,
+    AddRemoveCharacterModal,
+  },
+  methods: {
+    ...mapMutations({
+      setMyCjkTemp: FILE_MUTATION_SET_MY_CJK_TEMP,
+    }),
+    addRemoveCharacter() {
+      this.reportUnkown.remove(this.selectedCharacter);
     },
-    components: {
-      IdeogramsShow,
-      LoadableContent,
-      AddRemoveCharacterModal,
+    openModal(add, cjk, selectedCharacter) {
+      this.selectedCharacter = selectedCharacter;
+      this.setMyCjkTemp(cjk);
+      this.$refs.addRemoveCharacterModal.openDialog(add);
     },
-    methods: {
-      ...mapMutations({
-        setMyCjkTemp: FILE_MUTATION_SET_MY_CJK_TEMP,
-      }),
-      addRemoveCharacter() {
-        this.reportUnkown.remove(this.selectedCharacter);
-      },
-      openModal(add, cjk, selectedCharacter) {
-        this.selectedCharacter = selectedCharacter;
-        this.setMyCjkTemp(cjk);
-        this.$refs.addRemoveCharacterModal.openDialog(add);
-      },
-      knownIdeograms(frequency) {
-        this.frequency = frequency;
-        this.loading = true;
-        http
+    knownIdeograms(frequency) {
+      this.frequency = frequency;
+      this.loading = true;
+      http
         .get('my-cjk/report_known', {
           params: {
             frequency,
             ideogramType: options.ideogramType,
           },
         })
-        .then((result) => {
+        .then(result => {
           this.loading = false;
           this.reportUnkown = result.data.ideograms;
           this.dialogKnownOpen = true;
         });
-      },
-      unknownIdeograms(frequency) {
-        this.frequency = frequency;
-        this.loading = true;
-        http
+    },
+    unknownIdeograms(frequency) {
+      this.frequency = frequency;
+      this.loading = true;
+      http
         .get('my-cjk/report_unknown', {
           params: {
             frequency,
             ideogramType: options.ideogramType,
           },
         })
-        .then((result) => {
+        .then(result => {
           this.loading = false;
           this.reportUnkown = result.data.ideograms;
           this.dialogUnknownOpen = true;
         });
-      },
-      knownWords(hsk) {
-        this.hsk = hsk;
-        this.loading = true;
-        http
+    },
+    knownWords(hsk) {
+      this.hsk = hsk;
+      this.loading = true;
+      http
         .get('my-cjk/report_known_words', {
           params: {
             hsk,
             ideogramType: options.ideogramType,
           },
         })
-        .then((result) => {
+        .then(result => {
           this.loading = false;
           this.reportUnkown = result.data.ideograms;
           this.dialogKnownWordsOpen = true;
         });
-      },
-      unknownWords(hsk) {
-        this.hsk = hsk;
-        this.loading = true;
-        http
+    },
+    unknownWords(hsk) {
+      this.hsk = hsk;
+      this.loading = true;
+      http
         .get('my-cjk/report_unknown_words', {
           params: {
             hsk,
             ideogramType: options.ideogramType,
           },
         })
-        .then((result) => {
+        .then(result => {
           this.loading = false;
           this.reportUnkown = result.data.ideograms;
           this.dialogUnknownWordsOpen = true;
         });
-      },
-      openDialog(ref) {
-        this[`${ref}Open`] = true;
-      },
-      closeDialog(ref) {
-        this[`${ref}Open`] = false;
-      },
     },
-    created() {
-      http
+    openDialog(ref) {
+      this[`${ref}Open`] = true;
+    },
+    closeDialog(ref) {
+      this[`${ref}Open`] = false;
+    },
+  },
+  created() {
+    http
       .get('my-cjk/report', {
         params: {
           ideogramType: options.ideogramType,
         },
       })
-      .then((result) => {
+      .then(result => {
         this.total = result.data.total;
         this.report = result.data.report;
       });
 
-      http
+    http
       .get('my-cjk/report_words', {
         params: {
           ideogramType: options.ideogramType,
         },
       })
-      .then((result) => {
+      .then(result => {
         this.totalWords = result.data.total;
         this.reportWords = result.data.report;
       });
-    },
-  };
+  },
+};
 </script>
 
 <style>
+.md-table .md-icon {
+  margin: auto !important;
+}
 
-  .md-table .md-icon {
-    margin: auto !important;
-  }
+.ideograms-container .md-table .md-table-head-text,
+.ideograms-container .md-table .md-table-cell .md-table-cell-container {
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+}
 
-  .ideograms-container .md-table .md-table-head-text,
-  .ideograms-container .md-table .md-table-cell .md-table-cell-container {
-    padding-left: 10px !important;
-    padding-right: 10px !important;
-  }
+.ideograms-container {
+  flex: 1;
+  padding: 0 10px;
+  overflow: auto;
+  margin-top: 20px;
+}
 
-  .ideograms-container {
-    flex: 1;
-    padding: 0 10px;
-    overflow: auto;
-    margin-top: 20px;
-  }
+.ideograms-container h3 {
+  margin-top: 0px;
+}
 
-  .ideograms-container h3{
-    margin-top: 0px;
-  }
+#ideograms .md-table {
+  max-width: 650px;
+}
 
-  #ideograms .md-table{
-    max-width: 650px;
-  }
+#ideograms .md-table th:first-child {
+  width: 20px;
+}
 
-  #ideograms .md-table th:first-child{
-    width: 20px;
-  }
+#words .md-table {
+  max-width: 650px;
+}
 
-  #words .md-table{
-    max-width: 650px;
-  }
+#ideograms .md-table-head-label,
+#words .md-table-head-label {
+  font-size: 16px !important;
+}
 
-  #ideograms .md-table-head-label,
-  #words .md-table-head-label {
-    font-size: 16px !important;
-  }
+#ideograms .md-table-cell-container,
+#words .md-table-cell-container {
+  font-size: 16px;
+}
 
-  #ideograms .md-table-cell-container,
-  #words .md-table-cell-container{
-    font-size: 16px;
-  }
+.ideogram .md-table-cell-container {
+  font-family: 'Noto Sans SC', 'Noto Sans TC', sans-serif;
+  font-size: 21px !important;
+  font-weight: 300 !important;
+}
 
-  .ideogram .md-table-cell-container{
-    font-family: 'Noto Sans SC', 'Noto Sans TC', sans-serif;
-    font-size: 21px !important;
-    font-weight: 300 !important;
-  }
+.ideograms-container .md-table .md-table-head-label {
+  padding-left: 0 !important;
+}
 
-  .ideograms-container .md-table .md-table-head-label {
-    padding-left:0 !important;
-  }
+.ideograms-container .md-table .md-table-cell .md-button {
+  width: auto;
+}
 
-  .ideograms-container .md-table .md-table-cell .md-button {
-    width: auto;
-  }
+.ideograms-container .md-tabs-content {
+  height: auto !important;
+}
 </style>
 

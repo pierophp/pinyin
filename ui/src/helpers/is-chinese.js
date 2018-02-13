@@ -35,7 +35,7 @@ module.exports = function isChinese(str, ignoreNumbers) {
       .replace(0, '');
   }
 
-  for (let i = 0; i < str.length;) {
+  for (let i = 0; i < str.length; ) {
     charCode = str.codePointAt(i);
 
     flag = false;
