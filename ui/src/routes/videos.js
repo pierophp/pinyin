@@ -1,6 +1,8 @@
 import Login from 'src/pages/auth/Login';
 import VideoShow from 'src/pages/video/Show';
 import NotFound from 'src/pages/NotFound';
+import Config from 'src/pages/config/Config';
+import About from 'src/pages/about/About';
 
 export default [
   {
@@ -28,6 +30,20 @@ export default [
       topBar: 'videos',
       protected: true,
     },
+  },
+  {
+    path: '/config',
+    name: 'config',
+    component: Config,
+    meta: {
+      protected: true,
+    },
+  },
+  {
+    path: '/about',
+    name: 'about',
+    component: About,
+    meta: {},
   },
   {
     path: '*',

@@ -18,6 +18,22 @@ export class CjkRepository extends BaseRepository {
       .select();
   }
 
+  static async findChineseToolsNotNull(language): Promise<any[]>  {
+    return await knex('cjk')
+      .whereRaw(`definition_ct_${language} IS NOT NULL AND simplified = 1 AND (type = "W" OR (type = "C" AND frequency < 999))`)
+      // .limit(10)
+      .select();
+  }
+
+  static async findChineseToolsIsNull(language): Promise<any[]>  {
+    return await knex('cjk')
+      .whereRaw(`definition_ct_${language} IS NULL AND simplified = 1 AND (type = "W" OR (type = "C" AND frequency < 999))`)
+      .limit(10)
+      .orderBy('hsk', 'ASC')
+      .orderBy('usage', 'DESC')
+      .select();
+  }
+
   static async searchPronunciationByWord(ideograms) {
     const ideogramConverted = UnihanSearch.convertIdeogramsToUtf16(ideograms);
     let response: any = null;
@@ -56,10 +72,14 @@ export class CjkRepository extends BaseRepository {
     // let action = 'insert';
 
     if (params.id) {
+      params.updated_at = new Date();
+
       await knex('cjk')
         .where('id', '=', params.id)
         .update(params);
     } else {
+      params.created_at = new Date();
+
       params.id = (await knex('cjk')
         .insert(params)
         .returning('id'))[0];

@@ -61,6 +61,7 @@
     "replaceall": "^0.1.6",
     "sqlite": "^2.8.0",
     "sqlite3": "^3.1.13",
+    "traditional-or-simplified": "^1.0.1",
     "ts-node": "^3.3.0",
     "typescript": "^2.6.1",
     "wget": "0.0.1",

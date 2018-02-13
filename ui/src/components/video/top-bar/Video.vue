@@ -12,7 +12,7 @@
       <md-dialog-content>
         <div v-for="(item, itemId) in history" v-bind:key="itemId" class="history-item">
           <div class="image">
-            <a href="javascript:void(0)" @click="openVideo(item.url)">
+            <a href="javascript:void(0)" @click="openVideo(item.url)" v-if="item.images">
               <img :src="item.images.xs" />
             </a>
           </div>

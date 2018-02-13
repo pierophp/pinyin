@@ -102,7 +102,7 @@
 
     <forvo-modal ref="dialogForvo" :character="block.character" />
 
-    <md-snackbar md-position="center" ref="snackbarClipboard" :md-duration="1300" :md-active.sync="clipboardOpen">
+    <md-snackbar md-position="center" :md-duration="1300" :md-active.sync="clipboardOpen">
       <span>{{ $t('copied_to_clipboard') }}</span>
     </md-snackbar>
 

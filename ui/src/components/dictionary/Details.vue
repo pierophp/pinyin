@@ -11,7 +11,7 @@
       </div>
       <div v-if="editing">
         <md-field>
-          <md-textarea v-model="dictionaryEntry"/>
+          <md-textarea v-model="dictionaryEntry" autocapitalize="none"/>
         </md-field>
         <md-button class="md-raised md-primary" @click.native="save()">{{$t('save')}}</md-button>
         <md-button class="md-raised md-accent" @click.native="cancelEdit()">{{$t('cancel')}}</md-button>
@@ -19,8 +19,7 @@
     </div>
   </div>
 
-
-  <div v-if="dictionary.chinese_tools_pt">
+  <div v-if="dictionary.chinese_tools_pt && dictionary.chinese_tools_pt.length">
     <form action="http://www.chinese-tools.com/tools/chinese-portuguese-dictionary.html" method="POST" target="_blank" id="form-ct-pt">
       <input type="hidden" name="dico" :value="dictionary.ideograms" />
     </form>
@@ -45,7 +44,7 @@
     </div>
   </div>
 
-  <div v-if="dictionary.chinese_tools_es">
+  <div v-if="dictionary.chinese_tools_es && dictionary.chinese_tools_es.length">
     <form action="http://www.chinese-tools.com/tools/chinese-spanish-dictionary.html" method="POST" target="_blank" id="form-ct-es">
       <input type="hidden" name="dico" :value="dictionary.ideograms" />
     </form>
@@ -92,7 +91,7 @@
     </div>
   </div>
 
-  <div v-if="dictionary.chinese_tools_en">
+  <div v-if="dictionary.chinese_tools_en && dictionary.chinese_tools_en.length">
     <form action="http://www.chinese-tools.com/tools/dictionary.html" method="POST" target="_blank" id="form-ct-en">
       <input type="hidden" name="dico" :value="dictionary.ideograms" />
     </form>

@@ -136,4 +136,5 @@ export default {
   start: 'Start',
   end: 'End',
   history: 'History',
+  tutorials: 'Tutorials',
 };
