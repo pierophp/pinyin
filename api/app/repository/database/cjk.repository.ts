@@ -20,14 +20,14 @@ export class CjkRepository extends BaseRepository {
 
   static async findChineseToolsNotNull(language): Promise<any[]>  {
     return await knex('cjk')
-      .whereRaw(`definition_ct_${language} IS NOT NULL AND (type = "W" OR (type = "C" AND frequency < 999))`)
+      .whereRaw(`definition_ct_${language} IS NOT NULL AND simplified = 1 AND (type = "W" OR (type = "C" AND frequency < 999))`)
       // .limit(10)
       .select();
   }
 
   static async findChineseToolsIsNull(language): Promise<any[]>  {
     return await knex('cjk')
-      .whereRaw(`definition_ct_${language} IS NULL AND (type = "W" OR (type = "C" AND frequency < 999))`)
+      .whereRaw(`definition_ct_${language} IS NULL AND simplified = 1 AND (type = "W" OR (type = "C" AND frequency < 999))`)
       .limit(10)
       .orderBy('hsk', 'ASC')
       .orderBy('usage', 'DESC')
