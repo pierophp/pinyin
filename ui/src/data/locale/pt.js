@@ -134,4 +134,5 @@ export default {
   start: 'Iniciar',
   end: 'Terminar',
   history: 'Histórico',
+  tutorials: 'Tutoriais',
 };

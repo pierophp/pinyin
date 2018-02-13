@@ -11,6 +11,12 @@
         </md-button>
     </div>
 
+    <div v-if="tutorialsLink">
+      <h2>{{ $t('tutorials') }}</h2>
+      <a :href="tutorialsLink" target="_blank">
+        <img src="/static/youtube.png"/>
+      </a>
+    </div>
     <h2>{{ $t('other_apps') }}</h2>
     <div class="other-apps-container">
       <div class="other-apps-item" v-if="showEditor">
@@ -67,12 +73,25 @@ export default {
   name: 'about',
   data() {
     const appOptions = this.$router.options.appOptions;
+    let tutorialsLink = '';
+    const tutorialsLinkOptions = {
+      'app.bible':
+        'https://www.youtube.com/playlist?list=PLofpWnlrruXdrN5h7S7BZcse_pR5G8Yml',
+      'app.videos':
+        'https://www.youtube.com/playlist?list=PLofpWnlrruXeOAZ6nVaQTLbmJOShHs5T5',
+    };
+
+    if (tutorialsLinkOptions[appOptions.title]) {
+      tutorialsLink = tutorialsLinkOptions[appOptions.title];
+    }
+
     return {
       hasShare: navigator.share,
       showEditor: appOptions.title !== 'app.editor',
       showBible: appOptions.title !== 'app.bible',
       showDictionary: appOptions.title !== 'app.dictionary',
       showVideos: appOptions.title !== 'app.videos',
+      tutorialsLink,
     };
   },
   methods: {
@@ -124,5 +143,9 @@ export default {
 
 .other-apps-item a {
   color: #4286f4 !important;
+}
+
+a:hover img {
+  opacity: 0.6;
 }
 </style>
