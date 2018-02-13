@@ -29,7 +29,9 @@ module.exports = class ChineseToolsDownloader {
         return;
       }
 
-      let dictIdeogram = $(row).find('.ctdico_char').text();
+      let dictIdeogram = $(row)
+        .find('.ctdico_char')
+        .text();
       if (!dictIdeogram) {
         return;
       }
@@ -40,24 +42,37 @@ module.exports = class ChineseToolsDownloader {
         return;
       }
 
-      let dictPinyin = $(row).find('.ctdico_pinyin').html().trim();
-      let dictDef = $(row).find('.ctdico_def').html();
+      let dictPinyin = $(row)
+        .find('.ctdico_pinyin')
+        .html()
+        .trim();
+      let dictDef = $(row)
+        .find('.ctdico_def')
+        .html();
       dictDef = replaceall('</a>', '</a> ', dictDef);
-      dictDef = $('<textarea />').html(dictDef).text();
+      dictDef = $('<textarea />')
+        .html(dictDef)
+        .text();
       dictDef = replaceall(' ;', ';', dictDef);
 
-      dictDef = dictDef.split('\n').map((item) => item.trim());
+      dictDef = dictDef.split('\n').map(item => item.trim());
       if (dictDef.length === 1) {
-        dictDef = dictDef[0].split('/').map((item) => item.trim());
+        dictDef = dictDef[0].split('/').map(item => item.trim());
       }
 
       if (defaultResponse.length === 0) {
         defaultResponse = dictDef;
       }
 
-      dictPinyin = $('<textarea />').html(dictPinyin).text();
-      
-      const dictPinyinWithoutSpace = replaceall(' ', '', dictPinyin).toLowerCase();
+      dictPinyin = $('<textarea />')
+        .html(dictPinyin)
+        .text();
+
+      const dictPinyinWithoutSpace = replaceall(
+        ' ',
+        '',
+        dictPinyin,
+      ).toLowerCase();
 
       if (dictPinyinWithoutSpace === pronunciation) {
         dictResponse = dictDef;
