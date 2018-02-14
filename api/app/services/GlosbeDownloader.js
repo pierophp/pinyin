@@ -1,9 +1,6 @@
-const querystring = require('querystring');
-const cheerio = require('cheerio');
 const axios = require('axios');
-const replaceall = require('replaceall');
 
-module.exports = class ChineseToolsDownloader {
+module.exports = class GlosbeDownloader {
   static async download(word, language) {
     const response = await axios.get(
       `https://glosbe.com/gapi/translate?from=cmn&dest=${language}&format=json&phrase=${encodeURIComponent(

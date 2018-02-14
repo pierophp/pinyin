@@ -38,6 +38,26 @@ export class CjkRepository extends BaseRepository {
       .select();
   }
 
+  static async findGlosbeNotNull(language): Promise<any[]> {
+    return await knex('cjk')
+      .whereRaw(
+        `definition_glosbe_${language} IS NOT NULL AND simplified = 1 AND (type = "W" OR (type = "C" AND frequency < 999))`,
+      )
+      // .limit(10)
+      .select();
+  }
+
+  static async findGlosbeIsNull(language): Promise<any[]> {
+    return await knex('cjk')
+      .whereRaw(
+        `definition_glosbe_${language} IS NULL AND simplified = 1 AND (type = "W" OR (type = "C" AND frequency < 999))`,
+      )
+      .limit(30)
+      .orderBy('hsk', 'ASC')
+      .orderBy('usage', 'DESC')
+      .select();
+  }
+
   static async searchPronunciationByWord(ideograms) {
     const ideogramConverted = UnihanSearch.convertIdeogramsToUtf16(ideograms);
     let response: any = null;

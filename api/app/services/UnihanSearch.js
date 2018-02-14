@@ -8,7 +8,6 @@ const isChinese = require('../../../shared/helpers/is-chinese');
 const { ArrayCache } = require('../cache/array.cache');
 const { RedisCache } = require('../cache/redis.cache');
 
-const ChineseToolsDownloader = require('../services/ChineseToolsDownloader');
 const GlosbeDownloader = require('../services/GlosbeDownloader');
 const fs = Promise.promisifyAll(require('fs'));
 const { IdeogramsConverter } = require('../core/converter/ideograms.converter');
