@@ -141,6 +141,7 @@ export default {
         let newPinyin = '';
         let pinyinClass = '';
         let hidePinyin = false;
+
         if (options.pinyinHide === '1') {
           // eslint-disable-next-line
           hidePinyin =
@@ -155,7 +156,13 @@ export default {
             pinyin[i] === '';
         }
 
-        if (options.type !== '3' && hidePinyin) {
+        if (options.type === '4' && !hidePinyin) {
+          pinyinClass = 'hide-pinyin';
+          newPinyin = '&nbsp;';
+        } else if (
+          (options.type === '1' || options.type === '2') &&
+          hidePinyin
+        ) {
           pinyinClass = 'hide-pinyin';
           newPinyin = '&nbsp;';
         } else if (pinyin[i]) {

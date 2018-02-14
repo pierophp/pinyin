@@ -1,5 +1,5 @@
-const express = require('express');
-const UnihanSearch = require('../services/UnihanSearch');
+import * as express from 'express';
+import * as UnihanSearch from '../services/UnihanSearch';
 
 // eslint-disable-next-line new-cap
 const router = express.Router();

@@ -7,20 +7,21 @@ class OptionsManager {
 
   static getDefaultOptions() {
     return {
-      size: 'normal', // normal, larger@deprecated
       ideogramSize: '23px',
       pinyinSize: '15px',
       type: '1', // 1 = pinyin_ideograms_without_knew, 2 = ideograms_only, 4 = pinyin_ideograms
       ideogramColored: '1', // bool
       ideogramType: 's', // s = simplified, t = traditional
-      ideogramSpaced: '1',  // bool
-      pinyinHide: '2',  // 1 = ideograms, 2 = word
+      ideogramSpaced: '1', // bool
+      pinyinHide: '2', // 1 = ideograms, 2 = word
       color0: '#000000',
       color1: '#0000ff',
       color2: '#d16f00',
       color3: '#00a000',
       color4: '#ff0000',
       translationLanguage: 'pt',
+      blockMarginBottom: '0px',
+      hidePinyinSource: 'editor',
     };
   }
 
@@ -37,8 +38,14 @@ class OptionsManager {
     ];
 
     if (chinese) {
-      languages.push({ code: 'cmn-hans', language: Vue.t('chinese.simplified') });
-      languages.push({ code: 'cmn-hant', language: Vue.t('chinese.traditional') });
+      languages.push({
+        code: 'cmn-hans',
+        language: Vue.t('chinese.simplified'),
+      });
+      languages.push({
+        code: 'cmn-hant',
+        language: Vue.t('chinese.traditional'),
+      });
     }
     return _.orderBy(languages, ['language']);
   }
