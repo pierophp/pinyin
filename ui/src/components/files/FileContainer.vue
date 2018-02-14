@@ -137,8 +137,7 @@ export default {
     });
 
     this.updateCss();
-  },
-  mounted() {
+
     let type = 'known';
     if (this.options.type === '4') {
       type = 'unknown';
@@ -149,7 +148,6 @@ export default {
     this.fetchMyCjk({
       source,
       type,
-    });
   },
 
   methods: {
