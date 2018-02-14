@@ -42,7 +42,8 @@ module.exports = {
     'no-await-in-loop': 0,
     'space-before-function-paren': 0,
     'wrap-iife': 0,
-    'no-mixed-operators': 0
+    'no-mixed-operators': 0,
+    'no-continue': 0,
   },
   globals: {
     $: true,

@@ -37,7 +37,7 @@
       </div>
     </div>
 
-    <file-bottom-bar ref="fileBottomBar" @open-modal="openModal"/>
+    <file-bottom-bar ref="fileBottomBar" @open-modal="openModal" @reopen="(lineIndex, blockIndex) => openBottomBarByLineAndBlock(lineIndex, blockIndex)"/>
   </div>
 </template>
 
@@ -210,12 +210,20 @@ export default {
         return;
       }
 
+      this.openBottomBarByLineAndBlock(
+        lineIndex,
+        blockIndex,
+        e.ctrlKey || e.metaKey,
+      );
+    },
+
+    openBottomBarByLineAndBlock(lineIndex, blockIndex, openDictionary) {
       this.openBottomBar({
         pinyin: this.lines[lineIndex][blockIndex].p,
         character: this.lines[lineIndex][blockIndex].c,
         lineIndex,
         blockIndex,
-        openDictionary: e.ctrlKey || e.metaKey,
+        openDictionary,
       });
     },
 

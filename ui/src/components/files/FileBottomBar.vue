@@ -43,8 +43,7 @@
       <Links list=0 :character="block.character" ref="links"/>
     </div>
 
-
-    <md-dialog ref="dialogDictionary":md-active.sync="modalDictionaryOpen" :md-fullscreen="false">
+    <md-dialog ref="dialogDictionary" :md-active.sync="modalDictionaryOpen" :md-fullscreen="false">
       <md-dialog-title>
         <ideograms-show :pinyin="block.pinyin" :character="block.character"/>
         - {{ block.pinyin }}
@@ -66,7 +65,7 @@
       </md-dialog-actions>
     </md-dialog>
 
-    <md-dialog ref="dialogSeparate":md-active.sync="modalSeparateOpen" :md-fullscreen="false">
+    <md-dialog ref="dialogSeparate" :md-active.sync="modalSeparateOpen" :md-fullscreen="false">
       <md-dialog-title>
         <ideograms-show :pinyin="block.pinyin" :character="block.character"/>
         - {{ block.pinyin }}
@@ -83,7 +82,7 @@
       </md-dialog-actions>
     </md-dialog>
 
-    <md-dialog ref="dialogEdit":md-active.sync="modalEditOpen" :md-fullscreen="false">
+    <md-dialog ref="dialogEdit" :md-active.sync="modalEditOpen" :md-fullscreen="false">
       <md-dialog-title>
         <ideograms-show :pinyin="block.pinyin" :character="block.character"/>
         - {{ block.pinyin }}
@@ -105,7 +104,6 @@
     <md-snackbar md-position="center" :md-duration="1300" :md-active.sync="clipboardOpen">
       <span>{{ $t('copied_to_clipboard') }}</span>
     </md-snackbar>
-
   </div>
 </template>
 
@@ -177,7 +175,7 @@ export default {
 
   methods: {
     ...mapActions({
-      joinLeft: FILE_ACTION_JOIN_LEFT,
+      joinLeftAction: FILE_ACTION_JOIN_LEFT,
       separateAction: FILE_ACTION_SEPARATE,
     }),
     ...mapMutations({
@@ -201,11 +199,22 @@ export default {
     },
 
     confirmSeparate() {
+      this.modalSeparateOpen = false;
       this.separateAction({
         ...this.block,
         separateCharacter: this.separateCharacter,
       });
-      this.modalSeparateOpen = false;
+
+      setTimeout(() => {
+        this.$emit('reopen', this.block.lineIndex, this.block.blockIndex);
+      }, 1000);
+    },
+
+    joinLeft(block) {
+      this.joinLeftAction(block);
+      setTimeout(() => {
+        this.$emit('reopen', this.block.lineIndex, this.block.blockIndex - 1);
+      }, 1000);
     },
 
     edit() {
@@ -216,6 +225,7 @@ export default {
     confirmEdit() {
       this.updatePinyin({ ...this.block, pinyin: this.editPinyin });
       this.modalEditOpen = false;
+      this.$emit('reopen', this.block.lineIndex, this.block.blockIndex);
     },
 
     changeEditPinyin(pinyin) {
