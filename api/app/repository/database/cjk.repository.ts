@@ -52,7 +52,7 @@ export class CjkRepository extends BaseRepository {
       .whereRaw(
         `definition_glosbe_${language} IS NULL AND simplified = 1 AND (type = "W" OR (type = "C" AND frequency < 999))`,
       )
-      .limit(30)
+      .limit(20)
       .orderBy('hsk', 'ASC')
       .orderBy('usage', 'DESC')
       .select();

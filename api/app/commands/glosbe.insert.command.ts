@@ -49,9 +49,9 @@ export class GlosbeInsertCommand implements CommandModule {
             continue;
           }
 
-          // AWAIT 5 seconds
+          // AWAIT 15 seconds
           await new Promise(resolve => {
-            setTimeout(resolve, 5000);
+            setTimeout(resolve, 15000);
           });
         }
       }
