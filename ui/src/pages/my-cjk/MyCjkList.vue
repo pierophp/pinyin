@@ -3,7 +3,7 @@
     <md-tabs>
       <md-tab id="ideograms" :md-label="$t('ideograms')">
         <loadable-content :loading="loading">
-          <h3>{{ $t('my_total') }}: {{total}}</h3>
+          <h3 v-if="options.type !== '4'">{{ $t('my_total') }}: {{total}}</h3>
           <md-table>
 
             <md-table-row>
@@ -40,7 +40,7 @@
 
       <md-tab id="words" :md-label="$t('words')">
         <loadable-content :loading="loading">
-        <h3>{{ $t('my_total') }}: {{totalWords}}</h3>
+        <h3 v-if="options.type !== '4'">{{ $t('my_total') }}: {{totalWords}}</h3>
           <md-table>
             <md-table-row>
               <md-table-head>HSK</md-table-head>
@@ -85,14 +85,17 @@
             <md-table-head></md-table-head>
           </md-table-row>
 
-          <md-table-row v-for="(ideogram, index) in reportUnkown" :key="index">
+          <md-table-row v-for="(ideogram, index) in reportUnkown" :key="ideogram">
             <md-table-cell class="ideogram">
               <ideograms-show :pinyin="ideogram.pronunciation" :character="ideogram.ideogram"/>
             </md-table-cell>
             <md-table-cell>{{ideogram.pronunciation}}</md-table-cell>
             <md-table-cell class="cell-button">
-              <md-button class="md-icon-button md-raised" @click.native="openModal(true, ideogram.ideogram, index)">
+              <md-button v-if="options.type !== '4'" class="md-icon-button md-raised" @click.native="openModal(true, ideogram.ideogram, index)">
                 <md-icon>add</md-icon>
+              </md-button>
+              <md-button v-if="options.type === '4'" class="md-icon-button md-raised" @click.native="openModal(false, ideogram.ideogram, index)">
+                <md-icon>remove</md-icon>
               </md-button>
             </md-table-cell>
           </md-table-row>
@@ -115,14 +118,17 @@
             <md-table-head></md-table-head>
           </md-table-row>
 
-          <md-table-row v-for="(ideogram, index) in reportUnkown" :key="index">
+          <md-table-row v-for="(ideogram, index) in reportUnkown" :key="ideogram">
             <md-table-cell class="ideogram">
               <ideograms-show :pinyin="ideogram.pronunciation" :character="ideogram.ideogram"/>
             </md-table-cell>
             <md-table-cell>{{ideogram.pronunciation}}</md-table-cell>
             <md-table-cell class="cell-button">
-              <md-button class="md-icon-button md-raised" @click.native="openModal(false, ideogram.ideogram, index)">
+              <md-button v-if="options.type !== '4'" class="md-icon-button md-raised" @click.native="openModal(false, ideogram.ideogram, index)">
                 <md-icon>remove</md-icon>
+              </md-button>
+              <md-button v-if="options.type === '4'" class="md-icon-button md-raised" @click.native="openModal(true, ideogram.ideogram, index)">
+                <md-icon>add</md-icon>
               </md-button>
             </md-table-cell>
           </md-table-row>
@@ -144,14 +150,17 @@
             <md-table-head></md-table-head>
           </md-table-row>
 
-          <md-table-row v-for="(ideogram, index) in reportUnkown" :key="index">
+          <md-table-row v-for="(ideogram, index) in reportUnkown" :key="ideogram">
             <md-table-cell class="ideogram">
               <ideograms-show :pinyin="ideogram.pronunciation" :character="ideogram.ideogram"/>
             </md-table-cell>
             <md-table-cell>{{ideogram.pronunciation}}</md-table-cell>
             <md-table-cell class="cell-button">
-              <md-button class="md-icon-button md-raised" @click.native="openModal(true, ideogram.ideogram, index)">
+              <md-button v-if="options.type !== '4'" class="md-icon-button md-raised" @click.native="openModal(true, ideogram.ideogram, index)">
                 <md-icon>add</md-icon>
+              </md-button>
+              <md-button v-if="options.type === '4'" class="md-icon-button md-raised" @click.native="openModal(false, ideogram.ideogram, index)">
+                <md-icon>remove</md-icon>
               </md-button>
             </md-table-cell>
           </md-table-row>
@@ -174,14 +183,17 @@
             <md-table-head></md-table-head>
           </md-table-row>
 
-          <md-table-row v-for="(ideogram, index) in reportUnkown" :key="index">
+          <md-table-row v-for="(ideogram, index) in reportUnkown" :key="ideogram">
             <md-table-cell class="ideogram">
               <ideograms-show :pinyin="ideogram.pronunciation" :character="ideogram.ideogram"/>
             </md-table-cell>
             <md-table-cell>{{ideogram.pronunciation}}</md-table-cell>
             <md-table-cell class="cell-button">
-              <md-button class="md-icon-button md-raised" @click.native="openModal(false, ideogram.ideogram, index)">
+              <md-button v-if="options.type !== '4'" class="md-icon-button md-raised" @click.native="openModal(false, ideogram.ideogram, index)">
                 <md-icon>remove</md-icon>
+              </md-button>
+              <md-button v-if="options.type === '4'" class="md-icon-button md-raised" @click.native="openModal(true, ideogram.ideogram, index)">
+                <md-icon>add</md-icon>
               </md-button>
             </md-table-cell>
           </md-table-row>
@@ -212,6 +224,12 @@ import { mapMutations } from 'vuex';
 import { FILE_MUTATION_SET_MY_CJK_TEMP } from 'src/data/file/types';
 
 const options = OptionsManager.getOptions();
+let type = 'known';
+if (options.type === '4') {
+  type = 'unknown';
+}
+
+const source = options.hidePinyinSource;
 
 export default {
   name: 'my-cjk-list',
@@ -230,6 +248,7 @@ export default {
       dialogKnownOpen: false,
       dialogUnknownWordsOpen: false,
       dialogKnownWordsOpen: false,
+      options,
     };
   },
   components: {
@@ -257,6 +276,8 @@ export default {
           params: {
             frequency,
             ideogramType: options.ideogramType,
+            type,
+            source,
           },
         })
         .then(result => {
@@ -273,6 +294,8 @@ export default {
           params: {
             frequency,
             ideogramType: options.ideogramType,
+            type,
+            source,
           },
         })
         .then(result => {
@@ -289,6 +312,8 @@ export default {
           params: {
             hsk,
             ideogramType: options.ideogramType,
+            type,
+            source,
           },
         })
         .then(result => {
@@ -305,6 +330,8 @@ export default {
           params: {
             hsk,
             ideogramType: options.ideogramType,
+            type,
+            source,
           },
         })
         .then(result => {
@@ -325,6 +352,8 @@ export default {
       .get('my-cjk/report', {
         params: {
           ideogramType: options.ideogramType,
+          type,
+          source,
         },
       })
       .then(result => {
@@ -336,6 +365,8 @@ export default {
       .get('my-cjk/report_words', {
         params: {
           ideogramType: options.ideogramType,
+          type,
+          source,
         },
       })
       .then(result => {

@@ -3,6 +3,7 @@ import { AdapterInterface } from 'node-filesystem';
 import { LocalAdapter } from 'node-filesystem';
 import { S3Adapter } from 'node-filesystem';
 import * as AWS from 'aws-sdk';
+import * as replaceall from 'replaceall';
 
 let dirname = `${__dirname}/../../../storage/`;
 if (env.storage_path) {
@@ -61,6 +62,7 @@ export class FileManager {
 
   public async getFile(userId: number, filename: string): Promise<any> {
     const adapter = this.getAdapter();
+    filename = replaceall('../', '', filename);
     return (await adapter.read(`files/${userId}/${filename}`)).contents;
   }
 
@@ -70,21 +72,25 @@ export class FileManager {
     content: string,
   ): Promise<any> {
     const adapter = this.getAdapter();
+    filename = replaceall('../', '', filename);
     await adapter.write(`files/${userId}/${filename}`, content, {});
   }
 
   public async createDir(userId: number, path: string): Promise<any> {
     const adapter = this.getAdapter();
+    path = replaceall('../', '', path);
     await adapter.createDir(`files/${userId}/${path}`);
   }
 
   public async deleteFile(userId: number, filename: string): Promise<any> {
     const adapter = this.getAdapter();
+    filename = replaceall('../', '', filename);
     await adapter.delete(`files/${userId}/${filename}`);
   }
 
   public async deleteDir(userId: number, path: string): Promise<any> {
     const adapter = this.getAdapter();
+    path = replaceall('../', '', path);
     await adapter.deleteDir(`files/${userId}/${path}`);
   }
 }

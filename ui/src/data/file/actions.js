@@ -329,10 +329,10 @@ export default {
       .catch(error => commit(types.FILE_MUTATION_FAILURE, error));
   },
 
-  [types.FILE_ACTION_FETCH_MY_CJK]({ commit }) {
+  [types.FILE_ACTION_FETCH_MY_CJK]({ commit }, data) {
     setTimeout(() => {
       http
-        .get('my-cjk')
+        .post('my-cjk/get', data)
         .then(response => {
           const myCjkIdeograms = {};
           response.data.ideograms.forEach(item => {
@@ -405,26 +405,32 @@ export default {
     dispatch(types.FILE_ACTION_CONVERT_TO_PINYIN, { lineIndex });
   },
 
-  [types.FILE_ACTION_ADD_MY_CJK]({ commit }, data) {
+  [types.FILE_ACTION_ADD_MY_CJK]({ commit, state }, data) {
     return http
       .post('my-cjk', {
         ideogram: data.myCjk,
+        type: data.type,
+        source: data.source,
       })
       .then(() => {
         commit(types.FILE_MUTATION_ADD_MY_CJK, data.myCjk);
+        LocalStorage.save('my-cjk', state.myCjk);
       })
       .catch(error => commit(types.FILE_MUTATION_FAILURE, error));
   },
 
-  [types.FILE_ACTION_REMOVE_MY_CJK]({ commit }, data) {
+  [types.FILE_ACTION_REMOVE_MY_CJK]({ commit, state }, data) {
     return http
       .delete('my-cjk', {
         data: {
           ideogram: data.myCjk,
+          type: data.type,
+          source: data.source,
         },
       })
       .then(() => {
         commit(types.FILE_MUTATION_REMOVE_MY_CJK, data.myCjk);
+        LocalStorage.save('my-cjk', state.myCjk);
       })
       .catch(error => commit(types.FILE_MUTATION_FAILURE, error));
   },

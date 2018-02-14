@@ -139,7 +139,17 @@ export default {
     this.updateCss();
   },
   mounted() {
-    this.fetchMyCjk();
+    let type = 'known';
+    if (this.options.type === '4') {
+      type = 'unknown';
+    }
+
+    const source = this.options.hidePinyinSource;
+
+    this.fetchMyCjk({
+      source,
+      type,
+    });
   },
 
   methods: {
@@ -219,6 +229,11 @@ export default {
       document.body.style.setProperty(
         '--pinyin-font-size',
         this.options.pinyinSize,
+      );
+
+      document.body.style.setProperty(
+        '--block-margin-bottom',
+        this.options.blockMarginBottom,
       );
 
       this.typeClass = '';
@@ -400,6 +415,10 @@ export default {
   page-break-inside: avoid;
   padding: 1px 0;
   min-width: 0;
+}
+
+.print .block {
+  margin-bottom: var(--block-margin-bottom);
 }
 
 .print .block:hover {

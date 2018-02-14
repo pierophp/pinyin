@@ -10,19 +10,16 @@ function separate(pinyin) {
       .replace(new RegExp(`(n)([^${vowels}vg])`, 'i'), '$1 $2') // cleans up most n compounds
       // eslint-disable-next-line
       .replace(
-        new RegExp(
-          '([' + vowels + 'v])([^' + vowels + 'ws])([' + vowels + 'v])',
-          'i',
-        ),
+        new RegExp(`([${vowels}v])([^${vowels}ws])([${vowels}v])`, 'i'),
         '$1 $2$3',
       ) // assumes correct Pinyin (i.e., no missing apostrophes)
       // eslint-disable-next-line
       .replace(
-        new RegExp('([' + vowels + 'v])(n)(g)([' + vowels + 'v])', 'i'),
+        new RegExp(`([${vowels}v])(n)(g)([${vowels}v])`, 'i'),
         '$1$2 $3$4',
       ) // assumes correct Pinyin, i.e. changan = chan + gan
       // eslint-disable-next-line
-      .replace(new RegExp('([gr])([^' + vowels + '])', 'i'), '$1 $2')
+      .replace(new RegExp(`([gr])([^${vowels}])`, 'i'), '$1 $2')
   ); // fixes -ng and -r finals not followed by vowels
   // eslint-disable-next-line
   //.replace(new RegExp('([^e\w\s])(r)'), '$1 $2'); // r an initial, except in er

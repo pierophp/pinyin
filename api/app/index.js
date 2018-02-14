@@ -40,6 +40,8 @@ app.use(
       '/jw/frequency',
       '/chinese-tools',
       '/hanzi-writer',
+      '/2pinyin/my_words',
+      '/2pinyin/dictionary',
     ],
   }),
 );
@@ -50,7 +52,7 @@ app.use((req, res, next) => {
 
 app.use(express.static('public'));
 app.use(passport.initialize());
-app.use(bodyParser.json({ limit: '5mb' }));
+app.use(bodyParser.json({ limit: '10mb' }));
 
 require('./routes')(app, passport);
 require('./config/passport')(passport);
