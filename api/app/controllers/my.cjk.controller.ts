@@ -7,24 +7,12 @@ const router = express.Router();
 
 router.post('/get', async (req: any, res) => {
   const result = await knex('my_cjk')
-    .select(
-      'my_cjk.id',
-      'my_cjk.ideogram',
-      'cjk.frequency',
-      'cjk.pronunciation',
-    )
-    .leftJoin('cjk', function leftJoin() {
-      this.on('cjk.ideogram', '=', 'my_cjk.ideogram').on(
-        knex.raw('cjk.main = 1'),
-      );
-    })
+    .select('my_cjk.ideogram')
     .where({
       user_id: req.user.id,
       'my_cjk.source': req.body.source,
       'my_cjk.type': req.body.type,
-    })
-    .orderBy('frequency', 'ASC')
-    .orderBy('usage', 'DESC');
+    });
 
   const ideograms: any[] = [];
   result.forEach((item: any) => {
@@ -65,9 +53,9 @@ router.get('/report', (req: any, res) => {
   knex('cjk')
     .select(
       knex.raw(`
-        cjk.frequency, 
-        COUNT(*) as total, 
-        ${totalMy} total_my, 
+        cjk.frequency,
+        COUNT(*) as total,
+        ${totalMy} total_my,
         ROUND(${countPercent} * 100) percent`),
     )
     .leftJoin('my_cjk', function leftJoin() {
@@ -116,9 +104,9 @@ router.get('/report_words', async (req: any, res) => {
   const report = await knex('cjk')
     .select(
       knex.raw(`
-        cjk.hsk, 
-        COUNT(cjk.id) as total, 
-        ${totalMy} total_my, 
+        cjk.hsk,
+        COUNT(cjk.id) as total,
+        ${totalMy} total_my,
         ROUND(${countPercent} * 100) percent`),
     )
     .leftJoin('my_cjk', function leftJoin() {

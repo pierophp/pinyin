@@ -148,6 +148,7 @@ export default {
     this.fetchMyCjk({
       source,
       type,
+    });
   },
 
   methods: {
