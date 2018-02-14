@@ -23,7 +23,9 @@ export class ElasticsearchProvider {
         pronunciationUnaccentedKeyword: { type: 'keyword' },
         'dictionary.unihan': { type: 'text', analyzer: 'analyzer_en' },
         'dictionary.cedict': { type: 'text', analyzer: 'analyzer_en' },
+        'dictionary.cedictList': { type: 'text' },
         'dictionary.pt': { type: 'text', analyzer: 'analyzer_pt' },
+        'dictionary.ptList': { type: 'text' },
         'dictionary.ctPt': { type: 'text', analyzer: 'analyzer_pt' },
         'dictionary.ctEn': { type: 'text', analyzer: 'analyzer_en' },
         'dictionary.ctEs': { type: 'text', analyzer: 'analyzer_es' },
@@ -139,7 +141,9 @@ export class ElasticsearchProvider {
       dictionary: {
         unihan: dictionary.definition_unihan,
         cedict: cedict ? cedict.join(' ||| ') : null,
+        cedictList: cedict ? cedict : [],
         pt: pt ? pt.join(' ||| ') : null,
+        ptList: pt ? pt : [],
         ctPt: ctPt ? ctPt.join(' ||| ') : null,
         ctEn: ctEn ? ctEn.join(' ||| ') : null,
         ctEs: ctEs ? ctEs.join(' ||| ') : null,
@@ -234,6 +238,11 @@ export class ElasticsearchProvider {
           score: '70',
         },
         {
+          type: 'term',
+          field: 'dictionary.ptList',
+          score: '30',
+        },
+        {
           type: 'match_phrase',
           field: 'dictionary.pt',
           score: '20',
@@ -241,21 +250,26 @@ export class ElasticsearchProvider {
         {
           type: 'match_phrase',
           field: 'dictionary.ctPt',
-          score: '18',
+          score: '19',
         },
         {
           type: 'match_phrase',
           field: 'dictionary.glosbePt',
-          score: '17',
+          score: '18',
         },
         {
           type: 'match_phrase',
           field: 'dictionary.ctEs',
-          score: '16',
+          score: '17',
         },
         {
           type: 'match_phrase',
           field: 'dictionary.glosbeEs',
+          score: '16',
+        },
+        {
+          type: 'term',
+          field: 'dictionary.cedictList',
           score: '15',
         },
         {
@@ -286,13 +300,14 @@ export class ElasticsearchProvider {
       "doc['main'].value",
       "(doc['hskInverse'].value * 0.003)",
       "(doc['frequencyInverse'].value * 0.002)",
-      "(doc['usage'].value * 0.00001)",
+      "(doc['usage'].value * 0.0001)",
     ];
 
     const scoreFormula = scoreFormulaList.join(' + ');
 
     const whereShould: any[] = [];
     const scoreFunctions: any[] = [];
+    const notScoreFilter: any[] = [];
     for (const where of whereList) {
       const searchContainer: any = {
         bool: {
@@ -313,13 +328,26 @@ export class ElasticsearchProvider {
       scoreFilter[where.type] = scoreCondition;
 
       scoreFunctions.push({
-        filter: scoreFilter,
+        filter: {
+          bool: {
+            must: scoreFilter,
+            must_not: JSON.parse(JSON.stringify(notScoreFilter)),
+          },
+        },
         script_score: {
           script: {
             source: `${scoreFormula.replace('$score', where.score)}`,
           },
         },
       });
+
+      notScoreFilter.push(scoreFilter);
+
+      // if (!notScoreFilter[where.type]) {
+      //   notScoreFilter[where.type] = {};
+      // }
+
+      // notScoreFilter[where.type][where.field] = term;
     }
 
     const query = {
@@ -340,38 +368,50 @@ export class ElasticsearchProvider {
       },
     };
 
-    const response = await this.getClient().search({
-      body: { size: 50, query },
-    });
-
-    if (debug) {
-      return {
-        response,
-        query,
-      };
-    }
-
-    const entries: any[] = await bluebird.map(
-      response.hits.hits,
-      async (item: any) => {
-        const source: any = item._source;
+    try {
+      const response = await this.getClient().search({
+        body: { size: 50, query },
+      });
+      if (debug) {
         return {
-          id: source.id,
-          pronunciation: source.pronunciation,
-          ideogram: source.ideogram,
-          ideogramTraditional: await ideogramsConverter.simplifiedToTraditional(
-            source.ideogram,
-          ),
-          score: item._score,
+          response,
+          query,
         };
-      },
-      { concurrency: 10 },
-    );
+      }
 
-    return {
-      entries,
-      search: originalTerm,
-    };
+      const entries: any[] = await bluebird.map(
+        response.hits.hits,
+        async (item: any) => {
+          const source: any = item._source;
+          return {
+            id: source.id,
+            pronunciation: source.pronunciation,
+            ideogram: source.ideogram,
+            ideogramTraditional: await ideogramsConverter.simplifiedToTraditional(
+              source.ideogram,
+            ),
+            score: item._score,
+          };
+        },
+        { concurrency: 10 },
+      );
+
+      return {
+        entries,
+        search: originalTerm,
+      };
+    } catch (e) {
+      if (debug) {
+        return {
+          error: {
+            message: e.message,
+          },
+          query,
+        };
+      }
+
+      throw e;
+    }
   }
 
   protected getIndex(): string {
