@@ -18,17 +18,21 @@ export class CjkRepository extends BaseRepository {
       .select();
   }
 
-  static async findChineseToolsNotNull(language): Promise<any[]>  {
+  static async findChineseToolsNotNull(language): Promise<any[]> {
     return await knex('cjk')
-      .whereRaw(`definition_ct_${language} IS NOT NULL AND simplified = 1 AND (type = "W" OR (type = "C" AND frequency < 999))`)
+      .whereRaw(
+        `definition_ct_${language} IS NOT NULL AND simplified = 1 AND (type = "W" OR (type = "C" AND frequency < 999))`,
+      )
       // .limit(10)
       .select();
   }
 
-  static async findChineseToolsIsNull(language): Promise<any[]>  {
+  static async findChineseToolsIsNull(language): Promise<any[]> {
     return await knex('cjk')
-      .whereRaw(`definition_ct_${language} IS NULL AND simplified = 1 AND (type = "W" OR (type = "C" AND frequency < 999))`)
-      .limit(10)
+      .whereRaw(
+        `definition_ct_${language} IS NULL AND simplified = 1 AND (type = "W" OR (type = "C" AND frequency < 999))`,
+      )
+      .limit(20)
       .orderBy('hsk', 'ASC')
       .orderBy('usage', 'DESC')
       .select();
