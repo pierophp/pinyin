@@ -4,7 +4,6 @@ exports.up = function(knex, Promise) {
       .integer('cjk_id')
       .nullable()
       .unsigned()
-      .references('cjk.id')
       .alter();
   });
 };
