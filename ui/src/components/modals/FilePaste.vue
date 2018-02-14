@@ -35,7 +35,7 @@ export default {
   name: 'modal-file-paste',
   data() {
     return {
-      action: '3',
+      action: '4',
       textarea: '',
       modalOpen: false,
     };
