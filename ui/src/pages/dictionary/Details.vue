@@ -3,10 +3,10 @@
   <loadable-content :loading="loading">
     <h2>
       <traditional-simplified-show :pinyin="dictionary.pronunciation" :simplified="dictionary.ideograms" :traditional="dictionary.ideogramsTraditional"/>
-      - {{ dictionary.pronunciation }} 
-      
-      <md-button class="md-icon-button md-primary clipboard-btn" v-clipboard="dictionary.ideograms" @success="clipboardSuccess">
-          <md-icon>content_copy</md-icon>
+      - {{ dictionary.pronunciation }}
+
+      <md-button class="md-icon-button md-primary clipboard-btn"  @click="clipboard(dictionary.ideograms)">
+        <md-icon>content_copy</md-icon>
       </md-button>
 
       <md-button class="md-icon-button md-accent sound-btn" @click.native="openSound">
@@ -113,7 +113,8 @@ export default {
     closeDialog(ref) {
       this.$refs[ref].close();
     },
-    clipboardSuccess() {
+    clipboard(ideogram) {
+      this.$clipboard(ideogram);
       this.clipboardOpen = true;
     },
   },

@@ -48,7 +48,7 @@
       <md-dialog-title>
         <ideograms-show :pinyin="block.pinyin" :character="block.character"/>
         - {{ block.pinyin }}
-        <md-button class="md-icon-button md-primary clipboard-btn" v-clipboard="block.character" @success="clipboardSuccess">
+        <md-button class="md-icon-button md-primary clipboard-btn" @click="clipboard(block.character)">
           <md-icon>content_copy</md-icon>
         </md-button>
 
@@ -323,7 +323,8 @@ export default {
         });
     },
 
-    clipboardSuccess() {
+    clipboard(ideogram) {
+      this.$clipboard(ideogram);
       this.clipboardOpen = true;
     },
 

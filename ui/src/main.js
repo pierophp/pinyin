@@ -7,7 +7,7 @@ import VueMaterial from 'vue-material';
 import VueI18n from 'vue-i18n';
 // import { MdButton, MdIcon, MdToolbar } from 'vue-i18n';
 import VueAnalytics from 'vue-analytics';
-import VueClipboards from 'vue-clipboards';
+import VueClipboard from 'v-clipboard';
 import Raven from 'raven-js';
 import RavenVue from 'raven-js/plugins/vue';
 
@@ -48,7 +48,7 @@ export default async function loadMain(moduleName) {
 
   Vue.use(VueI18n);
   Vue.use(VueMaterial);
-  Vue.use(VueClipboards);
+  Vue.use(VueClipboard);
 
   Vue.component('file-container', FileContainer);
 
