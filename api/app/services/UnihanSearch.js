@@ -8,10 +8,8 @@ const isChinese = require('../../../shared/helpers/is-chinese');
 const { ArrayCache } = require('../cache/array.cache');
 const { RedisCache } = require('../cache/redis.cache');
 
-const GlosbeDownloader = require('../services/GlosbeDownloader');
 const fs = Promise.promisifyAll(require('fs'));
 const { IdeogramsConverter } = require('../core/converter/ideograms.converter');
-const { CjkRepository } = require('../repository/cjk.repository');
 
 nodejieba.load({
   userDict: `${__dirname}/../data/compiled.utf8`,
@@ -253,42 +251,6 @@ module.exports = class UnihanSearch {
 
       if (cjk.definition_glosbe_en) {
         response.glosbe_en = JSON.parse(cjk.definition_glosbe_en);
-      }
-
-      try {
-        if (
-          !cjk.definition_glosbe_pt &&
-          !cjk.definition_glosbe_es &&
-          !cjk.definition_glosbe_en
-        ) {
-          [glosbePt, glosbeEs, glosbeEn] = await Promise.all([
-            GlosbeDownloader.download(ideograms, 'por'),
-            GlosbeDownloader.download(ideograms, 'spa'),
-            GlosbeDownloader.download(ideograms, 'eng'),
-          ]);
-
-          if (glosbePt) {
-            response.glosbe_pt = glosbePt;
-          }
-
-          if (glosbeEs) {
-            response.glosbe_es = glosbeEs;
-          }
-
-          if (glosbeEn) {
-            response.glosbe_en = glosbeEn;
-          }
-
-          CjkRepository.save({
-            id: cjk.id,
-            definition_glosbe_pt: JSON.stringify(response.glosbe_pt),
-            definition_glosbe_es: JSON.stringify(response.glosbe_es),
-            definition_glosbe_en: JSON.stringify(response.glosbe_en),
-          }).then();
-        }
-      } catch (e) {
-        // eslint-disable-next-line
-        console.log('Glosbe Error: ' + e.message);
       }
     });
 
