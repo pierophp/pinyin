@@ -16,7 +16,7 @@ export class GlosbeInsertCommand implements CommandModule {
   }
 
   public async handler(argv: any) {
-    let languages = ['pt', 'es', 'en'];
+    let languages = ['pt'];
     if (argv.language) {
       languages = [argv.language];
     }
