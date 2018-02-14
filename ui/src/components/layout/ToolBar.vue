@@ -11,7 +11,7 @@
     </md-toolbar>
 
     <md-drawer :md-active.sync="showNavigation">
-      <md-toolbar :md-elevation="1">
+      <md-toolbar :md-elevation="1" v-if="user">
         <span class="md-title">{{user.name}}</span>
         <span>{{user.email}}</span>
       </md-toolbar>

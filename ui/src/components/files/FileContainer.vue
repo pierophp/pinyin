@@ -115,7 +115,9 @@ export default {
       this.updateCss();
     },
     fullLines() {
-      this.$refs.fileScroll.scrollTo(0, 0);
+      if (this.$refs.fileScroll) {
+        this.$refs.fileScroll.scrollTo(0, 0);
+      }
     },
   },
 
