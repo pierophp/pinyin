@@ -1,9 +1,10 @@
 export default {
   menu: {
-    my_files: 'Meus arquivos',
+    my_files: 'Meus Arquivos',
     dictionary: 'Dicionário',
     bible: 'Bíblia',
-    my_ideograms: 'Meus ideogramas',
+    my_ideograms: 'Meus Ideogramas',
+    daily_text: 'Texto Diário',
     settings: 'Configurações',
     video: 'Vídeo',
     about: 'Sobre',

@@ -4,6 +4,7 @@ export default {
     dictionary: 'Dictionary',
     bible: 'Bible',
     my_ideograms: 'My Ideograms',
+    daily_text: 'Daily Text',
     settings: 'Settings',
     video: 'Video',
     about: 'About',

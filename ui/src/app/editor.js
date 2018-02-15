@@ -15,12 +15,6 @@ export default {
       link: '/dictionary',
     },
     {
-      icon: 'import_contacts',
-      title: 'menu.bible',
-      action: 'goTo',
-      link: '/bible',
-    },
-    {
       icon: 'translate',
       title: 'menu.my_ideograms',
       action: 'goTo',
@@ -31,6 +25,12 @@ export default {
       title: 'menu.video',
       action: 'goTo',
       link: '/video',
+    },
+    {
+      icon: 'today',
+      title: 'menu.daily_text',
+      action: 'goTo',
+      link: '/daily_text',
     },
     {
       icon: 'settings',

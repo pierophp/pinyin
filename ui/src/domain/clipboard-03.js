@@ -151,11 +151,14 @@ async function parseSite(lines, audio, isJwOrg, content) {
 
 export default async function(content) {
   const siteJwOrg = 'https://www.jw.org';
+  const siteWolJwOrg = 'https://wol.jw.org';
   const isJwOrg = content.trim().substr(0, siteJwOrg.length) === siteJwOrg;
+  const isWolJwOrg =
+    content.trim().substr(0, siteWolJwOrg.length) === siteWolJwOrg;
 
   let lines;
   let audio = null;
-  if (isJwOrg) {
+  if (isJwOrg || isWolJwOrg) {
     const jwContent = await parseJW(content);
     if (jwContent.links) {
       const files = [];

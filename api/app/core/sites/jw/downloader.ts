@@ -16,6 +16,7 @@ export class Downloader {
     convertPinyin: boolean = true,
   ) {
     const encoder = new Encoder();
+
     profiler(`Download JW Start - ${encoder.encodeUrl(url)}`);
 
     if (!ideogramType) {
@@ -46,6 +47,13 @@ export class Downloader {
     }
 
     profiler('Download JW End');
+
+    try {
+      response = JSON.parse(response);
+      if (response.items[0].content) {
+        response = '<div id="article">' + response.items[0].content + '</div>';
+      }
+    } catch (e) {}
 
     let $ = cheerio.load(response);
     if (!isChinese) {

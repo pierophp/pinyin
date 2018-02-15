@@ -49,10 +49,12 @@ export class Parser {
       });
     }
 
-    this.text.push({
-      text: this.getText($, $('article header h1')),
-      type: 'h1',
-    });
+    if ($('article header h1').length) {
+      this.text.push({
+        text: this.getText($, $('article header h1')),
+        type: 'h1',
+      });
+    }
 
     let mainElement = $('article > .docSubContent');
     if (!mainElement.length) {
@@ -63,6 +65,14 @@ export class Parser {
       mainElement = $('article .docSubContent');
     }
 
+    if (!mainElement.length) {
+      mainElement = $('#dailyText');
+    }
+
+    if (!mainElement.length) {
+      mainElement = $('#article');
+    }
+    
     mainElement.children().each((i, children) => {
       if ($(children).hasClass('blockTeach')) {
         const boxH2 = $(children).find('aside h2');
@@ -153,7 +163,7 @@ export class Parser {
       const subtitle = $(item).find('.contextTitle');
 
       let title = this.getText($, link);
-      
+
       console.log(title);
 
       if (subtitle.length) {

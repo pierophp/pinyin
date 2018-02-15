@@ -7,11 +7,9 @@ import DictionarySearch from 'src/pages/dictionary/Search';
 import DictionaryDetails from 'src/pages/dictionary/Details';
 import Config from 'src/pages/config/Config';
 import VideoShow from 'src/pages/video/Show';
-import BibleBooks from 'src/pages/bible/Books';
-import BibleChapters from 'src/pages/bible/Chapters';
-import BibleChapter from 'src/pages/bible/Chapter';
-import BibleSave from 'src/pages/bible/Save';
+
 import About from 'src/pages/about/About';
+import DailyText from 'src/pages/daily/DailyText';
 import NotFound from 'src/pages/NotFound';
 
 export default [
@@ -100,54 +98,16 @@ export default [
     },
   },
   {
-    path: '/bible',
-    name: 'bible',
-    component: BibleBooks,
-    meta: {
-      topBar: 'bible-books',
-      protected: true,
-    },
-  },
-  {
-    path: '/bible/save',
-    name: 'bible-save',
-    component: BibleSave,
-    meta: {
-      protected: true,
-      hideTitle: true,
-      topBar: 'bible-save',
-      topBarLeft: true,
-    },
-  },
-  {
-    path: '/bible/:book',
-    name: 'bible-chaoters',
-    component: BibleChapters,
-    meta: {
-      hideTitle: true,
-      topBar: 'bible-chapters',
-      protected: true,
-      topBarLeft: true,
-    },
-  },
-  {
-    path: '/bible/:book/:chapter',
-    name: 'bible-chaoter',
-    component: BibleChapter,
-    meta: {
-      hideTitle: true,
-      topBar: 'bible-chapter',
-      protected: true,
-      topBarLeft: true,
-    },
-  },
-  {
     path: '/about',
     name: 'about',
     component: About,
-    meta: {
-
-    },
+    meta: {},
+  },
+  {
+    path: '/daily_text',
+    name: 'daily-text',
+    component: DailyText,
+    meta: {},
   },
   {
     path: '*',
