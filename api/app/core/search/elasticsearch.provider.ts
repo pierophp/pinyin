@@ -237,11 +237,11 @@ export class ElasticsearchProvider {
           field: 'pronunciationUnaccented',
           score: '70',
         },
-        {
-          type: 'term',
-          field: 'dictionary.ptList',
-          score: '30',
-        },
+        // {
+        //   type: 'term',
+        //   field: 'dictionary.ptList',
+        //   score: '30',
+        // },
         {
           type: 'match_phrase',
           field: 'dictionary.pt',
@@ -267,11 +267,11 @@ export class ElasticsearchProvider {
           field: 'dictionary.glosbeEs',
           score: '16',
         },
-        {
-          type: 'term',
-          field: 'dictionary.cedictList',
-          score: '15',
-        },
+        // {
+        //   type: 'term',
+        //   field: 'dictionary.cedictList',
+        //   score: '15',
+        // },
         {
           type: 'match_phrase',
           field: 'dictionary.cedict',
