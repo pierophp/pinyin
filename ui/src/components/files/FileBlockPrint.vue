@@ -156,7 +156,7 @@ export default {
             pinyin[i] === '';
         }
 
-        if (options.type === '4' && !hidePinyin) {
+        if (options.type === '4' && !hidePinyin && chars[i].trim()) {
           pinyinClass = 'hide-pinyin';
           newPinyin = '&nbsp;';
         } else if (
