@@ -145,4 +145,5 @@ export default {
   warning: 'Warning',
   '2pinyin_add_remove_warning':
     'You can only add / remove ideograms at 2pinyin.net',
+  view: 'View',
 };

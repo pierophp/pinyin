@@ -21,7 +21,7 @@
               <md-table-cell>
                 <md-menu md-size="medium" >
                   <md-button class="md-raised md-primary" md-menu-trigger>
-                    {{ $t('action') }}
+                    {{ $t('view') }}
                   </md-button>
                   <md-menu-content>
                     <md-menu-item @click.native="unknownIdeograms(row.frequency)" v-if="row.frequency !== 999">

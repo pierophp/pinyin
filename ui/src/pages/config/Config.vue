@@ -224,7 +224,7 @@ export default {
 
 .config-container .size-container .md-field {
   margin-right: 15px;
-  width: 170px;
+  width: 150px;
 }
 
 .config-container .language-container {
@@ -243,6 +243,11 @@ export default {
   flex-wrap: wrap;
 }
 
+.config-container .pinyin-container .md-field {
+  margin-right: 15px;
+  width: 140px;
+}
+
 .config-container .ideogram-container .md-field {
   margin-right: 15px;
   flex: 1;
@@ -252,12 +257,6 @@ export default {
 .config-container .ideogram-container {
   display: flex;
   flex-wrap: wrap;
-}
-
-.config-container .pinyin-container .md-field {
-  margin-right: 15px;
-  flex: 1;
-  max-width: 200px;
 }
 
 .config-container .color-container {
