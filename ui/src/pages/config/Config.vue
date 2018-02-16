@@ -160,6 +160,10 @@
 
     <md-button class="md-raised md-primary" @click.native="save()">{{ $t('save') }}</md-button>
     <md-button class="md-raised md-primary" @click.native="restoreDefault()">{{ $t('restore_default') }}</md-button>
+
+    <md-snackbar md-position="center" :md-duration="1300" :md-active.sync="saveNotify">
+      <span>{{ $t('saved_successfully') }}</span>
+    </md-snackbar>
   </div>
 </template>
 
@@ -180,6 +184,7 @@ export default {
 
     data.dataDefault = dataDefault;
     data.languages = OptionsManager.getLanguages(false);
+    data.saveNotify = false;
 
     return data;
   },
@@ -198,6 +203,7 @@ export default {
   methods: {
     save() {
       OptionsManager.save(this);
+      this.saveNotify = true;
     },
     restoreDefault() {
       for (const prop in this.dataDefault) {

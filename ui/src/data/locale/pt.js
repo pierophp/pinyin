@@ -144,4 +144,5 @@ export default {
   '2pinyin_add_remove_warning':
     'Só é possível adicionar / remover ideogramas no 2pinyin.net',
   view: 'Ver',
+  saved_successfully: 'Salvo com sucesso',
 };
