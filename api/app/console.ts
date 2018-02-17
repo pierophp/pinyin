@@ -1,6 +1,7 @@
 import { ElasticsearchStructureCommand } from './commands/elasticsearch.structure.command';
 import { ElasticsearchSyncCommand } from './commands/elasticsearch.sync.command';
 import { JwTrackCommand } from './commands/jw.track.command';
+import { CedictLoadCommand } from './commands/cedict.load.command';
 import { ChineseToolsUpdateCommand } from './commands/chinese.tools.update.command';
 import { ChineseToolsInsertCommand } from './commands/chinese.tools.insert.command';
 import { GlosbeInsertCommand } from './commands/glosbe.insert.command';
@@ -13,6 +14,7 @@ require('yargs')
   .command(new ChineseToolsUpdateCommand())
   .command(new ChineseToolsInsertCommand())
   .command(new GlosbeInsertCommand())
+  .command(new CedictLoadCommand())
   .demandCommand(1)
   .strict()
   .help('h')
