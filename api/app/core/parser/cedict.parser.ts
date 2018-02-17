@@ -80,13 +80,16 @@ export class CedictParser {
             pronunciation_unaccented varchar(255),
             pronunciation_case varchar(255),
             pronunciation_case_unaccented varchar(255),
+            pronunciation_taiwan varchar(255),
+            pronunciation_spaced varchar(255),
             definition text,
             measure_words text,
             variants text,
             simplified tinyint(1),
             traditional tinyint(1),
+            erhua tinyint(1),
             PRIMARY KEY (id)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
     `);
 
     console.info('Create table end');
@@ -133,6 +136,7 @@ export class CedictParser {
     parts = line.split('/');
 
     let pronunciation = '';
+    let pronunciationSpaced = '';
     const pronunciationList = parts[0]
       .split('[')[1]
       .replace(']', '')
@@ -142,13 +146,18 @@ export class CedictParser {
     pronunciationList.forEach((p, index) => {
       if (index > 0) {
         if (vogals.indexOf(p[0]) > -1) {
-          pronunciation += "'";
+          p = "'" + p;
         }
       }
-      pronunciation += p;
-    });
 
-    pronunciation = replaceall('u:', 'ü', pronunciation);
+      p = replaceall('u:', 'ü', p);
+
+      pronunciation += p;
+      if (pronunciationSpaced) {
+        pronunciationSpaced += ' ';
+      }
+      pronunciationSpaced += p;
+    });
 
     const pronunciationUnaccented = pronunciation.replace(
       new RegExp('[12345]', 'g'),
@@ -156,17 +165,37 @@ export class CedictParser {
     );
 
     pronunciation = pinyinConverter.tonesNumbersToAccents(pronunciation);
-
+    pronunciationSpaced = pinyinConverter.tonesNumbersToAccents(
+      pronunciationSpaced,
+    );
     const importPromise = async () => {
       parts.shift();
       const descriptions: string[] = [];
       const measureWords: string[] = [];
       let variants: string[] = [];
+      let taiwanPr: string | null = null;
+      let erHua: number = 0;
 
       for (const part of parts) {
         if (part.substr(0, 3) !== 'CL:') {
           if (part) {
             descriptions.push(part);
+          }
+
+          if (ideogram[ideogram.length - 1] === '儿') {
+            erHua = part.indexOf('erhua') !== -1 ? 1 : 0;
+          }
+
+          const twStart = 'Taiwan pr.';
+
+          if (part.substr(0, twStart.length) === twStart) {
+            taiwanPr = pinyinConverter.tonesNumbersToAccents(
+              part
+                .substr(twStart.length)
+                .trim()
+                .replace('[', '')
+                .replace(']', ''),
+            );
           }
 
           continue;
@@ -184,8 +213,6 @@ export class CedictParser {
           measureWords.push(measureWord);
         }
       }
-
-      console.log(ideogram);
 
       const ideogramRaw = ideogram;
       const ideogramTraditionalRaw = ideogramTraditional;
@@ -208,14 +235,23 @@ export class CedictParser {
         pronunciation_unaccented: pronunciationUnaccented.toLowerCase(),
         pronunciation_case: pronunciation,
         pronunciation_case_unaccented: pronunciationUnaccented,
+        pronunciation_taiwan: taiwanPr,
+        pronunciation_spaced: pronunciationSpaced,
         definition: JSON.stringify(descriptions),
         measure_words: JSON.stringify(measureWords),
         simplified: 1,
         traditional,
+        erhua: erHua,
         variants: JSON.stringify(variants),
       };
 
-      await knex('tmp_cedict').insert(toInsert);
+      try {
+        await knex('tmp_cedict').insert(toInsert);
+      } catch (e) {
+        console.log('Error:' + ideogramRaw);
+        toInsert.ideogram_raw = null;
+        await knex('tmp_cedict').insert(toInsert);
+      }
 
       if (ideogramTraditional !== ideogram) {
         variants = [];
@@ -227,7 +263,12 @@ export class CedictParser {
         toInsert.traditional = 1;
         toInsert.variants = JSON.stringify(variants);
 
-        await knex('tmp_cedict').insert(toInsert);
+        try {
+          await knex('tmp_cedict').insert(toInsert);
+        } catch (e) {
+          toInsert.ideogram_raw = null;
+          await knex('tmp_cedict').insert(toInsert);
+        }
       }
     };
 
@@ -240,7 +281,10 @@ export class CedictParser {
     let i = 0;
     for (const promiseImport of promises) {
       i += 1;
-      console.log(i);
+      if (i % 1000 === 0) {
+        console.log(i);
+      }
+
       await promiseImport();
     }
   }

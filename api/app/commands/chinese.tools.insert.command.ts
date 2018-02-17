@@ -3,7 +3,7 @@ import { CommandModule } from 'yargs';
 import { ElasticsearchProvider } from '../core/search/elasticsearch.provider';
 import { CjkRepository } from '../repository/cjk.repository';
 import * as UnihanSearch from '../services/UnihanSearch';
-import * as ChineseToolsDownloader from '../services/ChineseToolsDownloader';
+import { ChineseToolsParser } from '../core/parser/chinese.tools.parser';
 
 export class ChineseToolsInsertCommand implements CommandModule {
   public command = 'chinesetools:insert';
@@ -21,6 +21,8 @@ export class ChineseToolsInsertCommand implements CommandModule {
       languages = [argv.language];
     }
 
+    const chineseToolsParser = new ChineseToolsParser();
+
     try {
       for (const language of languages) {
         console.log('\n', new Date(), language);
@@ -30,7 +32,7 @@ export class ChineseToolsInsertCommand implements CommandModule {
           console.log(ideogram);
 
           try {
-            const response = await ChineseToolsDownloader.download(
+            const response = await chineseToolsParser.parse(
               ideogram,
               cjk.pronunciation,
               language,

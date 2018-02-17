@@ -1,10 +1,10 @@
-const querystring = require('querystring');
-const cheerio = require('cheerio');
-const axios = require('axios');
-const replaceall = require('replaceall');
+import axios from 'axios';
+import * as cheerio from 'cheerio';
+import * as querystring from 'querystring';
+import * as replaceall from 'replaceall';
 
-module.exports = class ChineseToolsDownloader {
-  static async download(word, pronunciation, language) {
+export class ChineseToolsParser {
+  public async parse(word: string, pronunciation: string, language: string) {
     const urls = {
       pt:
         'http://www.chinese-tools.com/tools/chinese-portuguese-dictionary.html',
@@ -85,4 +85,4 @@ module.exports = class ChineseToolsDownloader {
 
     return dictResponse;
   }
-};
+}

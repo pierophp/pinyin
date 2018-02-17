@@ -1,12 +1,11 @@
-const axios = require('axios');
+import axios from 'axios';
 
-module.exports = class GlosbeDownloader {
-  static async download(word, language) {
+export class GlosbeParser {
+  public async parse(word: string, language: string) {
     const response = await axios.get(
       `https://glosbe.com/gapi/translate?from=cmn&dest=${language}&format=json&phrase=${encodeURIComponent(
         word,
       )}`,
-      {},
       { timeout: 2500 },
     );
 
@@ -19,4 +18,4 @@ module.exports = class GlosbeDownloader {
       return item.phrase.text;
     });
   }
-};
+}

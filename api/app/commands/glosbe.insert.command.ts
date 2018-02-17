@@ -3,7 +3,7 @@ import { CommandModule } from 'yargs';
 import { ElasticsearchProvider } from '../core/search/elasticsearch.provider';
 import { CjkRepository } from '../repository/cjk.repository';
 import * as UnihanSearch from '../services/UnihanSearch';
-import * as GlosbeDownloader from '../services/GlosbeDownloader';
+import { GlosbeParser } from '../core/parser/glosbe.parser';
 
 export class GlosbeInsertCommand implements CommandModule {
   public command = 'glosbe:insert';
@@ -21,6 +21,8 @@ export class GlosbeInsertCommand implements CommandModule {
       languages = [argv.language];
     }
 
+    const glosbeParser = new GlosbeParser();
+
     try {
       for (const language of languages) {
         console.log('\n', new Date(), language);
@@ -30,10 +32,7 @@ export class GlosbeInsertCommand implements CommandModule {
           console.log(ideogram);
 
           try {
-            const response = await GlosbeDownloader.download(
-              ideogram,
-              language,
-            );
+            const response = await glosbeParser.parse(ideogram, language);
 
             const saveOptions: any = {
               id: cjk.id,
