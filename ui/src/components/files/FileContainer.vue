@@ -116,7 +116,8 @@ export default {
     },
     fullLines() {
       if (this.$refs.fileScroll) {
-        this.$refs.fileScroll.scrollTo(0, 0);
+        // error on loading
+        // this.$refs.fileScroll.scrollTo(0, 0);
       }
     },
   },
