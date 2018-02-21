@@ -11,7 +11,7 @@ DELETE c
 FROM cjk c 
 LEFT JOIN tmp_cedict ce
   ON ce.ideogram = c.ideogram
- AND ce.pronunciation = c.pronunciation
+ AND ce.pronunciation_case = c.pronunciation
 WHERE ce.ideogram IS NULL
   AND c.definition_cedict IS NOT NULL
   AND c.definition_unihan IS NULL
@@ -28,17 +28,15 @@ SELECT
 FROM tmp_cedict ce
 JOIN cjk c 
   ON c.ideogram = ce.ideogram
- AND c.pronunciation = ce.pronunciation
-WHERE IFNULL(c.definition_cedict, '') != ce.definition;
-
-SELECT * 
-FROM cjk c
-WHERE ideogram = '382f';
+ AND c.pronunciation = ce.pronunciation_case
+WHERE -- IFNULL(c.definition_cedict, '') != ce.definition
+  -- AND 
+  ce.ideogram_raw = '王';
 
 SELECT * 
 FROM tmp_cedict
-WHERE ideogram_raw = '锡霍特·阿林山脉';
+WHERE ideogram_raw = '鮌';
 
 SELECT * 
 FROM cjk
-WHERE ideogram_raw = '锡霍特·阿林山脉';
+WHERE ideogram_raw = '王';
