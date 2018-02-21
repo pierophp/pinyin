@@ -74,14 +74,14 @@ export class CedictParser {
     await knex.raw(`
         CREATE TABLE tmp_cedict (
             id int(10) NOT NULL AUTO_INCREMENT,
-            ideogram varchar(255),
-            ideogram_raw varchar(255),
-            pronunciation varchar(255),
-            pronunciation_unaccented varchar(255),
-            pronunciation_case varchar(255),
-            pronunciation_case_unaccented varchar(255),
-            pronunciation_taiwan varchar(255),
-            pronunciation_spaced varchar(255),
+            ideogram varchar(190),
+            ideogram_raw varchar(190),
+            pronunciation varchar(190) CHARACTER SET utf8 COLLATE utf8_bin,
+            pronunciation_unaccented varchar(190),
+            pronunciation_case varchar(190) CHARACTER SET utf8 COLLATE utf8_bin,
+            pronunciation_case_unaccented varchar(190),
+            pronunciation_taiwan varchar(190),
+            pronunciation_spaced varchar(190) CHARACTER SET utf8 COLLATE utf8_bin,
             definition text,
             measure_words text,
             variants text,
@@ -90,6 +90,14 @@ export class CedictParser {
             erhua tinyint(1),
             PRIMARY KEY (id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    `);
+
+    await knex.raw(`
+      ALTER TABLE tmp_cedict ADD INDEX tmp_cedict_ideogram_index (ideogram ASC)
+    `);
+
+    await knex.raw(`
+      ALTER TABLE tmp_cedict ADD INDEX tmp_cedict_pronunciation_index (pronunciation ASC)
     `);
 
     console.info('Create table end');

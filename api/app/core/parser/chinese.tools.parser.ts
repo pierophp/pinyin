@@ -55,9 +55,15 @@ export class ChineseToolsParser {
         .text();
       dictDef = replaceall(' ;', ';', dictDef);
 
-      dictDef = dictDef.split('\n').map(item => item.trim());
+      dictDef = dictDef
+        .split('\n')
+        .map(item => item.trim())
+        .filter(item => item);
       if (dictDef.length === 1) {
-        dictDef = dictDef[0].split('/').map(item => item.trim());
+        dictDef = dictDef[0]
+          .split('/')
+          .map(item => item.trim())
+          .filter(item => item);
       }
 
       if (defaultResponse.length === 0) {
