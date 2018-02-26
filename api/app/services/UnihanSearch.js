@@ -634,7 +634,7 @@ module.exports = class UnihanSearch {
         }
 
         const tone = UnihanSearch.extractPinyinTone(nextPronunciation);
-        if (changeToneRules[ideogram][tone]) {
+        if (changeToneRules[ideogram][tone] && result[itemIndex].pinyin !== 'bu') {
           pinyins[ideogramIndex] = changeToneRules[ideogram][tone];
           result[itemIndex].pinyin = pinyins.join('');
         }
