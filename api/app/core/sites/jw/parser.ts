@@ -56,7 +56,12 @@ export class Parser {
       });
     }
 
-    let mainElement = $('article > .docSubContent');
+    let mainElement = $('article > .docSubContent .textSizeIncrement');
+
+    if (!mainElement.length) {
+      mainElement = $('article > .docSubContent');
+    }
+
     if (!mainElement.length) {
       mainElement = $('article #bibleText');
     }
@@ -72,7 +77,7 @@ export class Parser {
     if (!mainElement.length) {
       mainElement = $('#article');
     }
-    
+
     mainElement.children().each((i, children) => {
       if ($(children).hasClass('blockTeach')) {
         const boxH2 = $(children).find('aside h2');
