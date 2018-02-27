@@ -183,6 +183,7 @@ export class CedictParser {
       parts.shift();
       const descriptions: string[] = [];
       const measureWords: string[] = [];
+      const measureWordsTraditional: string[] = [];
       let variants: string[] = [];
       let taiwanPr: string | null = null;
       let erHua: number = 0;
@@ -202,6 +203,7 @@ export class CedictParser {
           if (part.substr(0, twStart.length) === twStart) {
             taiwanPr = pinyinConverter.tonesNumbersToAccents(
               part
+                .split(']')[0]
                 .substr(twStart.length)
                 .trim()
                 .replace('[', '')
@@ -215,6 +217,9 @@ export class CedictParser {
         const measureWordsTmp = part.replace('CL:', '').split(',');
         for (let measureWord of measureWordsTmp) {
           measureWord = measureWord.split('[')[0].split('|');
+
+          measureWordsTraditional.push(measureWord[0]);
+
           if (measureWord[1] !== undefined) {
             measureWord = measureWord[1];
           } else {
@@ -233,11 +238,7 @@ export class CedictParser {
       );
 
       let traditional = 0;
-      if (ideogramTraditional === ideogram) {
-        traditional = 1;
-      } else {
-        variants.push(ideogramTraditionalRaw);
-      }
+      variants.push(ideogramTraditionalRaw);
 
       const toInsert = {
         ideogram,
@@ -253,49 +254,59 @@ export class CedictParser {
         simplified: 1,
         traditional,
         erhua: erHua,
-        variants: variants,
+        variants,
       };
 
-      let key = `${ideogramRaw}${pronunciation}`;
+      let key = `${ideogramRaw}${pronunciation}${traditional}`;
 
       if (this.words[key]) {
-        this.words[key].variants = this.words[key].variants.concat(variants);
+        this.words[key].variants = JSON.parse(
+          JSON.stringify(this.words[key].variants.concat(variants)),
+        );
 
-        this.words[key].measure_words = this.words[key].measure_words.concat(
-          measureWords,
+        this.words[key].measure_words = JSON.parse(
+          JSON.stringify(this.words[key].measure_words.concat(measureWords)),
         );
 
         this.words[key].definition = this.words[key].definition.concat(
           descriptions,
         );
       } else {
-        this.words[key] = toInsert;
+        this.words[key] = JSON.parse(JSON.stringify(toInsert));
       }
 
-      if (ideogramTraditional !== ideogram) {
-        variants = [];
-        variants.push(ideogramRaw);
+      traditional = 1;
 
-        if (this.words[key]) {
-          this.words[key].measure_words = this.words[key].measure_words.concat(
-            measureWords,
-          );
-          this.words[key].variants = this.words[key].variants.concat(variants);
+      key = `${ideogramTraditionalRaw}${pronunciation}${traditional}`;
 
-          this.words[key].definition = this.words[key].definition.concat(
-            descriptions,
-          );
-        } else {
-          this.words[key] = toInsert;
-        }
+      variants = [];
+      variants.push(ideogramRaw);
 
-        toInsert.ideogram = ideogramTraditional;
-        toInsert.ideogram_raw = ideogramTraditionalRaw;
-        toInsert.simplified = 0;
-        toInsert.traditional = 1;
-        toInsert.variants = variants;
+      console.log('measureWordsTraditional', measureWordsTraditional);
 
-        this.words[key] = toInsert;
+      toInsert.measure_words = measureWordsTraditional;
+      toInsert.ideogram = ideogramTraditional;
+      toInsert.ideogram_raw = ideogramTraditionalRaw;
+      toInsert.simplified = 0;
+      toInsert.traditional = traditional;
+      toInsert.variants = JSON.parse(JSON.stringify(variants));
+
+      if (this.words[key]) {
+        this.words[key].measure_words = JSON.parse(
+          JSON.stringify(
+            this.words[key].measure_words.concat(measureWordsTraditional),
+          ),
+        );
+
+        this.words[key].variants = JSON.parse(
+          JSON.stringify(this.words[key].variants.concat(variants)),
+        );
+
+        this.words[key].definition = JSON.parse(
+          JSON.stringify(this.words[key].definition.concat(descriptions)),
+        );
+      } else {
+        this.words[key] = JSON.parse(JSON.stringify(toInsert));
       }
     };
 
@@ -329,9 +340,15 @@ export class CedictParser {
         Array.from(new Set(word.measure_words)),
       );
 
-      word.variants = JSON.stringify(Array.from(new Set(word.variants)));
+      let variantsSave = Array.from(new Set(word.variants));
+      if (variantsSave.length === 1 && word.ideogram_raw === variantsSave[0]) {
+        variantsSave = [];
+      }
+
+      word.variants = JSON.stringify(variantsSave);
 
       word.definition = JSON.stringify(Array.from(new Set(word.definition)));
+
       try {
         await knex('tmp_cedict').insert(word);
       } catch (e) {

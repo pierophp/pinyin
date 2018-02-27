@@ -40,3 +40,7 @@ WHERE ideogram_raw = '鮌';
 SELECT * 
 FROM cjk
 WHERE ideogram_raw = '王';
+
+SELECT * 
+FROM tmp_cedict
+WHERE measure_words != '[]';
