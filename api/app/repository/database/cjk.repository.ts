@@ -18,7 +18,7 @@ export class CjkRepository extends BaseRepository {
       .select();
   }
 
-  static async findChineseToolsNotNull(language): Promise<any[]> {
+  static async findChineseToolsNotNull(language: string): Promise<any[]> {
     return await knex('cjk')
       .whereRaw(
         `definition_ct_${language} IS NOT NULL AND simplified = 1 AND (type = "W" OR (type = "C" AND frequency < 999))`,
@@ -27,7 +27,7 @@ export class CjkRepository extends BaseRepository {
       .select();
   }
 
-  static async findChineseToolsIsNull(language): Promise<any[]> {
+  static async findChineseToolsIsNull(language: string): Promise<any[]> {
     return await knex('cjk')
       .whereRaw(
         `definition_ct_${language} IS NULL AND simplified = 1 AND (type = "W" OR (type = "C" AND frequency < 999))`,
@@ -38,7 +38,7 @@ export class CjkRepository extends BaseRepository {
       .select();
   }
 
-  static async findGlosbeNotNull(language): Promise<any[]> {
+  static async findGlosbeNotNull(language: string): Promise<any[]> {
     return await knex('cjk')
       .whereRaw(
         `definition_glosbe_${language} IS NOT NULL AND simplified = 1 AND (type = "W" OR (type = "C" AND frequency < 999))`,
@@ -47,7 +47,7 @@ export class CjkRepository extends BaseRepository {
       .select();
   }
 
-  static async findGlosbeIsNull(language): Promise<any[]> {
+  static async findGlosbeIsNull(language: string): Promise<any[]> {
     return await knex('cjk')
       .whereRaw(
         `definition_glosbe_${language} IS NULL AND simplified = 1 AND (type = "W" OR (type = "C" AND frequency < 999))`,
@@ -58,7 +58,13 @@ export class CjkRepository extends BaseRepository {
       .select();
   }
 
-  static async searchPronunciationByWord(ideograms) {
+  static async findIdeogramRawIsNull(): Promise<any[]> {
+    return await knex('cjk')
+      .whereRaw(`ideogram_raw IS NULL`)
+      .select();
+  }
+
+  static async searchPronunciationByWord(ideograms: string) {
     const ideogramConverted = UnihanSearch.convertIdeogramsToUtf16(ideograms);
     let response: any = null;
     if (ideograms.length === 1) {

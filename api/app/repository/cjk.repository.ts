@@ -22,6 +22,10 @@ export class CjkRepository extends BaseRepository {
     return DatabaseCjkRepository.findGlosbeIsNull(language);
   }
 
+  static async findIdeogramRawIsNull(): Promise<any[]> {
+    return DatabaseCjkRepository.findIdeogramRawIsNull();
+  }
+
   static async searchPronunciationByWord(ideograms) {
     return DatabaseCjkRepository.searchPronunciationByWord(ideograms);
   }
