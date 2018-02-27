@@ -128,6 +128,7 @@ router.post('/save', async (req: any, res) => {
     const pronunciationUnaccented = removeDiacritics(pronunciation);
     await CjkRepository.save({
       ideogram,
+      ideogram_raw: req.body.ideograms,
       main: 1,
       pronunciation,
       pronunciation_unaccented: pronunciationUnaccented,

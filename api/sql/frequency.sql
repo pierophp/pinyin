@@ -33,3 +33,14 @@ FROM (
 JOIN cjk c ON c.ideogram = a.ideogram
 WHERE c.definition_pt IS NULL
 ORDER BY a.total DESC;
+
+
+-- UPDATE
+
+UPDATE (
+	SELECT ideogram, SUM(total) total
+	FROM publication_frequency
+	GROUP BY ideogram
+) a
+JOIN cjk c ON c.ideogram = a.ideogram
+SET c.usage = a.total;

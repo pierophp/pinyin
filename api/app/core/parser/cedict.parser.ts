@@ -21,6 +21,8 @@ const ideogramsConverter = new IdeogramsConverter();
 const pinyinConverter = new PinyinConverter();
 
 export class CedictParser {
+  protected words: any = {};
+
   public async parse() {
     try {
       statSync(filename);
@@ -176,6 +178,7 @@ export class CedictParser {
     pronunciationSpaced = pinyinConverter.tonesNumbersToAccents(
       pronunciationSpaced,
     );
+
     const importPromise = async () => {
       parts.shift();
       const descriptions: string[] = [];
@@ -233,7 +236,7 @@ export class CedictParser {
       if (ideogramTraditional === ideogram) {
         traditional = 1;
       } else {
-        variants.push(ideogramTraditional);
+        variants.push(ideogramTraditionalRaw);
       }
 
       const toInsert = {
@@ -245,38 +248,54 @@ export class CedictParser {
         pronunciation_case_unaccented: pronunciationUnaccented,
         pronunciation_taiwan: taiwanPr,
         pronunciation_spaced: pronunciationSpaced,
-        definition: JSON.stringify(descriptions),
-        measure_words: JSON.stringify(measureWords),
+        definition: descriptions,
+        measure_words: measureWords,
         simplified: 1,
         traditional,
         erhua: erHua,
-        variants: JSON.stringify(variants),
+        variants: variants,
       };
 
-      try {
-        await knex('tmp_cedict').insert(toInsert);
-      } catch (e) {
-        console.log('Error:' + ideogramRaw);
-        toInsert.ideogram_raw = null;
-        await knex('tmp_cedict').insert(toInsert);
+      let key = `${ideogramRaw}${pronunciation}`;
+
+      if (this.words[key]) {
+        this.words[key].variants = this.words[key].variants.concat(variants);
+
+        this.words[key].measure_words = this.words[key].measure_words.concat(
+          measureWords,
+        );
+
+        this.words[key].definition = this.words[key].definition.concat(
+          descriptions,
+        );
+      } else {
+        this.words[key] = toInsert;
       }
 
       if (ideogramTraditional !== ideogram) {
         variants = [];
-        variants.push(ideogram);
+        variants.push(ideogramRaw);
+
+        if (this.words[key]) {
+          this.words[key].measure_words = this.words[key].measure_words.concat(
+            measureWords,
+          );
+          this.words[key].variants = this.words[key].variants.concat(variants);
+
+          this.words[key].definition = this.words[key].definition.concat(
+            descriptions,
+          );
+        } else {
+          this.words[key] = toInsert;
+        }
 
         toInsert.ideogram = ideogramTraditional;
         toInsert.ideogram_raw = ideogramTraditionalRaw;
         toInsert.simplified = 0;
         toInsert.traditional = 1;
-        toInsert.variants = JSON.stringify(variants);
+        toInsert.variants = variants;
 
-        try {
-          await knex('tmp_cedict').insert(toInsert);
-        } catch (e) {
-          toInsert.ideogram_raw = null;
-          await knex('tmp_cedict').insert(toInsert);
-        }
+        this.words[key] = toInsert;
       }
     };
 
@@ -294,6 +313,31 @@ export class CedictParser {
       }
 
       await promiseImport();
+    }
+
+    i = 0;
+    console.log('Start store database');
+    for (const wordKey of Object.keys(this.words)) {
+      const word = this.words[wordKey];
+
+      i += 1;
+      if (i % 1000 === 0) {
+        console.log(i);
+      }
+
+      word.measure_words = JSON.stringify(
+        Array.from(new Set(word.measure_words)),
+      );
+
+      word.variants = JSON.stringify(Array.from(new Set(word.variants)));
+
+      word.definition = JSON.stringify(Array.from(new Set(word.definition)));
+      try {
+        await knex('tmp_cedict').insert(word);
+      } catch (e) {
+        word.ideogram_raw = null;
+        await knex('tmp_cedict').insert(word);
+      }
     }
   }
 }
