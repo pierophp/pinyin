@@ -282,8 +282,6 @@ export class CedictParser {
       variants = [];
       variants.push(ideogramRaw);
 
-      console.log('measureWordsTraditional', measureWordsTraditional);
-
       toInsert.measure_words = measureWordsTraditional;
       toInsert.ideogram = ideogramTraditional;
       toInsert.ideogram_raw = ideogramTraditionalRaw;
