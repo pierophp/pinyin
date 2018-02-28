@@ -35,7 +35,7 @@ export class ElasticsearchProvider {
         type: { type: 'keyword' },
         simplified: { type: 'boolean' },
         traditional: { type: 'boolean' },
-        variants: { type: 'integer', index: false },
+        variants: { type: 'text', index: false },
         main: { type: 'integer', index: false },
         usage: { type: 'integer', index: false },
         frequency: { type: 'integer', index: false },
@@ -379,13 +379,18 @@ export class ElasticsearchProvider {
         response.hits.hits,
         async (item: any) => {
           const source: any = item._source;
+          let variants = source.variants;
+          if (!variants) {
+            variants = [
+              await ideogramsConverter.simplifiedToTraditional(source.ideogram),
+            ];
+          }
+
           return {
             id: source.id,
             pronunciation: source.pronunciation,
             ideogram: source.ideogram,
-            ideogramTraditional: await ideogramsConverter.simplifiedToTraditional(
-              source.ideogram,
-            ),
+            variants,
             score: item._score,
           };
         },
