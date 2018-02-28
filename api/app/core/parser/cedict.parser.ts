@@ -356,5 +356,37 @@ export class CedictParser {
         await knex('tmp_cedict').insert(word);
       }
     }
+
+    console.log('Joining simplified and traditional');
+
+    await knex.raw(`
+      UPDATE tmp_cedict ts
+      JOIN tmp_cedict tt
+        ON tt.ideogram = ts.ideogram
+      AND tt.pronunciation_case = ts.pronunciation_case 
+      AND tt.definition = ts.definition
+      AND tt.variants = ts.variants
+      AND tt.measure_words = ts.measure_words
+      AND tt.simplified = 0
+      AND tt.traditional = 1
+      SET ts.traditional = 1
+      WHERE ts.simplified = 1
+        AND ts.traditional = 0
+    `);
+
+    await knex.raw(`
+      DELETE tt 
+      FROM tmp_cedict ts
+      JOIN tmp_cedict tt
+        ON tt.ideogram = ts.ideogram
+      AND tt.pronunciation_case = ts.pronunciation_case 
+      AND tt.definition = ts.definition
+      AND tt.variants = ts.variants
+      AND tt.measure_words = ts.measure_words
+      AND tt.simplified = 0
+      AND tt.traditional = 1
+      WHERE ts.simplified = 1
+        AND ts.traditional = 1
+    `);
   }
 }
