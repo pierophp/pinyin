@@ -144,6 +144,8 @@ module.exports = class UnihanSearch {
         'definition_glosbe_es',
         'definition_glosbe_en',
         'hsk',
+        'variants',
+        'measure_words',
       );
 
     if (cjkList.length === 0 && search.pinyin && search.ideograms) {
@@ -159,7 +161,6 @@ module.exports = class UnihanSearch {
         .select(
           'id',
           'ideogram',
-          'variants',
           'pronunciation',
           'definition_unihan',
           'definition_pt',
@@ -171,12 +172,15 @@ module.exports = class UnihanSearch {
           'definition_glosbe_es',
           'definition_glosbe_en',
           'hsk',
+          'variants',
+          'measure_words',
         );
     }
 
     const response = {};
     response.ideograms = search.ideograms;
 
+    response.measure_words = null;
     response.variants = null;
     response.pronunciation = null;
     response.unihan = null;
@@ -204,14 +208,18 @@ module.exports = class UnihanSearch {
       response.hsk = cjk.hsk;
 
       if (!response.variants) {
-        console.log(cjk.variants);
-
         if (cjk.variants) {
           response.variants = JSON.parse(cjk.variants);
         } else {
           response.variants = [
             await ideogramsConverter.simplifiedToTraditional(ideograms),
           ];
+        }
+      }
+
+      if (!response.measure_words) {
+        if (cjk.measure_words) {
+          response.measure_words = JSON.parse(cjk.measure_words);
         }
       }
 

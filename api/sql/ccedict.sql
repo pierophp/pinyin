@@ -92,9 +92,9 @@ WHERE c.id IS NULL
 LIMIT 100000000;
 
 
--- INvert Main
+-- Invert Main Upper
 
-DROP TABLE tmp_invert_ideogram;
+DROP TABLE IF EXISTS  tmp_invert_ideogram;
 
 CREATE TABLE tmp_invert_ideogram
 SELECT c.ideogram_raw,
