@@ -90,3 +90,34 @@ LEFT JOIN cjk c
  AND c.simplified = ce.simplified
 WHERE c.id IS NULL
 LIMIT 100000000;
+
+
+-- INvert Main
+
+DROP TABLE tmp_invert_ideogram;
+
+CREATE TABLE tmp_invert_ideogram
+SELECT c.ideogram_raw,
+       c.id id_1, 
+       c2.pronunciation pronunciation_1,
+       c2.id id_2,
+       c.pronunciation pronunciation_2
+FROM cjk c
+JOIN cjk c2 
+  ON c2.ideogram = c.ideogram
+ AND c2.main = 0
+ AND c2.simplified = c.simplified
+ AND c2.pronunciation_unaccented = c.pronunciation_unaccented
+ AND SUBSTR(c2.pronunciation, 2) = SUBSTR(c.pronunciation, 2)
+WHERE c.main = 1
+  AND SUBSTR(c.pronunciation,1 , 1) = UCASE(SUBSTR(c.pronunciation,1 , 1));
+
+
+UPDATE tmp_invert_ideogram tmp
+JOIN cjk c ON c.id = tmp.id_1
+SET c.pronunciation = tmp.pronunciation_1;
+
+UPDATE tmp_invert_ideogram tmp
+JOIN cjk c ON c.id = tmp.id_2
+SET c.pronunciation = tmp.pronunciation_2;
+  

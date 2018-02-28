@@ -129,6 +129,8 @@ export class ElasticsearchProvider {
     const glosbeEn = JSON.parse(dictionary.definition_glosbe_en);
     const glosbeEs = JSON.parse(dictionary.definition_glosbe_es);
 
+    const variants = JSON.parse(dictionary.variants);
+
     return {
       id: dictionary.id,
       ideogram: dictionary.ideogram_raw,
@@ -153,7 +155,7 @@ export class ElasticsearchProvider {
       type: dictionary.type,
       simplified: dictionary.simplified ? true : false,
       traditional: dictionary.traditional ? true : false,
-      variants: dictionary.variants,
+      variants,
       main: dictionary.main ? 1 : 0,
       usage: dictionary.usage || 0,
       frequency: dictionary.frequency || 0,
