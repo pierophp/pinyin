@@ -2,7 +2,7 @@
 <div class="dictionary-container">
   <loadable-content :loading="loading">
     <h2>
-      <traditional-simplified-show :pinyin="dictionary.pronunciation" :simplified="dictionary.ideograms" :traditional="dictionary.ideogramsTraditional"/>
+      <traditional-simplified-show :pinyin="dictionary.pronunciation" :ideograms="dictionary.ideograms" :variants="dictionary.variants"/>
       - {{ dictionary.pronunciation }}
 
       <md-button class="md-icon-button md-primary clipboard-btn"  @click="clipboard(dictionary.ideograms)">

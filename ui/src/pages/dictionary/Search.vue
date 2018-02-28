@@ -18,7 +18,7 @@
       <md-list-item v-for="entry in entries" @click="details(entry.id)" v-bind:key="entry.id">
         <span>
           <span class="ideogram">
-            <traditional-simplified-show :pinyin="entry.pronunciation" :simplified="entry.ideogram" :traditional="entry.ideogramTraditional"/>
+            <traditional-simplified-show :pinyin="entry.pronunciation" :ideograms="entry.ideogram" :variants="entry.variants"/>
           </span
           ><span class="pinyin"> - {{ entry.pronunciation }}</span>
         </span>

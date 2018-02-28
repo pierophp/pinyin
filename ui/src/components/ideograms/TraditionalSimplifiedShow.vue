@@ -1,6 +1,6 @@
 <template>
     <div class="ideogram-show">
-      <ideograms-show :pinyin="pinyin" :character="first" ref="first-ideogram-show"/>
+      <ideograms-show :pinyin="pinyin" :character="ideograms" ref="first-ideogram-show"/>
       [<ideograms-show :pinyin="pinyin" :character="secondOnlyDiff" ref="second-ideogram-show"/>]
     </div>
 </template>
@@ -18,11 +18,11 @@ export default {
   },
   props: {
     pinyin: '',
-    simplified: '',
-    traditional: '',
+    ideograms: '',
+    variants: Array,
   },
   watch: {
-    first() {
+    ideograms() {
       if (this.$refs['first-ideogram-show']) {
         this.$nextTick(() => {
           this.$refs['first-ideogram-show'].updateRender();
@@ -38,39 +38,26 @@ export default {
     },
   },
   computed: {
-    first: function first() {
-      if (options.ideogramType === 't') {
-        return this.traditional;
-      }
-      return this.simplified;
-    },
-
-    second: function second() {
-      if (options.ideogramType === 't') {
-        return this.simplified;
-      }
-      return this.traditional;
-    },
-
     secondOnlyDiff() {
-      if (!this.second) {
-        return '';
-      }
+      const secondWithDiffList = [];
 
-      const total = this.second.length;
-      let secondWithDiff = '';
-      for (let i = 0; i < total; i += 1) {
-        const firstChar = this.first[i];
-        const secondChar = this.second[i];
+      for (const variant of this.variants) {
+        const total = variant.length;
+        let secondWithDiff = '';
+        for (let i = 0; i < total; i += 1) {
+          const firstChar = this.ideograms[i];
+          const secondChar = variant[i];
 
-        if (firstChar === secondChar) {
-          secondWithDiff += '-';
-        } else {
-          secondWithDiff += secondChar;
+          if (firstChar === secondChar) {
+            secondWithDiff += '-';
+          } else {
+            secondWithDiff += secondChar;
+          }
         }
+        secondWithDiffList.push(secondWithDiff);
       }
 
-      return secondWithDiff;
+      return secondWithDiffList.join('/');
     },
   },
 };

@@ -159,6 +159,7 @@ module.exports = class UnihanSearch {
         .select(
           'id',
           'ideogram',
+          'variants',
           'pronunciation',
           'definition_unihan',
           'definition_pt',
@@ -175,11 +176,8 @@ module.exports = class UnihanSearch {
 
     const response = {};
     response.ideograms = search.ideograms;
-    if (search.ideograms) {
-      response.ideogramsTraditional = await ideogramsConverter.simplifiedToTraditional(
-        search.ideograms,
-      );
-    }
+
+    response.variants = null;
     response.pronunciation = null;
     response.unihan = null;
     response.pt = null;
@@ -205,10 +203,16 @@ module.exports = class UnihanSearch {
       response.ideograms = ideograms;
       response.hsk = cjk.hsk;
 
-      if (!response.ideogramsTraditional) {
-        response.ideogramsTraditional = await ideogramsConverter.simplifiedToTraditional(
-          ideograms,
-        );
+      if (!response.variants) {
+        console.log(cjk.variants);
+
+        if (cjk.variants) {
+          response.variants = JSON.parse(cjk.variants);
+        } else {
+          response.variants = [
+            await ideogramsConverter.simplifiedToTraditional(ideograms),
+          ];
+        }
       }
 
       if (cjk.definition_unihan) {
@@ -634,7 +638,10 @@ module.exports = class UnihanSearch {
         }
 
         const tone = UnihanSearch.extractPinyinTone(nextPronunciation);
-        if (changeToneRules[ideogram][tone] && result[itemIndex].pinyin !== 'bu') {
+        if (
+          changeToneRules[ideogram][tone] &&
+          result[itemIndex].pinyin !== 'bu'
+        ) {
           pinyins[ideogramIndex] = changeToneRules[ideogram][tone];
           result[itemIndex].pinyin = pinyins.join('');
         }
