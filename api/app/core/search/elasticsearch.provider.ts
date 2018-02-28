@@ -239,7 +239,7 @@ export class ElasticsearchProvider {
         },
         {
           type: 'term',
-          field: 'dictionary.ptList',
+          field: 'dictionary.ptKeyword',
           score: '30',
         },
         {
@@ -269,7 +269,7 @@ export class ElasticsearchProvider {
         },
         {
           type: 'term',
-          field: 'dictionary.cedictList',
+          field: 'dictionary.cedictKeyword',
           score: '15',
         },
         {
