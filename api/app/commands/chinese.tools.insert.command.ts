@@ -16,7 +16,7 @@ export class ChineseToolsInsertCommand implements CommandModule {
   }
 
   public async handler(argv: any) {
-    let languages = ['pt'];
+    let languages = ['pt', 'es'];
     if (argv.language) {
       languages = [argv.language];
     }
