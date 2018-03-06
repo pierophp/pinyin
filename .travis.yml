@@ -30,8 +30,10 @@ before_install:
 - npm install pm2 -g
 - cd api
 - yarn install
-- echo $SSH_USER
-- echo $SSH_HOST
+- echo $SSH_USER > sshuser.txt
+- echo $SSH_HOST > sshhost.txt
+- cat sshuser.txt
+- cat sshhost.txt
 # - cd ../ui-storage
 # - yarn install
 # - yarn build
