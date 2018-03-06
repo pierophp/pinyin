@@ -31,6 +31,7 @@ before_install:
 - cd api
 - yarn install
 - echo $SSH_USER
+- echo $SSH_HOST
 # - cd ../ui-storage
 # - yarn install
 # - yarn build
