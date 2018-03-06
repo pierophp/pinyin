@@ -29,41 +29,41 @@ before_install:
 - npm install pm2 -g
 - cd api
 - yarn install
-# - cd ../ui-storage
-# - yarn install
-# - yarn build
-# - cp index.html dist/
-# - mv dist/ ../ui/static/storage/
-# - cd ../ui
-# - yarn install
-# - rm src/.config.js
-# - cp src/.config-${TRAVIS_BRANCH}.js src/.config.js
-# # editor
-# - rm index.html
-# - cp index-${TRAVIS_BRANCH}.html index.html
-# - yarn build > /dev/null
-# - zip -r /home/travis/pinyin.dist.zip dist > /dev/null
-# # bible
-# - rm index.html
-# - cp index-${TRAVIS_BRANCH}.html index.html
-# - sed -i -e 's/favicon\//favicon-bible\//g' index.html
-# - yarn build-bible > /dev/null
-# - zip -r /home/travis/bible.pinyin.dist.zip dist > /dev/null
-# - echo "static/bible/*" >> .gitignore
-# - echo "src/.config.js" >> .gitignore
-# # videos
-# - rm -Rf static/bible
-# - rm index.html
-# - cp index-${TRAVIS_BRANCH}.html index.html
-# - sed -i -e 's/favicon\//favicon-videos\//g' index.html
-# - yarn build-videos > /dev/null
-# - zip -r /home/travis/videos.pinyin.dist.zip dist > /dev/null
-# # dictionary
-# - rm index.html
-# - cp index-${TRAVIS_BRANCH}.html index.html
-# - sed -i -e 's/favicon\//favicon-dictionary\//g' index.html
-# - yarn build-dictionary > /dev/null
-# - zip -r /home/travis/dictionary.pinyin.dist.zip dist > /dev/null
+- cd ../ui-storage
+- yarn install
+- yarn build
+- cp index.html dist/
+- mv dist/ ../ui/static/storage/
+- cd ../ui
+- yarn install
+- rm src/.config.js
+- cp src/.config-${TRAVIS_BRANCH}.js src/.config.js
+# editor
+- rm index.html
+- cp index-${TRAVIS_BRANCH}.html index.html
+- yarn build > /dev/null
+- zip -r /home/travis/pinyin.dist.zip dist > /dev/null
+# bible
+- rm index.html
+- cp index-${TRAVIS_BRANCH}.html index.html
+- sed -i -e 's/favicon\//favicon-bible\//g' index.html
+- yarn build-bible > /dev/null
+- zip -r /home/travis/bible.pinyin.dist.zip dist > /dev/null
+- echo "static/bible/*" >> .gitignore
+- echo "src/.config.js" >> .gitignore
+# videos
+- rm -Rf static/bible
+- rm index.html
+- cp index-${TRAVIS_BRANCH}.html index.html
+- sed -i -e 's/favicon\//favicon-videos\//g' index.html
+- yarn build-videos > /dev/null
+- zip -r /home/travis/videos.pinyin.dist.zip dist > /dev/null
+# dictionary
+- rm index.html
+- cp index-${TRAVIS_BRANCH}.html index.html
+- sed -i -e 's/favicon\//favicon-dictionary\//g' index.html
+- yarn build-dictionary > /dev/null
+- zip -r /home/travis/dictionary.pinyin.dist.zip dist > /dev/null
 before_script:
 - export CHROME_BIN=chromium-browser
 - export DISPLAY=:99.0
