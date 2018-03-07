@@ -638,7 +638,7 @@ export class Parser {
 
       lineText = ` ${ideogramsFiltered.join(' ')} `;
 
-      const wordsToReplace = ['各地', '可见', '称为', '处于', '忠于'];
+      const wordsToReplace = ['各地', '可见', '称为', '处于', '忠于', '何时'];
 
       wordsToReplace.forEach(word => {
         const replaceWord = ` ${word.split('').join(' ')} `;
