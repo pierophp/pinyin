@@ -32,6 +32,7 @@ const postDeployCommands = [
       ? '/var/www/dictionary.pinyin'
       : '/var/www/dictionary.pinyin.staging'
   }`,
+  'ln -sf /var/local/pinyin/Dicionario_Pleco.txt /var/www/dictionary.pinyin/Dicionario_Pleco.txt',
   // Videos Editor UI
   'rm -Rf dist/',
   `unzip videos.pinyin.dist-${process.env.TRAVIS_BRANCH}.zip > /dev/null`,
