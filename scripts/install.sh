@@ -2,7 +2,7 @@
 sudo apt upgrade
 
 sudo apt install nginx redis-tools mysql-client npm zip \
-     libcurl4-openssl-dev
+     libcurl4-openssl-dev awscli
 
 sudo npm i -g npm knex pm2 yarn n
 
