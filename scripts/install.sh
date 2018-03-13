@@ -32,10 +32,9 @@ yarn build
 ## application staging
 sudo mkdir /var/www/api.pinyin.staging
 sudo mkdir /var/www/api.pinyin.staging/env
-sudo cp /var/www/api.pinyin/env/env.js /var/www/api.pinyin.staging/env/env.js
-sudo cp /var/www/api.pinyin/env/knexfile.js /var/www/api.pinyin.staging/env/knexfile.js
-sudo cp /var/www/api.pinyin/env/newrelic.js /var/www/api.pinyin.staging/env/newrelic.js
-sudo cp /var/www/api.pinyin.staging/env/env.js /var/www/api.pinyin.staging/source/api/env.js
+sudo cp /var/www/api.pinyin.staging/env/env.js /var/www/api.pinyin.staging/env/env.js
+sudo cp /var/www/api.pinyin.staging/env/knexfile.js /var/www/api.pinyin.staging/env/knexfile.js
+sudo cp /var/www/api.pinyin.staging/env/newrelic.js /var/www/api.pinyin.staging/env/newrelic.js
 git clone https://github.com/pierophp/pinyin.git /var/www/api.pinyin.staging/source
 cd /var/www/api.pinyin.staging/source/api
 yarn
