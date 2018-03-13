@@ -8,6 +8,9 @@ sudo npm i -g npm knex pm2 yarn n
 
 sudo n latest
 
+echo "America/Sao_Paulo" | sudo tee /etc/timezone
+export TZ=America/Sao_Paulo 
+
 ## swap
 sudo /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=2048
 sudo /sbin/mkswap /var/swap.1
