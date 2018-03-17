@@ -16,17 +16,28 @@ export class GlosbeInsertCommand implements CommandModule {
   }
 
   public async handler(argv: any) {
-    let languages = ['pt', 'es'];
+    let languages: any = { pt: 2, es: 5, en: 5 };
     if (argv.language) {
-      languages = [argv.language];
+      languages = {};
+      languages[argv.language] = 10;
     }
 
     const glosbeParser = new GlosbeParser();
 
     try {
       for (const language of languages) {
-        console.log('\n', new Date(), language);
-        const cjks = await CjkRepository.findGlosbeIsNull(language);
+        console.log(
+          '\n',
+          new Date(),
+          language,
+          ' total: ',
+          languages[language],
+        );
+
+        const cjks = await CjkRepository.findGlosbeIsNull(
+          language,
+          languages[language],
+        );
         for (const cjk of cjks) {
           const ideogram = UnihanSearch.convertUtf16ToIdeograms(cjk.ideogram);
           console.log(ideogram);

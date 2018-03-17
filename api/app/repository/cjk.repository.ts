@@ -6,7 +6,7 @@ export class CjkRepository extends BaseRepository {
     return DatabaseCjkRepository.findAll();
   }
 
-  static async findChineseToolsNotNull(language): Promise<any[]> {
+  static async findChineseToolsNotNull(language: string): Promise<any[]> {
     return DatabaseCjkRepository.findChineseToolsNotNull(language);
   }
 
@@ -17,12 +17,15 @@ export class CjkRepository extends BaseRepository {
     return DatabaseCjkRepository.findChineseToolsIsNull(language, limit);
   }
 
-  static async findGlosbeNotNull(language): Promise<any[]> {
+  static async findGlosbeNotNull(language: string): Promise<any[]> {
     return DatabaseCjkRepository.findGlosbeNotNull(language);
   }
 
-  static async findGlosbeIsNull(language): Promise<any[]> {
-    return DatabaseCjkRepository.findGlosbeIsNull(language);
+  static async findGlosbeIsNull(
+    language: string,
+    limit: number,
+  ): Promise<any[]> {
+    return DatabaseCjkRepository.findGlosbeIsNull(language, limit);
   }
 
   static async findIdeogramRawIsNull(): Promise<any[]> {

@@ -50,12 +50,15 @@ export class CjkRepository extends BaseRepository {
       .select();
   }
 
-  static async findGlosbeIsNull(language: string): Promise<any[]> {
+  static async findGlosbeIsNull(
+    language: string,
+    limit: number,
+  ): Promise<any[]> {
     return await knex('cjk')
       .whereRaw(
         `definition_glosbe_${language} IS NULL AND simplified = 1 AND (type = "W" OR (type = "C" AND frequency < 999))`,
       )
-      .limit(10)
+      .limit(limit)
       .orderBy('hsk', 'ASC')
       .orderBy('usage', 'DESC')
       .select();
