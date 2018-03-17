@@ -38,6 +38,7 @@ export class GlosbeInsertCommand implements CommandModule {
           language,
           languages[language],
         );
+
         for (const cjk of cjks) {
           const ideogram = UnihanSearch.convertUtf16ToIdeograms(cjk.ideogram);
           console.log(ideogram);
