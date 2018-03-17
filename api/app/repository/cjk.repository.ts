@@ -10,8 +10,11 @@ export class CjkRepository extends BaseRepository {
     return DatabaseCjkRepository.findChineseToolsNotNull(language);
   }
 
-  static async findChineseToolsIsNull(language): Promise<any[]> {
-    return DatabaseCjkRepository.findChineseToolsIsNull(language);
+  static async findChineseToolsIsNull(
+    language: string,
+    limit: number,
+  ): Promise<any[]> {
+    return DatabaseCjkRepository.findChineseToolsIsNull(language, limit);
   }
 
   static async findGlosbeNotNull(language): Promise<any[]> {

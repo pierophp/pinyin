@@ -27,12 +27,15 @@ export class CjkRepository extends BaseRepository {
       .select();
   }
 
-  static async findChineseToolsIsNull(language: string): Promise<any[]> {
+  static async findChineseToolsIsNull(
+    language: string,
+    limit: number,
+  ): Promise<any[]> {
     return await knex('cjk')
       .whereRaw(
         `definition_ct_${language} IS NULL AND simplified = 1 AND (type = "W" OR (type = "C" AND frequency < 999))`,
       )
-      .limit(11)
+      .limit(limit)
       .orderBy('hsk', 'ASC')
       .orderBy('usage', 'DESC')
       .select();
