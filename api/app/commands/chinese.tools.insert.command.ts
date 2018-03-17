@@ -16,10 +16,10 @@ export class ChineseToolsInsertCommand implements CommandModule {
   }
 
   public async handler(argv: any) {
-    let languages: any = { pt: 2, es: 5, en: 5 };
+    let languages: any = { pt: 4, es: 9, en: 9 };
     if (argv.language) {
       languages = {};
-      languages[argv.language] = 10;
+      languages[argv.language] = 20;
     }
 
     const chineseToolsParser = new ChineseToolsParser();
