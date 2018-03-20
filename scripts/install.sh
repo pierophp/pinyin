@@ -23,9 +23,6 @@ sudo /sbin/swapon /var/swap.1
 ## application live
 sudo mkdir /var/www/api.pinyin
 sudo mkdir /var/www/api.pinyin/env
-sudo nano /var/www/api.pinyin/env/env.js
-sudo nano /var/www/api.pinyin/env/newrelic.js
-sudo nano /var/www/api.pinyin/env/knexfile.js
 sudo cp /var/www/api.pinyin/env/env.js /var/www/api.pinyin/source/api/env.js
 git clone https://github.com/pierophp/pinyin.git /var/www/api.pinyin/source
 cd /var/www/api.pinyin/source/api
@@ -36,7 +33,6 @@ yarn build
 sudo mkdir /var/www/api.pinyin.staging
 sudo mkdir /var/www/api.pinyin.staging/env
 sudo cp /var/www/api.pinyin.staging/env/env.js /var/www/api.pinyin.staging/env/env.js
-sudo cp /var/www/api.pinyin.staging/env/knexfile.js /var/www/api.pinyin.staging/env/knexfile.js
 sudo cp /var/www/api.pinyin.staging/env/newrelic.js /var/www/api.pinyin.staging/env/newrelic.js
 git clone https://github.com/pierophp/pinyin.git /var/www/api.pinyin.staging/source
 cd /var/www/api.pinyin.staging/source/api

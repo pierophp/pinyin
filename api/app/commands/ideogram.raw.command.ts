@@ -1,4 +1,5 @@
 import { Argv, CommandModule } from 'yargs';
+
 import { CjkRepository } from '../repository/cjk.repository';
 import * as UnihanSearch from '../services/UnihanSearch';
 
