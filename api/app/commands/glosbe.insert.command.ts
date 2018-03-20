@@ -25,7 +25,7 @@ export class GlosbeInsertCommand implements CommandModule {
     const glosbeParser = new GlosbeParser();
 
     try {
-      for (const language of languages) {
+      for (const language of Object.keys(languages)) {
         console.log(
           '\n',
           new Date(),
