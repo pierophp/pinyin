@@ -7,9 +7,6 @@
 
 <script>
 import IdeogramsShow from 'src/components/ideograms/Show';
-import OptionsManager from 'src/domain/options-manager';
-
-const options = OptionsManager.getOptions();
 
 export default {
   name: 'traditional-simplified-show',
@@ -40,6 +37,9 @@ export default {
   computed: {
     secondOnlyDiff() {
       const secondWithDiffList = [];
+      if (!this.variants) {
+        return '';
+      }
 
       for (const variant of this.variants) {
         const total = variant.length;
