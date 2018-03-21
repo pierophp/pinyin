@@ -57,7 +57,8 @@
       </md-dialog-title>
 
       <md-dialog-content>
-        <dictionary-details :dictionary="dictionary" :pinyin="block.pinyin" @change-show="changeShow" ref="dictionaryDetails"/>
+        <dictionary-details v-if="dictionary" :dictionary="dictionary" :pinyin="block.pinyin" @change-show="changeShow" ref="dictionaryDetails"/>
+        <dictionary-list v-if="!dictionary" :list="dictionaryList"/>
       </md-dialog-content>
 
       <md-dialog-actions>
@@ -110,6 +111,7 @@
 <script>
 import http from 'src/helpers/http';
 import DictionaryDetails from 'src/components/dictionary/Details';
+import DictionaryList from 'src/components/dictionary/List';
 import IdeogramsShow from 'src/components/ideograms/Show';
 import Links from 'src/components/ideograms/Links';
 import OptionsManager from 'src/domain/options-manager';
@@ -157,6 +159,7 @@ export default {
   },
   components: {
     DictionaryDetails,
+    DictionaryList,
     IdeogramsShow,
     Links,
     ForvoModal,
@@ -301,25 +304,32 @@ export default {
       this.$emit('open-modal', add);
     },
 
-    loadDictionary() {
-      http
-        .get('unihan/dictionary', {
-          params: {
-            ideograms: this.block.character,
-            pinyin: this.block.pinyin,
-          },
-        })
-        .then(response => {
-          const isSimplifiedEquals =
-            response.data.ideograms === this.block.character;
-          const isTradiaionalEquals =
-            response.data.ideogramsTraditional === this.block.character;
-          if (!isSimplifiedEquals && !isTradiaionalEquals) {
-            return;
-          }
-          this.dictionary = response.data;
-          this.modalDictionaryOpen = true;
-        });
+    async loadDictionary() {
+      const response = (await http.get('unihan/dictionary', {
+        params: {
+          ideograms: this.block.character,
+          pinyin: this.block.pinyin,
+        },
+      })).data;
+
+      this.dictionary = null;
+
+      if (response.list) {
+        this.dictionaryList = response.list;
+        this.modalDictionaryOpen = true;
+        return;
+      }
+
+      const isSimplifiedEquals = response.ideograms === this.block.character;
+
+      const isTraditionalEquals =
+        response.ideogramsTraditional === this.block.character;
+
+      if (!isSimplifiedEquals && !isTraditionalEquals) {
+        return;
+      }
+      this.dictionary = response;
+      this.modalDictionaryOpen = true;
     },
 
     openPinyinList() {

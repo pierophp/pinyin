@@ -1,7 +1,7 @@
 <template>
     <div class="ideogram-show">
       <ideograms-show :pinyin="pinyin" :character="ideograms" ref="first-ideogram-show"/>
-      [<ideograms-show :pinyin="pinyin" :character="secondOnlyDiff" ref="second-ideogram-show"/>]
+      <span v-if="secondOnlyDiff">[<ideograms-show :pinyin="pinyin" :character="secondOnlyDiff" ref="second-ideogram-show"/>]</span>
     </div>
 </template>
 

@@ -12,20 +12,17 @@
       </div>
     </md-field>
   </form>
+  
   <div>
-  <loadable-content :loading="loading">
-    <md-list>
-      <md-list-item v-for="entry in entries" @click="details(entry.id)" v-bind:key="entry.id">
-        <span>
-          <span class="ideogram">
-            <traditional-simplified-show :pinyin="entry.pronunciation" :ideograms="entry.ideogram" :variants="entry.variants"/>
-          </span
-          ><span class="pinyin"> - {{ entry.pronunciation }}</span>
+    <loadable-content :loading="loading">
+      <div class="list-item" v-for="entry in entries" @click="details(entry.id)" v-bind:key="entry.id">
+        <span class="ideogram">
+          <traditional-simplified-show :pinyin="entry.pronunciation" :ideograms="entry.ideogram" :variants="entry.variants"/>
         </span>
-      </md-list-item>
-    </md-list>
-    <div v-if="noResults">{{ $t("no_results") }}</div>
-  </loadable-content>
+        <span class="pinyin"> - {{ entry.pronunciation }}</span>
+      </div>
+      <div v-if="noResults">{{ $t("no_results") }}</div>
+    </loadable-content>
   </div>
 </div>
 </template>
@@ -153,7 +150,16 @@ export default {
   font-size: 20px;
 }
 
-.dictionary-container .md-list .ideogram-show span {
+.dictionary-container .list-item {
+  padding: 10px 10px;
+  cursor: pointer;
+}
+
+.dictionary-container .list-item:hover {
+  background: #efefef;
+}
+
+.dictionary-container .list-item .ideogram-show span {
   display: inline-block;
   width: 20px;
 }

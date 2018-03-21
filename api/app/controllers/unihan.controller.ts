@@ -70,7 +70,7 @@ router.get('/dictionary_search', async (req, res) => {
   res.send(JSON.stringify(result));
 });
 
-router.get('/dictionary', (req, res) => {
+router.get('/dictionary', async (req, res) => {
   const search: any = {};
   if (req.query.ideograms !== undefined) {
     search.ideograms = req.query.ideograms;
@@ -84,10 +84,21 @@ router.get('/dictionary', (req, res) => {
     search.id = req.query.id;
   }
 
-  UnihanSearch.searchToDictionary(search).then(result => {
-    res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Content-Type', 'application/json');
+
+  let result = await UnihanSearch.searchToDictionary(search);
+  if (result.pronunciation) {
     res.send(JSON.stringify(result));
-  });
+    return;
+  }
+
+  if (!search.ideograms) {
+    res.send(JSON.stringify(result));
+    return;
+  }
+
+  result = await UnihanSearch.searchToDictionaryPartial(search.ideograms);
+  res.send(JSON.stringify({ list: result }));
 });
 
 router.post('/save', async (req: any, res) => {

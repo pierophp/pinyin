@@ -109,6 +109,31 @@ module.exports = class UnihanSearch {
     return { search, entries: cjkList };
   }
 
+  static async searchToDictionaryPartial(ideograms) {
+    let searchedIdeograms = '';
+    let partialIdeograms = ideograms;
+    let listResponse = [];
+    while (partialIdeograms !== '') {
+
+      const response = await this.searchToDictionary({
+        ideograms: partialIdeograms,
+      });
+
+      if (response.pronunciation) {
+        searchedIdeograms += partialIdeograms;
+        partialIdeograms = ideograms.substr(searchedIdeograms.length);
+        listResponse.push(response);
+      } else {
+        partialIdeograms = partialIdeograms.substr(
+          0,
+          partialIdeograms.length - 1,
+        );
+      }
+    }
+
+    return listResponse;
+  }
+
   static async searchToDictionary(search) {
     let where = {};
     if (search.ideograms !== undefined) {
@@ -202,7 +227,9 @@ module.exports = class UnihanSearch {
     let glosbeEn = null;
 
     await Promise.map(cjkList, async cjk => {
-      const ideograms = UnihanSearch.convertUtf16ToIdeograms(cjk.ideogram);
+      const ideograms = ideogramsConverter.convertUtf16ToIdeograms(
+        cjk.ideogram,
+      );
       response.pronunciation = cjk.pronunciation;
       response.ideograms = ideograms;
       response.hsk = cjk.hsk;
