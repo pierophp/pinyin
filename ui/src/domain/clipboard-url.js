@@ -1,25 +1,22 @@
-// Ideograms spaced
+// JW ORG (spaced)
+import http from 'src/helpers/http';
 import replaceall from 'replaceall';
 import Promise from 'bluebird';
+import OptionsManager from 'src/domain/options-manager';
+import * as isChinese from 'src/helpers/is-chinese';
 
-function parseContent(content) {
-  return new Promise(resolve => {
-    const lines = content
-      .split('\n')
-      .filter(line => line)
-      .filter(line => {
-        if (line.match(/(\d{2}):(\d{4}):(\d{2})/)) {
-          return null;
-        }
+async function parseLink(link) {
+  const options = OptionsManager.getOptions();
+  const response = await http.get(
+    `site/download?url=${link}&language=${
+      options.translationLanguage
+    }&ideogramType=${options.ideogramType}`,
+  );
 
-        return line;
-      });
-
-    resolve(lines);
-  });
+  return response.data;
 }
 
-async function parseSite(lines) {
+async function parseSite(lines, audio, url) {
   const rows = await Promise.map(lines, async line => {
     if (typeof line === 'string') {
       line = { text: line };
@@ -45,6 +42,8 @@ async function parseSite(lines) {
 
     let isBold = 0;
     let isItalic = 0;
+
+    let bible = '';
 
     ideograms.forEach((char, i) => {
       if (char === '<b>') {
@@ -77,10 +76,23 @@ async function parseSite(lines) {
         char = footNoteSplit[2];
       }
 
+      const bibleVerify = 'BI#[';
+      const isBible = char.substr(0, bibleVerify.length) === bibleVerify;
+      if (isBible) {
+        bible = replaceall('BI#[', '', char);
+        bible = replaceall(']#BI', '', bible);
+        return;
+      }
+
       const item = {
         p: line.pinyin ? line.pinyin[i] : '',
         c: char,
       };
+
+      if (bible && !isChinese(char, true)) {
+        item.b = bible;
+        bible = '';
+      }
 
       if (isBold === 1) {
         item.isBold = isBold;
@@ -109,14 +121,40 @@ async function parseSite(lines) {
     return row;
   });
 
+  if (audio) {
+    rows[0][0].line.audio = audio;
+  }
+
+  rows[0][0].line.url = url;
+
   return rows;
 }
 
-export default async function(content) {
-  content = replaceall('+', '', content);
-  const lines = await parseContent(content);
+export default async function(url) {
+  let lines;
+  let audio = null;
 
-  const rows = await parseSite(lines);
+  const content = await parseLink(url);
+  if (content.links) {
+    const files = [];
+    for (const link of content.links) {
+      const filename = `${link.number}|||${link.title}|||${link.title_pinyin}`;
+
+      lines = link.content.text;
+      audio = link.content.audio;
+
+      const rows = await parseSite(lines, audio, url);
+
+      files.push({ filename, rows });
+    }
+
+    return { files };
+  }
+
+  lines = content.text;
+  audio = content.audio;
+
+  const rows = await parseSite(lines, audio, url);
 
   return rows;
 }

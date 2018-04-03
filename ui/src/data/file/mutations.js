@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import pinyin from 'src/helpers/pinyin';
-import separatePinyinInSyllables from 'src/helpers/separate-pinyin-in-syllables';
+import * as separatePinyinInSyllables from 'src/helpers/separate-pinyin-in-syllables';
 import * as types from './types';
 
 function addHighlight(state, data) {

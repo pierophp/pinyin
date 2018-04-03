@@ -35,10 +35,8 @@ export default {
   sign_in_baidu: 'Sign in with Baidu',
   action: 'Action',
   paste_action: {
-    multi_nwt: 'Multi NWT (pinyin + space + ideogram)',
-    jw_language: 'JW Language (2 lines)',
-    jw_org: 'JW.ORG (ideograms spaced)',
     ideograms: 'Ideograms only',
+    ideograms_spaced: 'Ideograms spaced',
   },
   add_ideogram: 'Add Ideogram',
   remove_ideogram: 'Remove Ideogram',

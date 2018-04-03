@@ -86,7 +86,7 @@ router.get('/dictionary', async (req, res) => {
 
   res.setHeader('Content-Type', 'application/json');
 
-  let result = await UnihanSearch.searchToDictionary(search);
+  let result: any = await UnihanSearch.searchToDictionary(search);
   if (result.pronunciation) {
     res.send(JSON.stringify(result));
     return;

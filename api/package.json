@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --verbose -e js,ts,json",
+    "dev": "tsc-watch --onSuccess \"node ./dist/api/app/server.js\"",
     "build": "tsc",
     "server": "node app/server.js",
     "knex": "node node_modules/knex/bin/cli.js",
@@ -80,6 +80,7 @@
     "memwatch-next": "^0.3.0",
     "mocha": "^2.5.3",
     "nodemon": "^1.12.1",
+    "tsc-watch": "^1.0.17",
     "tsconfig-paths": "^2.3.0",
     "tslint": "^5.8.0"
   }

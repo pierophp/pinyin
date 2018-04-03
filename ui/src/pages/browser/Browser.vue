@@ -10,8 +10,8 @@
 </template>
 
 <script>
-import clipboard03 from 'src/domain/clipboard-03';
-import separatePinyinInSyllables from 'src/helpers/separate-pinyin-in-syllables';
+import clipboardUrl from 'src/domain/clipboard-url';
+import * as separatePinyinInSyllables from 'src/helpers/separate-pinyin-in-syllables';
 
 import { mapGetters } from 'vuex';
 
@@ -50,7 +50,7 @@ export default {
       }
 
       this.fileLoading = true;
-      const lines = await clipboard03(url);
+      const lines = await clipboardUrl(url);
       for (const line of lines) {
         for (const block of line) {
           const pinyinList = separatePinyinInSyllables(block.p);
