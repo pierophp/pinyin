@@ -25,7 +25,7 @@ function separate(pinyin) {
   //.replace(new RegExp('([^e\w\s])(r)'), '$1 $2'); // r an initial, except in er
 }
 
-module.exports = function separatePinyinInSyllables(pinyin, separateBySpaces) {
+export default function separatePinyinInSyllables(pinyin, separateBySpaces) {
   if (!pinyin) {
     return [];
   }
@@ -69,4 +69,4 @@ module.exports = function separatePinyinInSyllables(pinyin, separateBySpaces) {
   });
 
   return newPinyin;
-};
+}

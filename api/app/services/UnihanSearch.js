@@ -12,7 +12,7 @@ const fs = Promise.promisifyAll(require('fs'));
 const { IdeogramsConverter } = require('../core/converter/ideograms.converter');
 
 nodejieba.load({
-  userDict: `${__dirname}/../data/compiled.utf8`,
+  userDict: `${__dirname.replace('dist/api/', '')}/../data/compiled.utf8`,
 });
 
 const ideogramsConverter = new IdeogramsConverter();
@@ -114,7 +114,6 @@ module.exports = class UnihanSearch {
     let partialIdeograms = ideograms;
     let listResponse = [];
     while (partialIdeograms !== '') {
-
       const response = await this.searchToDictionary({
         ideograms: partialIdeograms,
       });

@@ -11,7 +11,7 @@
 
 <script>
 import clipboardUrl from 'src/domain/clipboard-url';
-import * as separatePinyinInSyllables from 'src/helpers/separate-pinyin-in-syllables';
+import separatePinyinInSyllables from 'src/helpers/separate-pinyin-in-syllables';
 
 import { mapGetters } from 'vuex';
 
