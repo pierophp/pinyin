@@ -1,7 +1,7 @@
 import { http } from '../../../helpers/http';
 import * as knex from '../../../services/knex';
 import * as UnihanSearch from '../../../services/UnihanSearch';
-import { Encoder } from './encoder';
+import { Encoder } from '../encoder';
 import * as bluebird from 'bluebird';
 
 export class Track {

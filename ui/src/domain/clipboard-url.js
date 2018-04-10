@@ -3,7 +3,7 @@ import http from 'src/helpers/http';
 import replaceall from 'replaceall';
 import Promise from 'bluebird';
 import OptionsManager from 'src/domain/options-manager';
-import * as isChinese from 'src/helpers/is-chinese';
+import isChinese from 'src/helpers/is-chinese';
 
 async function parseLink(link) {
   const options = OptionsManager.getOptions();
@@ -125,7 +125,9 @@ async function parseSite(lines, audio, url) {
     rows[0][0].line.audio = audio;
   }
 
-  rows[0][0].line.url = url;
+  if (rows[0][0].line) {
+    rows[0][0].line.url = url;
+  }
 
   return rows;
 }

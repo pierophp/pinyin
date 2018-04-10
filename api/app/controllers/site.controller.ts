@@ -1,13 +1,16 @@
 import * as express from 'express';
-import { Downloader } from '../core/sites/jw/downloader';
-import { Frequency } from '../core/sites/jw/frequency';
-import { Track } from '../core/sites/jw/track';
+import { Downloader as JwDownloader } from '../core/sites/jw/downloader';
+import { Downloader as GenericDownloader } from '../core/sites/generic/downloader';
 
 // eslint-disable-next-line new-cap
 const router = express.Router();
 
 router.get('/download', async (req, res) => {
-  const downloader = new Downloader();
+  let downloader: any = new GenericDownloader();
+  if (req.query.url.includes('.jw.org')) {
+    downloader = new JwDownloader();
+  }
+
   try {
     const downloadResponse: any = await downloader.download(
       req.query.url,
