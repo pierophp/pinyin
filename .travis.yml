@@ -41,7 +41,7 @@ before_install:
 # editor
 - rm public/index.html
 - cp public/index-${TRAVIS_BRANCH}.html public/index.html
-- yarn build > /dev/null
+- yarn build-editor > /dev/null
 - zip -r /home/travis/pinyin.dist.zip dist > /dev/null
 # bible
 - rm public/index.html
