@@ -4,6 +4,7 @@ import clipboard01 from 'src/domain/clipboard-01';
 import clipboard02 from 'src/domain/clipboard-02';
 import clipboard03 from 'src/domain/clipboard-03';
 import clipboard04 from 'src/domain/clipboard-04';
+import clipboardUrl from 'src/domain/clipboard-url';
 import LocalStorage from 'src/helpers/local-storage';
 import replaceall from 'replaceall';
 import { trimStart } from 'lodash';
@@ -252,7 +253,7 @@ export default {
 
   async [types.FILE_ACTION_IMPORT_FILE]({ commit, state, dispatch }, data) {
     commit(types.FILE_MUTATION_SET_FILE_IMPORTING, true);
-    const fileContent = await clipboard03(data.content);
+    const fileContent = await clipboardUrl(data.content);
     if (fileContent.files) {
       for (const file of fileContent.files) {
         state.fileChangeTimestamp = Date.now();

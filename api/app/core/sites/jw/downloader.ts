@@ -6,7 +6,7 @@ import * as UnihanSearch from '../../../services/UnihanSearch';
 import * as bluebird from 'bluebird';
 import { Curl } from 'node-libcurl';
 import { orderBy } from 'lodash';
-import { Encoder } from './encoder';
+import { Encoder } from '../encoder';
 
 export class Downloader {
   public async download(

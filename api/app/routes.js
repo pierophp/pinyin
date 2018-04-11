@@ -6,6 +6,7 @@ module.exports = function routes(app) {
   app.use('/files', require('./controllers/files.controller'));
   app.use('/segmentation', require('./controllers/segmentation.controller'));
   app.use('/jw', require('./controllers/jw.controller'));
+  app.use('/site', require('./controllers/site.controller'));
   app.use('/unihan', require('./controllers/unihan.controller'));
   app.use('/my-cjk', require('./controllers/my.cjk.controller'));
   app.use('/chinese-tools', require('./controllers/chinese.tools.controller'));

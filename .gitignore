@@ -11,3 +11,4 @@ ui/static/bible
 node_modules/
 yarn-error.log
 docker/data/
+.git-rewrite
