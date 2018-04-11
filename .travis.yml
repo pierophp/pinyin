@@ -39,29 +39,29 @@ before_install:
 - rm src/.config.js
 - cp src/.config-${TRAVIS_BRANCH}.js src/.config.js
 # editor
-- rm index.html
-- cp index-${TRAVIS_BRANCH}.html index.html
+- rm public/index.html
+- cp public/index-${TRAVIS_BRANCH}.html public/index.html
 - yarn build > /dev/null
 - zip -r /home/travis/pinyin.dist.zip dist > /dev/null
 # bible
-- rm index.html
-- cp index-${TRAVIS_BRANCH}.html index.html
-- sed -i -e 's/favicon\//favicon-bible\//g' index.html
+- rm public/index.html
+- cp public/index-${TRAVIS_BRANCH}.html public/index.html
+- sed -i -e 's/favicon\//favicon-bible\//g' public/index.html
 - yarn build-bible > /dev/null
 - zip -r /home/travis/bible.pinyin.dist.zip dist > /dev/null
 - echo "static/bible/*" >> .gitignore
 - echo "src/.config.js" >> .gitignore
 # videos
 - rm -Rf static/bible
-- rm index.html
-- cp index-${TRAVIS_BRANCH}.html index.html
-- sed -i -e 's/favicon\//favicon-videos\//g' index.html
+- rm public/index.html
+- cp public/index-${TRAVIS_BRANCH}.html public/index.html
+- sed -i -e 's/favicon\//favicon-videos\//g' public/index.html
 - yarn build-videos > /dev/null
 - zip -r /home/travis/videos.pinyin.dist.zip dist > /dev/null
 # dictionary
-- rm index.html
-- cp index-${TRAVIS_BRANCH}.html index.html
-- sed -i -e 's/favicon\//favicon-dictionary\//g' index.html
+- rm public/index.html
+- cp public/index-${TRAVIS_BRANCH}.html public/index.html
+- sed -i -e 's/favicon\//favicon-dictionary\//g' public/index.html
 - yarn build-dictionary > /dev/null
 - zip -r /home/travis/dictionary.pinyin.dist.zip dist > /dev/null
 before_script:
