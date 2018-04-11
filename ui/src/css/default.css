@@ -153,3 +153,7 @@ body {
 .md-dialog {
   transition: initial !important;
 }
+
+.md-dialog-container {
+  overflow: hidden;
+}

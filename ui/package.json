@@ -61,11 +61,7 @@
     "worker-loader": "^1.1.1"
   },
   "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "vue"
-    ],
+    "moduleFileExtensions": ["js", "json", "vue"],
     "moduleNameMapper": {
       "^@/(.*)$": "<rootDir>/src/$1"
     },
@@ -73,9 +69,7 @@
       "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
       ".*\\.(vue)$": "<rootDir>/node_modules/vue-jest"
     },
-    "setupFiles": [
-      "<rootDir>/test/unit/setup"
-    ],
+    "setupFiles": ["<rootDir>/test/unit/setup"],
     "mapCoverage": true,
     "coverageDirectory": "<rootDir>/test/unit/coverage",
     "collectCoverageFrom": [
@@ -89,9 +83,5 @@
     "node": ">= 6.0.0",
     "npm": ">= 3.0.0"
   },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
-  ]
+  "browserslist": ["> 1%", "last 2 versions", "not ie <= 8"]
 }
