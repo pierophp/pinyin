@@ -13,9 +13,13 @@ import replaceall from 'replaceall';
 import FilePrint from 'src/pages/files/FilePrint';
 import separatePinyinInSyllables from 'src/helpers/separate-pinyin-in-syllables';
 
-import { mapMutations } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 
 import { FILE_MUTATION_SET } from 'src/data/file/types';
+import {
+  VIDEO_GETTER_SUBTITLE,
+  VIDEO_MUTATION_SET_FULL_FILE,
+} from 'src/data/video/types';
 
 export default {
   name: 'video-subtitle',
@@ -23,72 +27,60 @@ export default {
     FilePrint,
   },
   created() {
-    this.loadTrack();
+    this.loadTrack([]);
     this.setFileContent({ file: [] });
   },
-  props: {
-    url: '',
-  },
+
   watch: {
-    url: {
+    subtitle: {
       handler: function handler() {
-        this.loadTrack();
+        this.loadTrack(this.subtitle);
       },
     },
   },
+  computed: {
+    ...mapGetters({
+      subtitle: VIDEO_GETTER_SUBTITLE,
+    }),
+  },
+
   methods: {
     ...mapMutations({
       setFileContent: FILE_MUTATION_SET,
+      setVideoFullFile: VIDEO_MUTATION_SET_FULL_FILE,
     }),
-    async loadTrack() {
-      if (!this.url) {
-        return;
-      }
-
+    async loadTrack(subtitle) {
       this.setFileContent({ file: [] });
-
-      const response = await http.get('jw/track', {
-        params: {
-          url: this.url,
-          type: 'a',
-        },
-      });
-
-      const tracks = webVTTParser(response.data.track.split('\n'));
+      this.setVideoFullFile([]);
+      const tracks = webVTTParser(subtitle);
       const lines = [];
-
       tracks.forEach(trackItem => {
         trackItem.message.forEach((message, messageIndex) => {
           let content = message;
           content = replaceall('<ruby>', '', content);
           content = replaceall('</ruby>', '', content);
-
           const line = [];
           content.split('</rt>').forEach(item => {
             const blockItem = item.split('<rt>');
             if (blockItem.length === 1) {
               return;
             }
-
             const block = {
               c: blockItem[0].trim(),
               p: separatePinyinInSyllables(blockItem[1].trim()).join(
                 String.fromCharCode(160),
               ),
             };
-
             if (messageIndex === 0) {
               block.startTime = trackItem.startTime;
             }
-
             line.push(block);
           });
-
           lines.push(line);
         });
       });
-
       this.setFileContent({ file: lines });
+      this.setVideoFullFile(lines);
     },
   },
 };

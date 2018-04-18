@@ -74,8 +74,11 @@ import webVTTParser from 'src/domain/webvtt-parser';
 import VideoSubtitle from 'src/components/video/Subtitle';
 import MobileDetect from 'mobile-detect';
 
-import { mapGetters } from 'vuex';
-import { VIDEO_GETTER_VIDEO_URL } from 'src/data/video/types';
+import { mapGetters, mapMutations } from 'vuex';
+import {
+  VIDEO_GETTER_VIDEO_URL,
+  VIDEO_MUTATION_SET_SUBTITLE,
+} from 'src/data/video/types';
 
 const md = new MobileDetect(window.navigator.userAgent);
 
@@ -108,14 +111,17 @@ export default {
     videoUrlVuex() {
       this.videoUrl = this.videoUrlVuex;
     },
-    videoUrl() {
-      this.loadVideo(this.videoUrl);
+    async videoUrl() {
+      await this.loadVideo(this.videoUrl);
     },
-    type() {
-      this.refreshVideo();
+    async type() {
+      await this.refreshVideo();
     },
   },
   methods: {
+    ...mapMutations({
+      setSubtitle: VIDEO_MUTATION_SET_SUBTITLE,
+    }),
     goToVideoTime(time) {
       const video = this.$refs.video;
       video.currentTime = this.hmsToSecondsOnly(time) - 0.05;
@@ -161,8 +167,8 @@ export default {
 
       return seconds;
     },
-    refreshVideo() {
-      this.loadVideo(this.videoUrl);
+    async refreshVideo() {
+      await this.loadVideo(this.videoUrl);
     },
     saveStartTime() {
       const video = this.$refs.video;
@@ -212,7 +218,7 @@ export default {
         this.repeating = false;
       }
     },
-    loadVideo(videoUrl) {
+    async loadVideo(videoUrl) {
       this.videoUrlExhibition = '';
       this.repeating = false;
       this.startTime = null;
@@ -247,46 +253,46 @@ export default {
         '.srt',
       );
 
-      http
-        .get('jw/track', {
-          params: {
-            url: videoUrl,
-            type: this.type,
-          },
-        })
-        .then(response => {
-          if (!this.videoUrlExhibition) {
-            this.videoUrlExhibition = response.data.url;
-          }
-          const lines = response.data.track.split('\n');
-          if (lines.length === 1) {
-            this.showSnackbar = true;
-            this.loading = false;
-            video.play();
-            return;
-          }
+      const response = await http.get('jw/track', {
+        params: {
+          url: videoUrl,
+          type: this.type,
+        },
+      });
 
-          const tracks = webVTTParser(lines);
-          let trackContent = '';
-          let i = 0;
-          tracks.forEach(trackItem => {
-            i += 1;
-            const message = trackItem.message.join('\n');
-            trackContent += `${i}\n`;
-            trackContent += `${this.formatTime(trackItem.startTime)} --> `;
-            trackContent += `${this.formatTime(trackItem.endTime)}\n`;
-            trackContent += `${message}\n\n`;
-            const startTime = this.hmsToSecondsOnly(trackItem.startTime);
-            const endTime = this.hmsToSecondsOnly(trackItem.endTime);
-            const trackCue = new VTTCue(startTime, endTime, message);
-            track.addCue(trackCue);
-          });
-          const blob = new Blob([trackContent], { type: 'text/plain' });
-          this.downloadLink = window.URL.createObjectURL(blob);
-          this.loading = false;
-          this.initialShowSubtitle();
-          video.play();
-        });
+      if (!this.videoUrlExhibition) {
+        this.videoUrlExhibition = response.data.url;
+      }
+
+      const lines = response.data.track.split('\n');
+      this.setSubtitle(lines);
+      if (lines.length === 1) {
+        this.showSnackbar = true;
+        this.loading = false;
+        video.play();
+        return;
+      }
+
+      const tracks = webVTTParser(lines);
+      let trackContent = '';
+      let i = 0;
+      tracks.forEach(trackItem => {
+        i += 1;
+        const message = trackItem.message.join('\n');
+        trackContent += `${i}\n`;
+        trackContent += `${this.formatTime(trackItem.startTime)} --> `;
+        trackContent += `${this.formatTime(trackItem.endTime)}\n`;
+        trackContent += `${message}\n\n`;
+        const startTime = this.hmsToSecondsOnly(trackItem.startTime);
+        const endTime = this.hmsToSecondsOnly(trackItem.endTime);
+        const trackCue = new VTTCue(startTime, endTime, message);
+        track.addCue(trackCue);
+      });
+      const blob = new Blob([trackContent], { type: 'text/plain' });
+      this.downloadLink = window.URL.createObjectURL(blob);
+      this.loading = false;
+      this.initialShowSubtitle();
+      video.play();
     },
   },
   data() {

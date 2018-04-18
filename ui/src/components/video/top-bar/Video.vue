@@ -4,6 +4,14 @@
       <md-icon>schedule</md-icon>
     </md-button>
 
+    <md-button class="md-icon-button" @click.native="copy" v-if="fullFile && fullFile.length">
+      <md-icon>content_copy</md-icon>
+    </md-button>
+
+    <md-snackbar md-position="center" :md-duration="1300" :md-active.sync="clipboardOpen">
+      <span>{{ $t('copied_to_clipboard') }}</span>
+    </md-snackbar>
+
     <md-dialog :md-active.sync="modalOpen" :md-fullscreen="false" :md-backdrop="true" :md-click-outside-to-close="true">
       <md-dialog-title>
         {{ $t('history') }}
@@ -32,21 +40,33 @@
 </template>
 <script>
 import http from 'src/helpers/http';
-import { mapMutations } from 'vuex';
-import { VIDEO_MUTATION_SET_VIDEO_URL } from 'src/data/video/types';
+import { mapGetters, mapMutations } from 'vuex';
+import {
+  VIDEO_MUTATION_SET_VIDEO_URL,
+  VIDEO_GETTER_FULL_FILE,
+} from 'src/data/video/types';
+import replaceall from 'replaceall';
 
 export default {
   name: 'video-top-bar',
   data() {
     return {
       modalOpen: false,
+      clipboardOpen: false,
       history: [],
     };
   },
+  computed: {
+    ...mapGetters({
+      fullFile: VIDEO_GETTER_FULL_FILE,
+    }),
+  },
+
   methods: {
     ...mapMutations({
       setVideoUrl: VIDEO_MUTATION_SET_VIDEO_URL,
     }),
+
     async loadHistory() {
       const response = await http.get('videos/history');
       this.history = response.data.history;
@@ -61,6 +81,37 @@ export default {
     },
     closeDialog() {
       this.modalOpen = false;
+    },
+    copy() {
+      const fileCopy = [];
+
+      const lines = this.fullFile;
+
+      console.log(lines);
+
+      for (const line of lines) {
+        let pinyinLine = '';
+        let ideogramLine = '';
+        for (const block of line) {
+          if (block.small) {
+            continue;
+          }
+
+          pinyinLine += `${replaceall(String.fromCharCode(160), '', block.p)} `;
+          ideogramLine += `${block.c} `;
+        }
+
+        if (!ideogramLine) {
+          continue;
+        }
+
+        fileCopy.push(pinyinLine);
+        fileCopy.push(ideogramLine);
+        fileCopy.push('');
+      }
+
+      this.$clipboard(fileCopy.join('\n'));
+      this.clipboardOpen = true;
     },
   },
 };
