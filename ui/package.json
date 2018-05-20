@@ -56,7 +56,7 @@
     "chai": "^3.5.0",
     "node-sass": "^4.7.2",
     "postcss-import": "^11.1.0",
-    "sass-loader": "^6.0.6",
+    "sass-loader": "^7.0.1",
     "vue-template-compiler": "^2.5.13",
     "worker-loader": "^1.1.1"
   },
