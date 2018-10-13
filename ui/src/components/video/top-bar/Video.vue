@@ -1,41 +1,65 @@
 <template>
   <div>
-    <md-button class="md-icon-button" @click="loadHistory()">
-      <md-icon>schedule</md-icon>
-    </md-button>
+    <v-btn icon @click="loadHistory()">
+      <v-icon>schedule</v-icon>
+    </v-btn>
 
-    <md-button class="md-icon-button" @click.native="copy" v-if="fullFile && fullFile.length">
-      <md-icon>content_copy</md-icon>
-    </md-button>
 
-    <md-snackbar md-position="center" :md-duration="1300" :md-active.sync="clipboardOpen">
-      <span>{{ $t('copied_to_clipboard') }}</span>
-    </md-snackbar>
+    <v-btn icon @click.native="copy" v-if="fullFile && fullFile.length">
+      <v-icon>content_copy</v-icon>
+    </v-btn>
 
-    <md-dialog :md-active.sync="modalOpen" :md-fullscreen="false" :md-backdrop="true" :md-click-outside-to-close="true">
-      <md-dialog-title>
-        {{ $t('history') }}
-      </md-dialog-title>
+    <v-snackbar
+      v-model="clipboardOpen"
+      :timeout="1300"
+      :absolute="true"
+      :bottom="true"
+    >
+      {{ $t('copied_to_clipboard') }}
+    </v-snackbar>
 
-      <md-dialog-content>
-        <div v-for="(item, itemId) in history" v-bind:key="itemId" class="history-item">
-          <div class="image">
-            <a href="javascript:void(0)" @click="openVideo(item.url)" v-if="item.images">
-              <img :src="item.images.xs" />
-            </a>
+     <v-dialog
+      v-model="modalOpen"
+      width="500"
+    >
+      <v-card>
+        <v-card-title
+          class="headline grey lighten-2"
+          primary-title
+        >
+          {{ $t('history') }}
+        </v-card-title>
+
+        <v-card-text>
+          <div v-for="(item, itemId) in history" v-bind:key="itemId" class="history-item">
+            <div class="image">
+              <a href="javascript:void(0)" @click="openVideo(item.url)" v-if="item.images">
+                <img :src="item.images.xs" />
+              </a>
+            </div>
+            <div class="description">
+              <a href="javascript:void(0)" @click="openVideo(item.url)">
+                {{ item.description }}
+              </a>
+            </div>
           </div>
-          <div class="description">
-            <a href="javascript:void(0)" @click="openVideo(item.url)">
-              {{ item.description }}
-            </a>
-          </div>
-        </div>
-      </md-dialog-content>
+        </v-card-text>
 
-      <md-dialog-actions>
-        <md-button class="md-primary" @click.native="closeDialog()">{{ $t('close') }}</md-button>
-      </md-dialog-actions>
-    </md-dialog>
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            flat
+            @click="closeDialog()"
+          >
+            {{ $t('close') }}
+          </v-btn>
+
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
   </div>
 </template>
 <script>
@@ -86,8 +110,6 @@ export default {
       const fileCopy = [];
 
       const lines = this.fullFile;
-
-      console.log(lines);
 
       for (const line of lines) {
         let pinyinLine = '';

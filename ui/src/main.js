@@ -2,6 +2,7 @@
 
 import offlinePlugin from 'offline-plugin/runtime';
 import Vue from 'vue';
+import Vuetify from 'vuetify';
 
 import VueMaterial from 'vue-material';
 import VueI18n from 'vue-i18n';
@@ -18,7 +19,7 @@ import 'font-awesome/css/font-awesome.min.css';
 // import 'vue-material/dist/theme/default.css';
 import 'src/css/vue-material/vue-material.min.css';
 import 'src/css/vue-material/default.css';
-
+import 'vuetify/dist/vuetify.min.css';
 import 'src/css/default.css';
 import 'src/css/bootstrap-callout.css';
 import 'src/css/fonts/material-icons.css';
@@ -47,7 +48,11 @@ export default async function loadMain(moduleName) {
   );
 
   Vue.use(VueI18n);
+  // @todo REMOVE VueMaterial
   Vue.use(VueMaterial);
+  Vue.use(Vuetify, {
+    iconfont: 'md',
+  });
   Vue.use(VueClipboard);
 
   Vue.component('file-container', FileContainer);

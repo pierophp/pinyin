@@ -1,17 +1,25 @@
 <template>
   <div>
-    <md-button class="md-icon-button" @click.native="editionMode">
-      <md-icon>create</md-icon>
-    </md-button>
-    <md-button class="md-icon-button" @click.native="copy">
-      <md-icon>content_copy</md-icon>
-    </md-button>
-    <md-snackbar md-position="center" :md-duration="1300" :md-active.sync="clipboardOpen">
-      <span>{{ $t('copied_to_clipboard') }}</span>
-    </md-snackbar>
+    <v-btn icon @click.native="editionMode">
+      <v-icon>create</v-icon>
+    </v-btn>
+    <v-btn icon @click.native="copy">
+      <v-icon>content_copy</v-icon>
+    </v-btn>
+
+    <v-snackbar
+      v-model="clipboardOpen"
+      :timeout="1300"
+      :absolute="true"
+      :bottom="true"
+    >
+      {{ $t('copied_to_clipboard') }}
+    </v-snackbar>
   </div>
 </template>
 <script>
+// @todo FIX Snackbar open on top component
+
 import { FILE_GETTER_FULL_FILE } from 'src/data/file/types';
 import { mapGetters } from 'vuex';
 import replaceall from 'replaceall';

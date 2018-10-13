@@ -1,25 +1,27 @@
 <template>
   <div id="container">
-    <tool-bar :showMenu="showMenu"></tool-bar>
+    <v-app>
+      <tool-bar :showMenu="showMenu"></tool-bar>
 
-    <div class="content">
-      <router-view />
-    </div>
+      <div class="content">
+        <router-view />
+      </div>
+    </v-app>
   </div>
 </template>
 
 <script>
-  import ToolBar from 'src/components/layout/ToolBar';
+import ToolBar from 'src/components/layout/ToolBar';
 
-  export default {
-    name: 'app',
-    components: {
-      ToolBar,
-    },
-    data() {
-      return {
-        showMenu: this.$router.options.appOptions.showMenu,
-      };
-    },
-  };
+export default {
+  name: 'app',
+  components: {
+    ToolBar,
+  },
+  data() {
+    return {
+      showMenu: this.$router.options.appOptions.showMenu,
+    };
+  },
+};
 </script>

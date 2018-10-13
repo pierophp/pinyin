@@ -1,16 +1,20 @@
 <template>
   <div>
-      <md-menu md-size="medium" md-direction="top-start" :md-offset-y="-52">
-      <md-button class="md-icon-button" md-menu-trigger>
-        <md-icon>more_vert</md-icon>
-      </md-button>
-      <md-menu-content>
-        <md-menu-item @click.native="downloadPleco()">
-          <md-icon>arrow_downward</md-icon>
-          <span class="md-list-item-text">{{ $t('download_pleco_dictionary') }}</span>
-        </md-menu-item>
-      </md-menu-content>
-    </md-menu>
+    <v-menu offset-y>
+      <v-btn icon slot="activator">
+        <v-icon>more_vert</v-icon>
+      </v-btn>
+      <v-list>
+        <v-list-tile @click="downloadPleco()">
+        <v-list-tile-action>
+            <v-icon>arrow_downward</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ $t('download_pleco_dictionary') }}</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-list>
+    </v-menu>
   </div>
 </template>
 <script>

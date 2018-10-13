@@ -1,26 +1,25 @@
 {
   "name": "pinyin",
   "version": "1.0.0",
-  "description": "A Vue.js project",
-  "author": "Piero Giusti <pierophp@gmail.com>",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --open",
     "build": "vue-cli-service build",
-    "build-editor": "export BUILD_ENTRYPOINT=main.editor; yarn build",
-    "dev": "export BUILD_ENTRYPOINT=main.editor; yarn serve",
-    "dev-bible": "export BUILD_ENTRYPOINT=main.bible; yarn serve",
+    "test": "npm run unit && npm run e2e",
+    "e2e": "node test/e2e/runner.js",
+    "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs",
     "build-bible": "export BUILD_ENTRYPOINT=main.bible; yarn build",
     "dev-dictionary": "export BUILD_ENTRYPOINT=main.dictionary; yarn serve",
-    "build-dictionary": "export BUILD_ENTRYPOINT=main.dictionary; yarn build",
+    "dev-bible": "export BUILD_ENTRYPOINT=main.bible; yarn serve",
     "dev-videos": "export BUILD_ENTRYPOINT=main.videos; yarn serve",
     "build-videos": "export BUILD_ENTRYPOINT=main.videos; yarn build",
     "unit": "jest test/unit/specs --coverage",
-    "e2e": "node test/e2e/runner.js",
-    "test": "npm run unit && npm run e2e",
-    "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs"
+    "dev": "export BUILD_ENTRYPOINT=main.editor; yarn serve",
+    "build-editor": "export BUILD_ENTRYPOINT=main.editor; yarn build",
+    "build-dictionary": "export BUILD_ENTRYPOINT=main.dictionary; yarn build"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.0.0-rc.1",
     "axios": "^0.15.3",
     "bluebird": "^3.4.7",
     "bootstrap": "^3.3.7",
@@ -45,6 +44,7 @@
     "vue-material": "1.0.0-beta-10.2",
     "vue-property-decorator": "^6.0.0",
     "vue-router": "^3.0.1",
+    "vuetify": "^1.2.0",
     "vuex": "^3.0.1",
     "worker-loader": "^2.0.0"
   },
@@ -58,8 +58,14 @@
     "node-sass": "^4.7.2",
     "postcss-import": "^11.1.0",
     "sass-loader": "^7.0.1",
+    "vue-cli-plugin-vuetify": "^0.2.1",
     "vue-template-compiler": "^2.5.13"
   },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ],
   "jest": {
     "moduleFileExtensions": [
       "js",
@@ -85,13 +91,10 @@
       "!**/node_modules/**"
     ]
   },
+  "author": "Piero Giusti <pierophp@gmail.com>",
+  "description": "A Vue.js project",
   "engines": {
     "node": ">= 6.0.0",
     "npm": ">= 3.0.0"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
-  ]
+  }
 }
