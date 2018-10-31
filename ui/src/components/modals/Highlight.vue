@@ -21,6 +21,8 @@ import {
 } from 'src/data/file/types';
 
 const md = new MobileDetect(window.navigator.userAgent);
+let selectionIndex = 0;
+let currentSelectionIndex = 0;
 
 function getParentBlockSelected(element) {
   if (element == null) {
@@ -98,10 +100,15 @@ function selectionChange(that) {
   const leftAdd =
     (Math.max(startBounds.right, endBounds.right) - startBounds.left) / 2;
   const minLeft = 5;
+  const maxLeft = window.innerWidth - 295;
   that.left = startBounds.left + leftAdd;
   that.left -= 131;
   if (that.left < minLeft) {
     that.left = minLeft;
+  }
+
+  if (that.left > maxLeft) {
+    that.left = maxLeft;
   }
 
   if (md.mobile() !== null) {
@@ -122,28 +129,20 @@ export default {
       visible: false,
     };
   },
+  props: {
+    worker: '',
+  },
   created() {
-    const that = this;
-    let selectionIndex = 0;
-    let currentSelectionIndex = 0;
     // eslint-disable-next-line
     document.addEventListener(
       'selectionchange',
-      e => {
-        e.preventDefault();
-        selectionIndex += 1;
-        const localSelectionIndex = selectionIndex;
-        currentSelectionIndex = selectionIndex;
-        setTimeout(() => {
-          if (currentSelectionIndex !== localSelectionIndex) {
-            return;
-          }
-
-          selectionChange(that);
-        }, 500);
-      },
+      this.selectionChangeEvent,
       false,
     );
+  },
+
+  beforeDestroy() {
+    window.removeEventListener('selectionchange', this.selectionChangeEvent);
   },
 
   methods: {
@@ -158,6 +157,7 @@ export default {
         startBlock: this.startBlock,
         endBlock: this.endBlock,
         type,
+        worker: this.worker,
       });
     },
     removeHighlight() {
@@ -166,7 +166,24 @@ export default {
         endLine: this.endLine,
         startBlock: this.startBlock,
         endBlock: this.endBlock,
+        worker: this.worker,
       });
+    },
+
+    selectionChangeEvent(e) {
+      e.preventDefault();
+      const that = this;
+
+      selectionIndex += 1;
+      const localSelectionIndex = selectionIndex;
+      currentSelectionIndex = selectionIndex;
+      setTimeout(() => {
+        if (currentSelectionIndex !== localSelectionIndex) {
+          return;
+        }
+
+        selectionChange(that);
+      }, 500);
     },
   },
 };
@@ -206,8 +223,8 @@ export default {
 .highlight-modal .circle {
   border: 1px solid;
   cursor: pointer;
-  width: 25px;
-  height: 25px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   align-self: center;
 }

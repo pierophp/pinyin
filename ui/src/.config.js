@@ -1,6 +1,6 @@
 export default {
   development: {
-    apiUrl: 'http://127.0.0.1:9090/',
+    apiUrl: 'http://pinyin.service.consul:9090/',
   },
 
   production: {

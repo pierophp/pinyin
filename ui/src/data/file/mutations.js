@@ -25,6 +25,14 @@ function addHighlight(state, data) {
       j += 1
     ) {
       state.file[i][j].h = data.type;
+
+      if (data.worker) {
+        data.worker.postMessage({
+          type: 'changeCharacter',
+          lineIndex: i,
+          blockIndex: j,
+        });
+      }
     }
   }
 
@@ -110,6 +118,10 @@ export default {
   },
 
   [types.FILE_MUTATION_SET_LINE](state, { line, lineIndex }) {
+    if (!line) {
+      return;
+    }
+
     line.forEach((block, blockIndex) => {
       if (block.h === undefined) {
         line[blockIndex].h = '';
@@ -304,11 +316,7 @@ export default {
     const footnotes = [];
 
     lines.forEach((line, lineIndex) => {
-      if (
-        line !== undefined &&
-        line[0] !== undefined &&
-        line[0].line !== undefined
-      ) {
+      if (line && line[0] !== undefined && line[0].line !== undefined) {
         const type = line[0].line.type;
         if (type === 'foot') {
           footnotes.push(lineIndex);

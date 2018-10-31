@@ -6,11 +6,10 @@ import NotFound from 'src/pages/NotFound';
 export default [
   {
     path: '/',
-    name: 'login',
-    component: Login,
+    name: 'dictionary-home',
+    component: DictionarySearch,
     meta: {
-      hideTopBar: true,
-      redirectTo: '/#/dictionary',
+      topBar: 'dictionary',
     },
   },
   {
@@ -42,5 +41,4 @@ export default [
     name: 'not-found',
     component: NotFound,
   },
-
 ];

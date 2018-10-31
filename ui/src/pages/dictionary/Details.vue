@@ -20,7 +20,7 @@
       </md-tab>
 
       <md-tab id="stroke" :md-label="$t('stroke')">
-        <dictionary-stroke-order :ideograms="ideograms"/>
+        <dictionary-stroke-order :ideograms="dictionary.ideograms"/>
       </md-tab>
 
       <md-tab id="links" md-label="Links">

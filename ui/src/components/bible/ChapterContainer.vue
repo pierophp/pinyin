@@ -63,6 +63,8 @@ import {
 
 let options = {};
 
+const CACHE_VERSION = 4;
+
 export default {
   name: 'bible-chapter',
   props: {
@@ -163,8 +165,17 @@ export default {
 
       const lines = {};
 
+      const lineKeys = {};
+
       this.selecteds.forEach(v => {
         const verseMap = this.versesMap[v];
+
+        if (!lineKeys[verseMap.line]) {
+          lineKeys[verseMap.line] = [];
+        }
+
+        lineKeys[verseMap.line].push(v);
+
         if (!lines[verseMap.line]) {
           lines[verseMap.line] = {
             line: verseMap.line,
@@ -180,6 +191,8 @@ export default {
       // eslint-disable-next-line
       for (const lineIndex in lines) {
         const line = lines[lineIndex];
+        // generate new key
+        lines[lineIndex].blocks[0].key = lineKeys[lineIndex].join();
         newLines.push(line.blocks);
       }
 
@@ -198,11 +211,19 @@ export default {
 
       const lines = {};
 
+      const lineKeys = {};
+
       this.selectedsLanguage.forEach(v => {
         const verseMap = this.versesMapLanguage[v];
         if (!verseMap) {
           return;
         }
+
+        if (!lineKeys[verseMap.line]) {
+          lineKeys[verseMap.line] = [];
+        }
+
+        lineKeys[verseMap.line].push(v);
 
         if (!lines[verseMap.line]) {
           lines[verseMap.line] = {
@@ -228,6 +249,7 @@ export default {
           if (options.translationLanguage === 'ja') {
             words = this.fullLinesLanguage[verseMap.line][i].p.split('');
           }
+
           words.forEach(word => {
             const block = {};
             block.c = ' ';
@@ -241,6 +263,9 @@ export default {
       // eslint-disable-next-line
       for (const lineIndex in lines) {
         const line = lines[lineIndex];
+        // generate new key
+        lines[lineIndex].blocks[0].key =
+          'language-' + lineKeys[lineIndex].join();
         newLines.push(line.blocks);
       }
 
@@ -304,6 +329,7 @@ export default {
       }
 
       const line = lines[lineIndex];
+
       this.setLine({
         line,
         lineIndex,
@@ -323,7 +349,7 @@ export default {
       this.setFileContent([]);
       this.setFileContentLanguage([]);
       this.verses = [];
-      const CACHE_VERSION = 1;
+
       const language = `cmn-han${options.ideogramType}`;
 
       if (LocalStorage.get(`BIBLE_SAVE_${language}`)) {

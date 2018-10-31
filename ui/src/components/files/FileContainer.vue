@@ -5,13 +5,15 @@
     <div class="print-scroll" ref="fileScroll">
       <div class="print" :class="[sizeClass, typeClass, ideogramSpacedClass]">
         <folder-structure :show-last="true" v-if="parent"/>
-        <h2 v-if="filename && filename.split('|||').length != 3">
+        <h2 v-if="filename && filename.split('|||').length != 3" class="file-title">
           {{filename}}
         </h2>
+
+        <div v-if="lines && lines[0] && lines[0][0] && lines[0][0].line !== undefined && lines[0][0].line.audio !== undefined">
+          <audio :src="lines[0][0].line.audio" controls/>
+        </div>
+
         <template v-for="(line, lineIndex) in lines">
-          <div v-if="lineIndex === 0 && line && line[0].line !== undefined && line[0].line.audio !== undefined"  :key="'audio-' + lineIndex">
-            <audio :src="line[0].line.audio" controls/>
-          </div>
           <file-row-print
             :line="line"
             :lineIndex="lineIndex"
@@ -20,8 +22,9 @@
             @open-footnote="openFootnote"
             @go-to-video-time="(time) => $emit('go-to-video-time', time)"
             ref="fileRowPrint"
-            :key="'file-row-' + lineIndex"/>
+            :key="'file-row-' + (line[0] && line[0].key ? `key-${line[0].key}` : `no-key-${lineIndex}`)"/>
         </template>
+
         <div class="loading-container">
           <md-progress-spinner md-mode="indeterminate" v-if="fileLoading"></md-progress-spinner>
         </div>
@@ -31,13 +34,13 @@
           @remove-character="removeCharacter"
           ref="addRemoveCharacterModal"/>
 
-        <highlight-modal v-if="showHighlight"/>
+        <highlight-modal v-if="showHighlight" :worker="worker" />
 
         <bible-modal ref="bibleModal" v-if="parent" :bookIndex="bible.bookIndex" :chapter="bible.chapter" :verse="bible.verse" @open-bottom-bar="openBottomBar"/>
       </div>
     </div>
 
-    <file-bottom-bar ref="fileBottomBar" @open-modal="openModal" @reopen="(lineIndex, blockIndex) => openBottomBarByLineAndBlock(lineIndex, blockIndex)"/>
+    <file-bottom-bar ref="fileBottomBar" @open-modal="openModal" @reopen="(lineIndex, blockIndex) => reopenBottomBarByLineAndBlock(lineIndex, blockIndex)"/>
   </div>
 </template>
 
@@ -127,13 +130,14 @@ export default {
       footnotes: FILE_GETTER_FOOTNOTES,
     }),
   },
+
   created() {
     this.options = OptionsManager.getOptions();
     this.worker = new PinyinWorker();
 
-    this.worker.addEventListener('message', e => {
+    this.worker.addEventListener('message', async e => {
       if (e.data.type === 'changeCharacter') {
-        this.$refs.fileRowPrint[e.data.lineIndex].updateBlockRender(
+        await this.$refs.fileRowPrint[e.data.lineIndex].updateBlockRender(
           e.data.blockIndex,
         );
       }
@@ -178,7 +182,11 @@ export default {
     },
 
     openBottomBarClick(e) {
-      const element = e.target.parentNode.parentNode;
+      let element = e.target.parentNode;
+      if (!element.classList.contains('character')) {
+        element = e.target;
+      }
+
       if (!element.classList.contains('character')) {
         return;
       }
@@ -193,7 +201,11 @@ export default {
       const lineIndex = element.getAttribute('data-line');
       const blockIndex = element.getAttribute('data-block');
 
-      if (this.lines[lineIndex][blockIndex].b) {
+      if (
+        this.lines[lineIndex] &&
+        this.lines[lineIndex][blockIndex] &&
+        this.lines[lineIndex][blockIndex].b
+      ) {
         const bible = this.lines[lineIndex][blockIndex].b.split(':');
         this.bible.bookIndex = bible[0];
         this.bible.chapter = bible[1];
@@ -218,6 +230,13 @@ export default {
         blockIndex,
         e.ctrlKey || e.metaKey,
       );
+    },
+
+    reopenBottomBarByLineAndBlock(lineIndex, blockIndex) {
+      this.openBottomBarByLineAndBlock(lineIndex, blockIndex);
+      this.$nextTick(() => {
+        this.$refs.fileRowPrint[lineIndex].updateRender().then();
+      });
     },
 
     openBottomBarByLineAndBlock(lineIndex, blockIndex, openDictionary) {
@@ -292,6 +311,10 @@ export default {
   color: #000 !important;
 }
 
+.file-title {
+  min-height: 80px;
+}
+
 .print-container {
   flex: 1;
   display: flex;
@@ -331,6 +354,7 @@ export default {
   height: calc(var(--pinyin-font-size) + 2px);
   min-width: 0;
   min-height: 5px;
+  display: block;
 }
 
 .print .character,
@@ -338,10 +362,10 @@ export default {
   min-width: 0;
   font-family: 'Noto Sans SC', 'Noto Sans TC', sans-serif;
   font-weight: lighter;
-}
-.print .character span {
-  display: inline-block;
   font-weight: 300;
+}
+
+.print .character span {
   width: calc(var(--character-font-size) - 1px);
 }
 
@@ -363,11 +387,15 @@ export default {
   padding-bottom: 0 !important;
 }
 
+.print .type-h1 .character,
 .print .type-h1 .character span {
   line-height: calc(var(--character-font-size) + 17px);
   font-size: calc(var(--character-font-size) + 17px);
-  width: calc(var(--character-font-size) + 17px);
   font-weight: 400;
+}
+
+.print .type-h1 .character span {
+  width: calc(var(--character-font-size) + 17px);
 }
 
 .print .type-h1 {
@@ -381,19 +409,29 @@ export default {
   border-bottom: 1px solid #fcd79c;
 }
 
-.print .type-box-h2 .character span,
+.print .type-box-h2 .character .print .type-box-h2 .character span,
+.print .type-h2 .character,
 .print .type-h2 .character span {
   line-height: calc(var(--character-font-size) + 11px);
   font-size: calc(var(--character-font-size) + 11px);
-  width: calc(var(--character-font-size) + 10px);
   font-weight: 400;
+}
+
+.print .type-box-h2 .character span,
+.print .type-h2 .character span {
+  width: calc(var(--character-font-size) + 10px);
+}
+
+.print .type-foot .character,
+.print .type-box-imgcaption .character,
+.print .type-imgcaption .character {
+  line-height: calc(var(--character-font-size) - 3px);
+  font-size: calc(var(--character-font-size) - 3px);
 }
 
 .print .type-foot .character span,
 .print .type-box-imgcaption .character span,
 .print .type-imgcaption .character span {
-  line-height: calc(var(--character-font-size) - 3px);
-  font-size: calc(var(--character-font-size) - 3px);
   width: calc(var(--character-font-size) - 3px);
 }
 
@@ -411,10 +449,10 @@ export default {
   border-bottom: 1px solid #ccc;
 }
 
+.print .type-qu .character,
 .print .type-qu .character span {
   line-height: calc(var(--character-font-size) - 4px);
   font-size: calc(var(--character-font-size) - 4px);
-  width: calc(var(--character-font-size) - 4px);
 }
 
 .print .character span.special-ideogram {
@@ -509,9 +547,10 @@ export default {
 }
 
 audio {
-  margin-top: 30px;
+  margin-top: 10px;
   margin-bottom: 5px;
   width: 100%;
+  height: 55px;
 }
 
 .print .block .footnote {

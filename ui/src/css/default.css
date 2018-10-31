@@ -91,6 +91,10 @@ body {
   display: block;
 }
 
+.pinyin {
+  font-size: var(--pinyin-font-size);
+}
+
 .pinyin input,
 .pinyin .div-input,
 .pinyin span {
@@ -103,6 +107,11 @@ body {
   text-align: center;
   margin: auto;
   float: none;
+}
+
+.character {
+  font-size: var(--character-font-size);
+  color: #000;
 }
 
 .character input,
@@ -147,6 +156,10 @@ body {
 
 .md-menu-content {
   max-height: 40vh !important;
+}
+
+.md-overlay {
+  background: transparent;
 }
 
 .md-overlay,

@@ -17,9 +17,9 @@ export class RedisCache {
   }
 
   static async set(cacheKey, cacheValue, expires?) {
-    await redisClient.set(cacheKey, cacheValue);
+    await redisClient.setAsync(cacheKey, cacheValue);
     if (expires) {
-      await redisClient.expire(cacheKey, expires);
+      await redisClient.expireAsync(cacheKey, expires);
     }
   }
 

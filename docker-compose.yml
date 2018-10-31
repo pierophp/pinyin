@@ -1,42 +1,23 @@
 version: '2'
 services:
-  pinyin_db:
-    hostname: db
-    container_name: pinyin_db
-    image: mysql:5.7
-    ports:
-      - "3306:3306"
-    environment:
-      MYSQL_DATABASE: "pinyin"
-      MYSQL_USER: "docker"
-      MYSQL_PASSWORD: "docker"
-      MYSQL_ROOT_PASSWORD: "root"
-    volumes:
-      - ./api/storage/mysql:/var/lib/mysql:cached
-
-  pinyin_redis:
-    hostname: redis
-    container_name: pinyin_redis
-    image: redis:4
-    volumes:
-      - ./api/storage/redis:/data
-
   pinyin_api:
-    hostname: api
     container_name: pinyin_api
     build: ./docker/api
     user: "node"
     working_dir: /home/node/pinyin/api
+    entrypoint: ../docker/api/entrypoint.sh
     environment:
-      - NODE_ENV=development
+      NODE_ENV: 'development'
+      SERVICE_NAME: 'pinyin'
     ports:
       - "9090:9090"
-    links:
-      - pinyin_db
-      - pinyin_redis
+    expose:
+      - 9090
     volumes:
       - ./:/home/node/pinyin:cached
     command: "yarn dev"
+    networks:
+      - consul
 
   # pinyin_elasticsearch:
   #   hostname: elasticsearch
@@ -71,3 +52,6 @@ services:
   #   ports:
   #     - "5601:5601"
 
+networks:
+  consul:
+    external: true

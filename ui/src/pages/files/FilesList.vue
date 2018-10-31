@@ -67,7 +67,7 @@ import ImportSiteModal from 'src/components/modals/ImportSite';
 import LoadableContent from 'src/components/common/loading/LoadableContent';
 
 import { mapActions, mapGetters } from 'vuex';
-
+import { trimStart } from 'lodash';
 import {
   FILES_ACTION_FETCH,
   FILES_GETTER,
@@ -164,14 +164,14 @@ export default {
       this.$router.push({
         name: 'file',
         params: { filename },
-        query: { d: `/${dirname}` },
+        query: { d: `/${trimStart(dirname, '/')}` },
       });
     },
 
     goToDir(dirname) {
       this.$router.push({
         name: 'files',
-        query: { d: `/${dirname}` },
+        query: { d: `/${trimStart(dirname, '/')}` },
       });
     },
     openOptions(fileId, e) {

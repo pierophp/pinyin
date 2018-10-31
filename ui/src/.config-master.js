@@ -4,7 +4,7 @@ export default {
   },
 
   production: {
-    apiUrl: 'https://api.pinyin.giusit.com.br/',
+    apiUrl: 'https://api.pinzi.org/',
   },
 
   testing: {},

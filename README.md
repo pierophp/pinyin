@@ -2,6 +2,11 @@
 A simple pinyin editor made in node.js
 
 ## Install
+Use the Consul Docker:
+
+https://github.com/beautybrands/consul
+
+
 Run:
 ```
 npm install
@@ -13,7 +18,6 @@ npm run init
 ```
 
 Create a env.js file based on env.js.example
-
 
 
 Load the Unihan Database:

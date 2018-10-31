@@ -1,11 +1,11 @@
+import { padStart } from 'lodash';
 import * as replaceall from 'replaceall';
-import * as replaceIdeogramsToSpace from '../../../../../shared/helpers/special-ideograms-chars';
 import * as bibleBooks from '../../../../../shared/data/bible/bible';
+import * as isChinese from '../../../../../shared/helpers/is-chinese';
+import * as separatePinyinInSyllables from '../../../../../shared/helpers/separate-pinyin-in-syllables';
+import * as replaceIdeogramsToSpace from '../../../../../shared/helpers/special-ideograms-chars';
 import { http } from '../../../helpers/http';
 import * as UnihanSearch from '../../../services/UnihanSearch';
-import { padStart } from 'lodash';
-import * as separatePinyinInSyllables from '../../../../../shared/helpers/separate-pinyin-in-syllables';
-import * as isChinese from '../../../../../shared/helpers/is-chinese';
 
 export class Parser {
   protected text: any[] = [];
@@ -56,26 +56,24 @@ export class Parser {
       });
     }
 
-    let mainElement = $('article > .docSubContent .textSizeIncrement');
+    const mainElements = [
+      'article > .docSubContent .textSizeIncrement > div[class=""]',
+      'article > .docSubContent .textSizeIncrement',
+      'article > .docSubContent',
+      'article #bibleText',
+      'article .docSubContent',
+      '#dailyText',
+      '#article',
+    ];
 
-    if (!mainElement.length) {
-      mainElement = $('article > .docSubContent');
-    }
-
-    if (!mainElement.length) {
-      mainElement = $('article #bibleText');
-    }
-
-    if (!mainElement.length) {
-      mainElement = $('article .docSubContent');
-    }
-
-    if (!mainElement.length) {
-      mainElement = $('#dailyText');
-    }
-
-    if (!mainElement.length) {
-      mainElement = $('#article');
+    let selectedMainElement: string = '';
+    let mainElement: any;
+    for (const me of mainElements) {
+      selectedMainElement = me;
+      mainElement = $(me);
+      if (mainElement.length) {
+        break;
+      }
     }
 
     mainElement.children().each((i, children) => {
@@ -101,12 +99,15 @@ export class Parser {
               });
             }
 
-            $(subChildren)
-              .children('div')
-              .children()
-              .each((k, subChildren02) => {
-                this.parseBlock($, subChildren02);
-              });
+            let bodyTxtChildren = $(subChildren).children('div.pGroup');
+
+            if (bodyTxtChildren.length === 0) {
+              bodyTxtChildren = $(subChildren).children('div');
+            }
+
+            bodyTxtChildren.children().each((k, subChildren02) => {
+              this.parseBlock($, subChildren02);
+            });
           });
       } else if ($(children).hasClass('article')) {
         $(children)
@@ -169,13 +170,9 @@ export class Parser {
 
       let title = this.getText($, link);
 
-      console.log(title);
-
       if (subtitle.length) {
         title = this.getText($, subtitle) + ' - ' + title;
       }
-
-      console.log($(link).attr('href'));
 
       downloadResponse.links.push({
         link: $(link).attr('href'),
@@ -639,8 +636,15 @@ export class Parser {
       lineText = ` ${ideogramsFiltered.join(' ')} `;
 
       const wordsToReplace = ['各地', '可见', '称为', '处于', '忠于', '何时'];
+      const wordsToReplaceTraditional = [
+        '可見',
+        '稱為',
+        '處於',
+        '忠於',
+        '何時',
+      ];
 
-      wordsToReplace.forEach(word => {
+      wordsToReplace.concat(wordsToReplaceTraditional).forEach(word => {
         const replaceWord = ` ${word.split('').join(' ')} `;
         lineText = replaceall(replaceWord, ` ${word} `, lineText);
       });

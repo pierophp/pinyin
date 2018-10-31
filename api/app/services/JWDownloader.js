@@ -1,16 +1,13 @@
 const Promise = require('bluebird');
 const cheerio = require('cheerio');
-const { http } = require('../helpers/http');
-const { Encoder } = require('../core/sites/jw/encoder');
-const profiler = require('../helpers/profiler');
-const knex = require('./knex');
 const replaceall = require('replaceall');
-const replaceIdeogramsToSpace = require('../../../shared/helpers/special-ideograms-chars');
+const axios = require('axios');
+const axiosRetry = require('axios-retry');
+const { Encoder } = require('../core/sites/encoder');
 const bibleBooks = require('../../../shared/data/bible/bible');
 const bibleChapters = require('../../../shared/data/bible/chapters');
 const UnihanSearch = require('../services/UnihanSearch');
-const fs = Promise.promisifyAll(require('fs'));
-const axiosRetry = require('axios-retry');
+const fs = require('fs-extra');
 
 module.exports = class JwDownloader {
   static async getInsight() {
@@ -72,13 +69,13 @@ module.exports = class JwDownloader {
     });
 
     const filenameBible = `${dirname}insight.csv`;
-    await fs.writeFileAsync(filenameBible, csvBible);
+    await fs.writeFile(filenameBible, csvBible);
   }
 
   static async getBiblePinyin() {
     const dirname = `${__dirname}/../../storage/`;
     const filenameBibleTotal = `${dirname}bible_total.csv`;
-    const content = await fs.readFileAsync(filenameBibleTotal);
+    const content = await fs.readFile(filenameBibleTotal);
     const lines = content.toString().split('\n');
     let csvPinyin = 'word;total;type\n';
     await Promise.mapSeries(lines, async line => {
@@ -100,7 +97,7 @@ module.exports = class JwDownloader {
     });
 
     const filenamePinyin = `${dirname}pinyin_bible.csv`;
-    await fs.writeFileAsync(filenamePinyin, csvPinyin);
+    await fs.writeFile(filenamePinyin, csvPinyin);
   }
 
   static async getBibleNames() {
@@ -190,7 +187,7 @@ module.exports = class JwDownloader {
     });
 
     const filenameBible = `${dirname}bible_words.csv`;
-    await fs.writeFileAsync(filenameBible, csvBible);
+    await fs.writeFile(filenameBible, csvBible);
 
     let csvBibleTotal = 'word;total\n';
     Object.keys(words).forEach(key => {
@@ -198,7 +195,7 @@ module.exports = class JwDownloader {
     });
 
     const filenameBibleTotal = `${dirname}bible_total.csv`;
-    await fs.writeFileAsync(filenameBibleTotal, csvBibleTotal);
+    await fs.writeFile(filenameBibleTotal, csvBibleTotal);
   }
 
   static async getTraditionalBible() {
@@ -206,14 +203,16 @@ module.exports = class JwDownloader {
     const urlBible = 'https://www.jw.org/cmn-hant/出版物/聖經/bi12/聖經經卷/';
     let response = await axios.get(encoder.encodeUrl(urlBible));
     let $ = cheerio.load(response.data);
-    const bibles = [];
-    $('.bibleBook .fullName').each((i, bibleChildren) => {
-      bibles.push(
-        $(bibleChildren)
-          .text()
-          .trim(),
-      );
-    });
+    // const bibles = [];
+    // $('.bibleBook .fullName').each((i, bibleChildren) => {
+    //   bibles.push(
+    //     $(bibleChildren)
+    //       .text()
+    //       .trim(),
+    //   );
+    // });
+
+    const bibles = ['箴言'];
 
     await Promise.mapSeries(bibles, async bible => {
       const urlChapter = `${urlBible}${bible}/`;
@@ -236,13 +235,13 @@ module.exports = class JwDownloader {
       // eslint-disable-next-line
       console.log(bibleEnglish);
 
-      const biblePath = `${__dirname}/../../../ui/static/bible/cmn-hans/`;
-      const biblePathTraditional = `${__dirname}/../../../ui/static/bible/cmn-hant/`;
+      const biblePath = `${__dirname}/../../../ui/public/static/bible/cmn-hans/`;
+      const biblePathTraditional = `${__dirname}/../../../ui/public/static/bible/cmn-hant/`;
 
       await Promise.mapSeries(chapters, async chapter => {
         let chapterTraditionalExists = true;
         try {
-          await fs.statAsync(
+          await fs.stat(
             `${biblePathTraditional}${bibleEnglish}/${chapter}.json`,
           );
         } catch (e) {
@@ -255,10 +254,11 @@ module.exports = class JwDownloader {
 
         // eslint-disable-next-line
         console.log(chapter);
-        const chapterContent = await fs.readFileAsync(
+        const chapterContent = await fs.readFile(
           `${biblePath}${bibleEnglish}/${chapter}.json`,
           'utf8',
         );
+
         const chapterObject = JSON.parse(chapterContent);
         const chapterObjectTraditional = JSON.parse(chapterContent);
 
@@ -283,10 +283,12 @@ module.exports = class JwDownloader {
           $(children)
             .find('.superscription')
             .remove();
+
           let verse = $(children)
             .find('.verseNum')
             .text()
             .trim();
+
           if (!verse) {
             verse = 1;
           }
@@ -303,9 +305,11 @@ module.exports = class JwDownloader {
             .text()
             .trim()
             .replace(/\s/g, '');
+
           verseText = replaceall('+', '', verseText);
           verseText = replaceall('*', '', verseText);
           verseText = replaceall(String.fromCharCode(8288), '', verseText);
+          verseText = replaceall(String.fromCharCode(8203), '', verseText);
 
           for (let vId = 0; vId < verseText.length; vId += 1) {
             if (!verseText[vId]) {
@@ -330,10 +334,32 @@ module.exports = class JwDownloader {
               return;
             }
 
+            if (!chapterObject.lines[lineIndex]) {
+              throw new Error(
+                'line index not found ' +
+                  lineIndex +
+                  ' chapter ' +
+                  chapter +
+                  ' verse ' +
+                  verse,
+              );
+            }
+
+            if (!chapterObject.lines[lineIndex][blockIndex]) {
+              throw new Error(
+                'line index not found ' +
+                  lineIndex +
+                  ' block index ' +
+                  blockIndex,
+              );
+            }
+
             const blockContentSimplified =
               chapterObject.lines[lineIndex][blockIndex];
+
             let blockContent =
               chapterObjectTraditional.lines[lineIndex][blockIndex];
+
             const space = String.fromCharCode(160);
 
             const wordsToChange = [
@@ -433,19 +459,19 @@ module.exports = class JwDownloader {
         });
 
         try {
-          await fs.statAsync(`${biblePathTraditional}${bibleEnglish}`);
+          await fs.stat(`${biblePathTraditional}${bibleEnglish}`);
         } catch (e) {
-          await fs.mkdirAsync(`${biblePathTraditional}${bibleEnglish}`);
+          await fs.mkdir(`${biblePathTraditional}${bibleEnglish}`);
         }
 
         if (simplifiedChanged) {
-          await fs.writeFileAsync(
+          await fs.writeFile(
             `${biblePath}${bibleEnglish}/${chapter}.json`,
             JSON.stringify(chapterObject),
           );
         }
 
-        await fs.writeFileAsync(
+        await fs.writeFile(
           `${biblePathTraditional}${bibleEnglish}/${chapter}.json`,
           JSON.stringify(chapterObjectTraditional),
         );
@@ -503,7 +529,7 @@ module.exports = class JwDownloader {
         console.log(chapter);
         let chapterExists = true;
         try {
-          await fs.statAsync(`${biblePath}${bibleEnglish}/${chapter}.json`);
+          await fs.stat(`${biblePath}${bibleEnglish}/${chapter}.json`);
         } catch (e) {
           chapterExists = false;
         }
@@ -584,12 +610,12 @@ module.exports = class JwDownloader {
         });
 
         try {
-          await fs.statAsync(`${biblePath}${bibleEnglish}`);
+          await fs.stat(`${biblePath}${bibleEnglish}`);
         } catch (e) {
-          await fs.mkdirAsync(`${biblePath}${bibleEnglish}`);
+          await fs.mkdir(`${biblePath}${bibleEnglish}`);
         }
 
-        await fs.writeFileAsync(
+        await fs.writeFile(
           `${biblePath}${bibleEnglish}/${chapter}.json`,
           JSON.stringify(chapterObject),
         );

@@ -10,7 +10,7 @@ function isCharacterChange(data) {
         ideograms.push(block.c);
       }
 
-      ideograms.forEach((ideogram) => {
+      ideograms.forEach(ideogram => {
         if (ideogram === data.character) {
           self.postMessage({
             type: 'changeCharacter',
@@ -23,10 +23,12 @@ function isCharacterChange(data) {
   });
 }
 
-self.addEventListener('message', (e) => {
+self.addEventListener('message', e => {
   if (e.data.type === 'addCharacter') {
     isCharacterChange(e.data);
   } else if (e.data.type === 'removeCharacter') {
     isCharacterChange(e.data);
+  } else if (e.data.type === 'changeCharacter') {
+    self.postMessage(e.data);
   }
 });

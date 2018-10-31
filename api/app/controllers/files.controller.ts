@@ -1,4 +1,3 @@
-import * as bluebird from 'bluebird';
 import * as express from 'express';
 import { trimStart } from 'lodash';
 import { FileManager } from '../core/files/file.manager';
@@ -18,6 +17,16 @@ router.get('/file', async (req: any, res) => {
 
 router.post('/save', async (req: any, res) => {
   if (req.query.type === 'file') {
+    if (req.query.filename === '') {
+      res.send({});
+      return;
+    }
+
+    if (req.query.filename === '.json') {
+      res.send({});
+      return;
+    }
+
     await fileManager.saveFile(
       req.user.id,
       `${trimStart(req.query.dirname, '/')}/${req.query.filename}`,
@@ -35,15 +44,9 @@ router.post('/save', async (req: any, res) => {
 
 router.delete('/', async (req: any, res) => {
   if (req.query.type === 'file') {
-    await fileManager.deleteFile(
-      req.user.id,
-      `${req.query.filename}`,
-    );
+    await fileManager.deleteFile(req.user.id, `${req.query.filename}`);
   } else {
-    await fileManager.deleteDir(
-      req.user.id,
-      `${req.query.filename}`,
-    );
+    await fileManager.deleteDir(req.user.id, `${req.query.filename}`);
   }
   res.send({});
 });

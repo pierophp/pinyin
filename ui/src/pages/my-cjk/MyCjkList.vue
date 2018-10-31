@@ -74,154 +74,58 @@
       </md-tab>
     </md-tabs>
 
-    <md-dialog ref="dialogUnknown" :md-active.sync="dialogUnknownOpen">
-      <md-dialog-title>{{ $t('unknown') }} <span v-if="frequency !== 999">- {{ $t('frequency') }} {{frequency}}</span>
-      </md-dialog-title>
-      <md-dialog-content>
-        <md-table>
-          <md-table-row>
-            <md-table-head>{{ $t('ideogram') }}</md-table-head>
-            <md-table-head>{{ $t('pronunciation') }}</md-table-head>
-            <md-table-head></md-table-head>
-          </md-table-row>
+    <my-cjk-list-modal
+      :active.sync="dialogUnknownOpen"
+      :items="reportUnkown"
+      :hsk="hsk"
+      :frequency="frequency"
+      type="ideograms"
+      action="unknown"
+      @close="dialogUnknownOpen = false"
+      @change="(selectedCharacter) => reportUnkown.remove(selectedCharacter)"
+      />
 
-          <md-table-row v-for="(ideogram, index) in reportUnkown" :key="ideogram">
-            <md-table-cell class="ideogram">
-              <ideograms-show :pinyin="ideogram.pronunciation" :character="ideogram.ideogram"/>
-            </md-table-cell>
-            <md-table-cell>{{ideogram.pronunciation}}</md-table-cell>
-            <md-table-cell class="cell-button">
-              <md-button v-if="options.type !== '4'" class="md-icon-button md-raised" @click.native="openModal(true, ideogram.ideogram, index)">
-                <md-icon>add</md-icon>
-              </md-button>
-              <md-button v-if="options.type === '4'" class="md-icon-button md-raised" @click.native="openModal(false, ideogram.ideogram, index)">
-                <md-icon>remove</md-icon>
-              </md-button>
-            </md-table-cell>
-          </md-table-row>
-        </md-table>
-      </md-dialog-content>
+    <my-cjk-list-modal
+      :active.sync="dialogKnownOpen"
+      :items="reportUnkown"
+      :hsk="hsk"
+      :frequency="frequency"
+      type="ideograms"
+      action="known"
+      @close="dialogKnownOpen = false"
+      @change="(selectedCharacter) => reportUnkown.remove(selectedCharacter)"
+      />
 
-      <md-dialog-actions>
-        <md-button class="md-primary" @click.native="closeDialog('dialogUnknown')">OK</md-button>
-      </md-dialog-actions>
-    </md-dialog>
+    <my-cjk-list-modal
+      :active.sync="dialogUnknownWordsOpen"
+      :items="reportUnkown"
+      :hsk="hsk"
+      :frequency="frequency"
+      type="words"
+      action="unknown"
+      @close="dialogUnknownWordsOpen = false"
+      @change="(selectedCharacter) => reportUnkown.remove(selectedCharacter)"
+      />
 
-    <md-dialog ref="dialogKnown" :md-active.sync="dialogKnownOpen">
-      <md-dialog-title>{{ $t('known') }} <span v-if="frequency !== 999">- {{ $t('frequency') }} {{frequency}}</span>
-      </md-dialog-title>
-      <md-dialog-content>
-        <md-table>
-          <md-table-row>
-            <md-table-head>{{ $t('ideogram') }}</md-table-head>
-            <md-table-head>{{ $t('pronunciation') }}</md-table-head>
-            <md-table-head></md-table-head>
-          </md-table-row>
+    <my-cjk-list-modal
+      :active.sync="dialogKnownWordsOpen"
+      :items="reportUnkown"
+      :hsk="hsk"
+      :frequency="frequency"
+      type="words"
+      action="known"
+      @close="dialogKnownWordsOpen = false"
+      @change="(selectedCharacter) => reportUnkown.remove(selectedCharacter)"
+      />
 
-          <md-table-row v-for="(ideogram, index) in reportUnkown" :key="ideogram">
-            <md-table-cell class="ideogram">
-              <ideograms-show :pinyin="ideogram.pronunciation" :character="ideogram.ideogram"/>
-            </md-table-cell>
-            <md-table-cell>{{ideogram.pronunciation}}</md-table-cell>
-            <md-table-cell class="cell-button">
-              <md-button v-if="options.type !== '4'" class="md-icon-button md-raised" @click.native="openModal(false, ideogram.ideogram, index)">
-                <md-icon>remove</md-icon>
-              </md-button>
-              <md-button v-if="options.type === '4'" class="md-icon-button md-raised" @click.native="openModal(true, ideogram.ideogram, index)">
-                <md-icon>add</md-icon>
-              </md-button>
-            </md-table-cell>
-          </md-table-row>
-        </md-table>
-      </md-dialog-content>
-      <md-dialog-actions>
-        <md-button class="md-primary" @click.native="closeDialog('dialogKnown')">OK</md-button>
-      </md-dialog-actions>
-    </md-dialog>
-
-    <md-dialog ref="dialogUnknownWords" :md-active.sync="dialogUnknownWordsOpen">
-      <md-dialog-title>{{ $t('unknown') }} <span v-if="hsk !== 999">- HSK {{hsk}}</span>
-      </md-dialog-title>
-      <md-dialog-content>
-        <md-table>
-          <md-table-row>
-            <md-table-head>{{ $t('ideogram') }}</md-table-head>
-            <md-table-head>{{ $t('pronunciation') }}</md-table-head>
-            <md-table-head></md-table-head>
-          </md-table-row>
-
-          <md-table-row v-for="(ideogram, index) in reportUnkown" :key="ideogram">
-            <md-table-cell class="ideogram">
-              <ideograms-show :pinyin="ideogram.pronunciation" :character="ideogram.ideogram"/>
-            </md-table-cell>
-            <md-table-cell>{{ideogram.pronunciation}}</md-table-cell>
-            <md-table-cell class="cell-button">
-              <md-button v-if="options.type !== '4'" class="md-icon-button md-raised" @click.native="openModal(true, ideogram.ideogram, index)">
-                <md-icon>add</md-icon>
-              </md-button>
-              <md-button v-if="options.type === '4'" class="md-icon-button md-raised" @click.native="openModal(false, ideogram.ideogram, index)">
-                <md-icon>remove</md-icon>
-              </md-button>
-            </md-table-cell>
-          </md-table-row>
-        </md-table>
-      </md-dialog-content>
-
-      <md-dialog-actions>
-        <md-button class="md-primary" @click.native="closeDialog('dialogUnknownWords')">OK</md-button>
-      </md-dialog-actions>
-    </md-dialog>
-
-    <md-dialog ref="dialogKnownWords" :md-active.sync="dialogKnownWordsOpen">
-      <md-dialog-title>{{ $t('known') }} <span v-if="hsk !== 999">- HSK {{hsk}}</span>
-      </md-dialog-title>
-      <md-dialog-content>
-        <md-table>
-          <md-table-row>
-            <md-table-head>{{ $t('ideogram') }}</md-table-head>
-            <md-table-head>{{ $t('pronunciation') }}</md-table-head>
-            <md-table-head></md-table-head>
-          </md-table-row>
-
-          <md-table-row v-for="(ideogram, index) in reportUnkown" :key="ideogram">
-            <md-table-cell class="ideogram">
-              <ideograms-show :pinyin="ideogram.pronunciation" :character="ideogram.ideogram"/>
-            </md-table-cell>
-            <md-table-cell>{{ideogram.pronunciation}}</md-table-cell>
-            <md-table-cell class="cell-button">
-              <md-button v-if="options.type !== '4'" class="md-icon-button md-raised" @click.native="openModal(false, ideogram.ideogram, index)">
-                <md-icon>remove</md-icon>
-              </md-button>
-              <md-button v-if="options.type === '4'" class="md-icon-button md-raised" @click.native="openModal(true, ideogram.ideogram, index)">
-                <md-icon>add</md-icon>
-              </md-button>
-            </md-table-cell>
-          </md-table-row>
-        </md-table>
-      </md-dialog-content>
-
-      <md-dialog-actions>
-        <md-button class="md-primary" @click.native="closeDialog('dialogKnownWords')">OK</md-button>
-      </md-dialog-actions>
-    </md-dialog>
-
-    <add-remove-character-modal
-          @add-character="addRemoveCharacter"
-          @remove-character="addRemoveCharacter"
-          ref="addRemoveCharacterModal"/>
   </div>
 </template>
 
 <script>
 import http from 'src/helpers/http';
-import IdeogramsShow from 'src/components/ideograms/Show';
 import LoadableContent from 'src/components/common/loading/LoadableContent';
-import AddRemoveCharacterModal from 'src/components/modals/AddRemoveCharacter';
+import MyCjkListModal from 'src/components/modals/MyCjkList';
 import OptionsManager from 'src/domain/options-manager';
-
-import { mapMutations } from 'vuex';
-
-import { FILE_MUTATION_SET_MY_CJK_TEMP } from 'src/data/file/types';
 
 const options = OptionsManager.getOptions();
 let type = 'known';
@@ -243,7 +147,6 @@ export default {
       report: [],
       reportWords: [],
       reportUnkown: [],
-      selectedCharacter: null,
       dialogUnknownOpen: false,
       dialogKnownOpen: false,
       dialogUnknownWordsOpen: false,
@@ -252,23 +155,11 @@ export default {
     };
   },
   components: {
-    IdeogramsShow,
     LoadableContent,
-    AddRemoveCharacterModal,
+    MyCjkListModal,
   },
   methods: {
-    ...mapMutations({
-      setMyCjkTemp: FILE_MUTATION_SET_MY_CJK_TEMP,
-    }),
-    addRemoveCharacter() {
-      this.reportUnkown.remove(this.selectedCharacter);
-    },
-    openModal(add, cjk, selectedCharacter) {
-      this.selectedCharacter = selectedCharacter;
-      this.setMyCjkTemp(cjk);
-      this.$refs.addRemoveCharacterModal.openDialog(add);
-    },
-    knownIdeograms(frequency) {
+    async knownIdeograms(frequency) {
       this.frequency = frequency;
       this.loading = true;
       http
@@ -286,7 +177,7 @@ export default {
           this.dialogKnownOpen = true;
         });
     },
-    unknownIdeograms(frequency) {
+    async unknownIdeograms(frequency) {
       this.frequency = frequency;
       this.loading = true;
       http
@@ -304,7 +195,7 @@ export default {
           this.dialogUnknownOpen = true;
         });
     },
-    knownWords(hsk) {
+    async knownWords(hsk) {
       this.hsk = hsk;
       this.loading = true;
       http
@@ -322,7 +213,7 @@ export default {
           this.dialogKnownWordsOpen = true;
         });
     },
-    unknownWords(hsk) {
+    async unknownWords(hsk) {
       this.hsk = hsk;
       this.loading = true;
       http

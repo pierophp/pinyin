@@ -105,6 +105,7 @@ export default {
     }),
 
     getFile(filename) {
+      filename = `${this.$route.query.d}/${this.$route.params.filename}`;
       if (!this.lines.length || this.filename !== filename) {
         this.fetch(filename);
       }

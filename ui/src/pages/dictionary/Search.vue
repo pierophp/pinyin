@@ -1,6 +1,6 @@
 <template>
 <div class="dictionary-container">
-  <form novalidate @submit.stop.prevent="submit">
+  <form novalidate>
     <md-field>
       <md-icon>pageview</md-icon>
       <label>{{ $t("search") }}</label>
@@ -12,7 +12,7 @@
       </div>
     </md-field>
   </form>
-  
+
   <div>
     <loadable-content :loading="loading">
       <div class="list-item" v-for="entry in entries" @click="details(entry.id)" v-bind:key="entry.id">

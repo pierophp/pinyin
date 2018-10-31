@@ -43,9 +43,14 @@
       <Links list=0 :character="block.character" ref="links"/>
     </div>
 
-    <md-dialog ref="dialogDictionary" :md-active.sync="modalDictionaryOpen" :md-fullscreen="false">
+    <md-dialog
+      ref="dialogDictionary"
+      :md-active.sync="modalDictionaryOpen"
+      :md-fullscreen="false"
+      id="dialog-dictionary"
+    >
       <md-dialog-title>
-        <ideograms-show :pinyin="block.pinyin" :character="block.character"/>
+        <traditional-simplified-show :pinyin="block.pinyin" :ideograms="block.character" :variants="dictionary.variants"/>
         - {{ block.pinyin }}
         <md-button class="md-icon-button md-primary clipboard-btn" @click="clipboard(block.character)">
           <md-icon>content_copy</md-icon>
@@ -57,8 +62,25 @@
       </md-dialog-title>
 
       <md-dialog-content>
-        <dictionary-details :dictionary="dictionary" :pinyin="block.pinyin" @change-show="changeShow" ref="dictionaryDetails"/>
-        <dictionary-list :list="dictionaryList"/>
+
+      <md-tabs>
+        <md-tab id="dict" :md-label="$t('definition')">
+          <div class="loadable-loader" v-show="modalDictionaryLoading">
+            <md-progress-spinner class="md-accent" md-mode="indeterminate" :visible="modalDictionaryLoading"></md-progress-spinner>
+          </div>
+          <dictionary-details :dictionary="dictionary" :pinyin="block.pinyin" @change-show="changeShow" ref="dictionaryDetails"/>
+          <dictionary-list :list="dictionaryList"/>
+        </md-tab>
+
+        <md-tab id="stroke" :md-label="$t('stroke')">
+          <dictionary-stroke-order :ideograms="block.character"/>
+        </md-tab>
+
+        <md-tab id="links" md-label="Links">
+            <Links list=1 :character="block.character"/>
+        </md-tab>
+      </md-tabs>
+
       </md-dialog-content>
 
       <md-dialog-actions>
@@ -120,6 +142,8 @@ import separatePinyinInSyllables from 'src/helpers/separate-pinyin-in-syllables'
 import replaceall from 'replaceall';
 import pinyinHelper from 'src/helpers/pinyin';
 import ForvoModal from 'src/components/modals/Forvo';
+import TraditionalSimplifiedShow from 'src/components/ideograms/TraditionalSimplifiedShow';
+import DictionaryStrokeOrder from 'src/components/dictionary/StrokeOrder';
 
 import { mapActions, mapMutations, mapGetters } from 'vuex';
 
@@ -132,12 +156,15 @@ import {
 } from 'src/data/file/types';
 
 const md = new MobileDetect(window.navigator.userAgent);
+let memoryDictionary = {};
+const loadingDictionary = {};
 
 export default {
   name: 'file-bottom-bar',
   data() {
     const baseDictionary = {
       pt: null,
+      variants: null,
       unihan: null,
       cedict: null,
       chinese_tools_pt: null,
@@ -153,6 +180,7 @@ export default {
       block: {},
       printData: {},
       modalDictionaryOpen: false,
+      modalDictionaryLoading: false,
       modalSeparateOpen: false,
       modalEditOpen: false,
       clipboardOpen: false,
@@ -164,9 +192,11 @@ export default {
   components: {
     DictionaryDetails,
     DictionaryList,
+    DictionaryStrokeOrder,
     IdeogramsShow,
     Links,
     ForvoModal,
+    TraditionalSimplifiedShow,
   },
   computed: {
     ...mapGetters({
@@ -198,6 +228,7 @@ export default {
       this.show = !show;
       const action = show ? 'remove' : 'add';
       document.body.classList[action]('has-bottom-bar');
+      memoryDictionary = {};
     },
 
     separate() {
@@ -244,9 +275,56 @@ export default {
       this.show = false;
     },
 
+    async requestDictionary(character, pinyin) {
+      const cacheKey = `${character}_${pinyin}`;
+
+      if (memoryDictionary[cacheKey]) {
+        return memoryDictionary[cacheKey];
+      }
+
+      if (loadingDictionary[cacheKey] === true) {
+        const awaitedResult = await new Promise(resolve => {
+          function verifyLoadDictionary() {
+            if (memoryDictionary[cacheKey]) {
+              return resolve(memoryDictionary[cacheKey]);
+            }
+
+            if (!loadingDictionary[cacheKey]) {
+              return resolve(null);
+            }
+
+            setTimeout(() => {
+              verifyLoadDictionary();
+            }, 50);
+          }
+          verifyLoadDictionary();
+        });
+
+        if (awaitedResult) {
+          return awaitedResult;
+        }
+      }
+
+      loadingDictionary[cacheKey] = true;
+
+      setTimeout(() => {
+        loadingDictionary[cacheKey] = false;
+      }, 5000);
+
+      memoryDictionary[cacheKey] = (await http.get('unihan/dictionary', {
+        params: {
+          ideograms: character,
+          pinyin: pinyin,
+        },
+      })).data;
+
+      return memoryDictionary[cacheKey];
+    },
+
     open(block) {
       document.body.classList.add('has-bottom-bar');
       this.show = true;
+
       if (md.mobile() && this.tempDictCharacter === block.character) {
         block.openDictionary = true;
       }
@@ -257,8 +335,12 @@ export default {
         '',
         block.pinyin || '',
       );
+
+      this.requestDictionary(block.character, block.pinyin).then();
       this.tempDictCharacter = block.character;
       const pinyin = separatePinyinInSyllables(block.pinyin);
+
+      // clean the selection in 2 seconds
       setTimeout(() => {
         this.tempDictCharacter = null;
       }, 2000);
@@ -309,32 +391,34 @@ export default {
     },
 
     async loadDictionary() {
-      const response = (await http.get('unihan/dictionary', {
-        params: {
-          ideograms: this.block.character,
-          pinyin: this.block.pinyin,
-        },
-      })).data;
+      this.dictionary = this.baseDictionary;
+      this.dictionaryList = [];
+      this.modalDictionaryOpen = true;
+      this.modalDictionaryLoading = true;
+      const response = await this.requestDictionary(
+        this.block.character,
+        this.block.pinyin,
+      );
 
       this.dictionary = this.baseDictionary;
       this.dictionaryList = [];
 
       if (response.list) {
         this.dictionaryList = response.list;
-        this.modalDictionaryOpen = true;
+        this.modalDictionaryLoading = false;
         return;
       }
 
       const isSimplifiedEquals = response.ideograms === this.block.character;
 
       const isTraditionalEquals =
-        response.ideogramsTraditional === this.block.character;
+        response.search_ideograms === this.block.character;
 
       if (!isSimplifiedEquals && !isTraditionalEquals) {
         return;
       }
       this.dictionary = response;
-      this.modalDictionaryOpen = true;
+      this.modalDictionaryLoading = false;
     },
 
     openPinyinList() {
@@ -389,9 +473,42 @@ export default {
   width: 100%;
   flex-shrink: 0;
 }
+
+#dialog-dictionary .loadable-loader {
+  min-height: 200px;
+  text-align: center;
+  margin: 50px;
+}
+
+#dialog-dictionary.md-dialog {
+  height: 80%;
+}
+
+#dialog-dictionary .md-dialog-title {
+  margin-bottom: 0 !important;
+  padding: 15px 15px 0;
+}
+
+#dialog-dictionary .md-dialog-content {
+  padding: 0 15px 15px;
+}
+
+#dialog-dictionary .md-dialog-container .md-tabs-navigation {
+  padding: 0 !important;
+}
+
+#dialog-dictionary .md-dialog-container .md-tab {
+  padding: 10px 0 !important;
+}
+
+#dialog-dictionary .md-tabs-navigation .md-button {
+  height: 32px;
+}
+
 .bottom-bar .md-menu {
   margin-left: -20px;
 }
+
 .bottom-bar-pinyin {
   font-size: 15px;
 }
