@@ -54,7 +54,6 @@
     "@vue/cli-plugin-babel": "^3.0.0",
     "@vue/cli-plugin-pwa": "^3.0.0",
     "@vue/cli-service": "^3.0.0",
-
     "chai": "^3.5.0",
     "node-sass": "^4.7.2",
     "postcss-import": "^11.1.0",
