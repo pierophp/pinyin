@@ -201,7 +201,9 @@ export default {
   position: relative;
 }
 
+#partial-hanzi-writer,
 #partial-hanzi-writer svg,
+#hanzi-writer,
 #hanzi-writer svg {
   min-height: 230px;
 }

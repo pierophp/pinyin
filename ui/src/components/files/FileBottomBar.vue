@@ -68,8 +68,14 @@
           <div class="loadable-loader" v-show="modalDictionaryLoading">
             <md-progress-spinner class="md-accent" md-mode="indeterminate" :visible="modalDictionaryLoading"></md-progress-spinner>
           </div>
-          <dictionary-details :dictionary="dictionary" :pinyin="block.pinyin" @change-show="changeShow" ref="dictionaryDetails"/>
-          <dictionary-list :list="dictionaryList"/>
+          <dictionary-details
+            :dictionary="dictionary"
+            :pinyin="block.pinyin"
+            @change-show="changeShow"
+            ref="dictionaryDetails"
+            v-show="!modalDictionaryLoading"
+            />
+          <dictionary-list :list="dictionaryList" v-show="!modalDictionaryLoading"/>
         </md-tab>
 
         <md-tab id="stroke" :md-label="$t('stroke')">
