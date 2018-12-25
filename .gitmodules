@@ -1,0 +1,3 @@
+[submodule "pdf-pinyin"]
+	path = pdf-pinyin
+	url = git@github.com:pierophp/pdf-pinyin.git

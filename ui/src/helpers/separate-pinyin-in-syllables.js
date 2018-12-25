@@ -1,6 +1,9 @@
 const vowels = 'aāáǎàeēéěèiīíǐìoōóǒòuūúǔùüǖǘǚǜ';
 const tones = 'āáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜ';
 function separate(pinyin) {
+  if (!pinyin) {
+    return pinyin;
+  }
   return (
     pinyin
       .replace(new RegExp(`([${vowels}])([^${vowels}nr])`, 'gi'), '$1 $2') // This line does most of the work

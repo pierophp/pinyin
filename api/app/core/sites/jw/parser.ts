@@ -1,3 +1,5 @@
+import * as bluebird from 'bluebird';
+import * as cheerio from 'cheerio';
 import { padStart } from 'lodash';
 import * as replaceall from 'replaceall';
 import * as bibleBooks from '../../../../../shared/data/bible/bible';
@@ -5,14 +7,26 @@ import * as isChinese from '../../../../../shared/helpers/is-chinese';
 import * as separatePinyinInSyllables from '../../../../../shared/helpers/separate-pinyin-in-syllables';
 import * as replaceIdeogramsToSpace from '../../../../../shared/helpers/special-ideograms-chars';
 import { http } from '../../../helpers/http';
+import { profiler } from '../../../helpers/profiler';
 import * as UnihanSearch from '../../../services/UnihanSearch';
 import { AbstractParser } from '../abstract.parser';
+import { Downloader as GenericDownloader } from '../downloader';
+import { PdfParser } from './pdf.parser';
+
+interface TextInterface {
+  text?: string;
+  large?: string;
+  small?: string;
+  type?: string;
+}
+
 export class Parser extends AbstractParser {
-  protected text: any[] = [];
   protected figcaptionsText: any[] = [];
   protected isChinese: boolean;
+  protected pdfPinyin?: string;
+  protected promisesToExecute: Promise<TextInterface[]>[];
 
-  public async parse($, isChinese: boolean) {
+  public async parse($, isChinese: boolean, isTraditional: boolean) {
     this.isChinese = isChinese;
 
     $('.viewOptions').remove();
@@ -27,33 +41,58 @@ export class Parser extends AbstractParser {
       return await this.getSummary($);
     }
 
-    return this.getContent($);
+    await this.getPinyinPdf($);
+
+    return await this.getContent($);
+  }
+
+  protected async parseResult($, element, type): Promise<TextInterface[]> {
+    const result = await this.getText($, element);
+
+    const response: TextInterface[] = [];
+
+    for (const item of result) {
+      response.push({
+        text: item,
+        type,
+      });
+    }
+
+    return response;
   }
 
   public async getContent($) {
     const downloadResponse: any = {};
-    this.text = [];
+
+    this.promisesToExecute = [];
     downloadResponse.audio = await this.getAudio($);
     this.figcaptionsText = [];
 
     const mainImage = $('.lsrBannerImage');
     if (mainImage.length) {
-      this.text.push({
-        large: $(mainImage)
-          .find('span')
-          .attr('data-zoom'),
-        small: $(mainImage)
-          .find('span')
-          .attr('data-img-size-lg'),
-        type: 'img',
-      });
+      this.promisesToExecute.push(
+        new Promise<TextInterface[]>(async resolve => {
+          resolve([
+            {
+              large: $(mainImage)
+                .find('span')
+                .attr('data-zoom'),
+              small: $(mainImage)
+                .find('span')
+                .attr('data-img-size-lg'),
+              type: 'img',
+            },
+          ]);
+        }),
+      );
     }
 
     if ($('article header h1').length) {
-      this.text.push({
-        text: this.getText($, $('article header h1')),
-        type: 'h1',
-      });
+      this.promisesToExecute.push(
+        new Promise<TextInterface[]>(async resolve => {
+          resolve(await this.parseResult($, $('article header h1'), 'h1'));
+        }),
+      );
     }
 
     const mainElements = [
@@ -66,82 +105,96 @@ export class Parser extends AbstractParser {
       '#article',
     ];
 
-    let selectedMainElement: string = '';
     let mainElement: any;
     for (const me of mainElements) {
-      selectedMainElement = me;
       mainElement = $(me);
       if (mainElement.length) {
         break;
       }
     }
 
-    mainElement.children().each((i, children) => {
+    for (const children of mainElement.children().toArray()) {
       if ($(children).hasClass('blockTeach')) {
         const boxH2 = $(children).find('aside h2');
         if (boxH2 && $(boxH2).text()) {
-          this.text.push({
-            text: this.getText($, boxH2),
-            type: 'h2',
-          });
+          this.promisesToExecute.push(
+            new Promise<TextInterface[]>(async resolve => {
+              resolve(await this.parseResult($, boxH2, 'h2'));
+            }),
+          );
         }
 
-        this.parseBlock($, $(children).find('.boxContent'));
+        await this.parseBlock($, $(children).find('.boxContent'));
       } else if ($(children).hasClass('bodyTxt')) {
-        $(children)
+        for (const subChildren of $(children)
           .children()
-          .each((j, subChildren) => {
-            const boxH2 = $(subChildren).children('h2');
-            if (boxH2 && $(boxH2).text()) {
-              this.text.push({
-                text: this.getText($, boxH2),
-                type: 'h2',
-              });
-            }
+          .toArray()) {
+          const boxH2 = $(subChildren).children('h2');
+          if (boxH2 && $(boxH2).text()) {
+            this.promisesToExecute.push(
+              new Promise<TextInterface[]>(async resolve => {
+                resolve(await this.parseResult($, boxH2, 'h2'));
+              }),
+            );
+          }
 
-            let bodyTxtChildren = $(subChildren).children('div.pGroup');
+          let bodyTxtChildren = $(subChildren).children('div.pGroup');
 
-            if (bodyTxtChildren.length === 0) {
-              bodyTxtChildren = $(subChildren).children('div');
-            }
+          if (bodyTxtChildren.length === 0) {
+            bodyTxtChildren = $(subChildren).children('div');
+          }
 
-            bodyTxtChildren.children().each((k, subChildren02) => {
-              this.parseBlock($, subChildren02);
-            });
-          });
+          for (const subChildren02 of bodyTxtChildren.children().toArray()) {
+            await this.parseBlock($, subChildren02);
+          }
+        }
       } else if ($(children).hasClass('article')) {
-        $(children)
+        for (const subChildren of $(children)
           .children()
-          .each((j, subChildren) => {
-            if ($(subChildren).hasClass('questions')) {
-              $(subChildren)
-                .children()
-                .each((k, subChildren02) => {
-                  if ($(subChildren02).get(0).tagName === 'h2') {
-                    this.text.push({
-                      text: this.getText($, subChildren02),
-                      type: 'box-h2',
-                    });
-                  } else if ($(subChildren02).get(0).tagName === 'ul') {
-                    $(subChildren02)
-                      .children()
-                      .each((l, subChildren03) => {
-                        this.parseContent($, subChildren03, 'box');
-                      });
-                  } else {
-                    this.parseContent($, subChildren02, 'box');
-                  }
-                });
-            } else {
-              this.parseBlock($, subChildren);
+          .toArray()) {
+          if ($(subChildren).hasClass('questions')) {
+            for (const subChildren02 of $(subChildren)
+              .children()
+              .toArray()) {
+              if ($(subChildren02).get(0).tagName === 'h2') {
+                this.promisesToExecute.push(
+                  new Promise<TextInterface[]>(async resolve => {
+                    resolve(await this.parseResult($, subChildren02, 'box-h2'));
+                  }),
+                );
+              } else if ($(subChildren02).get(0).tagName === 'ul') {
+                for (const subChildren03 of $(subChildren02)
+                  .children()
+                  .toArray()) {
+                  await this.parseContent($, subChildren03, 'box');
+                }
+              } else {
+                await this.parseContent($, subChildren02, 'box');
+              }
             }
-          });
+          } else {
+            await this.parseBlock($, subChildren);
+          }
+        }
       } else {
-        this.parseBlock($, children);
+        await this.parseBlock($, children);
       }
-    });
+    }
 
-    downloadResponse.text = this.text;
+    const result = await bluebird.map(
+      this.promisesToExecute,
+      async promise => {
+        return await promise;
+      },
+      { concurrency: 10 },
+    );
+
+    let text: any[] = [];
+    for (const item of result) {
+      text = text.concat(item);
+    }
+
+    downloadResponse.text = text;
     return downloadResponse;
   }
 
@@ -168,10 +221,13 @@ export class Parser extends AbstractParser {
 
       const subtitle = $(item).find('.contextTitle');
 
-      let title = this.getText($, link);
+      let title = '';
+      let titleArray = await this.getText($, link);
+      title = titleArray[0];
 
       if (subtitle.length) {
-        title = this.getText($, subtitle) + ' - ' + title;
+        titleArray = await this.getText($, subtitle);
+        title = titleArray[0] + ' - ' + title;
       }
 
       downloadResponse.links.push({
@@ -209,7 +265,7 @@ export class Parser extends AbstractParser {
         let titleWithoutSpaces = replaceall(
           ' ',
           '',
-          this.getText($, $('article header h1')),
+          await this.getText($, $('article header h1')),
         );
         replaceIdeogramsToSpace.forEach(item => {
           titleWithoutSpaces = replaceall(item, '', titleWithoutSpaces);
@@ -253,7 +309,7 @@ export class Parser extends AbstractParser {
     return null;
   }
 
-  public parseBlock($, element) {
+  public async parseBlock($, element) {
     if (
       $(element).attr('class') &&
       $(element)
@@ -263,58 +319,72 @@ export class Parser extends AbstractParser {
       //
       const boxFigure = $(element).find('.fullBleed figure');
       if (boxFigure.length) {
-        this.text.push({
-          type: 'box-img',
-          large: $(boxFigure)
-            .find('span')
-            .attr('data-zoom'),
-          small: $(boxFigure)
-            .find('span')
-            .attr('data-img-size-lg'),
-        });
+        this.promisesToExecute.push(
+          new Promise<TextInterface[]>(async resolve => {
+            resolve([
+              {
+                type: 'box-img',
+                large: $(boxFigure)
+                  .find('span')
+                  .attr('data-zoom'),
+                small: $(boxFigure)
+                  .find('span')
+                  .attr('data-img-size-lg'),
+              },
+            ]);
+          }),
+        );
       }
 
       const boxH2 = $(element).find('h2');
       if (boxH2 && $(boxH2).text()) {
-        this.text.push({
-          text: this.getText($, boxH2),
-          type: 'box-h2',
-        });
+        this.promisesToExecute.push(
+          new Promise<TextInterface[]>(async resolve => {
+            resolve(await this.parseResult($, boxH2, 'box-h2'));
+          }),
+        );
       }
 
       if ($(element).find('.boxContent').length > 0) {
-        $(element)
+        for (const subChildren of $(element)
           .find('.boxContent')
           .children()
-          .each((i, subChildren) => {
-            if ($(subChildren).get(0).tagName === 'ul') {
-              $(subChildren)
+          .toArray()) {
+          if ($(subChildren).get(0).tagName === 'ul') {
+            for (const subChildrenLi of $(subChildren)
+              .children()
+              .toArray()) {
+              for (const subChildrenLiContent of $(subChildrenLi)
                 .children()
-                .each((j, subChildrenLi) => {
-                  $(subChildrenLi)
-                    .children()
-                    .each((k, subChildrenLiContent) => {
-                      this.parseContent($, subChildrenLiContent, 'box');
-                    });
-                });
-            } else {
-              this.parseContent($, subChildren, 'box');
+                .toArray()) {
+                await this.parseContent($, subChildrenLiContent, 'box');
+              }
             }
-          });
+          } else if ($(subChildren).find('.imgGrid').length) {
+            for (const subChildrenImgGrid of $(subChildren)
+              .find('.imgGrid')
+              .toArray()) {
+              await this.parseContent($, subChildrenImgGrid, 'box');
+            }
+          } else {
+            await this.parseContent($, subChildren, 'box');
+          }
+        }
       } else {
         const subBoxH2 = $(element).find('table caption');
         if (subBoxH2 && $(subBoxH2).text()) {
-          this.text.push({
-            text: this.getText($, subBoxH2),
-            type: 'box',
-          });
+          this.promisesToExecute.push(
+            new Promise<TextInterface[]>(async resolve => {
+              resolve(await this.parseResult($, subBoxH2, 'box'));
+            }),
+          );
         }
 
-        $(element)
+        for (const subChildrenTr of $(element)
           .find('table tr')
-          .each((j, subChildrenTr) => {
-            this.parseContent($, subChildrenTr, 'box');
-          });
+          .toArray()) {
+          await this.parseContent($, subChildrenTr, 'box');
+        }
       }
     } else if (
       $(element).attr('class') &&
@@ -322,17 +392,17 @@ export class Parser extends AbstractParser {
         .attr('class')
         .indexOf('groupFootnote') !== -1
     ) {
-      $(element)
+      for (const subChildren of $(element)
         .children()
-        .each((l, subChildren) => {
-          this.parseContent($, subChildren, 'foot');
-        });
+        .toArray()) {
+        await this.parseContent($, subChildren, 'foot');
+      }
     } else {
-      this.parseContent($, element, '');
+      await this.parseContent($, element, '');
     }
   }
 
-  public parseContent($, element, type) {
+  public async parseContent($, element, type) {
     if ($(element).hasClass('qu')) {
       type = 'qu';
     }
@@ -345,101 +415,64 @@ export class Parser extends AbstractParser {
     if (type === 'foot') {
       footnote = replaceall('footnote', '', $(element).attr('id'));
     }
+
     const figure = $(element).find('figure');
 
     if (figure.length && $(element).get(0).tagName === 'aside') {
       return;
     }
 
-    if (figure.length) {
-      let imgType;
-      if (type) {
-        imgType = `${type}-img`;
-      } else {
-        imgType = 'img';
-      }
+    await this.getImages($, figure, type);
 
-      let large = $(figure)
-        .find('span')
-        .attr('data-zoom');
-      let small = $(figure)
-        .find('span')
-        .attr('data-img-size-lg');
-
-      if (!large) {
-        large = $(figure)
-          .find('img')
-          .attr('src');
-      }
-
-      if (!small) {
-        small = $(figure)
-          .find('img')
-          .attr('src');
-      }
-
-      this.text.push({
-        type: imgType,
-        large,
-        small,
-      });
-
-      const figcaption = $(figure).find('figcaption');
-      if (figcaption.length) {
-        let imgCaption;
-        if (type) {
-          imgCaption = `${type}-imgcaption`;
-        } else {
-          imgCaption = 'imgcaption';
+    this.promisesToExecute.push(
+      new Promise<TextInterface[]>(async resolve => {
+        let text = this.trim($(element).text());
+        if (!text) {
+          resolve([]);
+          return;
         }
 
-        const text = this.getText($, figcaption);
-        this.figcaptionsText.push(text);
+        const textList: TextInterface[] = [];
 
-        this.text.push({
-          type: imgCaption,
-          text,
+        text = await this.getText($, element);
+
+        if (this.figcaptionsText.indexOf(text) > -1) {
+          resolve([]);
+          return;
+        }
+
+        this.explodeLines(text).forEach(line => {
+          if (!line) {
+            return;
+          }
+
+          const item: any = {
+            text: line,
+          };
+
+          if (type) {
+            item.type = type;
+          }
+
+          if (footnote) {
+            item.footnote = footnote;
+          }
+
+          textList.push(item);
         });
-      }
-    }
 
-    let text = this.trim($(element).text());
-    if (!text) {
-      return;
-    }
-
-    text = this.getText($, element);
-
-    if (this.figcaptionsText.indexOf(text) > -1) {
-      return;
-    }
-
-    this.explodeLines(text).forEach(line => {
-      if (!line) {
-        return;
-      }
-
-      const item: any = {
-        text: line,
-      };
-
-      if (type) {
-        item.type = type;
-      }
-
-      if (footnote) {
-        item.footnote = footnote;
-      }
-
-      this.text.push(item);
-    });
+        resolve(textList);
+      }),
+    );
   }
 
-  public getText($, element) {
+  public async getText($, element): Promise<any[]> {
     let text = $(element).html();
     if (text === null) {
-      return '';
+      return [];
     }
+
+    const pdfParser = new PdfParser();
 
     // asterisk
     const footNotes = $(element).find('.footnoteLink');
@@ -495,7 +528,7 @@ export class Parser extends AbstractParser {
     text = $('<textarea />')
       .html(text)
       .text();
-      
+
     text = text.replace(/[\u200B-\u200D\uFEFF]/g, ' '); // replace zero width space to space
     text = replaceall(String.fromCharCode(160), ' ', text); // Convert NO-BREAK SPACE to SPACE
     text = replaceall(String.fromCharCode(8201), ' ', text); // Convert THIN SPACE to SPACE
@@ -507,14 +540,37 @@ export class Parser extends AbstractParser {
     text = replaceall('//ITALIC-CLOSE//', '</i>', text);
 
     if (!this.isChinese) {
-      return this.trim(text);
+      return this.trim(text)
+        .split('\r\n')
+        .filter(item => item);
     }
 
-    const lines = text.trim().split('\r\n');
+    if (this.pdfPinyin) {
+      let lineJustIdeograms = replaceall(' ', '', text);
+      lineJustIdeograms = replaceall('BI#[', '', lineJustIdeograms);
+      lineJustIdeograms = replaceall(']#BI', '', lineJustIdeograms);
+      lineJustIdeograms = replaceall('#FOOTNOTE', '', lineJustIdeograms);
+      const lines = lineJustIdeograms
+        .trim()
+        .split('\r\n')
+        .filter(item => item);
 
-    let newText = '';
-    lines.forEach(line => {
-      let lineText = this.segmentText(line);
+      profiler(`Parse Pinyin PDF Start`);
+      
+      const parsedResult = await pdfParser.parse(this.pdfPinyin, lines);
+      profiler(`Parse Pinyin PDF End`);
+      return parsedResult;
+    }
+
+    const lines = text
+      .trim()
+      .split('\r\n')
+      .filter(item => item);
+
+    const newText: any[] = [];
+    for (const line of lines) {
+      let lineText = '';
+      lineText = this.segmentText(line);
 
       const specialWord = 'JOIN_SPECIAL';
 
@@ -627,6 +683,12 @@ export class Parser extends AbstractParser {
           ` #FOOTNOTE-${footNoteId}-`,
           lineText,
         );
+
+        lineText = replaceall(
+          '# F O O T N O T E',
+          ` #FOOTNOTE-${footNoteId}-`,
+          lineText,
+        );
         lineText = replaceall('- *', '-*', lineText);
       }
 
@@ -640,12 +702,10 @@ export class Parser extends AbstractParser {
         lineText = lineText.replace(/\s{2,}/g, ' ').trim();
       }
 
-      newText += `${lineText}\r\n`;
-    });
+      newText.push(this.trim(lineText));
+    }
 
-    text = newText;
-    text = this.trim(text);
-    return text;
+    return newText;
   }
 
   protected encodeUrl(url: string) {
@@ -660,5 +720,123 @@ export class Parser extends AbstractParser {
       newUrl += '/';
     });
     return newUrl;
+  }
+
+  protected async getImages($, figure, type) {
+    if (!figure.length) {
+      return;
+    }
+
+    let imgType;
+    if (type) {
+      imgType = `${type}-img`;
+    } else {
+      imgType = 'img';
+    }
+
+    const spanImages = $(figure).find('span');
+
+    if (spanImages.length) {
+      for (const spanImage of spanImages.toArray()) {
+        const large = $(spanImage).attr('data-zoom');
+
+        const small = $(spanImage).attr('data-img-size-lg');
+        this.promisesToExecute.push(
+          new Promise<TextInterface[]>(async resolve => {
+            resolve([
+              {
+                type: imgType,
+                large,
+                small,
+              },
+            ]);
+          }),
+        );
+      }
+    } else {
+      for (const a of $(figure)
+        .find('a')
+        .toArray()) {
+        const large = $(a).attr('href');
+        const small = $(a)
+          .find('img')
+          .attr('src');
+
+        this.promisesToExecute.push(
+          new Promise<TextInterface[]>(async resolve => {
+            resolve([
+              {
+                type: imgType,
+                large,
+                small,
+              },
+            ]);
+          }),
+        );
+      }
+    }
+
+    const figcaption = $(figure).find('figcaption');
+    if (figcaption.length) {
+      let imgCaption;
+      if (type) {
+        imgCaption = `${type}-imgcaption`;
+      } else {
+        imgCaption = 'imgcaption';
+      }
+
+      this.promisesToExecute.push(
+        new Promise<TextInterface[]>(async resolve => {
+          const result = await this.parseResult($, figcaption, imgCaption);
+          for (const item of result) {
+            this.figcaptionsText.push(item);
+          }
+
+          resolve(result);
+        }),
+      );
+    }
+  }
+
+  protected async getPinyinPdf($) {
+    if (!this.isChinese) {
+      return;
+    }
+
+    const download = $('.digitalPubFormat .jsDownload');
+    let href = '';
+    download.each((i, children) => {
+      if (href) {
+        return;
+      }
+
+      if (children.attribs.href.indexOf('PDF') !== -1) {
+        href = children.attribs.href;
+      }
+    });
+
+    if (href) {
+      const downloader = new GenericDownloader();
+      const content = await downloader.download(href);
+
+      let $pdf = cheerio.load(content);
+
+      const links = $pdf('.standardDownloadResults a');
+      this.pdfPinyin = '';
+      links.each((i, children) => {
+        if (this.pdfPinyin) {
+          return;
+        }
+
+        if (children.attribs.href.indexOf('.pdf') === -1) {
+          return;
+        }
+
+        if (children.attribs.href.indexOf('-Pi_') === -1) {
+          return;
+        }
+        this.pdfPinyin = children.attribs.href;
+      });
+    }
   }
 }

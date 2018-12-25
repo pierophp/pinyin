@@ -175,10 +175,16 @@ export default {
       }
 
       const printData = [];
-      const chars = block.c.toString();
+
+      if (!block.c) {
+        generatedBlock.printData = printData;
+        generatedBlock.printDataCharacters = printData;
+        return generatedBlock;
+      }
 
       let withoutPinyn = true;
       const pinyin = separatePinyinInSyllables(block.p, true);
+      const chars = block.c.toString();
 
       for (let i = 0; i < chars.length; i += 1) {
         let newPinyin = '';

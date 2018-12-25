@@ -39,6 +39,7 @@ export class AbstractParser {
 
   public segmentText(line: string): string {
     let verifyText = line;
+
     replaceIdeogramsToSpace.forEach(item => {
       verifyText = replaceall(`${item} `, item, verifyText);
     });
@@ -59,7 +60,11 @@ export class AbstractParser {
   }
 
   protected explodeLines(text) {
-    return text.split('\r\n').map(s => this.trim(s));
+    if (typeof text === 'string') {
+      return text.split('\r\n').map(s => this.trim(s));
+    }
+
+    return text;
   }
 
   protected trim(s) {

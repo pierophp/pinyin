@@ -22,7 +22,7 @@
             @open-footnote="openFootnote"
             @go-to-video-time="(time) => $emit('go-to-video-time', time)"
             ref="fileRowPrint"
-            :key="'file-row-' + (line[0] && line[0].key ? `key-${line[0].key}` : `no-key-${line[0] && line[0].lineIndex ? line[0].lineIndex : lineIndex}`)"
+            :key="'file-row-' + (line[0] && line[0].key ? `key-${line[0].key}` : `no-key-${line[0] && line[0].lineIndex ? line[0].lineIndex : 'loop-' + lineIndex}`)"
           />
         </template>
 

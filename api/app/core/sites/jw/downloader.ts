@@ -1,12 +1,12 @@
 import { http } from '../../../helpers/http';
-import * as profiler from '../../../helpers/profiler';
+import { profiler } from '../../../helpers/profiler';
 import * as cheerio from 'cheerio';
 import { Parser } from './parser';
 import * as UnihanSearch from '../../../services/UnihanSearch';
 import * as bluebird from 'bluebird';
-import { Curl } from 'node-libcurl';
 import { orderBy } from 'lodash';
 import { Encoder } from '../encoder';
+import { Downloader as GenericDownloader } from '../downloader';
 
 export class Downloader {
   public async download(
@@ -17,7 +17,7 @@ export class Downloader {
   ) {
     const encoder = new Encoder();
 
-    profiler(`Download JW Start - ${encoder.encodeUrl(url)}`);
+    profiler(`Download JW Start - ${url}`);
 
     if (!ideogramType) {
       ideogramType = 's';
@@ -28,22 +28,28 @@ export class Downloader {
       'https://www.jw.org/cmn-hant',
     ];
     let isChinese = false;
+    let isTraditional = false;
     let newLanguage: string = '';
     chineseSites.forEach(chineseSite => {
       if (url.substring(0, chineseSite.length) === chineseSite) {
         isChinese = true;
+      }
+
+      if (url.indexOf('jw.org/cmn-hant') !== -1) {
+        isTraditional = true;
       }
     });
 
     const parser = new Parser();
 
     let response;
+    const downloader = new GenericDownloader();
 
     try {
-      response = await this.downloadUrl(encoder.encodeUrl(url));
+      response = await downloader.download(encoder.encodeUrl(url));
     } catch (e) {
       profiler('Download on exception: ' + url);
-      response = await this.downloadUrl(url);
+      response = await downloader.download(url);
     }
 
     profiler('Download JW End');
@@ -61,14 +67,20 @@ export class Downloader {
         '/',
       )[0];
 
+      if (ideogramType === 't') {
+        isTraditional = true;
+      }
+
+      const downloader = new GenericDownloader();
+
       const chineseLink = $(`link[hreflang="cmn-han${ideogramType}"]`);
       if (chineseLink.length > 0) {
         const link = `https://www.jw.org${chineseLink.attr('href')}`;
         profiler(`Download JW Start - Chinese - ${encoder.encodeUrl(link)}`);
         try {
-          response = await this.downloadUrl(encoder.encodeUrl(link));
+          response = await downloader.download(encoder.encodeUrl(link));
         } catch (e) {
-          response = await this.downloadUrl(link);
+          response = await downloader.download(link);
         }
 
         profiler('Download JW End - Chinese');
@@ -78,7 +90,7 @@ export class Downloader {
 
     profiler('Parse JW Start');
 
-    const parsedDownload: any = await parser.parse($, true);
+    const parsedDownload: any = await parser.parse($, true, isTraditional);
 
     if (language) {
       if (newLanguage) {
@@ -91,7 +103,12 @@ export class Downloader {
         response = await http.get(link);
         profiler('Parse JW (Language) Start');
         $ = cheerio.load(response.data);
-        const parsedDownloadLanguage: any = await parser.parse($, false);
+        const parsedDownloadLanguage: any = await parser.parse(
+          $,
+          false,
+          isTraditional,
+        );
+
         parsedDownloadLanguage.text.forEach((item, i) => {
           if (item.type === 'img') {
             return;
@@ -153,6 +170,10 @@ export class Downloader {
       await bluebird.map(
         parsedDownload.text,
         async (item: any, i) => {
+          if (!item) {
+            return;
+          }
+
           if (item.type === 'img') {
             return;
           }
@@ -165,14 +186,16 @@ export class Downloader {
             item.text = '';
           }
 
-          const ideograms = item.text.split(' ');
-          const pinyin = await UnihanSearch.toPinyin(ideograms);
-          const pinynReturn: any[] = [];
-          pinyin.forEach(pinyinItem => {
-            pinynReturn.push(pinyinItem.pinyin);
-          });
+          if (typeof item.text === 'string') {
+            const ideograms = item.text.split(' ');
+            const pinyin = await UnihanSearch.toPinyin(ideograms);
+            const pinynReturn: any[] = [];
+            pinyin.forEach(pinyinItem => {
+              pinynReturn.push(pinyinItem.pinyin);
+            });
 
-          parsedDownload.text[i].pinyin = pinynReturn;
+            parsedDownload.text[i].pinyin = pinynReturn;
+          }
         },
         { concurrency: 4 },
       );
@@ -181,28 +204,5 @@ export class Downloader {
     profiler('End');
 
     return parsedDownload;
-  }
-
-  protected async downloadUrl(url: string) {
-    const curl = new Curl();
-    curl.setOpt('URL', url);
-    curl.setOpt('FOLLOWLOCATION', true);
-    return new Promise((done, reject) => {
-      curl.on('end', (statusCode, body, headers) => {
-        if (statusCode > 400) {
-          reject();
-          return;
-        }
-
-        curl.close.bind(curl);
-        done(body);
-      });
-
-      curl.on('error', () => {
-        curl.close.bind(curl);
-        reject();
-      });
-      curl.perform();
-    });
   }
 }

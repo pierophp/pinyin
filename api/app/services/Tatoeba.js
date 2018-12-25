@@ -7,7 +7,7 @@ const isChinese = require('../../../shared/helpers/is-chinese');
 const { LanguageRepository } = require('../repository/language.repository');
 const { PhraseRepository } = require('../repository/phrase.repository');
 const UnihanSearch = require('../services/UnihanSearch');
-const profiler = require('../helpers/profiler');
+const profiler = require('../helpers/profiler').profiler;
 const { IdeogramsConverter } = require('../core/converter/ideograms.converter');
 
 const separatePinyinInSyllables = require('../../../shared/helpers/separate-pinyin-in-syllables');
