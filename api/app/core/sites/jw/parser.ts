@@ -24,7 +24,7 @@ export class Parser extends AbstractParser {
   protected figcaptionsText: any[] = [];
   protected isChinese: boolean;
   protected pdfPinyin?: string;
-  protected promisesToExecute: Promise<TextInterface[]>[];
+  protected promisesToExecute: (() => Promise<TextInterface[]>)[];
 
   public async parse($, isChinese: boolean, isTraditional: boolean) {
     this.isChinese = isChinese;
@@ -71,8 +71,8 @@ export class Parser extends AbstractParser {
     const mainImage = $('.lsrBannerImage');
     if (mainImage.length) {
       this.promisesToExecute.push(
-        new Promise<TextInterface[]>(async resolve => {
-          resolve([
+        async (): Promise<TextInterface[]> => {
+          return [
             {
               large: $(mainImage)
                 .find('span')
@@ -82,16 +82,16 @@ export class Parser extends AbstractParser {
                 .attr('data-img-size-lg'),
               type: 'img',
             },
-          ]);
-        }),
+          ];
+        },
       );
     }
 
     if ($('article header h1').length) {
       this.promisesToExecute.push(
-        new Promise<TextInterface[]>(async resolve => {
-          resolve(await this.parseResult($, $('article header h1'), 'h1'));
-        }),
+        async (): Promise<TextInterface[]> => {
+          return await this.parseResult($, $('article header h1'), 'h1');
+        },
       );
     }
 
@@ -118,9 +118,9 @@ export class Parser extends AbstractParser {
         const boxH2 = $(children).find('aside h2');
         if (boxH2 && $(boxH2).text()) {
           this.promisesToExecute.push(
-            new Promise<TextInterface[]>(async resolve => {
-              resolve(await this.parseResult($, boxH2, 'h2'));
-            }),
+            async (): Promise<TextInterface[]> => {
+              return await this.parseResult($, boxH2, 'h2');
+            },
           );
         }
 
@@ -132,9 +132,9 @@ export class Parser extends AbstractParser {
           const boxH2 = $(subChildren).children('h2');
           if (boxH2 && $(boxH2).text()) {
             this.promisesToExecute.push(
-              new Promise<TextInterface[]>(async resolve => {
-                resolve(await this.parseResult($, boxH2, 'h2'));
-              }),
+              async (): Promise<TextInterface[]> => {
+                return await this.parseResult($, boxH2, 'h2');
+              },
             );
           }
 
@@ -158,9 +158,9 @@ export class Parser extends AbstractParser {
               .toArray()) {
               if ($(subChildren02).get(0).tagName === 'h2') {
                 this.promisesToExecute.push(
-                  new Promise<TextInterface[]>(async resolve => {
-                    resolve(await this.parseResult($, subChildren02, 'box-h2'));
-                  }),
+                  async (): Promise<TextInterface[]> => {
+                    return await this.parseResult($, subChildren02, 'box-h2');
+                  },
                 );
               } else if ($(subChildren02).get(0).tagName === 'ul') {
                 for (const subChildren03 of $(subChildren02)
@@ -183,8 +183,8 @@ export class Parser extends AbstractParser {
 
     const result = await bluebird.map(
       this.promisesToExecute,
-      async promise => {
-        return await promise;
+      async promiseFunction => {
+        return await promiseFunction();
       },
       { concurrency: 10 },
     );
@@ -320,8 +320,8 @@ export class Parser extends AbstractParser {
       const boxFigure = $(element).find('.fullBleed figure');
       if (boxFigure.length) {
         this.promisesToExecute.push(
-          new Promise<TextInterface[]>(async resolve => {
-            resolve([
+          async (): Promise<TextInterface[]> => {
+            return [
               {
                 type: 'box-img',
                 large: $(boxFigure)
@@ -331,17 +331,17 @@ export class Parser extends AbstractParser {
                   .find('span')
                   .attr('data-img-size-lg'),
               },
-            ]);
-          }),
+            ];
+          },
         );
       }
 
       const boxH2 = $(element).find('h2');
       if (boxH2 && $(boxH2).text()) {
         this.promisesToExecute.push(
-          new Promise<TextInterface[]>(async resolve => {
-            resolve(await this.parseResult($, boxH2, 'box-h2'));
-          }),
+          async (): Promise<TextInterface[]> => {
+            return await this.parseResult($, boxH2, 'box-h2');
+          },
         );
       }
 
@@ -374,9 +374,9 @@ export class Parser extends AbstractParser {
         const subBoxH2 = $(element).find('table caption');
         if (subBoxH2 && $(subBoxH2).text()) {
           this.promisesToExecute.push(
-            new Promise<TextInterface[]>(async resolve => {
-              resolve(await this.parseResult($, subBoxH2, 'box'));
-            }),
+            async (): Promise<TextInterface[]> => {
+              return await this.parseResult($, subBoxH2, 'box');
+            },
           );
         }
 
@@ -425,11 +425,10 @@ export class Parser extends AbstractParser {
     await this.getImages($, figure, type);
 
     this.promisesToExecute.push(
-      new Promise<TextInterface[]>(async resolve => {
+      async (): Promise<TextInterface[]> => {
         let text = this.trim($(element).text());
         if (!text) {
-          resolve([]);
-          return;
+          return [];
         }
 
         const textList: TextInterface[] = [];
@@ -437,8 +436,7 @@ export class Parser extends AbstractParser {
         text = await this.getText($, element);
 
         if (this.figcaptionsText.indexOf(text) > -1) {
-          resolve([]);
-          return;
+          return [];
         }
 
         this.explodeLines(text).forEach(line => {
@@ -461,8 +459,8 @@ export class Parser extends AbstractParser {
           textList.push(item);
         });
 
-        resolve(textList);
-      }),
+        return textList;
+      },
     );
   }
 
@@ -556,7 +554,7 @@ export class Parser extends AbstractParser {
         .filter(item => item);
 
       profiler(`Parse Pinyin PDF Start`);
-      
+
       const parsedResult = await pdfParser.parse(this.pdfPinyin, lines);
       profiler(`Parse Pinyin PDF End`);
       return parsedResult;
@@ -742,15 +740,15 @@ export class Parser extends AbstractParser {
 
         const small = $(spanImage).attr('data-img-size-lg');
         this.promisesToExecute.push(
-          new Promise<TextInterface[]>(async resolve => {
-            resolve([
+          async (): Promise<TextInterface[]> => {
+            return [
               {
                 type: imgType,
                 large,
                 small,
               },
-            ]);
-          }),
+            ];
+          },
         );
       }
     } else {
@@ -763,15 +761,15 @@ export class Parser extends AbstractParser {
           .attr('src');
 
         this.promisesToExecute.push(
-          new Promise<TextInterface[]>(async resolve => {
-            resolve([
+          async (): Promise<TextInterface[]> => {
+            return [
               {
                 type: imgType,
                 large,
                 small,
               },
-            ]);
-          }),
+            ];
+          },
         );
       }
     }
@@ -786,14 +784,14 @@ export class Parser extends AbstractParser {
       }
 
       this.promisesToExecute.push(
-        new Promise<TextInterface[]>(async resolve => {
+        async (): Promise<TextInterface[]> => {
           const result = await this.parseResult($, figcaption, imgCaption);
           for (const item of result) {
             this.figcaptionsText.push(item);
           }
 
-          resolve(result);
-        }),
+          return result;
+        },
       );
     }
   }
