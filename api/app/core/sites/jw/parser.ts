@@ -189,6 +189,8 @@ export class Parser extends AbstractParser {
       }
     }
 
+    profiler('Start Process promises');
+
     const result = await bluebird.map(
       this.promisesToExecute,
       async promiseFunction => {

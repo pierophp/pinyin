@@ -12,7 +12,7 @@ export class ThreeLinesToPlecoCommand implements CommandModule {
   public describe = '3 Lines to Pleco';
 
   public async handler(argv: Argv) {
-    let dirname = `${__dirname}/../../storage/`;
+    let dirname = `${__dirname}/../../../storage/`;
     if (env.storage_path) {
       dirname = `${env.storage_path}/`;
     }

@@ -5,7 +5,7 @@ const cheerio = require('cheerio');
 const separatePinyinInSyllables = require('../../../shared/helpers/separate-pinyin-in-syllables');
 const fs = Promise.promisifyAll(require('fs'));
 
-let storagePath = `${__dirname}/../../storage/`;
+let storagePath = `${__dirname}/../../../storage/`;
 if (env.storage_path) {
   storagePath = env.storage_path;
 }

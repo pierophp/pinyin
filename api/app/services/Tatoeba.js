@@ -23,7 +23,7 @@ const languages = {
   spa: 'es',
   cmn: 'cmn-hans',
 };
-let storagePath = path.resolve(`${__dirname}/../../storage/`);
+let storagePath = path.resolve(`${__dirname}/../../../storage/`);
 storagePath += '/';
 
 if (env.storage_path) {

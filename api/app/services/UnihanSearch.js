@@ -813,7 +813,7 @@ module.exports = class UnihanSearch {
   }
 
   static async exportPinyin() {
-    const dirname = `${__dirname}/../../storage/`;
+    const dirname = `${__dirname}/../../../storage/`;
 
     const result = await knex('cjk').where({
       type: 'W',

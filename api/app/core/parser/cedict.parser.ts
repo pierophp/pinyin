@@ -8,7 +8,7 @@ import { PinyinConverter } from '../converter/pinyin.converter';
 import * as env from '../../../env';
 import * as knex from '../../services/knex';
 
-let storagePath = `${__dirname}/../../../storage/`;
+let storagePath = `${__dirname}/../../../../storage/`;
 if (env.storage_path) {
   storagePath = env.storage_path;
 }

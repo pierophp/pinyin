@@ -12,7 +12,7 @@ const fs = require('fs-extra');
 module.exports = class JwDownloader {
   static async getInsight() {
     const encoder = new Encoder();
-    const dirname = `${__dirname}/../../storage/`;
+    const dirname = `${__dirname}/../../../storage/`;
     const url = 'https://wol.jw.org/cmn-Hans/wol/lv/r23/lp-chs/0/2';
     let response = await axios.get(encoder.encodeUrl(url));
     let $ = cheerio.load(response.data);
@@ -73,7 +73,7 @@ module.exports = class JwDownloader {
   }
 
   static async getBiblePinyin() {
-    const dirname = `${__dirname}/../../storage/`;
+    const dirname = `${__dirname}/../../../storage/`;
     const filenameBibleTotal = `${dirname}bible_total.csv`;
     const content = await fs.readFile(filenameBibleTotal);
     const lines = content.toString().split('\n');
@@ -102,7 +102,7 @@ module.exports = class JwDownloader {
 
   static async getBibleNames() {
     const encoder = new Encoder();
-    const dirname = `${__dirname}/../../storage/`;
+    const dirname = `${__dirname}/../../../storage/`;
     const urlBible = 'https://www.jw.org/cmn-hans/出版物/圣经/bi12/圣经经卷';
     let response = await axios.get(encoder.encodeUrl(urlBible));
     let $ = cheerio.load(response.data);

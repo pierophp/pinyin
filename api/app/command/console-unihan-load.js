@@ -7,7 +7,7 @@ const fs = require('fs');
 
 program.parse(process.argv);
 
-let storagePath = `${__dirname}/../storage/`;
+let storagePath = `${__dirname}/../../storage/`;
 if (env.storage_path) {
   storagePath = env.storage_path;
 }

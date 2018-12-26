@@ -5,7 +5,7 @@ import { S3Adapter } from 'node-filesystem';
 import * as AWS from 'aws-sdk';
 import * as replaceall from 'replaceall';
 
-let dirname = `${__dirname.replace('dist/api/', '')}/../../../storage/`;
+let dirname = `${__dirname.replace('dist/api/', '')}/../../../../storage/`;
 if (env.storage_path) {
   dirname = `${env.storage_path}`;
 }

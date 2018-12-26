@@ -85,7 +85,7 @@ export class PlecoExport {
     filename: string,
     dictionary?: string,
   ) {
-    let dirname = `${__dirname}/../../../storage/`;
+    let dirname = `${__dirname}/../../../../storage/`;
     if (env.storage_path) {
       dirname = `${env.storage_path}/`;
     }
