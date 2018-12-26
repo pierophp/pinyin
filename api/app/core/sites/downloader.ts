@@ -1,7 +1,8 @@
 import { Curl } from 'node-libcurl';
+import { http } from '../../helpers/http';
 
 export class Downloader {
-  public async download(url: string) {
+  protected async downloadByCurl(url: string) {
     const curl = new Curl();
     curl.setOpt('URL', url);
     curl.setOpt('FOLLOWLOCATION', true);
@@ -22,5 +23,22 @@ export class Downloader {
       });
       curl.perform();
     });
+  }
+
+  protected async downloadByAxios(url: string) {
+    const response = await http.get(url);
+    if (response.status > 400) {
+      throw new Error(`Error downloading ${url}`);
+    }
+
+    return response.data;
+  }
+
+  public async download(url: string) {
+    try {
+      return await this.downloadByAxios(url);
+    } catch (e) {
+      return await this.downloadByCurl(url);
+    }
   }
 }

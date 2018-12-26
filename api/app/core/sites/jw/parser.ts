@@ -7,11 +7,12 @@ import * as isChinese from '../../../../../shared/helpers/is-chinese';
 import * as separatePinyinInSyllables from '../../../../../shared/helpers/separate-pinyin-in-syllables';
 import * as replaceIdeogramsToSpace from '../../../../../shared/helpers/special-ideograms-chars';
 import { http } from '../../../helpers/http';
-import { profiler } from '../../../helpers/profiler';
 import * as UnihanSearch from '../../../services/UnihanSearch';
 import { AbstractParser } from '../abstract.parser';
 import { Downloader as GenericDownloader } from '../downloader';
 import { PdfParser } from './pdf.parser';
+import * as moment from 'moment';
+import { profiler } from '../../../helpers/profiler';
 
 interface TextInterface {
   text?: string;
@@ -25,8 +26,14 @@ export class Parser extends AbstractParser {
   protected isChinese: boolean;
   protected pdfPinyin?: string;
   protected promisesToExecute: (() => Promise<TextInterface[]>)[];
+  protected profilePdfParseStart;
+  protected profilePdfParseEnd;
 
-  public async parse($, isChinese: boolean, isTraditional: boolean) {
+  public async parse(
+    $,
+    isChinese: boolean,
+    isTraditional: boolean,
+  ): Promise<any> {
     this.isChinese = isChinese;
 
     $('.viewOptions').remove();
@@ -188,6 +195,14 @@ export class Parser extends AbstractParser {
       },
       { concurrency: 10 },
     );
+
+    if (this.profilePdfParseStart) {
+      profiler(
+        `Pdf Parse Time ${this.profilePdfParseStart} - ${
+          this.profilePdfParseEnd
+        }`,
+      );
+    }
 
     let text: any[] = [];
     for (const item of result) {
@@ -490,28 +505,28 @@ export class Parser extends AbstractParser {
       });
     }
 
-    // bible
+    // // bible
     const bibles = $(element).find('.jsBibleLink');
-    if (bibles.length > 0 && this.isChinese) {
-      bibles.each((i, bible) => {
-        const bibleLink = decodeURIComponent($(bible).attr('href')).split('/');
-        const bibleBook = bibleLink[6];
-        const bibleChapter = bibleLink[7];
-        const bibleVerses: any[] = [];
-        const bibleVersesLinks = bibleLink[8].split('-');
-        bibleVersesLinks.forEach(bibleVersesLink => {
-          bibleVerses.push(parseInt(bibleVersesLink.substr(-3), 10));
-        });
+    // if (bibles.length > 0 && this.isChinese) {
+    //   bibles.each((i, bible) => {
+    //     const bibleLink = decodeURIComponent($(bible).attr('href')).split('/');
+    //     const bibleBook = bibleLink[6];
+    //     const bibleChapter = bibleLink[7];
+    //     const bibleVerses: any[] = [];
+    //     const bibleVersesLinks = bibleLink[8].split('-');
+    //     bibleVersesLinks.forEach(bibleVersesLink => {
+    //       bibleVerses.push(parseInt(bibleVersesLink.substr(-3), 10));
+    //     });
 
-        text = replaceall(
-          $.html(bible),
-          `BI#[${bibleBooks[bibleBook]}:${bibleChapter}:${bibleVerses.join(
-            '-',
-          )}]#BI${$(bible).html()}`,
-          text,
-        );
-      });
-    }
+    //     text = replaceall(
+    //       $.html(bible),
+    //       `BI#[${bibleBooks[bibleBook]}:${bibleChapter}:${bibleVerses.join(
+    //         '-',
+    //       )}]#BI${$(bible).html()}`,
+    //       text,
+    //     );
+    //   });
+    // }
 
     const numberRegex = new RegExp('^[0-9]+$');
 
@@ -553,10 +568,14 @@ export class Parser extends AbstractParser {
         .split('\r\n')
         .filter(item => item);
 
-      profiler(`Parse Pinyin PDF Start`);
+      if (!this.profilePdfParseStart) {
+        this.profilePdfParseStart = moment().format('HH:mm:ss');
+      }
 
       const parsedResult = await pdfParser.parse(this.pdfPinyin, lines);
-      profiler(`Parse Pinyin PDF End`);
+
+      this.profilePdfParseEnd = moment().format('HH:mm:ss');
+
       return parsedResult;
     }
 

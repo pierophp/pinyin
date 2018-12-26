@@ -1,4 +1,4 @@
-import { exec } from 'child-process-promise';
+import { spawn } from 'child-process-promise';
 import * as uniqid from 'uniqid';
 import { readFile, writeFile, remove, ensureDir } from 'fs-extra';
 
@@ -11,14 +11,27 @@ export class PdfParser {
     await ensureDir(`${pdfPinyinFolder}data`);
     await writeFile(`${pdfPinyinFolder}data/${textFile}`, lines.join('\n'));
 
-    const execCommmand = `node  ${pdfPinyinFolder}index.js ${link} ${textFile}`;
+    const spawnPromise = spawn('node', [
+      `${pdfPinyinFolder}index.js`,
+      link,
+      textFile,
+    ]);
 
-    await exec(execCommmand, {});
+    spawnPromise.childProcess.stdout.on('data', function(data) {
+      console.log('[spawn] stdout: ', data.toString());
+    });
+
+    spawnPromise.childProcess.stderr.on('data', function(data) {
+      console.log('[spawn] stderr: ', data.toString());
+    });
+
+    await spawnPromise;
 
     const resultTxt = await readFile(`${pdfPinyinFolder}data/${resultFile}`);
 
-    await remove(`${pdfPinyinFolder}data/${resultFile}`);
-    await remove(`${pdfPinyinFolder}data/${textFile}`);
+    // Dont wait
+    remove(`${pdfPinyinFolder}data/${resultFile}`).then();
+    remove(`${pdfPinyinFolder}data/${textFile}`).then();
 
     let result = JSON.parse(resultTxt.toString());
 
