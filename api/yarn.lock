@@ -546,6 +546,11 @@ cheerio@^0.22.0:
     lodash.reject "^4.4.0"
     lodash.some "^4.4.0"
 
+child-process-async@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/child-process-async/-/child-process-async-1.0.1.tgz#ee3f0da64421ce6bcd79119003893c53810c4723"
+  integrity sha512-5azrGe+ED5oBFgspraK+A5Uqg1RQ7vsh7auoxvOWsRF3KxbiPLd9zX/DAq2zD5WV+Z4xyMbWSOHkXWy51EsK9g==
+
 child-process-promise@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/child-process-promise/-/child-process-promise-2.2.1.tgz#4730a11ef610fad450b8f223c79d31d7bdad8074"

@@ -2,6 +2,7 @@ import * as replaceall from 'replaceall';
 import * as replaceIdeogramsToSpace from '../../../../../shared/helpers/special-ideograms-chars';
 import * as UnihanSearch from '../../../services/UnihanSearch';
 import { AbstractParser } from '../abstract.parser';
+
 export class Parser extends AbstractParser {
   protected text: any[] = [];
   protected figcaptionsText: any[] = [];
@@ -310,6 +311,4 @@ export class Parser extends AbstractParser {
     text = this.trim(text);
     return text;
   }
-
-  
 }

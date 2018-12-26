@@ -13,6 +13,7 @@ import { Downloader as GenericDownloader } from '../downloader';
 import { PdfParser } from './pdf.parser';
 import * as moment from 'moment';
 import { profiler } from '../../../helpers/profiler';
+import * as getPdfParsedObject from '../../../../../pdf-pinyin/src/core/get.pdf.parsed.object';
 
 interface TextInterface {
   text?: string;
@@ -24,7 +25,7 @@ interface TextInterface {
 export class Parser extends AbstractParser {
   protected figcaptionsText: any[] = [];
   protected isChinese: boolean;
-  protected pdfPinyin?: string;
+  protected pdfParsedObjectPromise?: Promise<any>;
   protected promisesToExecute: (() => Promise<TextInterface[]>)[];
   protected profilePdfParseStart;
   protected profilePdfParseEnd;
@@ -558,7 +559,7 @@ export class Parser extends AbstractParser {
         .filter(item => item);
     }
 
-    if (this.pdfPinyin) {
+    if (this.pdfParsedObjectPromise) {
       let lineJustIdeograms = replaceall(' ', '', text);
       lineJustIdeograms = replaceall('BI#[', '', lineJustIdeograms);
       lineJustIdeograms = replaceall(']#BI', '', lineJustIdeograms);
@@ -572,7 +573,10 @@ export class Parser extends AbstractParser {
         this.profilePdfParseStart = moment().format('HH:mm:ss');
       }
 
-      const parsedResult = await pdfParser.parse(this.pdfPinyin, lines);
+      const parsedResult = await pdfParser.parse(
+        this.pdfParsedObjectPromise,
+        lines,
+      );
 
       this.profilePdfParseEnd = moment().format('HH:mm:ss');
 
@@ -839,9 +843,9 @@ export class Parser extends AbstractParser {
       let $pdf = cheerio.load(content);
 
       const links = $pdf('.standardDownloadResults a');
-      this.pdfPinyin = '';
+      let pdfPinyin = '';
       links.each((i, children) => {
-        if (this.pdfPinyin) {
+        if (pdfPinyin) {
           return;
         }
 
@@ -852,8 +856,12 @@ export class Parser extends AbstractParser {
         if (children.attribs.href.indexOf('-Pi_') === -1) {
           return;
         }
-        this.pdfPinyin = children.attribs.href;
+        pdfPinyin = children.attribs.href;
       });
+
+      if (pdfPinyin) {
+        this.pdfParsedObjectPromise = getPdfParsedObject(pdfPinyin);
+      }
     }
   }
 }

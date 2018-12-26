@@ -50,6 +50,7 @@ export class Downloader {
       true,
       this.isTraditional,
     );
+
     let promiseLanguage = new Promise(resolve => resolve());
     if ($language) {
       promiseLanguage = languageParser.parse(
@@ -59,7 +60,10 @@ export class Downloader {
       );
     }
 
+    profiler('Parse Start');
     const response = await Promise.all([promiseChinese, promiseLanguage]);
+    profiler('Parse End');
+
     const parsedDownload = response[0];
     const parsedDownloadLanguage = response[1];
 
@@ -79,9 +83,9 @@ export class Downloader {
 
     const pinyinPromise = this.pinyin(parsedDownload, convertPinyin);
 
+    profiler('Lannguage + Pinyin Start');
     await Promise.all([fillLanguagePromise, pinyinPromise]);
-
-    profiler('End');
+    profiler('Lannguage + Pinyin End');
 
     return parsedDownload;
   }
@@ -166,7 +170,7 @@ export class Downloader {
     ideogramType,
     convertPinyin,
   ) {
-    profiler('Getting links');
+    profiler('Getting links Start');
     const responseLinks: any = { links: [] };
     await bluebird.map(
       parsedDownload.links,
@@ -198,6 +202,8 @@ export class Downloader {
     );
 
     responseLinks.links = orderBy(responseLinks.links, ['number']);
+
+    profiler('Getting links End');
 
     return responseLinks;
   }
