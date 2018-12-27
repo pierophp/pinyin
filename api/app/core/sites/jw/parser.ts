@@ -7,6 +7,7 @@ import * as isChinese from '../../../../../shared/helpers/is-chinese';
 import * as separatePinyinInSyllables from '../../../../../shared/helpers/separate-pinyin-in-syllables';
 import * as replaceIdeogramsToSpace from '../../../../../shared/helpers/special-ideograms-chars';
 import { http } from '../../../helpers/http';
+// @ts-ignore
 import * as UnihanSearch from '../../../services/UnihanSearch';
 import { AbstractParser } from '../abstract.parser';
 import { Downloader as GenericDownloader } from '../downloader';
@@ -189,7 +190,9 @@ export class Parser extends AbstractParser {
       }
     }
 
-    profiler('Start Process promises');
+    profiler(
+      'Start Process promises ' + (this.isChinese ? 'CHINESE' : 'LANGUAGE'),
+    );
 
     const result = await bluebird.map(
       this.promisesToExecute,

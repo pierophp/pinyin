@@ -334,7 +334,6 @@ export default {
   },
 
   [types.FILE_MUTATION_SET_FULL_FILE](state, fullFile) {
-    console.log({ fullFile });
     state.fullFile = fullFile;
     state.fullFileString = JSON.stringify(fullFile);
   },

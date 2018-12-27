@@ -12,9 +12,7 @@
           <div class="icon">
             <md-icon>arrow_downward</md-icon>
           </div>
-          <div class="content">
-            {{ $t("download_pleco_dictionary") }}
-          </div>
+          <div class="content">{{ $t("download_pleco_dictionary") }}</div>
         </div>
       </div>
     </menu-content>
@@ -32,7 +30,7 @@ export default {
     async downloadPleco() {
       const fileName = 'Dicionario_Pleco.txt';
       const content = await http.get(`/${fileName}`);
-      console.log({ content });
+
       const blob = new Blob([content.data], { type: 'text/plain' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');

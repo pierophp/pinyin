@@ -2,6 +2,7 @@ import { Argv, CommandModule } from 'yargs';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import { IdeogramsConverter } from '../core/converter/ideograms.converter';
+// @ts-ignore
 import * as UnihanSearch from '../services/UnihanSearch';
 import * as fs from 'fs-extra';
 import { pinyinAccentsToNumbers } from '../helpers/pinyin.accents.to.numbers';

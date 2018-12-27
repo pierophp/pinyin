@@ -1,5 +1,6 @@
 import { http } from '../../../helpers/http';
 import * as knex from '../../../services/knex';
+// @ts-ignore
 import * as UnihanSearch from '../../../services/UnihanSearch';
 import { Encoder } from '../encoder';
 import * as bluebird from 'bluebird';

@@ -1,0 +1,7 @@
+- Implementar Bíblia Novo Formato
+- Implementar Asterisco
+- Corrigir Bug Letra \*
+- Verificar se PDF Pinyin não é legível
+- Implementar fallback caso não exista
+- Gravar que o Pinyin foi gravado automaticamente, não refazer depois
+- Implementar ideogramas tradicionais

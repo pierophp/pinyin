@@ -2,6 +2,7 @@ import { http } from '../../../helpers/http';
 import { profiler } from '../../../helpers/profiler';
 import * as cheerio from 'cheerio';
 import { Parser } from './parser';
+// @ts-ignore
 import * as UnihanSearch from '../../../services/UnihanSearch';
 import * as bluebird from 'bluebird';
 import { orderBy } from 'lodash';
@@ -83,9 +84,9 @@ export class Downloader {
 
     const pinyinPromise = this.pinyin(parsedDownload, convertPinyin);
 
-    profiler('Lannguage + Pinyin Start');
+    profiler('Process Language + Pinyin - Start');
     await Promise.all([fillLanguagePromise, pinyinPromise]);
-    profiler('Lannguage + Pinyin End');
+    profiler('Process Language + Pinyin End');
 
     return parsedDownload;
   }

@@ -2,6 +2,7 @@ import { http } from '../../../helpers/http';
 import { profiler } from '../../../helpers/profiler';
 import * as cheerio from 'cheerio';
 import { Parser } from './parser';
+// @ts-ignore
 import * as UnihanSearch from '../../../services/UnihanSearch';
 import * as bluebird from 'bluebird';
 import { Curl } from 'node-libcurl';

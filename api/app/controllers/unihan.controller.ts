@@ -1,5 +1,6 @@
 import * as bluebird from 'bluebird';
 import * as express from 'express';
+// @ts-ignore
 import * as UnihanSearch from '../services/UnihanSearch';
 import * as knex from '../services/knex';
 import { ArrayCache } from '../cache/array.cache';

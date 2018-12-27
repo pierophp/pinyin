@@ -1,7 +1,7 @@
-import { Argv, CommandModule } from 'yargs';
+import { CommandModule } from 'yargs';
 
-import { ElasticsearchProvider } from '../core/search/elasticsearch.provider';
 import { CjkRepository } from '../repository/cjk.repository';
+// @ts-ignore
 import * as UnihanSearch from '../services/UnihanSearch';
 import { ChineseToolsParser } from '../core/parser/chinese.tools.parser';
 

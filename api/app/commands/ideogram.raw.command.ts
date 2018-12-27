@@ -1,6 +1,7 @@
 import { Argv, CommandModule } from 'yargs';
 
 import { CjkRepository } from '../repository/cjk.repository';
+// @ts-ignore
 import * as UnihanSearch from '../services/UnihanSearch';
 
 export class IdeogramRawCommand implements CommandModule {

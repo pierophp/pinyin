@@ -1,5 +1,5 @@
 import { Argv, CommandModule } from 'yargs';
-
+// @ts-ignore
 import * as JWDownloader from '../services/JWDownloader';
 
 export class JwBibleTraditionalCommand implements CommandModule {

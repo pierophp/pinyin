@@ -1,5 +1,6 @@
 import * as replaceall from 'replaceall';
 import * as replaceIdeogramsToSpace from '../../../../shared/helpers/special-ideograms-chars';
+// @ts-ignore
 import * as UnihanSearch from '../../services/UnihanSearch';
 
 export class AbstractParser {

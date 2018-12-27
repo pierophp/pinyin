@@ -3,6 +3,7 @@ import * as replaceIdeogramsToSpace from '../../../../../shared/helpers/special-
 import * as replaceall from 'replaceall';
 import { orderBy, trimEnd } from 'lodash';
 import * as knex from '../../../services/knex';
+// @ts-ignore
 import * as UnihanSearch from '../../../services/UnihanSearch';
 
 export class Frequency {

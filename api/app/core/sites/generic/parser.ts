@@ -1,6 +1,5 @@
 import * as replaceall from 'replaceall';
-import * as replaceIdeogramsToSpace from '../../../../../shared/helpers/special-ideograms-chars';
-import * as UnihanSearch from '../../../services/UnihanSearch';
+import * as replaceIdeogramsToSpace from '../../../../../shared/helpers/special-ideograms-chars';';
 import { AbstractParser } from '../abstract.parser';
 
 export class Parser extends AbstractParser {
