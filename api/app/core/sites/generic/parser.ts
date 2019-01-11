@@ -1,5 +1,5 @@
 import * as replaceall from 'replaceall';
-import * as replaceIdeogramsToSpace from '../../../../../shared/helpers/special-ideograms-chars';';
+import * as replaceIdeogramsToSpace from '../../../../../shared/helpers/special-ideograms-chars';
 import { AbstractParser } from '../abstract.parser';
 
 export class Parser extends AbstractParser {
@@ -165,28 +165,7 @@ export class Parser extends AbstractParser {
       return '';
     }
 
-    const numberRegex = new RegExp('^[0-9]+$');
-
-    text = replaceall('+', '', text);
-    text = replaceall('<strong>', '//STRONG-OPEN//', text);
-    text = replaceall('</strong>', '//STRONG-CLOSE//', text);
-    text = replaceall('<em>', '//ITALIC-OPEN//', text);
-    text = replaceall('</em>', '//ITALIC-CLOSE//', text);
-    text = replaceall('<wbr>', ' ', text);
-    text = replaceall('<p>', '\r\n<p>', text);
-    text = replaceall('<li>', '\r\n<li>', text);
-    text = $('<textarea />')
-      .html(text)
-      .text();
-    text = text.replace(/[\u200B-\u200D\uFEFF]/g, ' '); // replace zero width space to space
-    text = replaceall(String.fromCharCode(160), ' ', text); // Convert NO-BREAK SPACE to SPACE
-    text = replaceall(String.fromCharCode(8201), ' ', text); // Convert THIN SPACE to SPACE
-    text = replaceall(String.fromCharCode(8203), '', text); // Zero Width Space
-
-    text = replaceall('//STRONG-OPEN//', '<b>', text);
-    text = replaceall('//STRONG-CLOSE//', '</b>', text);
-    text = replaceall('//ITALIC-OPEN//', '<i>', text);
-    text = replaceall('//ITALIC-CLOSE//', '</i>', text);
+    text = this.removeHtmlSpecialTags($, text);
 
     if (!this.isChinese) {
       return this.trim(text);
@@ -194,8 +173,11 @@ export class Parser extends AbstractParser {
 
     const lines = text.trim().split('\r\n');
 
+    const numberRegex = new RegExp('^[0-9]+$');
+
     let newText = '';
-    lines.forEach(line => {
+
+    for (const line of lines) {
       let lineText = this.segmentText(line);
 
       const specialWord = 'JOIN_SPECIAL';
@@ -304,7 +286,7 @@ export class Parser extends AbstractParser {
       lineText = this.replaceWords(lineText);
 
       newText += `${lineText}\r\n`;
-    });
+    }
 
     text = newText;
     text = this.trim(text);

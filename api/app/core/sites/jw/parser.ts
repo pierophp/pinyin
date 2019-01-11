@@ -216,6 +216,7 @@ export class Parser extends AbstractParser {
     }
 
     downloadResponse.text = text;
+
     return downloadResponse;
   }
 
@@ -512,51 +513,45 @@ export class Parser extends AbstractParser {
     }
 
     // // bible
-    const bibles = $(element).find('.jsBibleLink');
-    // if (bibles.length > 0 && this.isChinese) {
-    //   bibles.each((i, bible) => {
-    //     const bibleLink = decodeURIComponent($(bible).attr('href')).split('/');
-    //     const bibleBook = bibleLink[6];
-    //     const bibleChapter = bibleLink[7];
-    //     const bibleVerses: any[] = [];
-    //     const bibleVersesLinks = bibleLink[8].split('-');
-    //     bibleVersesLinks.forEach(bibleVersesLink => {
-    //       bibleVerses.push(parseInt(bibleVersesLink.substr(-3), 10));
-    //     });
+    const bibles = $(element)
+      .find('.jsBibleLink')
+      .toArray();
 
-    //     text = replaceall(
-    //       $.html(bible),
-    //       `BI#[${bibleBooks[bibleBook]}:${bibleChapter}:${bibleVerses.join(
-    //         '-',
-    //       )}]#BI${$(bible).html()}`,
-    //       text,
-    //     );
-    //   });
-    // }
+    const bibleLinks: any[] = [];
+    if (bibles.length > 0 && this.isChinese) {
+      for (const bible of bibles) {
+        const bibleLink = decodeURIComponent($(bible).attr('href')).split('/');
+        const bibleBook = bibleLink[6];
+        const bibleChapter = bibleLink[7];
+        const bibleVerses: any[] = [];
+        const bibleVersesLinks = bibleLink[8].split('-');
+
+        for (const bibleVersesLink of bibleVersesLinks) {
+          bibleVerses.push(parseInt(bibleVersesLink.substr(-3), 10));
+        }
+
+        bibleLinks.push({
+          text: $(bible).text(),
+          link: `${bibleBooks[bibleBook]}:${bibleChapter}:${bibleVerses.join(
+            '-',
+          )}`,
+        });
+
+        // text = replaceall(
+        //   $.html(bible),
+        //   `BI#[${bibleBooks[bibleBook]}:${bibleChapter}:${bibleVerses.join(
+        //     '-',
+        //   )}]#BI${$(bible).html()}`,
+        //   text,
+        // );
+      }
+
+      console.log({ bibleLinks });
+    }
 
     const numberRegex = new RegExp('^[0-9]+$');
 
-    text = replaceall('+', '', text);
-    text = replaceall('<strong>', '//STRONG-OPEN//', text);
-    text = replaceall('</strong>', '//STRONG-CLOSE//', text);
-    text = replaceall('<em>', '//ITALIC-OPEN//', text);
-    text = replaceall('</em>', '//ITALIC-CLOSE//', text);
-    text = replaceall('<wbr>', ' ', text);
-    text = replaceall('<p>', '\r\n<p>', text);
-    text = replaceall('<li>', '\r\n<li>', text);
-    text = $('<textarea />')
-      .html(text)
-      .text();
-
-    text = text.replace(/[\u200B-\u200D\uFEFF]/g, ' '); // replace zero width space to space
-    text = replaceall(String.fromCharCode(160), ' ', text); // Convert NO-BREAK SPACE to SPACE
-    text = replaceall(String.fromCharCode(8201), ' ', text); // Convert THIN SPACE to SPACE
-    text = replaceall(String.fromCharCode(8203), ' ', text); // Zero Width Space
-
-    text = replaceall('//STRONG-OPEN//', '<b>', text);
-    text = replaceall('//STRONG-CLOSE//', '</b>', text);
-    text = replaceall('//ITALIC-OPEN//', '<i>', text);
-    text = replaceall('//ITALIC-CLOSE//', '</i>', text);
+    text = this.removeHtmlSpecialTags($, text);
 
     if (!this.isChinese) {
       return this.trim(text)
@@ -741,10 +736,11 @@ export class Parser extends AbstractParser {
     }
 
     const urlParts = url.replace(newUrl, '').split('/');
-    urlParts.forEach(urlPart => {
+    for (const urlPart of urlParts) {
       newUrl += encodeURIComponent(urlPart);
       newUrl += '/';
-    });
+    }
+
     return newUrl;
   }
 
@@ -861,6 +857,7 @@ export class Parser extends AbstractParser {
         if (children.attribs.href.indexOf('-Pi_') === -1) {
           return;
         }
+
         pdfPinyin = children.attribs.href;
       });
 
