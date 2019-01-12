@@ -494,18 +494,22 @@ export class Parser extends AbstractParser {
 
     // asterisk
     const footNotes = $(element).find('.footnoteLink');
-    let footNoteId = null;
+    let footNoteIds: any[] = [];
     if (footNotes.length > 0 && this.isChinese) {
       footNotes.each((i, footNote) => {
-        footNoteId = replaceall(
+        const footNoteId = replaceall(
           '#footnote',
           '',
           $(footNote).attr('data-anchor'),
         ).trim();
 
+        footNoteIds.push(footNoteId);
+
         text = replaceall(
           $.html(footNote),
-          `#FOOTNOTE${$(footNote).html()}#ENDFOOTNOTE`,
+          `#FOOTNOTE${footNoteId}${$(
+            footNote,
+          ).html()}#ENDFOOTNOTE${footNoteId}`,
           text,
         );
       });
@@ -555,10 +559,10 @@ export class Parser extends AbstractParser {
     }
 
     if (this.pdfParsedObjectPromise) {
-      return await this.parseWithPdf(text, footNoteId);
+      return await this.parseWithPdf(text, footNoteIds);
     }
 
-    return await this.parseWithoutPdf(text, bibles, footNoteId);
+    return await this.parseWithoutPdf(text, bibles, footNoteIds);
   }
 
   protected encodeUrl(url: string) {
@@ -652,7 +656,7 @@ export class Parser extends AbstractParser {
     }
   }
 
-  public async parseWithPdf(text, footNoteId) {
+  public async parseWithPdf(text, footNoteIds: string[]) {
     const pdfParser = new PdfParser();
 
     let lineJustIdeograms = replaceall(' ', '', text);
@@ -660,17 +664,20 @@ export class Parser extends AbstractParser {
     lineJustIdeograms = replaceall('BI#[', '<bible text="', lineJustIdeograms);
     lineJustIdeograms = replaceall(']#BI', '">', lineJustIdeograms);
     lineJustIdeograms = replaceall(']#ENDBI', '</bible>', lineJustIdeograms);
-    lineJustIdeograms = replaceall(
-      '#FOOTNOTE',
-      `<footnote id="${footNoteId}">`,
-      lineJustIdeograms,
-    );
 
-    lineJustIdeograms = replaceall(
-      '#ENDFOOTNOTE',
-      '</footnote>',
-      lineJustIdeograms,
-    );
+    for (const footNoteId of footNoteIds) {
+      lineJustIdeograms = replaceall(
+        `#FOOTNOTE${footNoteId}`,
+        `<footnote id="${footNoteId}">`,
+        lineJustIdeograms,
+      );
+
+      lineJustIdeograms = replaceall(
+        `#ENDFOOTNOTE${footNoteId}`,
+        '</footnote>',
+        lineJustIdeograms,
+      );
+    }
 
     const lines = lineJustIdeograms
       .trim()
@@ -691,11 +698,15 @@ export class Parser extends AbstractParser {
     return parsedResult;
   }
 
-  public async parseWithoutPdf(text: string, bibles, footNoteId) {
+  public async parseWithoutPdf(text: string, bibles, footNoteIds: string[]) {
     const numberRegex = new RegExp('^[0-9]+$');
 
     text = replaceall(']#ENDBI', '', text);
-    text = replaceall('#ENDFOOTNOTE', '', text);
+
+    for (const footNoteId of footNoteIds) {
+      text = replaceall(`#ENDFOOTNOTE${footNoteId}`, '', text);
+      text = replaceall(`#FOOTNOTE${footNoteId}`, '#FOOTNOTE', text);
+    }
 
     const lines = text
       .trim()
@@ -812,7 +823,9 @@ export class Parser extends AbstractParser {
 
       lineText = this.replaceWords(lineText);
 
-      if (footNoteId) {
+      if (footNoteIds.length) {
+        const footNoteId = footNoteIds[0];
+
         lineText = replaceall(
           '# FOOTNOTE',
           ` #FOOTNOTE-${footNoteId}-`,
@@ -824,6 +837,7 @@ export class Parser extends AbstractParser {
           ` #FOOTNOTE-${footNoteId}-`,
           lineText,
         );
+
         lineText = replaceall('- *', '-*', lineText);
       }
 
