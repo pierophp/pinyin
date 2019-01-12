@@ -141,6 +141,8 @@ function loadFile({
           const fileKey = `file_${filename}`;
           LocalStorage.save(fileKey, linesParsed);
           commit(types.FILE_MUTATION_SET_FULL_FILE, linesParsed);
+          commit(types.FILE_MUTATION_SET_FOOTNOTES, linesParsed);
+
           loadFile({
             file: LocalStorage.get(fileKey),
             lineIndex: 0,

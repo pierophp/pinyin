@@ -218,6 +218,7 @@ export default {
       if (this.footnotes[footnoteIndex] === undefined) {
         return;
       }
+
       const lineIndex = this.footnotes[footnoteIndex];
       this.footnoteLine = this.fullLines[lineIndex];
       this.footnoteLineIndex = lineIndex;

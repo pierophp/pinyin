@@ -345,14 +345,14 @@ export default {
   [types.FILE_MUTATION_SET_FOOTNOTES](state, lines) {
     const footnotes = [];
 
-    lines.forEach((line, lineIndex) => {
+    for (const [lineIndex, line] of lines.entries()) {
       if (line && line[0] !== undefined && line[0].line !== undefined) {
         const type = line[0].line.type;
         if (type === 'foot') {
           footnotes.push(lineIndex);
         }
       }
-    });
+    }
 
     state.footnotes = footnotes;
   },
