@@ -44,6 +44,18 @@ export class PdfParser {
             bible = null;
           }
 
+          let indexOfFootnote = -1;
+
+          if (item2.tagsStart) {
+            indexOfFootnote = item2.tagsStart.indexOf('<footnote');
+          }
+
+          if (indexOfFootnote >= 0) {
+            const footnote = item2.tagsStart.match(/\<footnote id="(.*?)"\>/);
+
+            returnItem.footnote = footnote[1];
+          }
+
           return returnItem;
         });
       });

@@ -492,8 +492,6 @@ export class Parser extends AbstractParser {
       return [];
     }
 
-    const pdfParser = new PdfParser();
-
     // asterisk
     const footNotes = $(element).find('.footnoteLink');
     let footNoteId = null;
@@ -504,9 +502,10 @@ export class Parser extends AbstractParser {
           '',
           $(footNote).attr('data-anchor'),
         ).trim();
+
         text = replaceall(
           $.html(footNote),
-          `#FOOTNOTE${$(footNote).html()}`,
+          `#FOOTNOTE${$(footNote).html()}#ENDFOOTNOTE`,
           text,
         );
       });
@@ -547,8 +546,6 @@ export class Parser extends AbstractParser {
       }
     }
 
-    const numberRegex = new RegExp('^[0-9]+$');
-
     text = this.removeHtmlSpecialTags($, text);
 
     if (!this.isChinese) {
@@ -558,36 +555,147 @@ export class Parser extends AbstractParser {
     }
 
     if (this.pdfParsedObjectPromise) {
-      let lineJustIdeograms = replaceall(' ', '', text);
-
-      lineJustIdeograms = replaceall(
-        'BI#[',
-        '<bible text="',
-        lineJustIdeograms,
-      );
-      lineJustIdeograms = replaceall(']#BI', '">', lineJustIdeograms);
-      lineJustIdeograms = replaceall(']#ENDBI', '</bible>', lineJustIdeograms);
-      lineJustIdeograms = replaceall('#FOOTNOTE', '', lineJustIdeograms);
-      const lines = lineJustIdeograms
-        .trim()
-        .split('\r\n')
-        .filter(item => item);
-
-      if (!this.profilePdfParseStart) {
-        this.profilePdfParseStart = moment().format('HH:mm:ss');
-      }
-
-      const parsedResult = await pdfParser.parse(
-        this.pdfParsedObjectPromise,
-        lines,
-      );
-
-      this.profilePdfParseEnd = moment().format('HH:mm:ss');
-
-      return parsedResult;
+      return await this.parseWithPdf(text, footNoteId);
     }
 
+    return await this.parseWithoutPdf(text, bibles, footNoteId);
+  }
+
+  protected encodeUrl(url: string) {
+    let newUrl = 'https://www.jw.org/';
+    if (url.substr(0, newUrl.length) !== newUrl) {
+      return url;
+    }
+
+    const urlParts = url.replace(newUrl, '').split('/');
+    for (const urlPart of urlParts) {
+      newUrl += encodeURIComponent(urlPart);
+      newUrl += '/';
+    }
+
+    return newUrl;
+  }
+
+  protected async getImages($, figure, type) {
+    if (!figure.length) {
+      return;
+    }
+
+    let imgType;
+    if (type) {
+      imgType = `${type}-img`;
+    } else {
+      imgType = 'img';
+    }
+
+    const spanImages = $(figure).find('span');
+
+    if (spanImages.length) {
+      for (const spanImage of spanImages.toArray()) {
+        const large = $(spanImage).attr('data-zoom');
+
+        const small = $(spanImage).attr('data-img-size-lg');
+        this.promisesToExecute.push(
+          async (): Promise<TextInterface[]> => {
+            return [
+              {
+                type: imgType,
+                large,
+                small,
+              },
+            ];
+          },
+        );
+      }
+    } else {
+      for (const a of $(figure)
+        .find('a')
+        .toArray()) {
+        const large = $(a).attr('href');
+        const small = $(a)
+          .find('img')
+          .attr('src');
+
+        this.promisesToExecute.push(
+          async (): Promise<TextInterface[]> => {
+            return [
+              {
+                type: imgType,
+                large,
+                small,
+              },
+            ];
+          },
+        );
+      }
+    }
+
+    const figcaption = $(figure).find('figcaption');
+    if (figcaption.length) {
+      let imgCaption;
+      if (type) {
+        imgCaption = `${type}-imgcaption`;
+      } else {
+        imgCaption = 'imgcaption';
+      }
+
+      this.promisesToExecute.push(
+        async (): Promise<TextInterface[]> => {
+          const result = await this.parseResult($, figcaption, imgCaption);
+          for (const item of result) {
+            this.figcaptionsText.push(item);
+          }
+
+          return result;
+        },
+      );
+    }
+  }
+
+  public async parseWithPdf(text, footNoteId) {
+    const pdfParser = new PdfParser();
+
+    let lineJustIdeograms = replaceall(' ', '', text);
+
+    lineJustIdeograms = replaceall('BI#[', '<bible text="', lineJustIdeograms);
+    lineJustIdeograms = replaceall(']#BI', '">', lineJustIdeograms);
+    lineJustIdeograms = replaceall(']#ENDBI', '</bible>', lineJustIdeograms);
+    lineJustIdeograms = replaceall(
+      '#FOOTNOTE',
+      `<footnote id="${footNoteId}">`,
+      lineJustIdeograms,
+    );
+
+    lineJustIdeograms = replaceall(
+      '#ENDFOOTNOTE',
+      '</footnote>',
+      lineJustIdeograms,
+    );
+
+    const lines = lineJustIdeograms
+      .trim()
+      .split('\r\n')
+      .filter(item => item);
+
+    if (!this.profilePdfParseStart) {
+      this.profilePdfParseStart = moment().format('HH:mm:ss');
+    }
+
+    const parsedResult = await pdfParser.parse(
+      this.pdfParsedObjectPromise!,
+      lines,
+    );
+
+    this.profilePdfParseEnd = moment().format('HH:mm:ss');
+
+    return parsedResult;
+  }
+
+  public async parseWithoutPdf(text: string, bibles, footNoteId) {
+    const numberRegex = new RegExp('^[0-9]+$');
+
     text = replaceall(']#ENDBI', '', text);
+    text = replaceall('#ENDFOOTNOTE', '', text);
 
     const lines = text
       .trim()
@@ -733,97 +841,6 @@ export class Parser extends AbstractParser {
     }
 
     return newText;
-  }
-
-  protected encodeUrl(url: string) {
-    let newUrl = 'https://www.jw.org/';
-    if (url.substr(0, newUrl.length) !== newUrl) {
-      return url;
-    }
-
-    const urlParts = url.replace(newUrl, '').split('/');
-    for (const urlPart of urlParts) {
-      newUrl += encodeURIComponent(urlPart);
-      newUrl += '/';
-    }
-
-    return newUrl;
-  }
-
-  protected async getImages($, figure, type) {
-    if (!figure.length) {
-      return;
-    }
-
-    let imgType;
-    if (type) {
-      imgType = `${type}-img`;
-    } else {
-      imgType = 'img';
-    }
-
-    const spanImages = $(figure).find('span');
-
-    if (spanImages.length) {
-      for (const spanImage of spanImages.toArray()) {
-        const large = $(spanImage).attr('data-zoom');
-
-        const small = $(spanImage).attr('data-img-size-lg');
-        this.promisesToExecute.push(
-          async (): Promise<TextInterface[]> => {
-            return [
-              {
-                type: imgType,
-                large,
-                small,
-              },
-            ];
-          },
-        );
-      }
-    } else {
-      for (const a of $(figure)
-        .find('a')
-        .toArray()) {
-        const large = $(a).attr('href');
-        const small = $(a)
-          .find('img')
-          .attr('src');
-
-        this.promisesToExecute.push(
-          async (): Promise<TextInterface[]> => {
-            return [
-              {
-                type: imgType,
-                large,
-                small,
-              },
-            ];
-          },
-        );
-      }
-    }
-
-    const figcaption = $(figure).find('figcaption');
-    if (figcaption.length) {
-      let imgCaption;
-      if (type) {
-        imgCaption = `${type}-imgcaption`;
-      } else {
-        imgCaption = 'imgcaption';
-      }
-
-      this.promisesToExecute.push(
-        async (): Promise<TextInterface[]> => {
-          const result = await this.parseResult($, figcaption, imgCaption);
-          for (const item of result) {
-            this.figcaptionsText.push(item);
-          }
-
-          return result;
-        },
-      );
-    }
   }
 
   protected async getPinyinPdf($) {

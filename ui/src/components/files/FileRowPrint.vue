@@ -38,6 +38,7 @@
             <template v-if="!block.pinyinStyleObject">{{ data.pinyin }}</template>
           </template>
         </template>
+
         <div
           class="character"
           :data-highlight="block.h"
@@ -65,7 +66,9 @@
           class="character footnote"
           v-if="block.footnote"
           @click.prevent="openFootnote(block.footnote)"
-        >{{ block.c }}</div>
+        >
+          <template v-for="(data) in block.printDataCharacters">{{ data.character }}</template>
+        </div>
       </div>
     </template>
     <div class="clearfix"></div>

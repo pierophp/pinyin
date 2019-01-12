@@ -1,5 +1,3 @@
-- Implementar Bíblia Novo Formato
-- Implementar Asterisco
 - Corrigir Bug Letra \*
 - Verificar se PDF Pinyin não é legível
 - Implementar fallback caso não exista

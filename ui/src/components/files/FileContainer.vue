@@ -213,13 +213,15 @@ export default {
     },
 
     openFootnote(footnote) {
-      const footnoteIndex = parseInt(footnote.footnote, 10) - 1;
+      const footnoteIndex = parseInt(footnote, 10) - 1;
+
       if (this.footnotes[footnoteIndex] === undefined) {
         return;
       }
       const lineIndex = this.footnotes[footnoteIndex];
       this.footnoteLine = this.fullLines[lineIndex];
       this.footnoteLineIndex = lineIndex;
+
       this.$refs.footnote.openDialog();
     },
 
