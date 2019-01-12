@@ -1,4 +1,5 @@
 import * as pinyinParser from '../../../../../pdf-pinyin/src/core/pinyin.parser';
+import * as isChinese from '../../../../../shared/helpers/is-chinese';
 
 export class PdfParser {
   public async parse(
@@ -10,8 +11,10 @@ export class PdfParser {
     // @ts-ignore
     let result = await pinyinParser(pdfParsedObject, lines);
 
+    let bible: any = null;
+
     if (result) {
-      result = result.map(item => {
+      result = result.lines.map(item => {
         return item.map(item2 => {
           const returnItem: any = {
             c: item2.c.join(''),
@@ -26,9 +29,25 @@ export class PdfParser {
             returnItem.isItalic = 1;
           }
 
+          let indexOfBible = -1;
+
+          if (item2.tagsStart) {
+            indexOfBible = item2.tagsStart.indexOf('<bible');
+          }
+
+          if (indexOfBible >= 0) {
+            bible = item2.tagsStart.match(/\<bible text="(.*?)"\>/);
+          }
+
+          if (bible && bible[1] && !isChinese(returnItem.c, true)) {
+            returnItem.b = bible[1];
+            bible = null;
+          }
+
           return returnItem;
         });
       });
+
       return result;
     }
   }

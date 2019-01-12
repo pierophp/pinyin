@@ -537,16 +537,14 @@ export class Parser extends AbstractParser {
           )}`,
         });
 
-        // text = replaceall(
-        //   $.html(bible),
-        //   `BI#[${bibleBooks[bibleBook]}:${bibleChapter}:${bibleVerses.join(
-        //     '-',
-        //   )}]#BI${$(bible).html()}`,
-        //   text,
-        // );
+        text = replaceall(
+          $.html(bible),
+          `BI#[${bibleBooks[bibleBook]}:${bibleChapter}:${bibleVerses.join(
+            '-',
+          )}]#BI${$(bible).html()}]#ENDBI`,
+          text,
+        );
       }
-
-      console.log({ bibleLinks });
     }
 
     const numberRegex = new RegExp('^[0-9]+$');
@@ -561,8 +559,14 @@ export class Parser extends AbstractParser {
 
     if (this.pdfParsedObjectPromise) {
       let lineJustIdeograms = replaceall(' ', '', text);
-      lineJustIdeograms = replaceall('BI#[', '', lineJustIdeograms);
-      lineJustIdeograms = replaceall(']#BI', '', lineJustIdeograms);
+
+      lineJustIdeograms = replaceall(
+        'BI#[',
+        '<bible text="',
+        lineJustIdeograms,
+      );
+      lineJustIdeograms = replaceall(']#BI', '">', lineJustIdeograms);
+      lineJustIdeograms = replaceall(']#ENDBI', '</bible>', lineJustIdeograms);
       lineJustIdeograms = replaceall('#FOOTNOTE', '', lineJustIdeograms);
       const lines = lineJustIdeograms
         .trim()
@@ -582,6 +586,8 @@ export class Parser extends AbstractParser {
 
       return parsedResult;
     }
+
+    text = replaceall(']#ENDBI', '', text);
 
     const lines = text
       .trim()
