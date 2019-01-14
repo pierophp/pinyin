@@ -164,6 +164,7 @@ export default {
       dialogKnownOpen: false,
       dialogUnknownWordsOpen: false,
       dialogKnownWordsOpen: false,
+      ideogramsKnownWords: null,
       options,
     };
   },
@@ -227,6 +228,7 @@ export default {
           this.dialogKnownWordsOpen = true;
         });
     },
+
     async unknownWords(hsk) {
       this.hsk = hsk;
       this.loading = true;
@@ -277,6 +279,18 @@ export default {
       .then(result => {
         this.totalWords = result.data.total;
         this.reportWords = result.data.report;
+      });
+
+    http
+      .get('my-cjk/ideograms_known_words', {
+        params: {
+          ideogramType: options.ideogramType,
+          type,
+          source,
+        },
+      })
+      .then(result => {
+        this.ideogramsKnownWords = result.data.total;
       });
   },
 };

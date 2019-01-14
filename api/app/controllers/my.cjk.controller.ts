@@ -65,6 +65,7 @@ router.get('/report', (req: any, res) => {
         .on(knex.raw('my_cjk.source = :source', { source: req.query.source }));
     })
     .where(where)
+    .orderBy('cjk.frequency')
     .groupBy('cjk.frequency')
     .then(report => {
       let total = 0;
@@ -116,6 +117,7 @@ router.get('/report_words', async (req: any, res) => {
         .on(knex.raw('my_cjk.source = :source', { source: req.query.source }));
     })
     .where(where)
+    .orderBy('cjk.hsk')
     .groupBy('cjk.hsk');
 
   let total = 0;
@@ -301,6 +303,45 @@ router.get('/report_known_words', async (req: any, res) => {
   });
 
   res.send({ ideograms });
+});
+
+router.get('/ideograms_known_words', async (req: any, res) => {
+  let ideogramType = 's';
+  if (req.query.ideogramType) {
+    ideogramType = req.query.ideogramType;
+  }
+
+  const where: any = {
+    main: 1,
+  };
+
+  if (ideogramType === 's') {
+    where.simplified = 1;
+  } else {
+    where.traditional = 1;
+  }
+
+  let ideograms = {};
+
+  const items = await knex('cjk')
+    .select(knex.raw(`cjk.ideogram_raw`))
+    .join('my_cjk', function join() {
+      this.on('my_cjk.ideogram', '=', 'cjk.ideogram')
+        .on('my_cjk.user_id', '=', req.user.id)
+        .on(knex.raw('my_cjk.type = :type', { type: req.query.type }))
+        .on(knex.raw('my_cjk.source = :source', { source: req.query.source }));
+    })
+    .where(where);
+
+  for (const item of items) {
+    for (let i = 0; i < item.ideogram_raw.length; i++) {
+      if (!ideograms[item.ideogram_raw[i]]) {
+        ideograms[item.ideogram_raw[i]] = 1;
+      }
+    }
+  }
+
+  res.send({ total: Object.keys(ideograms).length });
 });
 
 router.post('/', async (req: any, res) => {

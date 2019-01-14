@@ -881,12 +881,8 @@ export class Parser extends AbstractParser {
       let $pdf = cheerio.load(content);
 
       const links = $pdf('.standardDownloadResults a');
-      let pdfPinyin = '';
+      const pdfPinyinList: any[] = [];
       links.each((i, children) => {
-        if (pdfPinyin) {
-          return;
-        }
-
         if (children.attribs.href.indexOf('.pdf') === -1) {
           return;
         }
@@ -895,10 +891,11 @@ export class Parser extends AbstractParser {
           return;
         }
 
-        pdfPinyin = children.attribs.href;
+        pdfPinyinList.push(children.attribs.href);
       });
 
-      if (pdfPinyin) {
+      if (pdfPinyinList.length) {
+        const pdfPinyin = pdfPinyinList.join('|||');
         this.pdfParsedObjectPromise = getPdfParsedObject(pdfPinyin);
       }
     }

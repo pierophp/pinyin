@@ -592,10 +592,12 @@ export default {
   max-height: 200px;
 }
 
+.bold,
 .bold span {
   font-weight: 500 !important;
 }
 
+.italic,
 .italic span {
   font-style: italic !important;
 }
