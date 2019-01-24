@@ -46,15 +46,15 @@ before_install:
   - yarn build-editor > /dev/null
   - cp -R static dist/static
   - zip -r /home/travis/pinyin.dist.zip dist > /dev/null
-  # bible
-  - rm public/index.html
-  - cp public/index-${TRAVIS_BRANCH}.html public/index.html
-  - sed -i -e 's/favicon\//favicon-bible\//g' public/index.html
-  - yarn build-bible > /dev/null
-  - cp -R static dist/static
-  - zip -r /home/travis/bible.pinyin.dist.zip dist > /dev/null
-  - echo "static/bible/*" >> .gitignore
-  - echo "src/.config.js" >> .gitignore
+  # # bible
+  # - rm public/index.html
+  # - cp public/index-${TRAVIS_BRANCH}.html public/index.html
+  # - sed -i -e 's/favicon\//favicon-bible\//g' public/index.html
+  # - yarn build-bible > /dev/null
+  # - cp -R static dist/static
+  # - zip -r /home/travis/bible.pinyin.dist.zip dist > /dev/null
+  # - echo "static/bible/*" >> .gitignore
+  # - echo "src/.config.js" >> .gitignore
   # # videos
   # - rm -Rf static/bible
   # - rm public/index.html
