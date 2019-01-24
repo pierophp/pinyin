@@ -36,11 +36,7 @@ export class PinyinConverter {
   }
 
   public async searchByWord(ideograms: string): Promise<string> {
-    const ideogramConverted = this.ideogramsConverter.convertIdeogramsToUtf16(
-      ideograms,
-    );
-
-    const cacheKey = `PINYIN_${ideogramConverted}`;
+    const cacheKey = `PINYIN_${ideograms}`;
 
     if (await ArrayCache.has(cacheKey)) {
       return await ArrayCache.get(cacheKey);
@@ -56,7 +52,7 @@ export class PinyinConverter {
     }
 
     const cacheResponse =
-      (await CjkRepository.searchPronunciationByWord(ideogramConverted)) || '';
+      (await CjkRepository.searchPronunciationByWord(ideograms)) || '';
 
     await ArrayCache.set(cacheKey, cacheResponse);
     await RedisCache.set(cacheKey, cacheResponse, 60 * 60 * 12); // 1 day
@@ -288,10 +284,7 @@ export class PinyinConverter {
           options,
         );
 
-        const ideogramConverted = this.ideogramsConverter.convertIdeogramsToUtf16(
-          resultIdeograms.ideogram!,
-        );
-        const cacheKey = `PINYIN_${ideogramConverted}`;
+        const cacheKey = `PINYIN_${resultIdeograms.ideogram}`;
 
         await ArrayCache.set(cacheKey, resultIdeograms.pinyin);
 

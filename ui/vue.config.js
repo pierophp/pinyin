@@ -50,6 +50,7 @@ module.exports = {
           },
         },
       ],
+      skipWaiting: true,
     },
   },
   chainWebpack: config => {

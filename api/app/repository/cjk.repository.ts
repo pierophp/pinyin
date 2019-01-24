@@ -77,7 +77,9 @@ export class CjkRepository extends BaseRepository {
       .select();
   }
 
-  static async searchPronunciationByWord(ideograms: string) {
+  static async searchPronunciationByWord(
+    ideograms: string,
+  ): Promise<string | undefined> {
     const ideogramsConverter = new IdeogramsConverter();
     const ideogramConverted = ideogramsConverter.convertIdeogramsToUtf16(
       ideograms,
@@ -113,7 +115,7 @@ export class CjkRepository extends BaseRepository {
       return response[0].pronunciation;
     }
 
-    return null;
+    return;
   }
 
   static async searchByIdeograms(ideograms: string): Promise<any> {

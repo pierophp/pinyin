@@ -55,21 +55,21 @@ before_install:
   - zip -r /home/travis/bible.pinyin.dist.zip dist > /dev/null
   - echo "static/bible/*" >> .gitignore
   - echo "src/.config.js" >> .gitignore
-  # videos
-  - rm -Rf static/bible
-  - rm public/index.html
-  - cp public/index-${TRAVIS_BRANCH}.html public/index.html
-  - sed -i -e 's/favicon\//favicon-videos\//g' public/index.html
-  - yarn build-videos > /dev/null
-  - cp -R static dist/static
-  - zip -r /home/travis/videos.pinyin.dist.zip dist > /dev/null
-  # dictionary
-  - rm public/index.html
-  - cp public/index-${TRAVIS_BRANCH}.html public/index.html
-  - sed -i -e 's/favicon\//favicon-dictionary\//g' public/index.html
-  - yarn build-dictionary > /dev/null
-  - cp -R static dist/static
-  - zip -r /home/travis/dictionary.pinyin.dist.zip dist > /dev/null
+  # # videos
+  # - rm -Rf static/bible
+  # - rm public/index.html
+  # - cp public/index-${TRAVIS_BRANCH}.html public/index.html
+  # - sed -i -e 's/favicon\//favicon-videos\//g' public/index.html
+  # - yarn build-videos > /dev/null
+  # - cp -R static dist/static
+  # - zip -r /home/travis/videos.pinyin.dist.zip dist > /dev/null
+  # # dictionary
+  # - rm public/index.html
+  # - cp public/index-${TRAVIS_BRANCH}.html public/index.html
+  # - sed -i -e 's/favicon\//favicon-dictionary\//g' public/index.html
+  # - yarn build-dictionary > /dev/null
+  # - cp -R static dist/static
+  # - zip -r /home/travis/dictionary.pinyin.dist.zip dist > /dev/null
   # songs
   - rm public/index.html
   - cp public/index-${TRAVIS_BRANCH}.html public/index.html
