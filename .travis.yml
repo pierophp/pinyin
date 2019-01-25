@@ -21,7 +21,6 @@ env:
 before_install:
   - openssl aes-256-cbc -K $encrypted_4a8eabd2975a_key -iv $encrypted_4a8eabd2975a_iv
     -in travis/secrets.tar.enc -out travis/secrets.tar -d
-  - npm install yarn -g
   - tar xvf travis/secrets.tar
   - mv id_rsa /home/travis/.ssh/id_rsa
   - chmod 700 /home/travis/.ssh/id_rsa
