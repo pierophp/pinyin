@@ -28,15 +28,6 @@ before_install:
   - npm install pm2 -g
   - cd api
   - yarn install
-  - cd ../ui-storage
-  - yarn install
-  - yarn build
-  - cp index.html dist/
-  - mv dist/ ../ui/static/storage/
-  - cd ../ui
-  - yarn install
-  - rm src/.config.js
-  - cp src/.config-${TRAVIS_BRANCH}.js src/.config.js
   - chmod +x ../travis/${TRAVIS_BRANCH}.sh
   - ../travis/${TRAVIS_BRANCH}.sh
 before_script:
