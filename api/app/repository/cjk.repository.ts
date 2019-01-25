@@ -17,6 +17,18 @@ export class CjkRepository extends BaseRepository {
       .select();
   }
 
+  static async findAllIdeograms() {
+    return await knex('cjk')
+      .where({
+        // ideogram_raw: '長',
+        ideogram_raw: '我们',
+      })
+      .limit(10)
+      //  .orderBy('frequency', 'ASC')
+      .groupBy('ideogram_raw')
+      .select('ideogram_raw');
+  }
+
   static async findPtNotNull(): Promise<any[]> {
     return await knex('cjk')
       .whereRaw(
@@ -134,6 +146,17 @@ export class CjkRepository extends BaseRepository {
         .orderBy('usage', 'DESC')
         .select('id', 'pronunciation');
     });
+  }
+
+  static async searchByIdeogramRaw(ideograms: string): Promise<any> {
+    return await knex('cjk')
+      .where({
+        ideogram_raw: ideograms,
+      })
+      .orderBy('main', 'DESC')
+      .orderBy('frequency', 'ASC')
+      .orderBy('usage', 'DESC')
+      .select();
   }
 
   static async save(params) {

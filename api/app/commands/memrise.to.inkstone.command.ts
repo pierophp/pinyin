@@ -1,6 +1,6 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import { PinyinConverter } from 'core/pinyin/pinyin.converter';
+import { PinyinConverter } from '../core/pinyin/pinyin.converter';
 import * as fs from 'fs-extra';
 import { Argv, CommandModule } from 'yargs';
 import { IdeogramsConverter } from '../core/converter/ideograms.converter';

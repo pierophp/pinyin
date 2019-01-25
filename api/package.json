@@ -14,7 +14,7 @@
     "test-node": "node node_modules/.bin/mocha --reporter spec tests/server",
     "console": "NODE_ENV=production ts-node ./app/console.ts",
     "cli": "NODE_ENV=production ts-node ./app/console.ts",
-    "cli:dist": "node ./dist/api/app/console.js"
+    "cli:dist": "NODE_ENV=production node ./dist/api/app/console.js"
   },
   "engines": {
     "node": ">=8.0"

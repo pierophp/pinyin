@@ -6,6 +6,7 @@ const commandsPath = [
   'cedict.load.command',
   'chinese.tools.insert.command',
   'chinese.tools.update.command',
+  'dictionary.export.command',
   'elasticsearch.structure.command',
   'elasticsearch.sync.command',
   'glosbe.insert.command',
@@ -39,8 +40,12 @@ const yargs = require('yargs').usage('Usage: $0 <command> [options]');
     ];
 
     const commandObject = new classInterface();
-
-    yargs.command(commandObject);
+    try {
+      yargs.command(commandObject);
+    } catch (e) {
+      console.log('ERROR ON COMMAND');
+      console.log(e);
+    }
   }
 
   yargs

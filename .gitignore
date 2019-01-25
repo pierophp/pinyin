@@ -7,12 +7,9 @@ travis/secrets.tar
 api/deploy-local.sh
 api/yarn-error.log
 api/app/data/tmp/*
-ui/yarn-error.log
-ui/static/bible
-ui/public/static/bible
-ui/public/static
 node_modules/
 yarn-error.log
 docker/data/
 .git-rewrite
 storage/*
+chinese-dictionary

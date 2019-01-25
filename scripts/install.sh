@@ -8,7 +8,7 @@ sudo pip install awscli --upgrade --user
 
 sudo npm i -g npm knex pm2 yarn n
 
-sudo n latest
+sudo n lts
 
 echo "America/Sao_Paulo" | sudo tee /etc/timezone
 export TZ=America/Sao_Paulo 
@@ -49,10 +49,10 @@ sudo mkdir /var/local/pinyin
 sudo chown -R ubuntu: /var/www
 sudo chown -R ubuntu: /var/local/pinyin
 
-## let's encrypt
-sudo add-apt-repository ppa:certbot/certbot
-sudo apt-get update
-sudo apt-get install python-certbot-nginx
+# ## let's encrypt
+# sudo add-apt-repository ppa:certbot/certbot
+# sudo apt-get update
+# sudo apt-get install python-certbot-nginx
 
 crontab -e
 nano ~/.ssh/authorized_keys

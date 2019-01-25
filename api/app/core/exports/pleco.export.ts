@@ -1,5 +1,6 @@
 import { remove as removeDiacritics } from 'diacritics';
 import { writeFile } from 'fs-extra';
+import * as replaceall from 'replaceall';
 import * as separatePinyinInSyllables from '../../../../shared/helpers/separate-pinyin-in-syllables';
 import * as env from '../../../env';
 import extractPinyinTone from '../../helpers/extract-pinyin-tone';
@@ -29,6 +30,7 @@ export class PlecoExport {
       result,
       'definition_ct_pt',
       'PlecoDictionary_ChineseToolsPT.txt',
+      'ct_pt',
     );
   }
 
@@ -109,6 +111,8 @@ export class PlecoExport {
           definition += bold('Classificadores: ');
           definition += measureWords.join(', ');
         }
+      } else if (dictionary === 'ct_pt') {
+        definition = replaceall('~', entry.ideogram_raw, definition);
       }
 
       const pinyin = separatePinyinInSyllables(entry.pronunciation);
