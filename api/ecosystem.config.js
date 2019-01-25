@@ -2,58 +2,7 @@ const isProduction = process.env.TRAVIS_BRANCH === 'master';
 
 const postDeployCommands = [
   'cd /home/ubuntu/',
-  // Pinyin Editor UI
-  'rm -Rf dist/',
-  `unzip pinyin.dist-${process.env.TRAVIS_BRANCH}.zip > /dev/null`,
-  `sudo rm -Rf ${isProduction ? '/var/www/pinyin' : '/var/www/pinyin.staging'}`,
-  `mv /home/ubuntu/dist ${
-    isProduction ? '/var/www/pinyin' : '/var/www/pinyin.staging'
-  }`,
-  'ln -sf /var/local/pinyin/Dicionario_Pleco.txt /var/www/pinyin/Dicionario_Pleco.txt',
-  'ln -sf /var/local/pinyin/bible /var/www/pinyin/static/bible',
-  // Bible Editor UI
-  'rm -Rf dist/',
-  `unzip bible.pinyin.dist-${process.env.TRAVIS_BRANCH}.zip > /dev/null`,
-  `sudo rm -Rf ${
-    isProduction ? '/var/www/bible.pinyin' : '/var/www/bible.pinyin.staging'
-  }`,
-  `mv /home/ubuntu/dist ${
-    isProduction ? '/var/www/bible.pinyin' : '/var/www/bible.pinyin.staging'
-  }`,
-  // Dictionary Editor UI
-  'rm -Rf dist/',
-  `unzip dictionary.pinyin.dist-${process.env.TRAVIS_BRANCH}.zip > /dev/null`,
-  `sudo rm -Rf ${
-    isProduction
-      ? '/var/www/dictionary.pinyin'
-      : '/var/www/dictionary.pinyin.staging'
-  }`,
-  `mv /home/ubuntu/dist ${
-    isProduction
-      ? '/var/www/dictionary.pinyin'
-      : '/var/www/dictionary.pinyin.staging'
-  }`,
   'ln -sf /var/local/pinyin/Dicionario_Pleco.txt /var/www/dictionary.pinyin/Dicionario_Pleco.txt',
-  // Videos Editor UI
-  'rm -Rf dist/',
-  `unzip videos.pinyin.dist-${process.env.TRAVIS_BRANCH}.zip > /dev/null`,
-  `sudo rm -Rf ${
-    isProduction ? '/var/www/videos.pinyin' : '/var/www/videos.pinyin.staging'
-  }`,
-  `mv /home/ubuntu/dist ${
-    isProduction ? '/var/www/videos.pinyin' : '/var/www/videos.pinyin.staging'
-  }`,
-  'ln -sf /var/local/pinyin/bible /var/www/bible.pinyin/static/bible',
-  // Songs Editor UI
-  'rm -Rf dist/',
-  `unzip songs.pinyin.dist-${process.env.TRAVIS_BRANCH}.zip > /dev/null`,
-  `sudo rm -Rf ${
-    isProduction ? '/var/www/songs.pinyin' : '/var/www/songs.pinyin.staging'
-  }`,
-  `mv /home/ubuntu/dist ${
-    isProduction ? '/var/www/songs.pinyin' : '/var/www/songs.pinyin.staging'
-  }`,
-  'ln -sf /var/local/pinyin/songs /var/www/songs.pinyin/static/songs',
   // API
   `cd ${
     isProduction
