@@ -353,11 +353,23 @@ export class DomParser {
       }
     }
 
+    text = replaceall('<ruby>', 'RUBY#[', text);
+    text = replaceall('</ruby>', ']#ENDRUBY', text);
+
+    text = replaceall('<rt>', 'RT#[', text);
+    text = replaceall('</rt>', ']#ENDRT', text);
+
     text = removeHtmlSpecialTags($, text!);
 
     text = replaceall('BI#[', '<bible text="', text);
     text = replaceall(']#BI', '">', text);
     text = replaceall(']#ENDBI', '</bible>', text);
+
+    text = replaceall('RUBY#[', '<ruby>', text);
+    text = replaceall(']#ENDRUBY', '</ruby>', text);
+
+    text = replaceall('RT#[', '<rt>', text);
+    text = replaceall(']#ENDRT', '</rt>', text);
 
     if (footNoteIds) {
       for (const footNoteId of footNoteIds) {

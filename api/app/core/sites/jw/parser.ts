@@ -1,14 +1,14 @@
 import * as bluebird from 'bluebird';
-
 import { BlockInterface } from '../../../core/interfaces/block.interface';
 import { profiler } from '../../../helpers/profiler';
 import { ParserResponseInterface } from '../interfaces/parser.response.interface';
 import { TextInterface } from '../interfaces/text.interface';
+import { ParseItemInterface } from './interfaces/parse.item.interface';
 import { AudioParser } from './parser/audio.parser';
 import { DomParser } from './parser/dom.parser';
 import { PdfObjecyParser } from './parser/pdf.object.parser';
+import { RubyParser } from './parser/ruby.parser';
 import { SummaryParser } from './parser/summary.parser';
-import { ParseItemInterface } from './interfaces/parse.item.interface';
 import { WithPdfParser } from './parser/with.pdf.parser';
 import { WithoutPdfParser } from './parser/without.pdf.parser';
 
@@ -100,6 +100,11 @@ export class Parser {
           small: item.chinese.small,
         },
       ];
+    }
+
+    if (item.chinese.text && item.chinese.text.indexOf('<ruby>') !== -1) {
+      const rubyParser = new RubyParser();
+      return await rubyParser.parse(item);
     }
 
     if (this.pdfParsedObjectPromise) {
