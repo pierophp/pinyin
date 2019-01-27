@@ -1,4 +1,5 @@
-import { ensureDir, writeFile } from 'fs-extra';
+import * as bluebird from 'bluebird';
+import { ensureDir, unlink, writeFile } from 'fs-extra';
 import * as replaceall from 'replaceall';
 import * as separatePinyinInSyllables from '../../../../shared/helpers/separate-pinyin-in-syllables';
 import { CjkRepository } from '../../repository/cjk.repository';
@@ -6,25 +7,73 @@ import { CjkRepository } from '../../repository/cjk.repository';
 export class DictionaryExport {
   async exportAll() {
     const result = await CjkRepository.findAllIdeograms();
-    for (const entry of result) {
-      await this.exportEntry(entry.ideogram_raw);
-    }
+
+    await bluebird.map(
+      result,
+      async (entry: any) => {
+        await this.exportEntry(entry.ideogram_raw);
+      },
+      {
+        concurrency: 10,
+      },
+    );
   }
 
   async exportEntry(ideograms: string) {
-    let dirname = `${__dirname}/../../../../chinese-dictionary/json/${ideograms.substring(
-      0,
-      1,
-    )}`;
+    const firstIdeogram = ideograms.substring(0, 1);
 
-    console.log('Exporting ', ideograms);
+    const parentFolder = firstIdeogram
+      .charCodeAt(0)
+      .toString()
+      .substr(0, 3)
+      .padStart(3, '0');
+
+    let dirname = `${__dirname}/../../../../chinese-dictionary/dict/${parentFolder}/${firstIdeogram}`;
+
+    const filename = `${dirname}/${ideograms}.json`;
+
+    if (ideograms.indexOf('?') !== -1 || ideograms.indexOf('%') !== -1) {
+      console.log('Invalid format ', ideograms);
+      try {
+        await unlink(filename);
+      } catch (e) {}
+      return;
+    }
 
     let response: any[] = [];
 
     await ensureDir(dirname);
 
     const entries = await CjkRepository.searchByIdeogramRaw(ideograms);
-    for (const entry of entries) {
+    for (let entry of entries) {
+      const originalEntry = entry;
+
+      if (entry.type === 'C' && entry.frequency === 999) {
+        continue;
+      }
+
+      if (!entry.simplified && !entry.traditional_exclusive) {
+        const variants = JSON.parse(entry.variants);
+        if (variants && variants.length) {
+          const entriesSimplified = await CjkRepository.searchByIdeogramRawAndPronunciation(
+            variants[0],
+            entry.pronunciation,
+          );
+
+          if (entriesSimplified.length) {
+            entry = entriesSimplified[0];
+          }
+        } else {
+          console.log('Simplified form not found for ', ideograms);
+        }
+      }
+
+      const tags: string[] = [];
+
+      if (entry.hsk && entry.hsk < 999) {
+        tags.push(`HSK ${entry.hsk}`);
+      }
+
       response.push({
         ideograms: ideograms,
         pronunciation: separatePinyinInSyllables(entry.pronunciation).join(
@@ -37,12 +86,14 @@ export class DictionaryExport {
           : null,
         frequency: entries.frequency,
         usage: entries.usage,
-        measure_words: entry.measure_words
-          ? JSON.parse(entry.measure_words)
+        measure_words: originalEntry.measure_words
+          ? JSON.parse(originalEntry.measure_words)
           : null,
         simplified: entry.simplified,
         traditional: entry.traditional,
-        variants: entry.variants ? JSON.parse(entry.variants) : null,
+        variants: originalEntry.variants
+          ? JSON.parse(originalEntry.variants)
+          : null,
         erhua: entry.erhua,
         hsk: entry.hsk,
         main: entry.main,
@@ -50,6 +101,7 @@ export class DictionaryExport {
         synonyms: entry.synonyms,
         antonyms: entry.antonyms,
         is_separable: entry.is_separable,
+        tags,
         definition_unihan: entry.definition_unihan,
         definition_cedict: entry.definition_cedict
           ? JSON.parse(entry.definition_cedict)
@@ -80,8 +132,6 @@ export class DictionaryExport {
           : null,
       });
     }
-
-    const filename = `${dirname}/${ideograms}.json`;
 
     await writeFile(filename, JSON.stringify(response, null, 2));
   }

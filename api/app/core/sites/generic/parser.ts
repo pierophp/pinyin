@@ -9,9 +9,11 @@ export class Parser {
   protected text: any[] = [];
   protected figcaptionsText: any[] = [];
   protected isChinese: boolean;
+  protected baseUrl: string;
 
-  public async parse($, isChinese: boolean) {
+  public async parse($, isChinese: boolean, baseUrl: string) {
     this.isChinese = isChinese;
+    this.baseUrl = baseUrl;
 
     return this.getContent($);
   }

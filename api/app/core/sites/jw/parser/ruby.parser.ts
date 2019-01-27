@@ -22,7 +22,7 @@ export class RubyParser {
       let pinyin = [];
       if (rtMatch) {
         block = replaceall(rtMatch[0], '', block);
-        pinyin = separatePinyinInSyllables(rtMatch[1]);
+        pinyin = separatePinyinInSyllables(striptags(rtMatch[1]));
       }
 
       block = striptags(block);

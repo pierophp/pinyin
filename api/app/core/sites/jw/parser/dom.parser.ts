@@ -8,7 +8,12 @@ export class DomParser {
   protected items: TextInterface[];
   protected figcaptionsText: string[] = [];
   protected isChinese: boolean;
-  protected debug: boolean = false;
+  protected debug: boolean = true;
+  protected baseUrl?: string;
+  constructor(baseUrl?: string) {
+    this.baseUrl = baseUrl;
+  }
+
   public async parse($: any, isChinese: boolean): Promise<TextInterface[]> {
     this.isChinese = isChinese;
     this.items = [];
@@ -25,12 +30,16 @@ export class DomParser {
     const mainImage = $('.lsrBannerImage');
     if (mainImage.length) {
       this.items.push({
-        large: $(mainImage)
-          .find('span')
-          .attr('data-zoom'),
-        small: $(mainImage)
-          .find('span')
-          .attr('data-img-size-lg'),
+        large: this.fullUrl(
+          $(mainImage)
+            .find('span')
+            .attr('data-zoom'),
+        ),
+        small: this.fullUrl(
+          $(mainImage)
+            .find('span')
+            .attr('data-img-size-lg'),
+        ),
         type: 'img',
       });
     }
@@ -175,12 +184,16 @@ export class DomParser {
       if (boxFigure.length) {
         this.items.push({
           type: 'box-img',
-          large: $(boxFigure)
-            .find('span')
-            .attr('data-zoom'),
-          small: $(boxFigure)
-            .find('span')
-            .attr('data-img-size-lg'),
+          large: this.fullUrl(
+            $(boxFigure)
+              .find('span')
+              .attr('data-zoom'),
+          ),
+          small: this.fullUrl(
+            $(boxFigure)
+              .find('span')
+              .attr('data-img-size-lg'),
+          ),
         });
       }
 
@@ -422,9 +435,9 @@ export class DomParser {
 
     if (spanImages.length) {
       for (const spanImage of spanImages.toArray()) {
-        const large = $(spanImage).attr('data-zoom');
+        const large = this.fullUrl($(spanImage).attr('data-zoom'));
 
-        const small = $(spanImage).attr('data-img-size-lg');
+        const small = this.fullUrl($(spanImage).attr('data-img-size-lg'));
         this.items.push({
           type: imgType,
           large,
@@ -432,19 +445,40 @@ export class DomParser {
         });
       }
     } else {
-      for (const a of $(figure)
+      const aList = $(figure)
         .find('a')
-        .toArray()) {
-        const large = $(a).attr('href');
-        const small = $(a)
-          .find('img')
-          .attr('src');
+        .toArray();
 
-        this.items.push({
-          type: imgType,
-          large,
-          small,
-        });
+      if (aList.length) {
+        for (const a of aList) {
+          const large = this.fullUrl($(a).attr('href'));
+          const small = this.fullUrl(
+            $(a)
+              .find('img')
+              .attr('src'),
+          );
+
+          this.items.push({
+            type: imgType,
+            large,
+            small,
+          });
+        }
+      } else {
+        const imgList = $(figure)
+          .find('img')
+          .toArray();
+
+        for (const img of imgList) {
+          const large = this.fullUrl($(img).attr('src'));
+          const small = this.fullUrl($(img).attr('src'));
+
+          this.items.push({
+            type: imgType,
+            large,
+            small,
+          });
+        }
       }
     }
 
@@ -466,5 +500,13 @@ export class DomParser {
 
       this.items = this.items.concat(result);
     }
+  }
+
+  public fullUrl(url: string): string {
+    if (url.indexOf('://') !== -1) {
+      return url;
+    }
+
+    return this.baseUrl + url;
   }
 }

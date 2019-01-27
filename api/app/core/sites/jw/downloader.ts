@@ -1,12 +1,12 @@
+import * as bluebird from 'bluebird';
+import * as cheerio from 'cheerio';
+import { orderBy } from 'lodash';
 import { http } from '../../../helpers/http';
 import { profiler } from '../../../helpers/profiler';
-import * as cheerio from 'cheerio';
-import { Parser } from './parser';
-import * as bluebird from 'bluebird';
-import { orderBy } from 'lodash';
-import { Encoder } from '../encoder';
 import { Downloader as GenericDownloader } from '../downloader';
-
+import { Encoder } from '../encoder';
+import { getBaseUrl } from '../helpers/get.base.url';
+import { Parser } from './parser';
 export class Downloader {
   protected downloader: GenericDownloader;
   protected encoder: Encoder;
@@ -55,7 +55,14 @@ export class Downloader {
       $simplified = await this.downloadChineseByLink($chinese, 's');
     }
 
-    const parsedDownload = await parser.parse($chinese, $language, $simplified);
+    const baseUrl = getBaseUrl(url);
+
+    const parsedDownload = await parser.parse(
+      $chinese,
+      $language,
+      $simplified,
+      baseUrl,
+    );
 
     if (parsedDownload.links) {
       return this.parseLinks(

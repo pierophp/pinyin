@@ -14,12 +14,15 @@ import { WithoutPdfParser } from './parser/without.pdf.parser';
 
 export class Parser {
   protected pdfParsedObjectPromise?: Promise<any>;
+  protected baseUrl?: string;
 
   public async parse(
     $chinese: any,
     $language?: any,
     $simplified?: any,
+    baseUrl?: string,
   ): Promise<ParserResponseInterface> {
+    this.baseUrl = baseUrl;
     if (this.isSummary($chinese)) {
       const summaryParser = new SummaryParser();
       return await summaryParser.parse($chinese);
@@ -37,7 +40,7 @@ export class Parser {
     const audioParser = new AudioParser();
     downloadResponse.audio = await audioParser.parse($chinese);
 
-    const chineseDomParser = new DomParser();
+    const chineseDomParser = new DomParser(this.baseUrl);
     const chinesePromise = chineseDomParser.parse($chinese, true);
 
     const languageDomParser = new DomParser();
