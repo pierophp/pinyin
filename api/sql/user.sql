@@ -11,11 +11,13 @@ ORDER BY mes DESC;
 
 SELECT u.id, u.name, u.email, 
   COUNT(*) total, 
-  SUM(IF(c.type = 'C',1,0)) total_c,
-  SUM(IF(c.type = 'W',1,0)) total_w
+  SUM(IF(c.type = 'C' AND c.simplified = 1,1,0)) total_c_simplified,
+  SUM(IF(c.type = 'W' AND c.simplified = 1,1,0)) total_w_simplified,
+  SUM(IF(c.type = 'C' AND c.traditional = 1,1,0)) total_c_traditional,
+  SUM(IF(c.type = 'W' AND c.traditional = 1,1,0)) total_w_traditional
 FROM user u
 JOIN my_cjk  my ON my.user_id = u.id
-JOIN cjk c ON c.id = my.cjk_id
+LEFT JOIN cjk c ON c.ideogram = my.ideogram
 GROUP BY u.id, u.name, u.email
 ORDER BY total DESC;
 
