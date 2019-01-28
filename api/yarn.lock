@@ -2155,9 +2155,9 @@ jwa@^1.2.0:
     safe-buffer "^5.0.1"
 
 jws@^3.1.5:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/jws/-/jws-3.2.0.tgz#b89dcfc20846504506f4dcf69ad5395f8a34680b"
-  integrity sha512-OmaE/N+SlUTMyja5XeM7aaGP3nNCUlypCCEtlDXf3887yq3tm1zk5O7l/dSz7TQ5p+imRxERZ8Fmk4Z6xcWIIw==
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/jws/-/jws-3.2.1.tgz#d79d4216a62c9afa0a3d5e8b5356d75abdeb2be5"
+  integrity sha512-bGA2omSrFUkd72dhh05bIAN832znP4wOU3lfuXtRBuGTbsmNmDXMQg28f0Vsxaxgk4myF5YkKQpz6qeRpMgX9g==
   dependencies:
     jwa "^1.2.0"
     safe-buffer "^5.0.1"
@@ -3101,9 +3101,9 @@ pause@0.0.1:
   integrity sha1-HUCLP9t2kjuVQ9lvtMnf1TXZy10=
 
 pdf-pinyin@^1.0.0:
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/pdf-pinyin/-/pdf-pinyin-1.0.10.tgz#d04b8ab064592beb63c550300f20b00c3df8aa05"
-  integrity sha512-6Bd3Aqdb8RBFkIsE4/+NIw5LMYyvfwDolyK78eZL37tfjmbHo4MmsVcG81Jn9U/Xf3mQYFRU+pfy24X+ayz0kQ==
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/pdf-pinyin/-/pdf-pinyin-1.0.12.tgz#1229b5f469d4cc4bd2dbc244615e853557932c93"
+  integrity sha512-iaBVSj/jOKDDHAPtCjfqyqUDDhVVCCGaEb+tyUwScywlWw+8PRvokvE5S4KZdWUd4ljTzsgeee6NHD+fHZKhPQ==
   dependencies:
     axios "^0.18.0"
     bluebird "^3.5.3"

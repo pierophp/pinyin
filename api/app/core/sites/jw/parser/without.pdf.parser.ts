@@ -98,9 +98,6 @@ export class WithoutPdfParser {
 
     let bible;
     for (let item of response) {
-      delete item.tagsStart;
-      delete item.tagsEnd;
-
       item.c = item.c.join('');
       item.p = '';
 
@@ -122,6 +119,9 @@ export class WithoutPdfParser {
         item.b = bible;
         bible = null;
       }
+
+      delete item.tagsStart;
+      delete item.tagsEnd;
     }
 
     return await this.pinyin(response);

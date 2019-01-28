@@ -46,9 +46,6 @@ export class RubyParser {
 
     let bible;
     for (let item of response) {
-      delete item.tagsStart;
-      delete item.tagsEnd;
-
       item.c = item.c.join('');
       item.p = item.p.join(String.fromCharCode(160));
 
@@ -70,6 +67,9 @@ export class RubyParser {
         item.b = bible;
         bible = null;
       }
+
+      delete item.tagsStart;
+      delete item.tagsEnd;
     }
 
     return response;

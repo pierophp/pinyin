@@ -3,6 +3,7 @@ import * as bibleBooks from '../../../../../../shared/data/bible/bible';
 import { removeHtmlSpecialTags } from '../../../../core/sites/helpers/remove.html.special.tags';
 import { TextInterface } from '../../../../core/sites/interfaces/text.interface';
 import { profiler } from '../../../../helpers/profiler';
+import { Downloader } from '../../../../core/sites/downloader';
 
 export class DomParser {
   protected items: TextInterface[];
@@ -10,8 +11,10 @@ export class DomParser {
   protected isChinese: boolean;
   protected debug: boolean = true;
   protected baseUrl?: string;
+  protected downloader: Downloader;
   constructor(baseUrl?: string) {
     this.baseUrl = baseUrl;
+    this.downloader = new Downloader();
   }
 
   public async parse($: any, isChinese: boolean): Promise<TextInterface[]> {
@@ -306,7 +309,6 @@ export class DomParser {
     }
 
     let footNoteIds: any[] = [];
-    let bibles: any[] = [];
 
     // asterisk
     const footNotes = $(element).find('.footnoteLink');
@@ -331,12 +333,11 @@ export class DomParser {
       });
     }
 
+    let bibles: any[] = [];
     // bible
     bibles = $(element)
       .find('.jsBibleLink')
       .toArray();
-
-    const bibleLinks: any[] = [];
     if (bibles.length > 0 && this.isChinese) {
       for (const bible of bibles) {
         const bibleLink = decodeURIComponent($(bible).attr('href')).split('/');
@@ -349,13 +350,6 @@ export class DomParser {
           bibleVerses.push(parseInt(bibleVersesLink.substr(-3), 10));
         }
 
-        bibleLinks.push({
-          text: $(bible).text(),
-          link: `${bibleBooks[bibleBook]}:${bibleChapter}:${bibleVerses.join(
-            '-',
-          )}`,
-        });
-
         text = replaceall(
           $.html(bible),
           `BI#[${bibleBooks[bibleBook]}:${bibleChapter}:${bibleVerses.join(
@@ -363,6 +357,39 @@ export class DomParser {
           )}]#BI${$(bible).html()}]#ENDBI`,
           text,
         );
+      }
+    } else if (this.isChinese) {
+      bibles = $(element)
+        .find('a[data-bid]')
+        .toArray();
+      if (bibles.length > 0 && this.isChinese) {
+        for (const bible of bibles) {
+          const urlJson = $(bible)
+            .attr('href')
+            .split('/')
+            .filter((item, i) => i !== 1)
+            .join('/');
+
+          const downloadResponse = await this.downloader.download(
+            this.fullUrl(urlJson),
+          );
+
+          const item = downloadResponse.items[0];
+
+          const bibleBook = item.book;
+          const bibleChapter = item.first_chapter;
+          const bibleVerses: any[] = [];
+          bibleVerses.push(item.first_verse);
+          bibleVerses.push(item.last_verse);
+
+          text = replaceall(
+            $.html(bible),
+            `BI#[${bibleBook}:${bibleChapter}:${bibleVerses.join('-')}]#BI${$(
+              bible,
+            ).html()}]#ENDBI`,
+            text,
+          );
+        }
       }
     }
 
