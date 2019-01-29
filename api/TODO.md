@@ -1,5 +1,7 @@
 # Prioridade Alta
 
+- WOL Pinyin Tradicional
+- Refazer Bíblia
 - Dicionário editar parcial
 
 # Prioridade Média
@@ -16,6 +18,6 @@
 - Reexportar dicionários
 - Corrigir menu abre me cima
 - Corrigir Editar com Pasta
-- Chinese Grammar WIki abrir em simplificado
+- Chinese Grammar Wiki abrir em simplificado
 
 # Prioridade Baixa
