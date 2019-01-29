@@ -68,6 +68,20 @@ export class RubyParser {
         bible = null;
       }
 
+      let indexOfFootnote = -1;
+
+      if (item.tagsStart) {
+        indexOfFootnote = item.tagsStart.indexOf('<footnote');
+      }
+
+      if (indexOfFootnote >= 0) {
+        const footnote = item.tagsStart.match(/\<footnote id="(.*?)"\>/);
+
+        if (footnote) {
+          item.footnote = footnote[1];
+        }
+      }
+
       delete item.tagsStart;
       delete item.tagsEnd;
     }

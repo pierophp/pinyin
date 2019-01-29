@@ -12,6 +12,7 @@ export class DomParser {
   protected debug: boolean = true;
   protected baseUrl?: string;
   protected downloader: Downloader;
+
   constructor(baseUrl?: string) {
     this.baseUrl = baseUrl;
     this.downloader = new Downloader();
@@ -182,6 +183,9 @@ export class DomParser {
         .attr('class')
         .indexOf('boxSupplement') !== -1
     ) {
+      if (this.debug) {
+        profiler('PARSE BLOCK - .boxSupplement');
+      }
       //
       const boxFigure = $(element).find('.fullBleed figure');
       if (boxFigure.length) {
@@ -252,12 +256,28 @@ export class DomParser {
         .attr('class')
         .indexOf('groupFootnote') !== -1
     ) {
+      if (this.debug) {
+        profiler('PARSE BLOCK - .groupFootnote');
+      }
       for (const subChildren of $(element)
         .children()
         .toArray()) {
         await this.parseContent($, subChildren, 'foot');
       }
+    } else if ($(element).find('.groupFootnote').length > 0) {
+      if (this.debug) {
+        profiler('PARSE BLOCK - .groupFootnote p');
+      }
+      for (const footNote of $(element)
+        .find('.groupFootnote p')
+        .toArray()) {
+        await this.parseContent($, footNote, 'foot');
+      }
     } else {
+      if (this.debug) {
+        profiler('PARSE BLOCK - GENERIC');
+      }
+
       await this.parseContent($, element, '');
     }
   }
@@ -311,10 +331,12 @@ export class DomParser {
     let footNoteIds: any[] = [];
 
     // asterisk
-    const footNotes = $(element).find('.footnoteLink');
+    let footNotes = $(element)
+      .find('.footnoteLink')
+      .toArray();
 
     if (footNotes.length > 0 && this.isChinese) {
-      footNotes.each((i, footNote) => {
+      for (const footNote of footNotes) {
         const footNoteId = replaceall(
           '#footnote',
           '',
@@ -330,7 +352,26 @@ export class DomParser {
           ).html()}#ENDFOOTNOTE${footNoteId}`,
           text,
         );
-      });
+      }
+    } else if (this.isChinese) {
+      footNotes = $(element)
+        .find('a.fn')
+        .toArray();
+      if (footNotes.length > 0 && this.isChinese) {
+        for (const footNote of footNotes) {
+          const footNoteId = $(footNote).attr('data-fnid');
+
+          footNoteIds.push(footNoteId);
+
+          text = replaceall(
+            $.html(footNote),
+            `#FOOTNOTE${footNoteId}${$(
+              footNote,
+            ).html()}#ENDFOOTNOTE${footNoteId}`,
+            text,
+          );
+        }
+      }
     }
 
     let bibles: any[] = [];
@@ -393,23 +434,7 @@ export class DomParser {
       }
     }
 
-    text = replaceall('<ruby>', 'RUBY#[', text);
-    text = replaceall('</ruby>', ']#ENDRUBY', text);
-
-    text = replaceall('<rt>', 'RT#[', text);
-    text = replaceall('</rt>', ']#ENDRT', text);
-
-    text = removeHtmlSpecialTags($, text!);
-
-    text = replaceall('BI#[', '<bible text="', text);
-    text = replaceall(']#BI', '">', text);
-    text = replaceall(']#ENDBI', '</bible>', text);
-
-    text = replaceall('RUBY#[', '<ruby>', text);
-    text = replaceall(']#ENDRUBY', '</ruby>', text);
-
-    text = replaceall('RT#[', '<rt>', text);
-    text = replaceall(']#ENDRT', '</rt>', text);
+    text = this.fixTags($, text);
 
     if (footNoteIds) {
       for (const footNoteId of footNoteIds) {
@@ -444,6 +469,28 @@ export class DomParser {
     }
 
     return responseLines;
+  }
+
+  protected fixTags($: any, text: string): string {
+    text = replaceall('<ruby>', 'RUBY#[', text);
+    text = replaceall('</ruby>', ']#ENDRUBY', text);
+
+    text = replaceall('<rt>', 'RT#[', text);
+    text = replaceall('</rt>', ']#ENDRT', text);
+
+    text = removeHtmlSpecialTags($, text!);
+
+    text = replaceall('BI#[', '<bible text="', text);
+    text = replaceall(']#BI', '">', text);
+    text = replaceall(']#ENDBI', '</bible>', text);
+
+    text = replaceall('RUBY#[', '<ruby>', text);
+    text = replaceall(']#ENDRUBY', '</ruby>', text);
+
+    text = replaceall('RT#[', '<rt>', text);
+    text = replaceall(']#ENDRT', '</rt>', text);
+
+    return text;
   }
 
   protected async getImages($, figure, type) {
