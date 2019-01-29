@@ -7,6 +7,7 @@ export function restoreTraditional(
   parsedResult: BlockInterface[],
 ): BlockInterface[] {
   const traditionalBlocks = striptags(text)
+    .trim()
     .split(' ')
     .filter(item => item)
     .join('');

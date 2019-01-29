@@ -33,16 +33,16 @@ export class RubyParser {
       ).replace(/ /g, '');
 
       if (traditionalToCompare.length !== simplifiedToCompare.length) {
-        console.log('RUBY - SIMPLIFIED AND TRADITIONAL NOT EQUALS');
-        console.log('TRADITIONAL', traditionalToCompare);
-        console.log('SIMPLIFIED', simplifiedToCompare);
+        console.info('RUBY - SIMPLIFIED AND TRADITIONAL NOT EQUALS');
+        console.info('TRADITIONAL', traditionalToCompare);
+        console.info('SIMPLIFIED', simplifiedToCompare);
         return;
       }
     }
 
     const blocks = text.split(/<ruby>|<\/ruby>/).filter(item => item.trim());
 
-    let response: any[] = [];
+    let items: any[] = [];
 
     for (let block of blocks) {
       const rtMatch = block.match(/<rt>(.*)<\/rt>/);
@@ -55,27 +55,36 @@ export class RubyParser {
 
       block = striptags(block);
 
-      response.push({
+      if (!block) {
+        continue;
+      }
+
+      items.push({
         c: block.split(''),
         p: pinyin,
       });
     }
 
-    response = backHtmlTags(response, text);
+    items = backHtmlTags(items, text);
 
-    response = fillBoldItalic(text, response);
+    items = fillBoldItalic(text, items);
 
-    if (response.length > 0) {
-      response[0].line = {
+    if (items.length > 0) {
+      items[0].line = {
         type: item.chinese.type,
         pinyin_source: 'ruby',
       };
     }
 
     let bible;
-    for (let item of response) {
-      item.c = item.c.join('');
+    let response: any[] = [];
+    for (let item of items) {
+      item.c = item.c.join('').trim();
       item.p = item.p.join(String.fromCharCode(160));
+
+      if (!item.c) {
+        continue;
+      }
 
       if (item.isBold) {
         item.isBold = 1;
@@ -112,6 +121,8 @@ export class RubyParser {
 
       delete item.tagsStart;
       delete item.tagsEnd;
+
+      response.push(item);
     }
 
     if (parseSimplified) {
