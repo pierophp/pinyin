@@ -44,10 +44,12 @@ export class Downloader {
       $chinese = await this.downloadChineseByLink(
         $,
         this.isTraditional ? 't' : 's',
+        url,
       );
       $language = $;
       language = String(url.replace('https://www.jw.org/', '')).split('/')[0];
-    } else if (language) {
+      // @todo ADD SUPPORT LANGUAGE TO WOL JW
+    } else if (language && url.indexOf('wol.jw') !== -1) {
       $language = await this.downloadLanguage($, language);
     }
 
@@ -57,7 +59,7 @@ export class Downloader {
 
     let $simplified;
     if (this.isTraditional) {
-      $simplified = await this.downloadChineseByLink($chinese, 's');
+      $simplified = await this.downloadChineseByLink($chinese, 's', url);
     }
 
     const baseUrl = getBaseUrl(url);
@@ -87,12 +89,12 @@ export class Downloader {
     const chineseSites = [
       'https://www.jw.org/cmn-hans',
       'https://www.jw.org/cmn-hant',
-      'https://wol.jw.org/cmn-Hans',
-      'https://wol.jw.org/cmn-Hant',
+      'https://wol.jw.org/cmn-hans',
+      'https://wol.jw.org/cmn-hant',
     ];
 
     for (const chineseSite of chineseSites) {
-      if (url.substring(0, chineseSite.length) === chineseSite) {
+      if (url.toLowerCase().substring(0, chineseSite.length) === chineseSite) {
         this.isChinese = true;
         break;
       }
@@ -100,7 +102,7 @@ export class Downloader {
 
     this.isTraditional = false;
 
-    if (url.indexOf('jw.org/cmn-hant') !== -1) {
+    if (url.toLowerCase().indexOf('jw.org/cmn-hant') !== -1) {
       this.isTraditional = true;
     } else if (ideogramType === 't') {
       this.isTraditional = true;
@@ -131,13 +133,25 @@ export class Downloader {
   protected async downloadChineseByLink(
     $: any,
     ideogramType: string,
+    url: string,
   ): Promise<any | undefined> {
-    const chineseLink = $(`link[hreflang="cmn-han${ideogramType}"]`);
-    if (chineseLink.length === 0) {
-      return;
+    let link = '';
+    if (url.indexOf('wol.jw') !== -1) {
+      const urlParts = url.split('/');
+
+      urlParts[3] = 'cmn-Hans';
+      urlParts[6] = 'r23';
+      urlParts[7] = 'lp-chs-rb';
+      link = urlParts.join('/');
+    } else {
+      const chineseLink = $(`link[hreflang="cmn-han${ideogramType}"]`);
+      if (chineseLink.length === 0) {
+        return;
+      }
+
+      link = `https://www.jw.org${chineseLink.attr('href')}`;
     }
 
-    const link = `https://www.jw.org${chineseLink.attr('href')}`;
     profiler(`Download JW Start - Chinese - ${this.encoder.encodeUrl(link)}`);
     let response;
     try {

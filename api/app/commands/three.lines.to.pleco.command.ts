@@ -1,5 +1,5 @@
-import { Argv, CommandModule } from 'yargs';
 import { readFile, writeFile } from 'fs-extra';
+import { Arguments, CommandModule } from 'yargs';
 import * as env from '../../env';
 
 /**
@@ -11,7 +11,7 @@ export class ThreeLinesToPlecoCommand implements CommandModule {
   public command = '3lines:pleco';
   public describe = '3 Lines to Pleco';
 
-  public async handler(argv: Argv) {
+  public async handler(argv: Arguments) {
     let dirname = `${__dirname}/../../../storage/`;
     if (env.storage_path) {
       dirname = `${env.storage_path}/`;

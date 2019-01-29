@@ -7,10 +7,38 @@ import * as replaceall from 'replaceall';
 import { parseBible } from '../helpers/parse.bible';
 import { ParseItemInterface } from '../interfaces/parse.item.interface';
 import * as separatePinyinInSyllables from '../../../../../../shared/helpers/separate-pinyin-in-syllables';
+import { restoreTraditional } from '../helpers/restore.traditional';
 
 export class RubyParser {
-  public async parse(item: ParseItemInterface): Promise<BlockInterface[]> {
-    const text = item.chinese.text!;
+  public async parse(
+    item: ParseItemInterface,
+    parseSimplified: boolean,
+  ): Promise<BlockInterface[] | undefined> {
+    let text = item.chinese.text!;
+    if (parseSimplified) {
+      text = item.simplified!.text!;
+    }
+
+    if (parseSimplified) {
+      let traditionalToCompare = item.chinese.text!;
+      let simplifiedToCompare = item.simplified!.text!;
+
+      traditionalToCompare = striptags(traditionalToCompare).replace(/ /g, '');
+
+      simplifiedToCompare = striptags(
+        simplifiedToCompare
+          .replace(/<rt>(.*?)<\/rt>/g, '')
+          .replace(/<ruby>/g, '')
+          .replace(/<\/ruby>/g, ''),
+      ).replace(/ /g, '');
+
+      if (traditionalToCompare.length !== simplifiedToCompare.length) {
+        console.log('RUBY - SIMPLIFIED AND TRADITIONAL NOT EQUALS');
+        console.log('TRADITIONAL', traditionalToCompare);
+        console.log('SIMPLIFIED', simplifiedToCompare);
+        return;
+      }
+    }
 
     const blocks = text.split(/<ruby>|<\/ruby>/).filter(item => item.trim());
 
@@ -84,6 +112,10 @@ export class RubyParser {
 
       delete item.tagsStart;
       delete item.tagsEnd;
+    }
+
+    if (parseSimplified) {
+      return restoreTraditional(item.chinese.text!, response);
     }
 
     return response;

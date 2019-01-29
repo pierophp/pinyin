@@ -1,12 +1,11 @@
-import { Argv, CommandModule } from 'yargs';
-
+import { Arguments, CommandModule } from 'yargs';
 import { PlecoExport } from '../core/exports/pleco.export';
 
 export class PlecoExportCommand implements CommandModule {
   public command = 'pleco:export';
   public describe = 'Pleco Export';
 
-  public async handler(argv: Argv) {
+  public async handler(argv: Arguments) {
     const plecoExport = new PlecoExport();
 
     console.info('Start export to Pleco - PT');

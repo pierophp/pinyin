@@ -1,6 +1,5 @@
 # Prioridade Alta
 
-- WOL Pinyin Tradicional
 - Refazer Bíblia
 - Dicionário editar parcial
 

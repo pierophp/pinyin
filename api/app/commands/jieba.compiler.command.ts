@@ -1,13 +1,13 @@
-import { Argv, CommandModule } from 'yargs';
 import { readdir, readFile, stat, writeFile } from 'fs-extra';
 import { join } from 'path';
+import { Arguments, CommandModule } from 'yargs';
 import { IdeogramsConverter } from '../core/converter/ideograms.converter';
 
 export class JiebaCompilerCommand implements CommandModule {
   public command = 'jieba:compile';
   public describe = 'Jieba compiler';
 
-  public async handler(argv: Argv) {
+  public async handler(argv: Arguments) {
     const compiledDir = `${__dirname.replace('dist/api/', '')}/../data/`;
 
     const files = await readdir(compiledDir + 'src');

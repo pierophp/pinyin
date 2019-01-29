@@ -1,10 +1,9 @@
 import * as pinyinParser from 'pdf-pinyin/src/core/pinyin.parser';
-import * as striptags from 'striptags';
 import * as replaceall from 'replaceall';
 import * as isChinese from '../../../../../../shared/helpers/is-chinese';
 import { BlockInterface } from '../../../../core/interfaces/block.interface';
-import { replaceAt } from '../../../../core/sites/helpers/replace.at';
 import { parseBible } from '../helpers/parse.bible';
+import { restoreTraditional } from '../helpers/restore.traditional';
 import { ParseItemInterface } from '../interfaces/parse.item.interface';
 
 export class WithPdfParser {
@@ -47,46 +46,7 @@ export class WithPdfParser {
       return parsedResult;
     }
 
-    return this.restoreTraditional(text, parsedResult);
-  }
-
-  protected restoreTraditional(
-    text: string,
-    parsedResult: BlockInterface[],
-  ): BlockInterface[] {
-    const traditionalBlocks = striptags(text)
-      .split(' ')
-      .filter(item => item)
-      .join('');
-
-    let traditionalCounter = 0;
-    let blockCounter = 0;
-
-    for (const simplifiedBlock of parsedResult) {
-      let characterCount = 0;
-
-      if (!simplifiedBlock.c) {
-        continue;
-      }
-
-      if (!traditionalBlocks[traditionalCounter]) {
-        continue;
-      }
-
-      for (const simplifiedC of simplifiedBlock.c.split('')) {
-        parsedResult[blockCounter].c = replaceAt(
-          simplifiedBlock.c,
-          characterCount,
-          traditionalBlocks[traditionalCounter],
-        );
-        traditionalCounter++;
-        characterCount++;
-      }
-
-      blockCounter++;
-    }
-
-    return parsedResult;
+    return restoreTraditional(text, parsedResult);
   }
 
   public async pdfPinyin(

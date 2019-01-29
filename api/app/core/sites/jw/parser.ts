@@ -43,16 +43,17 @@ export class Parser {
     const chineseDomParser = new DomParser(this.baseUrl);
     const chinesePromise = chineseDomParser.parse($chinese, true);
 
-    const languageDomParser = new DomParser();
+    const languageDomParser = new DomParser(this.baseUrl);
     let languagePromise = new Promise<TextInterface[]>(resolve => resolve([]));
     if ($language) {
       languagePromise = languageDomParser.parse($language, false);
     }
 
-    const simplifiedDomParser = new DomParser();
+    const simplifiedDomParser = new DomParser(this.baseUrl);
     let simplifiedPromise = new Promise<TextInterface[]>(resolve =>
       resolve([]),
     );
+
     if ($simplified) {
       simplifiedPromise = simplifiedDomParser.parse($simplified, true);
     }
@@ -107,7 +108,22 @@ export class Parser {
 
     if (item.chinese.text && item.chinese.text.indexOf('<ruby>') !== -1) {
       const rubyParser = new RubyParser();
-      return await rubyParser.parse(item);
+      const response = await rubyParser.parse(item, false);
+      if (response) {
+        return response;
+      }
+    }
+
+    if (
+      item.simplified &&
+      item.simplified.text &&
+      item.simplified.text.indexOf('<ruby>') !== -1
+    ) {
+      const rubyParser = new RubyParser();
+      const response = await rubyParser.parse(item, true);
+      if (response) {
+        return response;
+      }
     }
 
     if (this.pdfParsedObjectPromise) {

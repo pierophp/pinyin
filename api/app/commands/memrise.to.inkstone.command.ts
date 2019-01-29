@@ -1,9 +1,9 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import { PinyinConverter } from '../core/pinyin/pinyin.converter';
 import * as fs from 'fs-extra';
-import { Argv, CommandModule } from 'yargs';
+import { Arguments, CommandModule } from 'yargs';
 import { IdeogramsConverter } from '../core/converter/ideograms.converter';
+import { PinyinConverter } from '../core/pinyin/pinyin.converter';
 import { pinyinAccentsToNumbers } from '../helpers/pinyin.accents.to.numbers';
 
 const ideogramsConverter = new IdeogramsConverter();
@@ -13,7 +13,7 @@ export class MemriseToInkstoneCommand implements CommandModule {
   public command = 'memrisetoinkstone';
   public describe = 'Memrise to Inkstone';
 
-  public async handler(argv: Argv) {
+  public async handler(argv: Arguments) {
     const chapters = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
 
     for (const chapter of chapters) {
