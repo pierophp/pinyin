@@ -9,7 +9,7 @@ export class DomParser {
   protected items: TextInterface[];
   protected figcaptionsText: string[] = [];
   protected isChinese: boolean;
-  protected debug: boolean = true;
+  protected debug: boolean = false;
   protected baseUrl?: string;
   protected downloader: Downloader;
 

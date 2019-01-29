@@ -1,5 +1,6 @@
 import * as bluebird from 'bluebird';
 import * as cheerio from 'cheerio';
+import * as replaceall from 'replaceall';
 import { orderBy } from 'lodash';
 import { http } from '../../../helpers/http';
 import { profiler } from '../../../helpers/profiler';
@@ -25,6 +26,10 @@ export class Downloader {
   ) {
     if (!ideogramType) {
       ideogramType = 's';
+    }
+
+    if (url.indexOf('wol.jw') !== -1) {
+      url = replaceall('/lp-chs/', '/lp-chs-rb/', url);
     }
 
     this.verifyTypeOfSite(url, ideogramType);
