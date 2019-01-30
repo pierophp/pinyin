@@ -7,9 +7,9 @@
 
 - 3 Lines
 - Dicionário de Taiwan
+- Popup dicionário melhorar navegação
 - Insights
 - Quiz
-- Popup dicionário melhorar navegação
 - Importar ideogramas sem editar
 - Melhorar forma de adicionar / remover ideogramas
 - Link para Google Translate
