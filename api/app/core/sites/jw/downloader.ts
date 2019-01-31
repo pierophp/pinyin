@@ -1,13 +1,15 @@
 import * as bluebird from 'bluebird';
 import * as cheerio from 'cheerio';
-import * as replaceall from 'replaceall';
 import { orderBy } from 'lodash';
+import * as replaceall from 'replaceall';
 import { http } from '../../../helpers/http';
 import { profiler } from '../../../helpers/profiler';
 import { Downloader as GenericDownloader } from '../downloader';
 import { Encoder } from '../encoder';
 import { getBaseUrl } from '../helpers/get.base.url';
 import { Parser } from './parser';
+import { Wol } from './wol';
+
 export class Downloader {
   protected downloader: GenericDownloader;
   protected encoder: Encoder;
@@ -47,10 +49,15 @@ export class Downloader {
         url,
       );
       $language = $;
-      language = String(url.replace('https://www.jw.org/', '')).split('/')[0];
-      // @todo ADD SUPPORT LANGUAGE TO WOL JW
-    } else if (language && url.indexOf('wol.jw') !== -1) {
-      $language = await this.downloadLanguage($, language);
+      language = String(
+        url
+          .replace('https://www.jw.org/', '')
+          .replace('https://wol.jw.org/', ''),
+      )
+        .split('/')[0]
+        .toLowerCase();
+    } else if (language) {
+      $language = await this.downloadLanguage($, language, url);
     }
 
     if (!$chinese) {
@@ -137,12 +144,8 @@ export class Downloader {
   ): Promise<any | undefined> {
     let link = '';
     if (url.indexOf('wol.jw') !== -1) {
-      const urlParts = url.split('/');
-
-      urlParts[3] = 'cmn-Hans';
-      urlParts[6] = 'r23';
-      urlParts[7] = 'lp-chs-rb';
-      link = urlParts.join('/');
+      const wol = new Wol();
+      link = wol.changeUrlLanguage(url, 'cmn-han' + ideogramType);
     } else {
       const chineseLink = $(`link[hreflang="cmn-han${ideogramType}"]`);
       if (chineseLink.length === 0) {
@@ -165,15 +168,22 @@ export class Downloader {
     return cheerio.load(response);
   }
 
-  protected async downloadLanguage($: any, language: string) {
-    const translateLink = $(`link[hreflang="${language}"]`);
-    if (translateLink.length > 0) {
-      const link = `https://www.jw.org${translateLink.attr('href')}`;
-      profiler('Download JW (Language) Start');
-      const response = await http.get(link);
-      profiler('Download JW (Language) End');
-      return cheerio.load(response.data);
+  protected async downloadLanguage($: any, language: string, url: string) {
+    let link = '';
+    if (url.indexOf('wol.jw') !== -1) {
+      const wol = new Wol();
+      link = wol.changeUrlLanguage(url, language);
+    } else {
+      const translateLink = $(`link[hreflang="${language}"]`);
+      if (translateLink.length > 0) {
+        link = `https://www.jw.org${translateLink.attr('href')}`;
+      }
     }
+
+    profiler('Download JW (Language) Start');
+    const response = await http.get(link);
+    profiler('Download JW (Language) End');
+    return cheerio.load(response.data);
   }
 
   protected async parseLinks(

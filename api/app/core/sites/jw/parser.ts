@@ -110,7 +110,7 @@ export class Parser {
       const rubyParser = new RubyParser();
       const response = await rubyParser.parse(item, false);
       if (response) {
-        return response;
+        return await this.fillLanguage(response, item);
       }
     }
 
@@ -122,7 +122,7 @@ export class Parser {
       const rubyParser = new RubyParser();
       const response = await rubyParser.parse(item, true);
       if (response) {
-        return response;
+        return await this.fillLanguage(response, item);
       }
     }
 
@@ -136,7 +136,7 @@ export class Parser {
         );
 
         if (parsedPdfResult) {
-          return parsedPdfResult;
+          return await this.fillLanguage(parsedPdfResult, item);
         }
       } catch (e) {
         console.error(
@@ -151,7 +151,7 @@ export class Parser {
 
     try {
       const withoutPdfParser = new WithoutPdfParser();
-      return await withoutPdfParser.parse(item);
+      return await this.fillLanguage(await withoutPdfParser.parse(item), item);
     } catch (e) {
       console.error(
         `Error on WITHOUT Pdf Parser \n${e.message} \nLine: ${JSON.stringify(
@@ -163,26 +163,15 @@ export class Parser {
     }
   }
 
-  public async fillLanguage(parsedDownloadLanguage, parsedDownload) {
-    if (!parsedDownloadLanguage) {
-      return;
+  public async fillLanguage(
+    response: BlockInterface[],
+    item: ParseItemInterface,
+  ): Promise<BlockInterface[]> {
+    if (response[0] && item.language) {
+      response[0].trans = item.language.text;
     }
 
-    parsedDownloadLanguage.text.forEach((item, i) => {
-      if (item.type === 'img') {
-        return;
-      }
-
-      if (item.type === 'box-img') {
-        return;
-      }
-
-      if (!parsedDownload.text[i]) {
-        parsedDownload.text[i] = {};
-      }
-
-      parsedDownload.text[i].trans = item.text;
-    });
+    return response;
   }
 
   protected async joinLanguages(
