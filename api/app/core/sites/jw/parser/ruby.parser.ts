@@ -5,6 +5,7 @@ import * as isChinese from '../../../../../../shared/helpers/is-chinese';
 import { BlockInterface } from '../../../../core/interfaces/block.interface';
 import * as replaceall from 'replaceall';
 import { parseBible } from '../helpers/parse.bible';
+import { removeSpaces } from '../../../../helpers/remove.spaces';
 import { ParseItemInterface } from '../interfaces/parse.item.interface';
 import * as separatePinyinInSyllables from '../../../../../../shared/helpers/separate-pinyin-in-syllables';
 import { restoreTraditional } from '../helpers/restore.traditional';
@@ -53,7 +54,7 @@ export class RubyParser {
         pinyin = separatePinyinInSyllables(striptags(rtMatch[1]));
       }
 
-      block = striptags(block);
+      block = removeSpaces(striptags(block));
 
       if (!block) {
         continue;
