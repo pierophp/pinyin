@@ -2,9 +2,15 @@ import * as replaceall from 'replaceall';
 import * as replaceIdeogramsToSpace from '../../../../../../shared/helpers/special-ideograms-chars';
 import { http } from '../../../../helpers/http';
 import { Encoder } from '../../encoder';
+import { Wol } from '../wol';
 
 export class AudioParser {
-  public async parse($: any): Promise<string | undefined> {
+  public async parse($: any, chineseUrl: string): Promise<string | undefined> {
+    if (chineseUrl && chineseUrl.indexOf('wol.jw.org') !== -1) {
+      const wol = new Wol();
+      return await wol.getAudioLink(chineseUrl);
+    }
+
     let media = $('.jsAudioPlayer a');
     if (media.length > 0) {
       return media.attr('href');

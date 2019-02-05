@@ -15,6 +15,7 @@ export class Downloader {
   protected encoder: Encoder;
   protected isChinese: boolean;
   protected isTraditional: boolean;
+  protected chineseLink: string;
   constructor() {
     this.downloader = new GenericDownloader();
     this.encoder = new Encoder();
@@ -33,6 +34,8 @@ export class Downloader {
     if (url.indexOf('wol.jw') !== -1) {
       url = replaceall('/lp-chs/', '/lp-chs-rb/', url);
     }
+
+    this.chineseLink = url;
 
     this.verifyTypeOfSite(url, ideogramType);
 
@@ -76,6 +79,7 @@ export class Downloader {
       $language,
       $simplified,
       baseUrl,
+      this.chineseLink,
     );
 
     if (parsedDownload.links) {
@@ -154,6 +158,8 @@ export class Downloader {
 
       link = `https://www.jw.org${chineseLink.attr('href')}`;
     }
+
+    this.chineseLink = link;
 
     profiler(`Download JW Start - Chinese - ${this.encoder.encodeUrl(link)}`);
     let response;
