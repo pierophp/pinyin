@@ -73,6 +73,7 @@ export class RubyParser {
     if (items.length > 0) {
       items[0].line = {
         type: item.chinese.type,
+        pinyinSpaced: 1,
         pinyin_source: 'ruby',
       };
     }

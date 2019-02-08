@@ -6,6 +6,7 @@ export interface BlockInterface {
   c: string;
   p: string;
   b?: string;
+  v?: number;
   large?: string;
   small?: string;
   trans?: string;
