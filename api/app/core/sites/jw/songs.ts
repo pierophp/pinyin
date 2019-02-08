@@ -47,7 +47,7 @@ export class Songs {
         JSON.stringify({ lines: parsedDownload.text }),
       );
 
-      const parsedDownloadT = await parser.parse($T, null, $);
+      const parsedDownloadT = await parser.parse($T, undefined, $);
 
       await writeFile(
         `${dirname}cmn-hant/${song}.json`,

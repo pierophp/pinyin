@@ -21,6 +21,7 @@ export class Parser {
     $language?: any,
     $simplified?: any,
     baseUrl?: string,
+    chineseUrl?: string,
   ): Promise<ParserResponseInterface> {
     this.baseUrl = baseUrl;
     if (this.isSummary($chinese)) {
@@ -38,7 +39,7 @@ export class Parser {
     };
 
     const audioParser = new AudioParser();
-    downloadResponse.audio = await audioParser.parse($chinese);
+    downloadResponse.audio = await audioParser.parse($chinese, chineseUrl!);
 
     const chineseDomParser = new DomParser(this.baseUrl);
     const chinesePromise = chineseDomParser.parse($chinese, true);
