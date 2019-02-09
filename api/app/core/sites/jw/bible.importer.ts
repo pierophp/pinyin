@@ -73,6 +73,7 @@ export class BibleImporter {
 
     $('a.b[data-bid]').remove();
     $('p.ss').remove();
+    $('a.pr').remove();
 
     const lines = $('article p').toArray();
     const linesResponse: any[] = [];
