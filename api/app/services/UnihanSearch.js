@@ -67,6 +67,8 @@ module.exports = class UnihanSearch {
       'variants',
       'measure_words',
       'is_separable',
+      '3lines_en',
+      '3lines_es',
     ];
 
     let cjkList = await knex('cjk')
@@ -138,6 +140,8 @@ module.exports = class UnihanSearch {
     response.glosbe_pt = null;
     response.glosbe_es = null;
     response.glosbe_en = null;
+    response.es = null;
+    response.en = null;
 
     const list = cjkListTraditional.concat(cjkList);
 
@@ -222,6 +226,14 @@ module.exports = class UnihanSearch {
 
       if (!response.glosbe_en && cjk.definition_glosbe_en) {
         response.glosbe_en = JSON.parse(cjk.definition_glosbe_en);
+      }
+
+      if (!response.en && cjk.definition_3lines_en) {
+        response.en = JSON.parse(cjk.definition_3lines_en);
+      }
+
+      if (!response.es && cjk.definition_3lines_es) {
+        response.es = JSON.parse(cjk.definition_3lines_es);
       }
     }
 

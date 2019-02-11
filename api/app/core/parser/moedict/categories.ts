@@ -6,19 +6,19 @@ export default {
   義譯: 'yiyi', // yìyì - ????
   音義合譯: 'Sound and meaning translation', // yīn yì hé yì
   無法考證者: 'Unable to test', // wúfǎ kǎozhèng zhě
-  國名: 'Country names', // guó míng
-  朝代名: 'Dynasty name', // cháodài míng
-  人名: 'Name', // rén míng
-  帝號: 'Emperor', // dì hào
-  星名: 'Star name', // xīng míng
-  星座名: 'Constellation name', // xīngzuò míng
-  術數用語: 'Number of words', // shù shù yòngyǔ
+  國名: 'country', // guó míng - País
+  朝代名: 'dynasty', // cháodài míng - Dinastia
+  人名: 'name', // rén míng
+  帝號: 'emperor', // dì hào
+  星名: 'star', // xīng míng
+  星座名: 'constellation', // xīngzuò míng
+  術數用語: 'Number of words', // shù shù yòngyǔ ?????
   書名: 'Title', // shūmíng
   書體名: 'Book name', // shū tǐ míng
-  文章名: 'Article name', // wénzhāng míng
-  文體名: 'Stylistic name', // wéntǐ míng
-  敦煌變文名: 'Dunhuang changed name', // dūnhuáng biàn wén míng
-  詩名: 'Poem name', // shī míng
+  文章名: 'article', // wénzhāng míng - Artigo
+  文體名: 'literary_form', // wéntǐ míng - Forma literária
+  敦煌變文名: 'dunhuang_manuscripts', // dūnhuáng biàn wén míng
+  詩名: 'poem', // shī míng
   詞牌名: 'Placard name', // cí pái míng
   曲牌名: 'Tic name', // qǔ pái míng
   樂曲名: 'Song name', // yuèqǔ míng

@@ -11,7 +11,7 @@ if (env.storage_path) {
   storagePath = env.storage_path;
 }
 
-const filename = `${storagePath}English-Pinyin.txt`;
+const filename = `${storagePath}Spanish-Pinyin.txt`;
 const promises: Function[] = [];
 
 const ideogramsConverter = new IdeogramsConverter();
