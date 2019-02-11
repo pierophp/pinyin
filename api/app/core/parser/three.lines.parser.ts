@@ -86,8 +86,8 @@ export class ThreeLinesParser {
     }
 
     let parts = line.split('\t');
-    let ideogram = parts[0];
-    let ideogramTraditional = parts[1];
+    let ideogram = parts[1];
+    let ideogramTraditional = parts[0];
 
     let pronunciation = '';
     let pronunciationSpaced = '';
@@ -129,13 +129,8 @@ export class ThreeLinesParser {
     pronunciationSpaced = pinyinNumbersToAccents(pronunciationSpaced);
 
     const importPromise = async () => {
-      parts.shift();
-      const descriptions: string[] = [];
+      const descriptions: string[] = parts[3].split('/');
       let variants: string[] = [];
-
-      for (const part of parts[2]) {
-        descriptions.push(part);
-      }
 
       const ideogramRaw = ideogram;
       const ideogramTraditionalRaw = ideogramTraditional;
@@ -233,7 +228,6 @@ export class ThreeLinesParser {
       }
 
       word.variants = JSON.stringify(variantsSave);
-
       word.definition = JSON.stringify(Array.from(new Set(word.definition)));
 
       try {

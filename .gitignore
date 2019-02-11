@@ -12,5 +12,6 @@ yarn-error.log
 docker/data/
 .git-rewrite
 storage/*
+moedict-data
 chinese-dictionary
 bible-pinyin

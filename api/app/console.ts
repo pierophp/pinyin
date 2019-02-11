@@ -15,6 +15,7 @@ const commandsPath = [
   'jw.bible.import.command',
   'jw.bible.traditional.command',
   'jw.track.command',
+  'moedict.load.command',
   'memrise.to.inkstone.command',
   'pleco.export.command',
   'three.lines.load.command',
