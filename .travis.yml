@@ -2,13 +2,7 @@ sudo: required
 dist: trusty
 language: node_js
 node_js:
-  - '8'
-addons:
-  apt:
-    packages:
-      - mysql-server-5.6
-      - mysql-client-core-5.6
-      - mysql-client-5.6
+  - '10'
 cache:
   yarn: true
   directories:
@@ -24,21 +18,14 @@ before_install:
   - tar xvf travis/secrets.tar
   - mv id_rsa /home/travis/.ssh/id_rsa
   - chmod 700 /home/travis/.ssh/id_rsa
-  - npm install knex -g
   - npm install pm2 -g
   - cd api
-  - yarn install
   - chmod +x ../travis/${TRAVIS_BRANCH}.sh
   - ../travis/${TRAVIS_BRANCH}.sh
 before_script:
-  - export CHROME_BIN=chromium-browser
-  - export DISPLAY=:99.0
-  #- sh -e /etc/init.d/xvfb start
-  - mysql -u root -e "CREATE DATABASE pinyin CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
   - cd ../
   - mkdir storage
   - chmod +x scripts/deploy.sh
-  - git config core.fileMode false
 script:
   - echo "Run Script"
 deploy:
