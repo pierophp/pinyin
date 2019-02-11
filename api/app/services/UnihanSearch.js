@@ -63,12 +63,12 @@ module.exports = class UnihanSearch {
       'definition_glosbe_pt',
       'definition_glosbe_es',
       'definition_glosbe_en',
+      'definition_3lines_en',
+      'definition_3lines_es',
       'hsk',
       'variants',
       'measure_words',
       'is_separable',
-      '3lines_en',
-      '3lines_es',
     ];
 
     let cjkList = await knex('cjk')
