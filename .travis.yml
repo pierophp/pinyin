@@ -26,6 +26,7 @@ before_script:
   - cd ../
   - mkdir storage
   - chmod +x scripts/deploy.sh
+  - git config core.fileMode false
 script:
   - echo "Run Script"
 deploy:
