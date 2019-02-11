@@ -133,7 +133,7 @@ export class ThreeLinesParser {
       const descriptions: string[] = [];
       let variants: string[] = [];
 
-      for (const part of parts) {
+      for (const part of parts[2]) {
         descriptions.push(part);
       }
 
