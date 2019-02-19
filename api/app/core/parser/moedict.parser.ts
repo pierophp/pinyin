@@ -1,7 +1,9 @@
 import * as bluebird from 'bluebird';
+import { remove as removeDiacritics } from 'diacritics';
 import { IdeogramsConverter } from '../../core/converter/ideograms.converter';
-import { separateWords } from '../../helpers/separate.words';
 import { PinyinConverter } from '../../core/pinyin/pinyin.converter';
+import { separateWords } from '../../helpers/separate.words';
+import * as knex from '../../services/knex';
 
 /**
  * git@github.com:g0v/moedict-data.git
@@ -30,13 +32,15 @@ export class MoedictParser {
         pinyinDefinition[key] = [];
         for (const entry of traditionalDefinition[key]) {
           pinyinDefinition[key].push(
-            await this.pinyinConverter.toPinyin(separateWords(entry)),
+            (await this.pinyinConverter.toPinyin(separateWords(entry))).map(
+              item => item.pinyin,
+            ),
           );
         }
       } else {
-        pinyinDefinition[key] = await this.pinyinConverter.toPinyin(
+        pinyinDefinition[key] = (await this.pinyinConverter.toPinyin(
           separateWords(traditionalDefinition[key]),
-        );
+        )).map(item => item.pinyin);
       }
     }
 
@@ -123,11 +127,31 @@ export class MoedictParser {
     }
   }
 
+  public async createTable() {
+    await knex.raw(`DROP TABLE IF EXISTS tmp_moedict`);
+    await knex.raw(`
+        CREATE TABLE tmp_moedict (
+            id int(10) NOT NULL AUTO_INCREMENT,
+            ideogram varchar(190),
+            ideogram_simplified varchar(190),
+            stroke_count INT(10),
+            pronunciation_unaccented varchar(190),
+            pronunciation_case varchar(190) CHARACTER SET utf8 COLLATE utf8_bin,
+            pronunciation_case_unaccented varchar(190),
+            pronunciation_spaced varchar(190) CHARACTER SET utf8 COLLATE utf8_bin,
+            definition json,
+            PRIMARY KEY (id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    `);
+  }
+
   public async parse() {
-    // const filename = __dirname + '/../../../../moedict-data/dict-revised.json';
-    const filename = __dirname + '/../../../../moe/exemplos.json';
+    const filename = __dirname + '/../../../../moedict-data/dict-revised.json';
+    // const filename = __dirname + '/../../../../moe/exemplos.json';
 
     const entries = await require(filename);
+
+    await this.createTable();
 
     await bluebird.map(
       entries,
@@ -139,6 +163,22 @@ export class MoedictParser {
       },
     );
 
-    console.log(JSON.stringify(this.dictionaryParsed, null, 2));
+    for (const key of Object.keys(this.dictionaryParsed)) {
+      const entry = this.dictionaryParsed[key];
+      await knex('tmp_moedict').insert({
+        ideogram: entry.character,
+        ideogram_simplified: entry.characterSimplified,
+        pronunciation_case: entry.pronunciation.split(' ').join(''),
+        pronunciation_unaccented: removeDiacritics(entry.pronunciation),
+        pronunciation_case_unaccented: removeDiacritics(entry.pronunciation),
+        pronunciation_spaced: entry.pronunciation,
+        stroke_count: entry.strokeCount,
+        definition: JSON.stringify({
+          traditionalDefinitions: entry.traditionalDefinitions,
+          simplifiedDefinitions: entry.simplifiedDefinitions,
+          pinyinDefinitions: entry.pinyinDefinitions,
+        }),
+      });
+    }
   }
 }
