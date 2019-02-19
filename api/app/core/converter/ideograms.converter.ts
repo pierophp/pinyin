@@ -23,9 +23,11 @@ export class IdeogramsConverter {
   }
 
   public async simplifiedToTraditional(ideogram: string) {
-    if (!TradOrSimp.isSimplified(ideogram)) {
-      return ideogram;
-    }
+    try {
+      if (!TradOrSimp.isSimplified(ideogram)) {
+        return ideogram;
+      }
+    } catch (e) {}
 
     const cacheKey = `SIMPLIFIED_TO_TRADITIONAL_${ideogram}`;
     let response = await RedisCache.get(cacheKey);

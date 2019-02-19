@@ -25,6 +25,8 @@ export class ElasticsearchProvider {
         'dictionary.cedict': { type: 'text', analyzer: 'analyzer_en' },
         'dictionary.cedictKeyword': { type: 'keyword' },
         'dictionary.pt': { type: 'text', analyzer: 'analyzer_pt' },
+        'dictionary.3LinesEn': { type: 'text', analyzer: 'analyzer_es' },
+        'dictionary.3LinesEs': { type: 'text', analyzer: 'analyzer_en' },
         'dictionary.ptKeyword': { type: 'keyword' },
         'dictionary.ctPt': { type: 'text', analyzer: 'analyzer_pt' },
         'dictionary.ctEn': { type: 'text', analyzer: 'analyzer_en' },
@@ -129,6 +131,9 @@ export class ElasticsearchProvider {
     const glosbeEn = JSON.parse(dictionary.definition_glosbe_en);
     const glosbeEs = JSON.parse(dictionary.definition_glosbe_es);
 
+    const threeLinesEn = JSON.parse(dictionary.definition_3lines_en);
+    const threeLinesEs = JSON.parse(dictionary.definition_3lines_es);
+
     const variants = JSON.parse(dictionary.variants);
 
     return {
@@ -151,6 +156,8 @@ export class ElasticsearchProvider {
         glosbePt,
         glosbeEn,
         glosbeEs,
+        '3LinesEn': threeLinesEn,
+        '3LinesEs': threeLinesEs,
       },
       type: dictionary.type,
       simplified: dictionary.simplified ? true : false,
@@ -207,7 +214,7 @@ export class ElasticsearchProvider {
         {
           type: 'term',
           field: 'ideogramKeyword',
-          score: '80',
+          score: '90',
         },
         {
           type: 'match_phrase',
@@ -266,6 +273,11 @@ export class ElasticsearchProvider {
         },
         {
           type: 'match_phrase',
+          field: 'dictionary.3LinesEs',
+          score: '17',
+        },
+        {
+          type: 'match_phrase',
           field: 'dictionary.glosbeEs',
           score: '16',
         },
@@ -282,6 +294,11 @@ export class ElasticsearchProvider {
         {
           type: 'match_phrase',
           field: 'dictionary.ctEn',
+          score: '12',
+        },
+        {
+          type: 'match_phrase',
+          field: 'dictionary.3LinesEn',
           score: '12',
         },
         {
