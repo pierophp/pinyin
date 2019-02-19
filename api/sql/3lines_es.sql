@@ -12,18 +12,18 @@ ALTER TABLE tmp_three_lines_es
 
 UPDATE tmp_three_lines_es tl
 JOIN cjk c
-  ON c.ideogram = tl.ideogram
+  ON c.ideogram = REPLACE(tl.ideogram, ' ', '')
  AND c.pronunciation = REPLACE(REPLACE(REPLACE(tl.pronunciation_case, '-', ''), '_', ''), "'", '')
  AND c.simplified = tl.simplified
 SET c.definition_3lines_es = tl.definition;
 
 UPDATE tmp_three_lines_es tl
 LEFT JOIN cjk c
-  ON c.ideogram = tl.ideogram
+  ON c.ideogram = REPLACE(tl.ideogram, ' ', '')
  AND c.pronunciation = REPLACE(REPLACE(REPLACE(tl.pronunciation_case, '-', ''), '_', ''), "'", '')
  AND c.simplified = tl.simplified
 JOIN cjk c2
-  ON c2.ideogram = tl.ideogram
+  ON c2.ideogram = REPLACE(tl.ideogram, ' ', '')
  AND c2.pronunciation != tl.pronunciation_case
  AND c2.simplified = tl.simplified
  AND c2.definition_3lines_es IS NULL
@@ -50,7 +50,7 @@ tl.variants,
 '3lines' source
 FROM tmp_three_lines_es tl
 LEFT JOIN cjk c
-  ON c.ideogram = tl.ideogram
+  ON c.ideogram = REPLACE(tl.ideogram, ' ', '')
  AND c.simplified = tl.simplified
 WHERE c.id IS NULL
 LIMIT 10000000000000;
