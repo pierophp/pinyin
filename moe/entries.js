@@ -1,4 +1,4 @@
-const entries = require("./dict-revised.json");
+const entries = require('../moedict-data/dict-revised.json');
 
 let total = 0;
 let structure = {};
@@ -13,11 +13,11 @@ for (const entry of entries) {
   const entryStructure = Object.keys(entry);
 
   for (const entryStructureItem of entryStructure) {
-    if (entryStructureItem === "heteronyms") {
+    if (entryStructureItem === 'heteronyms') {
       for (const heteronym of entry.heteronyms) {
         const heteronymsKeys = Object.keys(heteronym);
         for (const heteronymsKey of heteronymsKeys) {
-          if (heteronymsKey === "definitions") {
+          if (heteronymsKey === 'definitions') {
             for (const definition of heteronym.definitions) {
               const definitionKeys = Object.keys(definition);
               if (definition.type) {
@@ -34,7 +34,7 @@ for (const entry of entries) {
                     continue;
                   }
 
-                  const linkParts = link.split("「");
+                  const linkParts = link.split('「');
                   if (!links[linkParts[0]]) {
                     links[linkParts[0]] = 0;
                   }
@@ -70,9 +70,9 @@ for (const entry of entries) {
   }
 }
 
-console.log("Entries: ", total);
-console.log("Structure: ", structure);
-console.log("Heteronyms Structure: ", heteronymsStructure);
-console.log("Definition Structure: ", definitionStructure);
-console.log("Types: ", types);
-console.log("links: ", links);
+console.log('Entries: ', total);
+console.log('Structure: ', structure);
+console.log('Heteronyms Structure: ', heteronymsStructure);
+console.log('Definition Structure: ', definitionStructure);
+console.log('Types: ', types);
+console.log('links: ', links);
