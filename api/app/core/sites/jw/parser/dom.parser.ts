@@ -576,7 +576,11 @@ export class DomParser {
     }
   }
 
-  public fullUrl(url: string): string {
+  public fullUrl(url?: string): string {
+    if (!url) {
+      return '';
+    }
+
     if (url.indexOf('://') !== -1) {
       return url;
     }

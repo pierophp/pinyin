@@ -21,7 +21,11 @@ export class Track {
     } else {
       videoTrack = await knex('video_track').where({
         code: urlParts[urlParts.length - 1],
-        language: url.indexOf('cmn-hant') !== -1 ? 'CH' : 'CHS',
+        language:
+          url.toLowerCase().indexOf('cmn-hant') !== -1 ||
+          url.toLowerCase().indexOf('cmn_hant') !== -1
+            ? 'CH'
+            : 'CHS',
       });
     }
 

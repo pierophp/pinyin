@@ -33,17 +33,13 @@ export class BibleImporter {
 
       newBook.find('rt').remove();
 
-      await this.parseBook($(book).attr('href'), $(newBook).text(), bookId);
+      await this.parseBook($(book).attr('href'), bookId);
 
       bookId++;
     }
   }
 
-  public async parseBook(
-    url: string,
-    book: string,
-    bookId: number,
-  ): Promise<void> {
+  public async parseBook(url: string, bookId: number): Promise<void> {
     const chaptersUrl = `${this.baseUrl}${url}`;
 
     let response = await axios.get(chaptersUrl);
@@ -53,7 +49,6 @@ export class BibleImporter {
     for (const chapter of chapters) {
       await this.parseChapter(
         $(chapter).attr('href'),
-        book,
         bookId,
         $(chapter).text(),
       );
@@ -62,7 +57,6 @@ export class BibleImporter {
 
   public async parseChapter(
     url: string,
-    book: string,
     bookId: number,
     chapter: string,
   ): Promise<void> {
@@ -75,6 +69,7 @@ export class BibleImporter {
     $('p.ss').remove();
     $('p.sw').remove();
     $('a.pr').remove();
+    $('a.fn').remove();
 
     const lines = $('article p').toArray();
     const linesResponse: any[] = [];
