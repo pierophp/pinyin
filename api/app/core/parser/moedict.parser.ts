@@ -10,6 +10,7 @@ import * as knex from '../../services/knex';
  */
 export class MoedictParser {
   private dictionaryParsed = {};
+  private ignoreWithoutPinyin = true;
 
   private ideogramsConverter: IdeogramsConverter;
   private pinyinConverter: PinyinConverter;
@@ -17,6 +18,51 @@ export class MoedictParser {
   constructor() {
     this.ideogramsConverter = new IdeogramsConverter();
     this.pinyinConverter = new PinyinConverter();
+  }
+
+  public async parse() {
+    const filename = __dirname + '/../../../../moedict-data/dict-revised.json';
+
+    const entries = await require(filename);
+
+    const limit = 2000 * 100;
+
+    await this.createTable();
+
+    await bluebird.map(
+      entries.slice(0, limit),
+      async (entry: any) => {
+        await this.parseEntry(entry);
+      },
+      {
+        concurrency: 10,
+      },
+    );
+
+    for (const key of Object.keys(this.dictionaryParsed)) {
+      const entry = this.dictionaryParsed[key];
+      await knex('moedict').insert({
+        ideogram: entry.character,
+        ideogram_original: entry.characterOriginal,
+        ideogram_simplified: entry.characterSimplified,
+        pronunciation_case: entry.pronunciation
+          ? entry.pronunciation.split(' ').join('')
+          : null,
+        pronunciation_unaccented: entry.pronunciation
+          ? removeDiacritics(entry.pronunciation)
+          : null,
+        pronunciation_case_unaccented: entry.pronunciation
+          ? removeDiacritics(entry.pronunciation)
+          : null,
+        pronunciation_spaced: entry.pronunciation,
+        stroke_count: entry.strokeCount,
+        definition: JSON.stringify({
+          traditionalDefinitions: entry.traditionalDefinitions,
+          simplifiedDefinitions: entry.simplifiedDefinitions,
+          pinyinDefinitions: entry.pinyinDefinitions,
+        }),
+      });
+    }
   }
 
   public async convertToPinyin(traditionalDefinition: any) {
@@ -76,10 +122,33 @@ export class MoedictParser {
   }
 
   public async parseEntry(entry: any) {
-    const character = entry.title;
+    let character = entry.title;
+    let characterOriginal = entry.title;
+
+    if (character.indexOf('{') !== -1) {
+      const items = character.split(/[\{\}]/).filter(item => item);
+
+      let newCharacters = '';
+      for (const item of items) {
+        if (item.substr(0, 1) === '[') {
+          newCharacters += String.fromCodePoint(
+            parseInt(item.substr(1, item.length - 2), 16),
+          );
+        } else {
+          newCharacters += item;
+        }
+      }
+
+      character = newCharacters;
+    }
+
     const strokeCount = entry.stroke_count;
     for (const heteronym of entry.heteronyms) {
       const pronunciation = heteronym.pinyin;
+
+      if (!pronunciation && this.ignoreWithoutPinyin) {
+        continue;
+      }
 
       const key = `${character}_${pronunciation}`;
 
@@ -117,6 +186,7 @@ export class MoedictParser {
 
       this.dictionaryParsed[key] = {
         character,
+        characterOriginal,
         characterSimplified,
         pronunciation,
         strokeCount,
@@ -128,10 +198,11 @@ export class MoedictParser {
   }
 
   public async createTable() {
-    await knex.raw(`DROP TABLE IF EXISTS tmp_moedict`);
+    await knex.raw(`DROP TABLE IF EXISTS moedict`);
     await knex.raw(`
-        CREATE TABLE tmp_moedict (
+        CREATE TABLE moedict (
             id int(10) NOT NULL AUTO_INCREMENT,
+            ideogram_original varchar(190),
             ideogram varchar(190),
             ideogram_simplified varchar(190),
             stroke_count INT(10),
@@ -143,42 +214,5 @@ export class MoedictParser {
             PRIMARY KEY (id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
     `);
-  }
-
-  public async parse() {
-    const filename = __dirname + '/../../../../moedict-data/dict-revised.json';
-    // const filename = __dirname + '/../../../../moe/exemplos.json';
-
-    const entries = await require(filename);
-
-    await this.createTable();
-
-    await bluebird.map(
-      entries,
-      async (entry: any) => {
-        await this.parseEntry(entry);
-      },
-      {
-        concurrency: 10,
-      },
-    );
-
-    for (const key of Object.keys(this.dictionaryParsed)) {
-      const entry = this.dictionaryParsed[key];
-      await knex('tmp_moedict').insert({
-        ideogram: entry.character,
-        ideogram_simplified: entry.characterSimplified,
-        pronunciation_case: entry.pronunciation.split(' ').join(''),
-        pronunciation_unaccented: removeDiacritics(entry.pronunciation),
-        pronunciation_case_unaccented: removeDiacritics(entry.pronunciation),
-        pronunciation_spaced: entry.pronunciation,
-        stroke_count: entry.strokeCount,
-        definition: JSON.stringify({
-          traditionalDefinitions: entry.traditionalDefinitions,
-          simplifiedDefinitions: entry.simplifiedDefinitions,
-          pinyinDefinitions: entry.pinyinDefinitions,
-        }),
-      });
-    }
   }
 }
