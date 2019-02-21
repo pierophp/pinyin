@@ -75,6 +75,7 @@ export class BibleImporter {
     $('p.ss').remove();
     $('p.sw').remove();
     $('a.pr').remove();
+    $('a.fn').remove();
 
     const lines = $('article p').toArray();
     const linesResponse: any[] = [];
