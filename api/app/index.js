@@ -36,6 +36,7 @@ app.use(
       '/unihan/dictionary',
       '/unihan/dictionary_search',
       '/segmentation/segment',
+      '/dictionary/moedict',
       '/site/download',
       '/jw/frequency',
       '/chinese-tools',
