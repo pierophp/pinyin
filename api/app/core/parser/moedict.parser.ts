@@ -214,5 +214,10 @@ export class MoedictParser {
             PRIMARY KEY (id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
     `);
+    await knex.raw(`
+          ALTER TABLE moedict
+          ADD INDEX idx_ideogram (ideogram ASC) VISIBLE,
+          ADD INDEX idx_ideogram_simplified (ideogram_simplified ASC) VISIBLE
+    `);
   }
 }
