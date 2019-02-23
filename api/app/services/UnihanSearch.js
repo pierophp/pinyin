@@ -205,7 +205,9 @@ module.exports = class UnihanSearch {
       }
 
       if (!response.chinese_tools_pt && cjk.definition_ct_pt) {
-        response.chinese_tools_pt = JSON.parse(cjk.definition_ct_pt);
+        response.chinese_tools_pt = JSON.parse(
+          replaceall('~', ideograms, cjk.definition_ct_pt),
+        );
       }
 
       if (!response.chinese_tools_es && cjk.definition_ct_es) {

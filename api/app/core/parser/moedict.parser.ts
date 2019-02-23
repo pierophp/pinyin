@@ -163,12 +163,8 @@ export class MoedictParser {
           type: definition.type,
           link: definition.link, // list
           example: definition.example, // list
-          antonyms: definition.antonyms
-            ? definition.antonyms.split(',')
-            : undefined,
-          synonyms: definition.synonyms
-            ? definition.synonyms.split(',')
-            : undefined,
+          antonyms: definition.antonyms ? definition.antonyms : undefined,
+          synonyms: definition.synonyms ? definition.synonyms : undefined,
         };
 
         traditionalDefinitions.push(traditionalDefinition);
