@@ -1,6 +1,7 @@
 const { uniq } = require('lodash');
 
 const knex = require('./knex');
+const replaceall = require('replaceall');
 const { IdeogramsConverter } = require('../core/converter/ideograms.converter');
 const ideogramsConverter = new IdeogramsConverter();
 
