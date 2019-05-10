@@ -20,6 +20,7 @@ before_install:
   - chmod 700 /home/travis/.ssh/id_rsa
   - npm install pm2 -g
   - cd api
+  - echo $SSH_HOST
   - chmod +x ../travis/${TRAVIS_BRANCH}.sh
   - ../travis/${TRAVIS_BRANCH}.sh
 before_script:
