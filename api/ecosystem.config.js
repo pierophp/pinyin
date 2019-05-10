@@ -2,7 +2,7 @@ const isProduction = process.env.TRAVIS_BRANCH === 'master';
 
 const postDeployCommands = [
   'cd /home/ubuntu/',
-  'ln -sf /var/local/pinyin/Dicionario_Pleco.txt /var/www/dictionary.pinyin/Dicionario_Pleco.txt',
+  // 'ln -sf /var/local/pinyin/Dicionario_Pleco.txt /var/www/dictionary.pinyin/Dicionario_Pleco.txt',
   // API
   `cd ${
     isProduction
