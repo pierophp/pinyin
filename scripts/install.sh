@@ -1,17 +1,17 @@
 ## install dependecies
 sudo apt upgrade
 
-sudo apt install nginx redis-tools mysql-client npm zip \
-     libcurl4-openssl-dev python-pip
+sudo apt install nginx redis-tools mysql-client yarn zip \
+     libcurl4-openssl-dev python-pip poppler-utils
 
 sudo pip install awscli --upgrade --user
 
-sudo npm i -g npm knex pm2 yarn n
+sudo yarn global add i npm knex pm2 n
 
 sudo n lts
 
 echo "America/Sao_Paulo" | sudo tee /etc/timezone
-export TZ=America/Sao_Paulo 
+export TZ=America/Sao_Paulo
 
 ## swap
 sudo /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=2048
