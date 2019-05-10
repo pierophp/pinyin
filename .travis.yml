@@ -7,11 +7,11 @@ cache:
   yarn: true
   directories:
     - node_modules
-    - $HOME/.npm
+    - '$HOME/.npm'
 env:
   global:
-    - secure: R1EKUeNYwn0AbHqJlHvXdkN0+VvSInvkqxveoIql2Rso768pkBB3YkIQasz2MsCA/bb1Cqsk4+WCL2ARJtLFUmuVAXCnOh8VPNyipc5CfG0Y37Y45thABmAp8gjgp/51dBM6ngqK0RRhyqc/CJqOkCCoI7ADgRR3lpvVfruklgMa3S4u+4zm2bGNy33rQ5y4kDXi/TACBtifq/Q4wEmqD6iusZemKkpUis8EeqyVbsUUwPujsCSA7Uh99HNZ9MFto5PNJy/kov3+fCKoXdzk/7m6qZHfbiozFZ4Ktt/9XnbKAwDU7n0FUXlAy7QjFmT7vbSWN8NyBD/edvj+441USrIkcGUlDz/jik+i20LEDcnD1m7KVPeqRFdsbA+V3wc0OE0LZf/I10Dt7Ll4odVVlfQL3Z2rujdRQk99J+KmYIfxcuEgwoLuqtJdF2sRefiKX2yNBFwnJohZc37qFvxhIB2X47UxDsIOK52ahRGNqRX7ia3pFPxxVVdWJD4qBdii64fALU3F8sFZis4C6wZ/2lsAcGPkKN9Ps2UWpFbzPRX+Y7i2AVyVF65UStAo66uD8Akp+wLNmtZQA6jm/KMf4zLijSB8Y1He3cs6HxdH/loPlZFbA+AkNKiQxPM7tSEVclvb/lU1lssP2uevTe4pfhxAwb7XNCESB0aDZUCbbLg=
-    - secure: Et5e35H1ADMXmGMVxxdQ4iz/O+SMlNovxCgJ+f2hEb4GTw1591yTh77PrHV8r23ACB9ywkWh4wRbAfGtmspXFXBEwF4o3hPOZUTc52w8+mWWBK2Qd+serCLuTlPJZFz3mxvJRVuJKO8dKoRDcTpLPmqLNYt6dsn7rrDkDazd1KAaaXPANDtXIAZAezxi9Rv716xnvNwxPjyDxWjGc566O720ni7r1U0A7mfum1lrruGOxW0mgzdBftG3Yb6wHcG35Q6LOXEQC5M2B7Jn8oQFVZvCFsmqXXgDyobyPt2JkTzy+TLVD2K5noI9QtZ7Ond48y28uxscbCOMMPJTIaPTxvLL2TS3OZYKmwjv70LBO0nOenjM5xDrMFIxvHnMLuKceSJy82Yyfuszf7DOLacrgb45IJBhuzjCWDxoIBtDDvruPFkO65kHWqvtRSEkU+H0LmSDKra55ozi8st3Dkv4h8IOOzjPo0FIrommnVxu3mQ1dQMyexpnODvvhqwwwZ14bAlZ9RlTjKPE4c+7U8E0lJy6r2SLI11nn3DYzIkoocUQCe6WpLlIUmwaA53d5lRZKADwN9T8oXTSVc12fdmHtDtOJfmsJDWqqdUScYLEznhIr/m1cFx2LBdHpLZGRTNPPlgxeK/AO4aUJW5GEEWPKoMEi6gWIhTtP/9sj6d25qc=
+    - secure: ZQqOBJy64PMbvk05OEv2tQ0LPT0lgFcYuGaH8WYmQsQn7leJlbsbEcKkVVWhfKPyWwitdxfMus60Fe6sr9XWAn3ZS8aOIWIdhQDQE51lpM79WOWXARmUkeRuRKRfLYjAQPehEX4c+HP0X240uiqsObPEsYxpo4aPWWOBibS/Q+S+efH9sh5ltTKk/ZDmvUzTTOCrArecMr9B7JvGidm8UFUHUiEycoBGAcnIJvnG0uZEl8q/Dq0ZoGSYFuZW6u9DPAjDc9Pw7RnDSYTaV438dmPT0I0Cdl6sjVZJgyRtCZ/Anee+NjNkGmqU9Tro7dtprqanaU4qLeARngTXGwzhyYy/xL3FylTxAk2bHdFAnqpfTIeDHz5UX/evrf78MgbVpN9LUy4+v2u8/sXt+XwATCDei/yWWoimDueRYcgVo8Ohs92h2zMAbwJlsunKmCa3Dt7bVxBi9ssUSDYR2tfgHNagFgJwvNLLdhx9yQ9pa1YSXUjp9aVK3iAGqwS5pUbZo1vZVR9iDVHeezB5/bwwigjIpJOC7yRmaMtRYSKcW+mc441XAI8R80PSduwun9Xmm9zH6deatbScfQqcMbE4gUj6uLQfmkhnJiuPvdSGHRemJakFj0/4zBaTspXjbJ5aEGACMKrq53/n/ZkSF412kTnOXpe6Rt5hNkyaqCLhmjE=
+    - secure: yiNxscYptRvwwsNdjFFT3h0YfYST7Z3vOM5omWJ0U1omIAL00sm3zgLDKRlAoZL6CmgL5Ub1124g9UYBpWDAGCXFP6Hdz9i9zgNZVvE8wM/lExXcp3RQglyn4eYGtraOUGP0CiiPtT0Sh3/eT+mWVkf9sA5WLs8v2/ywzEKLjDoQ5yqE64g9hFS4K2B9UjlDpbsLvzFu2povlbvBihmV+g1NJW70PxzO4mCtGwNLGV2O/y/dwVQN+qUPfyEXb+WN0fVyRATM33YBCPFpX5ei6EFdtkMQDrk7186ekaExYrT9kJnKQ07aYpHM7568kJKfkopXo3wzbl7dvkTCjZs4HD0foDAnOErzdgo43/P6bKKLdjenf6jkduyIMqpI+tCo/UVk95RpIltDg2BH7MVQF5liN4hHJpQbhN6Q3DuTlaokDzh7sf/tIWuPbto8mteRGsOqxSpi51B3wXe/slS5PSl4XTPUedM8KjsKDjWV5eY92LWO7ThnhSbSI5hHsNIz7LgS4iARymf1/ypCDoO4lDiW5Sfc2Sd3jv2Dox6Yi39hiL+3Tpj+TvYb65VW99cKN/o4RJlRka3aq4uRlJwH+mkM/NuQkhSOg7DyfPM8iSqd1hnYqnfxSx8JVfDRYPoc8jR+8XmgJDSC0RLHJjn/a3MVmNkxAwNIhzu02s6KD+Y=
 before_install:
   - openssl aes-256-cbc -K $encrypted_4a8eabd2975a_key -iv $encrypted_4a8eabd2975a_iv
     -in travis/secrets.tar.enc -out travis/secrets.tar -d
@@ -20,9 +20,8 @@ before_install:
   - chmod 700 /home/travis/.ssh/id_rsa
   - npm install pm2 -g
   - cd api
-  - echo $SSH_HOST
   - chmod +x ../travis/${TRAVIS_BRANCH}.sh
-  - ../travis/${TRAVIS_BRANCH}.sh
+  - '../travis/${TRAVIS_BRANCH}.sh'
 before_script:
   - cd ../
   - mkdir storage
