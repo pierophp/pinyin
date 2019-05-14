@@ -9,7 +9,6 @@ const ideogramsConverter = new IdeogramsConverter();
 
 export class ElasticsearchProvider {
   public async createStructure() {
-    const type = this.getType();
     const mappings: any = {
       properties: {
         id: { type: 'integer' },
@@ -179,7 +178,6 @@ export class ElasticsearchProvider {
       body.push({
         update: {
           _index: this.getIndex(),
-          _type: this.getType(),
           _id: String(dictionary.id),
         },
       });
@@ -192,7 +190,6 @@ export class ElasticsearchProvider {
 
     const response = await this.getClient().bulk({
       index: this.getIndex(),
-      type: this.getType(),
       body,
     });
 
@@ -367,7 +364,6 @@ export class ElasticsearchProvider {
           bool: {
             must: [
               { match: { _index: this.getIndex() } },
-              { match: { _type: this.getType() } },
               { match: { simplified: true } },
             ],
 
@@ -432,10 +428,6 @@ export class ElasticsearchProvider {
 
   protected getIndex(): string {
     return 'pinyin';
-  }
-
-  protected getType(): string {
-    return 'dictionary';
   }
 
   protected getClient(): Client {
