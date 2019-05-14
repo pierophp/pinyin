@@ -158,7 +158,7 @@ export class Downloader {
 
       const href = chineseLink.attr('href');
       link = href;
-      if (href.indexOf('://') !== -1) {
+      if (href.indexOf('://') === -1) {
         link = `https://www.jw.org${href}`;
       }
     }
@@ -188,7 +188,7 @@ export class Downloader {
       if (translateLink.length > 0) {
         const href = translateLink.attr('href');
         link = href;
-        if (href.indexOf('://') !== -1) {
+        if (href.indexOf('://') === -1) {
           link = `https://www.jw.org${href}`;
         }
       }
