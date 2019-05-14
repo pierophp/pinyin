@@ -10,9 +10,7 @@ const ideogramsConverter = new IdeogramsConverter();
 export class ElasticsearchProvider {
   public async createStructure() {
     const type = this.getType();
-    const mappings: any = {};
-
-    mappings[type] = {
+    const mappings: any = {
       properties: {
         id: { type: 'integer' },
         ideogram: { type: 'text' },
