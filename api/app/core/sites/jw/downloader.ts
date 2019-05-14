@@ -156,7 +156,11 @@ export class Downloader {
         return;
       }
 
-      link = `https://www.jw.org${chineseLink.attr('href')}`;
+      const href = chineseLink.attr('href');
+      link = href;
+      if (href.indexOf('://') !== -1) {
+        link = `https://www.jw.org${href}`;
+      }
     }
 
     this.chineseLink = link;
@@ -182,7 +186,11 @@ export class Downloader {
     } else {
       const translateLink = $(`link[hreflang="${language}"]`);
       if (translateLink.length > 0) {
-        link = `https://www.jw.org${translateLink.attr('href')}`;
+        const href = translateLink.attr('href');
+        link = href;
+        if (href.indexOf('://') !== -1) {
+          link = `https://www.jw.org${href}`;
+        }
       }
     }
 
