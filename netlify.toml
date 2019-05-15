@@ -14,7 +14,7 @@ ID = "Your_Site_ID"
   command = "yarn netlify-build"
 
   # Directory with the lambda functions to deploy to AWS.
-  functions = "functions"
+  functions = "./functions"
 
 # The following redirect is intended for use with most SPAs that handle
 # routing internally.
