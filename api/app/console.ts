@@ -12,6 +12,7 @@ const commandsPath = [
   'glosbe.insert.command',
   'ideogram.raw.command',
   'jieba.compiler.command',
+  'jw.bible.words.command',
   'jw.bible.import.command',
   'jw.bible.traditional.command',
   'jw.track.command',
