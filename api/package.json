@@ -68,7 +68,7 @@
     "sqlite3": "^4.0.3",
     "striptags": "^3.1.1",
     "traditional-or-simplified": "^1.0.1",
-    "ts-node": "^3.3.0",
+    "ts-node": "^8.1.0",
     "typescript": "^3.1",
     "uniqid": "^5.0.3",
     "wget": "0.0.1",

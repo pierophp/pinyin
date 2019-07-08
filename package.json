@@ -1,9 +1,14 @@
 {
   "license": "MIT",
   "scripts": {
-    "prettier": "prettier"
+    "prettier": "prettier",
+    "netlify-serve": "netlify-lambda serve netlify",
+    "netlify-build": "netlify-lambda build netlify"
   },
   "devDependencies": {
     "prettier": "^1.14.3"
+  },
+  "dependencies": {
+    "netlify-lambda": "^1.4.7"
   }
 }

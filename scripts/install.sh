@@ -2,9 +2,10 @@
 sudo apt upgrade
 
 sudo apt install nginx redis-tools mysql-client yarn zip \
-     libcurl4-openssl-dev python-pip poppler-utils
+     libcurl4-openssl-dev python3-pip poppler-utils
 
-sudo pip install awscli --upgrade --user
+sudo pip3 install awscli --force-reinstall --upgrade
+
 
 sudo yarn global add i npm knex pm2 n
 

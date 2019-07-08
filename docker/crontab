@@ -1,0 +1,9 @@
+0 */12 * * * /var/www/api.pinyin/current/api/scripts/jw-track.sh >> /var/log/jw-track.log
+
+*/20 * * * * /var/www/api.pinyin/current/api/scripts/chinese-tools.sh >> /var/log/chinese$
+
+*/20 * * * * /var/www/api.pinyin/current/api/scripts/glosbe.sh >> /var/log/glosbe.log
+
+0 0 * * * /var/www/api.pinyin/current/scripts/backup.sh >> /var/log/backup.log
+
+0 0 * * * /var/www/api.pinyin/current/api/node_modules/ts-node/dist/bin.js /var/www/api.pinyin/current/api/app/console.ts pleco:export

@@ -4,11 +4,10 @@ sudo rm -Rf ~/backup
 array=(
     "/var/www/api.pinyin/env" 
     "/var/www/api.pinyin.staging/env" 
-    "/var/scripts/dump.sh" 
+    "/var/scripts" 
     "/var/local/pinyin" 
     "/etc/nginx" 
-    "/etc/letsencrypt" 
-    "/etc/ssl/certs/dhparam.pem" 
+    "/etc/elasticsearch" 
 )
 for element in ${array[@]}
 do
