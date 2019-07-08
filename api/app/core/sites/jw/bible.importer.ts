@@ -67,6 +67,9 @@ export class BibleImporter {
 
     $('a.b[data-bid]').remove();
     $('p.ss').remove();
+    $('p.sw')
+      .parent('div')
+      .remove();
     $('p.sw').remove();
     $('a.pr').remove();
     $('a.fn').remove();
@@ -107,6 +110,11 @@ export class BibleImporter {
       }
 
       linesResponse.push(lineResponse);
+    }
+
+    if (linesResponse.length === 0) {
+      console.log('EMPTY RESPONSE' + url, bookId, chapter);
+      return;
     }
 
     const baseDirectory = `${__dirname}/../../../../../bible-pinyin/cmn-hans/`;
