@@ -1,8 +1,7 @@
 #!/bin/bash
 
 DIR="/home/node/pinyin/api/node_modules"
-
-cd api
+cd /home/node/pinyin/api
 if [ -d "$DIR" ]; then
     yarn dev
 else

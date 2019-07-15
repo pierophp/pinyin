@@ -51,6 +51,7 @@ export class Downloader {
         this.isTraditional ? 't' : 's',
         url,
       );
+
       $language = $;
       language = String(
         url

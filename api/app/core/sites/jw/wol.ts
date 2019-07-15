@@ -90,12 +90,13 @@ export class Wol {
       urlParts[8]
     }`;
 
-    const downloader = new Downloader();
-    const response = await downloader.download(audioUrl);
-
     try {
+      const downloader = new Downloader();
+      const response = await downloader.download(audioUrl);
       return response.files.CH.MP3[0].file.url;
-    } catch (e) {}
+    } catch (e) {
+      console.error('Error on audio ' + e);
+    }
 
     return '';
   }
