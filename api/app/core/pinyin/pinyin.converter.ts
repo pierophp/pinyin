@@ -111,6 +111,7 @@ export class PinyinConverter {
       '○': ' ',
       '『': ' ',
       '』': ' ',
+      '‧': ' ',
       1: ' ',
       2: ' ',
       3: ' ',
@@ -134,6 +135,7 @@ export class PinyinConverter {
       '#': ' ',
       '[': ' ',
       ']': ' ',
+
       a: ' ',
       b: ' ',
       c: ' ',
