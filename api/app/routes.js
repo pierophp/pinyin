@@ -14,4 +14,5 @@ module.exports = function routes(app) {
   app.use('/dictionary', require('./controllers/dictionary.controller'));
   app.use('/videos', require('./controllers/videos.controller'));
   app.use('/2pinyin', require('./controllers/2pinyin.controller'));
+  app.use('/forvo', require('./controllers/forvo.controller'));
 };

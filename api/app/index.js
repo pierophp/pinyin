@@ -43,6 +43,7 @@ app.use(
       '/hanzi-writer',
       '/2pinyin/my_words',
       '/2pinyin/dictionary',
+      '/forvo',
     ],
   }),
 );
