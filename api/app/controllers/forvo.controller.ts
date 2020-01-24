@@ -12,19 +12,35 @@ router.get('/', async (req, res) => {
     );
 
     const languages = {
-      ch: 'zh',
+      ch: ['zh'],
+      pt: ['pt_br', 'pt', 'pt_pt'],
+      en: ['en_us', 'en', 'en_uk'],
     };
+
+    if (!languages[req.query.language]) {
+      languages[req.query.language] = [req.query.language];
+    }
 
     const $ = cheerio.load(response.data);
 
-    const header = $(
-      `header#${languages[req.query.language] || req.query.language}`,
-    );
+    let header: any;
+    for (const language of languages[req.query.language]) {
+      header = $(`header#${language}`);
+
+      console.log(language);
+
+      if (header) {
+        break;
+      }
+    }
+
+    if (!header) {
+      throw new Error('Language not found');
+    }
 
     let base64Url = header
-      .parent()
-      .find('.show-all-pronunciations li span')
-      .first()
+      .next()
+      .find('span')
       .attr('onclick')
       .split(',')[4]
       .replace(/'/g, '');
