@@ -7,14 +7,16 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
   try {
-    let response = await axios.get(
-      `https://forvo.com/word/${encodeURI(req.query.word.toLowerCase())}/`,
-    );
+    const url = `https://forvo.com/word/${encodeURI(
+      req.query.word.toLowerCase(),
+    )}/`;
+
+    const response = await axios.get(url);
 
     const languages = {
       ch: ['zh'],
       pt: ['pt_br', 'pt', 'pt_pt'],
-      en: ['en_us', 'en', 'en_uk'],
+      en: ['en_us', 'en_usa', 'en', 'en_uk'],
     };
 
     if (!languages[req.query.language]) {
@@ -27,9 +29,7 @@ router.get('/', async (req, res) => {
     for (const language of languages[req.query.language]) {
       header = $(`header#${language}`);
 
-      console.log(language);
-
-      if (header) {
+      if (header.length > 0) {
         break;
       }
     }
@@ -38,12 +38,12 @@ router.get('/', async (req, res) => {
       throw new Error('Language not found');
     }
 
-    let base64Url = header
+    const onClick = header
       .next()
       .find('span')
-      .attr('onclick')
-      .split(',')[4]
-      .replace(/'/g, '');
+      .attr('onclick');
+
+    let base64Url = onClick.split(',')[4].replace(/'/g, '');
 
     res.send({
       status: 200,
