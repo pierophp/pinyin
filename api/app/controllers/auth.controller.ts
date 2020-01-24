@@ -2,17 +2,24 @@ import * as express from 'express';
 import * as passport from 'passport';
 import * as jwt from 'jsonwebtoken';
 import * as env from '../../env';
+import * as knex from '../services/knex';
 
 // eslint-disable-next-line new-cap
 const router = express.Router();
 
-router.get('/is_logged_in', (req: any, res) => {
+router.get('/is_logged_in', async (req: any, res) => {
   const user: any = {};
 
   if (req.isAuthenticated()) {
     user.id = req.user.id;
-    user.name = req.user.name;
-    user.email = req.user.email;
+
+    const dbUser = (await knex('user').where({
+      id: req.user.id,
+    }))[0];
+
+    user.admin = dbUser.admin;
+    user.name = dbUser.name;
+    user.email = dbUser.email;
   }
 
   const response = {
