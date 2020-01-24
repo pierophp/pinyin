@@ -65,25 +65,26 @@ export class JwBibleWordsCommand implements CommandModule {
             verse = '1';
           }
 
-          $(children)
-            .find('u')
-            .each((j, subChildren) => {
-              const word = $(subChildren)
-                .text()
-                .trim();
+          $(children).each((j, subChildren) => {
+            const word = $(subChildren)
+              .text()
+              .trim();
 
-              if (words[word] === undefined) {
-                words[word] = 0;
-              }
-              wordsVerses.push({
-                bible,
-                chapter,
-                verse,
-                word,
-              });
+            if (words[word] === undefined) {
+              words[word] = 0;
+            }
 
-              words[word] += 1;
+            wordsVerses.push({
+              bible,
+              chapter,
+              verse,
+              word,
             });
+
+            words[word] += 1;
+          });
+
+          process.exit();
         });
       });
     });

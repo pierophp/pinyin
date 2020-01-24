@@ -20,7 +20,7 @@ export class BibleImporter {
   public async import() {
     const booksUrl = `${
       this.baseUrl
-    }/cmn-Hans/wol/binav/r23/lp-chs-rb/bi12/CHS/2001`;
+    }/cmn-Hans/wol/binav/r23/lp-chs-rb/nwt/CHS/2019`;
 
     let response = await axios.get(booksUrl);
     let $ = cheerio.load(response.data);
@@ -128,7 +128,7 @@ export class BibleImporter {
 
   public async getTraditionalBible() {
     const encoder = new Encoder();
-    const urlBible = 'https://www.jw.org/cmn-hant/出版物/聖經/bi12/聖經經卷/';
+    const urlBible = 'https://www.jw.org/cmn-hant/出版物/聖經/nwt/聖經卷目/';
     let response = await axios.get(encoder.encodeUrl(urlBible));
     let $ = cheerio.load(response.data);
     let bibles: any[] = []; // '雅各書'
