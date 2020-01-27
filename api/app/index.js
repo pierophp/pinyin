@@ -44,6 +44,7 @@ app.use(
       '/2pinyin/my_words',
       '/2pinyin/dictionary',
       '/forvo',
+      '/cards/convert',
     ],
   }),
 );

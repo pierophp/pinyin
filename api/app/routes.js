@@ -15,4 +15,5 @@ module.exports = function routes(app) {
   app.use('/videos', require('./controllers/videos.controller'));
   app.use('/2pinyin', require('./controllers/2pinyin.controller'));
   app.use('/forvo', require('./controllers/forvo.controller'));
+  app.use('/cards', require('./controllers/cards.controller'));
 };
