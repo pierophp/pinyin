@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
     const languages = {
       ch: ['zh'],
       pt: ['pt_br', 'pt', 'pt_pt'],
-      en: ['en_us', 'en_usa', 'en', 'en_uk'],
+      en: ['en_us', 'en_usa', 'en_uk', 'en'],
     };
 
     if (!languages[req.query.language]) {
