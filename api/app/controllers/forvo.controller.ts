@@ -55,13 +55,13 @@ router.get('/', async (req, res) => {
       base64Url = splitOnClick[4].replace(/'/g, '');
     }
 
+    const audioFile = Buffer.from(base64Url, 'base64').toString();
+
     res.send({
       status: 200,
       word: req.query.word,
       language: req.query.language,
-      url:
-        'https://audio00.forvo.com/audios/mp3/' +
-        Buffer.from(base64Url, 'base64').toString(),
+      url: audioFile ? 'https://audio00.forvo.com/audios/mp3/' + audioFile : '',
     });
   } catch (e) {
     res.send({ status: 500, error: e.message });
