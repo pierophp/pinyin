@@ -38,12 +38,22 @@ router.get('/', async (req, res) => {
       throw new Error('Language not found');
     }
 
-    const onClick = header
-      .next()
-      .find('span')
-      .attr('onclick');
+    let parentElement = header.next().find('li');
 
-    let base64Url = onClick.split(',')[4].replace(/'/g, '');
+    let onClick = parentElement.find('span').attr('onclick');
+
+    let splitOnClick = onClick.split(',');
+
+    let base64Url = splitOnClick[4].replace(/'/g, '');
+    if (!base64Url) {
+      parentElement = parentElement.next();
+
+      onClick = parentElement.find('span').attr('onclick');
+
+      splitOnClick = onClick.split(',');
+
+      base64Url = splitOnClick[4].replace(/'/g, '');
+    }
 
     res.send({
       status: 200,
