@@ -1,7 +1,6 @@
 import axios from 'axios';
 import * as express from 'express';
 import * as cheerio from 'cheerio';
-import { setFlagsFromString } from 'v8';
 // eslint-disable-next-line new-cap
 const router = express.Router();
 

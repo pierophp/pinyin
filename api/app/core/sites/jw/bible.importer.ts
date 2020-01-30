@@ -33,7 +33,7 @@ export class BibleImporter {
 
       newBook.find('rt').remove();
 
-      await this.parseBook($(book).attr('href'), bookId);
+      await this.parseBook(($(book) as any).attr('href'), bookId);
 
       bookId++;
     }
@@ -48,7 +48,7 @@ export class BibleImporter {
     const chapters = $('.chapters .chapter a').toArray();
     for (const chapter of chapters) {
       await this.parseChapter(
-        $(chapter).attr('href'),
+        ($(chapter) as any).attr('href'),
         bookId,
         $(chapter).text(),
       );
@@ -86,9 +86,7 @@ export class BibleImporter {
         .toArray();
 
       for (const verse of verses) {
-        const verseId = $(verse)
-          .attr('id')
-          .split('-')[2];
+        const verseId = ($(verse) as any).attr('id').split('-')[2];
 
         const verseParsed = await this.rubyParser.parse(
           {
