@@ -37,7 +37,10 @@ router.get('/', async (req, res) => {
       throw new Error('Language not found');
     }
 
-    let parentElement = header.parent().find('li');
+    let parentElement = header.next().find('li');
+    if (!parentElement || parentElement.length === 0) {
+      parentElement = header.parent().find('li');
+    }
 
     let onClick = parentElement.find('span').attr('onclick');
 
