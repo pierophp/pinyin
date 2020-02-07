@@ -1,13 +1,15 @@
 import axios from 'axios';
 import * as express from 'express';
 import * as cheerio from 'cheerio';
+import * as replaceall from 'replaceall';
+
 // eslint-disable-next-line new-cap
 const router = express.Router();
 
 router.get('/', async (req, res) => {
   try {
     const url = `https://forvo.com/word/${encodeURI(
-      req.query.word.toLowerCase(),
+      replaceall(' ', '_', req.query.word.toLowerCase()),
     )}/`;
 
     const response = await axios.get(url);
