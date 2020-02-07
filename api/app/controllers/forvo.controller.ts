@@ -50,14 +50,21 @@ router.get('/', async (req, res) => {
     let splitOnClick = onClick.split(',');
 
     let base64Url = splitOnClick[4].replace(/'/g, '');
+
+    let baseUrl = 'https://audio00.forvo.com/audios/mp3/';
+
     if (!base64Url) {
       parentElement = parentElement.next();
 
       onClick = parentElement.find('span').attr('onclick');
 
-      splitOnClick = onClick.split(',');
-
-      base64Url = splitOnClick[4].replace(/'/g, '');
+      if (onClick) {
+        splitOnClick = onClick.split(',');
+        base64Url = splitOnClick[4].replace(/'/g, '');
+      } else {
+        base64Url = splitOnClick[1].replace(/'/g, '');
+        baseUrl = 'https://audio00.forvo.com/mp3/';
+      }
     }
 
     const audioFile = Buffer.from(base64Url, 'base64').toString();
@@ -66,7 +73,7 @@ router.get('/', async (req, res) => {
       status: 200,
       word: req.query.word,
       language: req.query.language,
-      url: audioFile ? 'https://audio00.forvo.com/audios/mp3/' + audioFile : '',
+      url: audioFile ? baseUrl + audioFile : '',
     });
   } catch (e) {
     res.send({ status: 500, error: e.message });
