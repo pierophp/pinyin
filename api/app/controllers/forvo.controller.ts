@@ -45,7 +45,7 @@ router.get('/', async (req, res) => {
       parentElement = header.parent().find('li');
     }
 
-    let onClick = parentElement.find('span').attr('onclick');
+    let onClick = parentElement.find('span.play').attr('onclick');
 
     let splitOnClick = onClick.split(',');
 
@@ -56,7 +56,7 @@ router.get('/', async (req, res) => {
     if (!base64Url) {
       parentElement = parentElement.next();
 
-      onClick = parentElement.find('span').attr('onclick');
+      onClick = parentElement.find('span.play').attr('onclick');
 
       if (onClick) {
         splitOnClick = onClick.split(',');
