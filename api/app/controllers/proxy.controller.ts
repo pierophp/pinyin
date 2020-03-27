@@ -4,7 +4,7 @@ import axios from 'axios';
 // eslint-disable-next-line new-cap
 const router = express.Router();
 
-router.get('/', async (req: any, res) => {
+router.all('/', async (req: any, res) => {
   try {
     const { method } = req;
 
