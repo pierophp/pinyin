@@ -23,6 +23,10 @@ router.all('/', async (req: any, res) => {
       headers.authorization = req.headers.authorization;
     }
 
+    if (req.headers['x-origin']) {
+      headers.origin = req.headers['x-origin'];
+    }
+
     const requestHeaders = {
       ...req.headers,
       ...headers,
