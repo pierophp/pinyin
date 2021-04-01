@@ -32,7 +32,7 @@ export class V2FileConverter {
       for (const block of line) {
         const tones: any[] = [];
 
-        const pinyins = block.p.split(' ');
+        const pinyins = block.p.split(String.fromCharCode(160));
         for (const pinyin of pinyins) {
           tones.push(extractPinyinTone(pinyin).toString());
         }
