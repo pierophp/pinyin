@@ -34,16 +34,8 @@ export class DomParser {
     const mainImage = $('.lsrBannerImage');
     if (mainImage.length) {
       this.items.push({
-        large: this.fullUrl(
-          $(mainImage)
-            .find('span')
-            .attr('data-zoom'),
-        ),
-        small: this.fullUrl(
-          $(mainImage)
-            .find('span')
-            .attr('data-img-size-lg'),
-        ),
+        large: this.fullUrl($(mainImage).find('span').attr('data-zoom')),
+        small: this.fullUrl($(mainImage).find('span').attr('data-img-size-lg')),
         type: 'img',
       });
     }
@@ -61,6 +53,7 @@ export class DomParser {
      * Main Elements Prioriry
      */
     const mainElements = [
+      'article > .docSubContent .textSizeIncrement > div[class="  "]',
       'article > .docSubContent .textSizeIncrement > div[class=""]',
       'article > .docSubContent .textSizeIncrement',
       'article > .docSubContent',
@@ -102,9 +95,7 @@ export class DomParser {
           profiler('LEVEL 1 - .bodyTxt');
         }
 
-        for (const subChildren of $(children)
-          .children()
-          .toArray()) {
+        for (const subChildren of $(children).children().toArray()) {
           const boxH2 = $(subChildren).children('h2');
           if (boxH2 && $(boxH2).text()) {
             if (this.debug) {
@@ -139,13 +130,9 @@ export class DomParser {
           profiler('LEVEL 1 - .article');
         }
 
-        for (const subChildren of $(children)
-          .children()
-          .toArray()) {
+        for (const subChildren of $(children).children().toArray()) {
           if ($(subChildren).hasClass('questions')) {
-            for (const subChildren02 of $(subChildren)
-              .children()
-              .toArray()) {
+            for (const subChildren02 of $(subChildren).children().toArray()) {
               if ($(subChildren02).get(0).tagName === 'h2') {
                 this.items = this.items.concat(
                   await this.parseResult($, subChildren02, 'box-h2'),
@@ -179,9 +166,7 @@ export class DomParser {
   public async parseBlock($: any, element) {
     if (
       $(element).attr('class') &&
-      $(element)
-        .attr('class')
-        .indexOf('boxSupplement') !== -1
+      $(element).attr('class').indexOf('boxSupplement') !== -1
     ) {
       if (this.debug) {
         profiler('PARSE BLOCK - .boxSupplement');
@@ -191,15 +176,9 @@ export class DomParser {
       if (boxFigure.length) {
         this.items.push({
           type: 'box-img',
-          large: this.fullUrl(
-            $(boxFigure)
-              .find('span')
-              .attr('data-zoom'),
-          ),
+          large: this.fullUrl($(boxFigure).find('span').attr('data-zoom')),
           small: this.fullUrl(
-            $(boxFigure)
-              .find('span')
-              .attr('data-img-size-lg'),
+            $(boxFigure).find('span').attr('data-img-size-lg'),
           ),
         });
       }
@@ -217,9 +196,7 @@ export class DomParser {
           .children()
           .toArray()) {
           if ($(subChildren).get(0).tagName === 'ul') {
-            for (const subChildrenLi of $(subChildren)
-              .children()
-              .toArray()) {
+            for (const subChildrenLi of $(subChildren).children().toArray()) {
               for (const subChildrenLiContent of $(subChildrenLi)
                 .children()
                 .toArray()) {
@@ -244,33 +221,25 @@ export class DomParser {
           );
         }
 
-        for (const subChildrenTr of $(element)
-          .find('table tr')
-          .toArray()) {
+        for (const subChildrenTr of $(element).find('table tr').toArray()) {
           await this.parseContent($, subChildrenTr, 'box');
         }
       }
     } else if (
       $(element).attr('class') &&
-      $(element)
-        .attr('class')
-        .indexOf('groupFootnote') !== -1
+      $(element).attr('class').indexOf('groupFootnote') !== -1
     ) {
       if (this.debug) {
         profiler('PARSE BLOCK - .groupFootnote');
       }
-      for (const subChildren of $(element)
-        .children()
-        .toArray()) {
+      for (const subChildren of $(element).children().toArray()) {
         await this.parseContent($, subChildren, 'foot');
       }
     } else if ($(element).find('.groupFootnote').length > 0) {
       if (this.debug) {
         profiler('PARSE BLOCK - .groupFootnote p');
       }
-      for (const footNote of $(element)
-        .find('.groupFootnote p')
-        .toArray()) {
+      for (const footNote of $(element).find('.groupFootnote p').toArray()) {
         await this.parseContent($, footNote, 'foot');
       }
     } else {
@@ -304,9 +273,7 @@ export class DomParser {
 
     await this.getImages($, figure, type);
 
-    let text = $(element)
-      .text()
-      .trim();
+    let text = $(element).text().trim();
     if (!text) {
       return;
     }
@@ -331,9 +298,7 @@ export class DomParser {
     let footNoteIds: any[] = [];
 
     // asterisk
-    let footNotes = $(element)
-      .find('.footnoteLink')
-      .toArray();
+    let footNotes = $(element).find('.footnoteLink').toArray();
 
     if (footNotes.length > 0 && this.isChinese) {
       for (const footNote of footNotes) {
@@ -354,9 +319,7 @@ export class DomParser {
         );
       }
     } else if (this.isChinese) {
-      footNotes = $(element)
-        .find('a.fn')
-        .toArray();
+      footNotes = $(element).find('a.fn').toArray();
       if (footNotes.length > 0 && this.isChinese) {
         for (const footNote of footNotes) {
           const footNoteId = $(footNote).attr('data-fnid');
@@ -376,9 +339,7 @@ export class DomParser {
 
     let bibles: any[] = [];
     // bible
-    bibles = $(element)
-      .find('.jsBibleLink')
-      .toArray();
+    bibles = $(element).find('.jsBibleLink').toArray();
     if (bibles.length > 0 && this.isChinese) {
       for (const bible of bibles) {
         const bibleLink = decodeURIComponent($(bible).attr('href')).split('/');
@@ -400,9 +361,7 @@ export class DomParser {
         );
       }
     } else if (this.isChinese) {
-      bibles = $(element)
-        .find('a[data-bid]')
-        .toArray();
+      bibles = $(element).find('a[data-bid]').toArray();
       if (bibles.length > 0 && this.isChinese) {
         for (const bible of bibles) {
           const urlJson = $(bible)
@@ -451,7 +410,7 @@ export class DomParser {
     const lines = text!
       .trim()
       .split('\r\n')
-      .filter(item => item);
+      .filter((item) => item);
 
     const responseLines: TextInterface[] = [];
     for (const line of lines) {
@@ -519,18 +478,12 @@ export class DomParser {
         });
       }
     } else {
-      const aList = $(figure)
-        .find('a')
-        .toArray();
+      const aList = $(figure).find('a').toArray();
 
       if (aList.length) {
         for (const a of aList) {
           const large = this.fullUrl($(a).attr('href'));
-          const small = this.fullUrl(
-            $(a)
-              .find('img')
-              .attr('src'),
-          );
+          const small = this.fullUrl($(a).find('img').attr('src'));
 
           this.items.push({
             type: imgType,
@@ -539,9 +492,7 @@ export class DomParser {
           });
         }
       } else {
-        const imgList = $(figure)
-          .find('img')
-          .toArray();
+        const imgList = $(figure).find('img').toArray();
 
         for (const img of imgList) {
           const large = this.fullUrl($(img).attr('src'));
