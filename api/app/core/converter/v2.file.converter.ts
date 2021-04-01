@@ -18,7 +18,7 @@ export class V2FileConverter {
       }
 
       if (line[0]?.line.pinyin_source) {
-        convertedLine.type = line[0].line.pinyin_source;
+        convertedLine.pinyin_source = line[0].line.pinyin_source;
       }
 
       if (line[0]?.trans) {
