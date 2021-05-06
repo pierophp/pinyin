@@ -50,13 +50,14 @@ export class DomParser {
     }
 
     /**
-     * Main Elements Prioriry
+     * Main Elements Priority
      */
     const mainElements = [
       'article > .docSubContent .textSizeIncrement > div[class="  "]',
       'article > .docSubContent .textSizeIncrement > div[class=""]',
       'article > .docSubContent .textSizeIncrement',
       'article > .docSubContent',
+      'article .scalableui',
       'article #bibleText',
       'article .docSubContent',
       '#dailyText',
