@@ -3,19 +3,27 @@ services:
   pinyin_api:
     container_name: pinyin_api
     build: ./docker/api
-    user: "node"
+    user: 'node'
     working_dir: /home/node/pinyin/api
     entrypoint: ../docker/api/entrypoint.sh
     environment:
       NODE_ENV: 'development'
       SERVICE_NAME: 'pinyin'
     ports:
-      - "9090:9090"
+      - '9090:9090'
     expose:
       - 9090
     volumes:
       - ./:/home/node/pinyin:cached
-    command: "yarn dev"
+    command: 'yarn dev'
+    networks:
+      - consul
+
+  pinyin_redis:
+    container_name: pinyin_redis
+    image: redis:4.0
+    volumes:
+      - ./data/redis:/data:cached
     networks:
       - consul
 
