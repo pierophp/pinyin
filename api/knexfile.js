@@ -46,7 +46,6 @@ module.exports = {
       user: env.database_user,
       password: env.database_pass,
       charset: 'utf8mb4',
-      ssl: true,
     },
     pool: {
       min: 2,
