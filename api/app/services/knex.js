@@ -11,6 +11,7 @@ const params = {
     password: config.connection.password,
     database: config.connection.database,
     charset: config.connection.charset,
+    ssl: true,
   },
 };
 
