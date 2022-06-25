@@ -10,7 +10,7 @@ router.get('/frequency', async (req, res) => {
   const downloader = new Downloader();
   try {
     const downloadResponse: any = await downloader.download(
-      req.query.url,
+      req.query.url as string,
       '',
       '',
       false,

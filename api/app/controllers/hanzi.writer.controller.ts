@@ -5,7 +5,7 @@ import axios from 'axios';
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-  const char = req.query.ideogram;
+  const char = req.query.ideogram as string;
   const url = `https://chanind.github.io/hanzi-writer/cdn/2/data/${encodeURIComponent(
     char,
   )}.json`;

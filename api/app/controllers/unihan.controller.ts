@@ -16,7 +16,7 @@ const pinyinConverter = new PinyinConverter();
 // eslint-disable-next-line new-cap
 const router = express.Router();
 router.get('/search', async (req, res) => {
-  const pinyin = req.query.pinyin.toLowerCase();
+  const pinyin = (req.query.pinyin as string).toLowerCase();
 
   const mostUsedPromise = knex('cjk')
     .where({
@@ -60,7 +60,7 @@ router.post('/to_pinyin', async (req, res) => {
 
 router.post('/to_pinyin_all', (req, res) => {
   const ideograms = req.body.ideograms;
-  pinyinConverter.toPinyin(ideograms, { pinyinAll: true }).then(result => {
+  pinyinConverter.toPinyin(ideograms, { pinyinAll: true }).then((result) => {
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(result));
   });
@@ -69,7 +69,7 @@ router.post('/to_pinyin_all', (req, res) => {
 router.get('/dictionary_search', async (req, res) => {
   const dictionaryManager = new DictionaryManager();
   const result = await dictionaryManager.search(
-    req.query.search,
+    req.query.search as string,
     req.query.debug ? true : false,
   );
 

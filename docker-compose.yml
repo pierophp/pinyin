@@ -21,7 +21,7 @@ services:
 
   pinyin_redis:
     container_name: pinyin_redis
-    image: redis:4.0
+    image: redis:7.0
     volumes:
       - ./data/redis:/data:cached
     networks:

@@ -10,13 +10,15 @@ router.get('/convert', async (req, res) => {
     const ideogramsConverter = new IdeogramsConverter();
     const pinyinConverter = new PinyinConverter();
 
-    const pinyinResponse = await pinyinConverter.toPinyin([req.query.ideogram]);
+    const pinyinResponse = await pinyinConverter.toPinyin([
+      req.query.ideogram as string,
+    ]);
 
     res.send({
       status: 200,
       ideogram: req.query.ideogram,
       simplified: await ideogramsConverter.traditionalToSimplified(
-        req.query.ideogram,
+        req.query.ideogram as string,
       ),
       pinyin: pinyinResponse.length > 0 ? pinyinResponse[0].pinyin : '',
     });

@@ -26,7 +26,7 @@ export class FileManager {
         region: env.aws_region,
       });
 
-      return new S3Adapter(s3Client, env.aws_s3_bucket);
+      return new S3Adapter(s3Client as any, env.aws_s3_bucket);
     }
 
     throw new Error('Invalid adapter');
@@ -37,7 +37,7 @@ export class FileManager {
     const basepath = 'files/' + userId;
     const files = await adapter.listContents(basepath, true);
     const response: any[] = [];
-    files.forEach(file => {
+    files.forEach((file) => {
       if (file.basename === '.DS_Store') {
         return;
       }

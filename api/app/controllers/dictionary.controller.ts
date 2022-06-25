@@ -24,7 +24,7 @@ router.get('/moedict', async (req, res) => {
       .where({
         [searchField]: req.query.ideogram,
         pronunciation_case: req.query.pronunciation
-          ? req.query.pronunciation.toLowerCase()
+          ? (req.query.pronunciation as string).toLowerCase()
           : '',
       })
       .select(...fields);

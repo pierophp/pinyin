@@ -10,7 +10,7 @@ router.get('/download', async (req, res) => {
   const version = req.query.version ? req.query.version : '1';
 
   let downloader: any = new GenericDownloader();
-  if (req.query.url.includes('.jw.org')) {
+  if ((req.query.url as string).includes('.jw.org')) {
     downloader = new JwDownloader();
   }
 
