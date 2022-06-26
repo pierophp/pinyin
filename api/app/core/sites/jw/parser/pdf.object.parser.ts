@@ -26,14 +26,17 @@ export class PdfObjecyParser {
       const links = $pdf('.standardDownloadResults a');
       const pdfPinyinList: any[] = [];
       links.each((i, children) => {
+        // @ts-ignore
         if (children.attribs.href.indexOf('.pdf') === -1) {
           return;
         }
 
+        // @ts-ignore
         if (children.attribs.href.indexOf('-Pi_') === -1) {
           return;
         }
 
+        // @ts-ignore
         pdfPinyinList.push(children.attribs.href);
       });
 

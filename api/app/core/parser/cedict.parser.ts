@@ -48,7 +48,7 @@ export class CedictParser {
     console.info('Download start');
 
     await new Promise((resolve, reject) => {
-      download.on('error', err => {
+      download.on('error', (err) => {
         // eslint-disable-next-line
         console.log(`Error: ${err}`);
         reject(err);
@@ -56,7 +56,7 @@ export class CedictParser {
 
       download.on('end', () => {
         console.info('Download end');
-        resolve();
+        resolve(undefined);
       });
     });
   }
@@ -104,12 +104,12 @@ export class CedictParser {
 
     console.info('Create table end');
 
-    await new Promise(resolve => {
+    await new Promise((resolve) => {
       const lineReader = readline.createInterface({
         input: createReadStream(filename),
       });
 
-      lineReader.on('line', line => {
+      lineReader.on('line', (line) => {
         if (line[0] === '#') {
           return;
         }
@@ -127,7 +127,7 @@ export class CedictParser {
         console.info('Process promise start');
         this.processPromisses().then(() => {
           console.info('Process promise end');
-          resolve();
+          resolve(undefined);
         });
       });
     });
@@ -231,9 +231,8 @@ export class CedictParser {
       const ideogramRaw = ideogram;
       const ideogramTraditionalRaw = ideogramTraditional;
       ideogram = ideogramsConverter.convertIdeogramsToUtf16(ideogram);
-      ideogramTraditional = ideogramsConverter.convertIdeogramsToUtf16(
-        ideogramTraditional,
-      );
+      ideogramTraditional =
+        ideogramsConverter.convertIdeogramsToUtf16(ideogramTraditional);
 
       let traditional = 0;
       variants.push(ideogramTraditionalRaw);
@@ -266,9 +265,8 @@ export class CedictParser {
           JSON.stringify(this.words[key].measure_words.concat(measureWords)),
         );
 
-        this.words[key].definition = this.words[key].definition.concat(
-          descriptions,
-        );
+        this.words[key].definition =
+          this.words[key].definition.concat(descriptions);
       } else {
         this.words[key] = JSON.parse(JSON.stringify(toInsert));
       }

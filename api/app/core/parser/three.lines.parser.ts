@@ -55,12 +55,12 @@ export class ThreeLinesParser {
 
     console.info('Create table end');
 
-    await new Promise(resolve => {
+    await new Promise((resolve) => {
       const lineReader = readline.createInterface({
         input: createReadStream(filename),
       });
 
-      lineReader.on('line', line => {
+      lineReader.on('line', (line) => {
         const importPromisse = this.readLine(line);
         if (!importPromisse) {
           return;
@@ -74,7 +74,7 @@ export class ThreeLinesParser {
         console.info('Process promise start');
         this.processPromisses().then(() => {
           console.info('Process promise end');
-          resolve();
+          resolve(undefined);
         });
       });
     });
@@ -135,9 +135,8 @@ export class ThreeLinesParser {
       const ideogramRaw = ideogram;
       const ideogramTraditionalRaw = ideogramTraditional;
       ideogram = ideogramsConverter.convertIdeogramsToUtf16(ideogram);
-      ideogramTraditional = ideogramsConverter.convertIdeogramsToUtf16(
-        ideogramTraditional,
-      );
+      ideogramTraditional =
+        ideogramsConverter.convertIdeogramsToUtf16(ideogramTraditional);
 
       let traditional = 0;
       variants.push(ideogramTraditionalRaw);
@@ -163,9 +162,8 @@ export class ThreeLinesParser {
           JSON.stringify(this.words[key].variants.concat(variants)),
         );
 
-        this.words[key].definition = this.words[key].definition.concat(
-          descriptions,
-        );
+        this.words[key].definition =
+          this.words[key].definition.concat(descriptions);
       } else {
         this.words[key] = JSON.parse(JSON.stringify(toInsert));
       }

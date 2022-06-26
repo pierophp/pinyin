@@ -9,7 +9,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   try {
     const url = `https://forvo.com/word/${encodeURI(
-      replaceall(' ', '_', req.query.word.toLowerCase()),
+      replaceall(' ', '_', (req.query.word as string).toLowerCase()),
     )}/`;
 
     const response = await axios.get(url);
@@ -20,14 +20,14 @@ router.get('/', async (req, res) => {
       en: ['en_us', 'en_usa', 'en_uk', 'en'],
     };
 
-    if (!languages[req.query.language]) {
-      languages[req.query.language] = [req.query.language];
+    if (!languages[req.query.language as string]) {
+      languages[req.query.language as string] = [req.query.language];
     }
 
     const $ = cheerio.load(response.data);
 
     let header: any;
-    for (const language of languages[req.query.language]) {
+    for (const language of languages[req.query.language as string]) {
       header = $(`header#${language}`);
 
       if (header.length > 0) {

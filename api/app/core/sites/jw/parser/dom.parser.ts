@@ -24,6 +24,10 @@ export class DomParser {
     this.figcaptionsText = [];
 
     $('.viewOptions').remove();
+    $('.pageNum').remove();
+    $('.screenReaderText').remove();
+    $('textarea').remove();
+    $('.alternatePresentation').remove();
     $('noscript').remove();
     $('#docSubVideo').remove();
     $('#docSubImg').remove();
@@ -115,15 +119,25 @@ export class DomParser {
               profiler('LEVEL 2 - div');
             }
 
-            bodyTxtChildren = $(subChildren).children('div');
+            bodyTxtChildren = $(subChildren).children();
           } else {
             if (this.debug) {
               profiler('LEVEL 2 - div.pGroup');
             }
           }
 
-          for (const subChildren02 of bodyTxtChildren.children().toArray()) {
-            await this.parseBlock($, subChildren02);
+          for (const subChildren02 of bodyTxtChildren.toArray()) {
+            if (subChildren02.name === 'div') {
+              for (const subChildren03 of $(subChildren02)
+                .children()
+                .toArray()) {
+                console.log('ID3', $(subChildren03).attr('id'));
+                console.log('CLASS3', $(subChildren03).attr('class'));
+                await this.parseBlock($, subChildren03);
+              }
+            } else {
+              await this.parseBlock($, subChildren02);
+            }
           }
         }
       } else if ($(children).hasClass('article')) {
