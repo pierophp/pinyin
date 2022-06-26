@@ -24,6 +24,9 @@ export class DomParser {
     this.figcaptionsText = [];
 
     $('.viewOptions').remove();
+    $('.pageNum').remove();
+    $('.screenReaderText').remove();
+    $('textarea').remove();
     $('.alternatePresentation').remove();
     $('noscript').remove();
     $('#docSubVideo').remove();
