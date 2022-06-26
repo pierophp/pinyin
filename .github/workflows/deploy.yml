@@ -25,7 +25,7 @@ jobs:
             $HOME/.npm
           key: '${{ runner.os }}-${{ hashFiles(''TODO'') }}'
       - uses: actions/checkout@v2
-      - run: echo pwd
+      - run: pwd
       # - run: >-
       #     openssl aes-256-cbc -K $encrypted_4a8eabd2975a_key -iv
       #     $encrypted_4a8eabd2975a_iv -in travis/secrets.tar.enc -out
@@ -34,9 +34,7 @@ jobs:
       # - run: mv id_rsa /home/travis/.ssh/id_rsa
       # - run: chmod 700 /home/travis/.ssh/id_rsa
       - run: npm install pm2 -g
-      - run: cd api
-      - run: bash '../travis/master.sh'
-      - run: cd ../
+      - run: bash travis/master.sh
       - run: mkdir storage
       - run: bash scripts/deploy.sh
       - run: git config core.fileMode false
