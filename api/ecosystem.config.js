@@ -1,4 +1,4 @@
-const isProduction = process.env.TRAVIS_BRANCH === 'master';
+const isProduction = process.env.GITHUB_REF_NAME === 'master';
 
 const postDeployCommands = [
   'cd /home/ubuntu/',

@@ -35,5 +35,7 @@ jobs:
       - run: bash travis/master.sh
       - run: mkdir storage
       - run: bash scripts/deploy.sh
-      - run: git config core.fileMode false
-      - run: echo "Run Script"
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
