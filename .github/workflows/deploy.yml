@@ -25,6 +25,10 @@ jobs:
             $HOME/.npm
           key: '${{ runner.os }}-${{ hashFiles(''TODO'') }}'
       - uses: actions/checkout@v2
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.4.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - run: pwd
       # - run: >-
       #     openssl aes-256-cbc -K $encrypted_4a8eabd2975a_key -iv
