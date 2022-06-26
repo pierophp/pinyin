@@ -24,7 +24,8 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - run: pwd
-      - run: ls /home/runner/work/pinyin/pinyin/.ssh/
+      - run: echo $HOME
+      - run: ls /home/runner/.ssh/
       - run: npm install pm2 -g
       - run: bash travis/master.sh
       - run: mkdir storage
