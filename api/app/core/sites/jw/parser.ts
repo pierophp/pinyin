@@ -29,10 +29,10 @@ export class Parser {
       return await summaryParser.parse($chinese);
     }
 
-    const pdfObjecyParser = new PdfObjecyParser();
-    this.pdfParsedObjectPromise = pdfObjecyParser.parse(
-      $simplified ? $simplified : $chinese,
-    );
+    // const pdfObjecyParser = new PdfObjecyParser();
+    // this.pdfParsedObjectPromise = pdfObjecyParser.parse(
+    //   $simplified ? $simplified : $chinese,
+    // );
 
     const downloadResponse: ParserResponseInterface = {
       text: [],
@@ -45,13 +45,15 @@ export class Parser {
     const chinesePromise = chineseDomParser.parse($chinese, true);
 
     const languageDomParser = new DomParser(this.baseUrl);
-    let languagePromise = new Promise<TextInterface[]>(resolve => resolve([]));
+    let languagePromise = new Promise<TextInterface[]>((resolve) =>
+      resolve([]),
+    );
     if ($language) {
       languagePromise = languageDomParser.parse($language, false);
     }
 
     const simplifiedDomParser = new DomParser(this.baseUrl);
-    let simplifiedPromise = new Promise<TextInterface[]>(resolve =>
+    let simplifiedPromise = new Promise<TextInterface[]>((resolve) =>
       resolve([]),
     );
 
@@ -71,7 +73,7 @@ export class Parser {
 
     downloadResponse.text = await bluebird.map(
       items,
-      async item => {
+      async (item) => {
         return await this.parseItem(item);
       },
       { concurrency: 10 },
@@ -127,28 +129,28 @@ export class Parser {
       }
     }
 
-    if (this.pdfParsedObjectPromise) {
-      const withPdfParser = new WithPdfParser();
+    // if (this.pdfParsedObjectPromise) {
+    //   const withPdfParser = new WithPdfParser();
 
-      try {
-        const parsedPdfResult = await withPdfParser.parse(
-          item,
-          this.pdfParsedObjectPromise,
-        );
+    //   try {
+    //     const parsedPdfResult = await withPdfParser.parse(
+    //       item,
+    //       this.pdfParsedObjectPromise,
+    //     );
 
-        if (parsedPdfResult) {
-          return await this.fillLanguage(parsedPdfResult, item);
-        }
-      } catch (e) {
-        console.error(
-          `Error on WITH Pdf Parser \n${e.message} \nLine: ${JSON.stringify(
-            item.chinese.text,
-          )}`,
-        );
+    //     if (parsedPdfResult) {
+    //       return await this.fillLanguage(parsedPdfResult, item);
+    //     }
+    //   } catch (e) {
+    //     console.error(
+    //       `Error on WITH Pdf Parser \n${e.message} \nLine: ${JSON.stringify(
+    //         item.chinese.text,
+    //       )}`,
+    //     );
 
-        throw e;
-      }
-    }
+    //     throw e;
+    //   }
+    // }
 
     try {
       const withoutPdfParser = new WithoutPdfParser();

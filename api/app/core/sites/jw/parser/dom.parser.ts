@@ -131,8 +131,6 @@ export class DomParser {
               for (const subChildren03 of $(subChildren02)
                 .children()
                 .toArray()) {
-                console.log('ID3', $(subChildren03).attr('id'));
-                console.log('CLASS3', $(subChildren03).attr('class'));
                 await this.parseBlock($, subChildren03);
               }
             } else {

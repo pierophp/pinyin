@@ -28,7 +28,7 @@ export class WithoutPdfParser {
     // separate by numbers
     lineText = lineText
       .split(/(\d+)/)
-      .map(item => {
+      .map((item) => {
         if (numberRegex.test(item)) {
           item = ` ${item}${specialWord} `;
         }
@@ -36,7 +36,7 @@ export class WithoutPdfParser {
       })
       .join('');
 
-    replaceIdeogramsToSpace.forEach(item => {
+    replaceIdeogramsToSpace.forEach((item) => {
       lineText = replaceall(item, ` ${item}${specialWord} `, lineText);
     });
 
@@ -50,7 +50,7 @@ export class WithoutPdfParser {
 
     let joinSpecial = '';
 
-    ideograms.forEach(ideogram => {
+    ideograms.forEach((ideogram) => {
       if (ideogram === specialWord) {
         return;
       }
@@ -77,8 +77,8 @@ export class WithoutPdfParser {
 
     let response: any[] = lineText
       .split(' ')
-      .filter(item => item)
-      .map(item => {
+      .filter((item) => item)
+      .map((item) => {
         return {
           c: item.split(''),
           p: [],
@@ -138,9 +138,13 @@ export class WithoutPdfParser {
     const pinyinList = await pinyinConverter.toPinyin(text.split(' '));
     let i = 0;
     for (const pinyinReturn of pinyinList) {
-      blocks[i].p = separatePinyinInSyllables(pinyinReturn.pinyin).join(
-        String.fromCharCode(160),
-      );
+      if (blocks[i]) {
+        blocks[i].p = separatePinyinInSyllables(pinyinReturn.pinyin).join(
+          String.fromCharCode(160),
+        );
+      } else {
+        console.error('Error on block', blocks);
+      }
       i++;
     }
 
