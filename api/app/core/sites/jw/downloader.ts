@@ -167,11 +167,12 @@ export class Downloader {
     this.chineseLink = link;
 
     profiler(`Download JW Start - Chinese - ${this.encoder.encodeUrl(link)}`);
+
     let response;
     try {
-      response = await this.downloader.download(this.encoder.encodeUrl(link));
-    } catch (e) {
       response = await this.downloader.download(link);
+    } catch (e) {
+      response = await this.downloader.download(this.encoder.encodeUrl(link));
     }
 
     profiler('Download JW End - Chinese');
