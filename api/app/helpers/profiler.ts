@@ -1,9 +1,9 @@
 import * as moment from 'moment';
 
 export function profiler(str: string, forceOnProduction?: boolean) {
-  if (process.env.NODE_ENV === 'production' && forceOnProduction !== true) {
-    return;
-  }
+  // if (process.env.NODE_ENV === 'production' && forceOnProduction !== true) {
+  //   return;
+  // }
 
   let memoryMessage = '';
   if (process.env.PROFILER_SHOW_MEMORY) {
