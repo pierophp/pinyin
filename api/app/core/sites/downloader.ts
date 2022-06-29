@@ -1,7 +1,16 @@
-import { Curl } from 'node-libcurl';
+import { Curl, curly } from 'node-libcurl';
 import { http } from '../../helpers/http';
 
 export class Downloader {
+  protected async downloadByCurly(url: string) {
+    const { statusCode, data, headers } = await curly.get(url);
+    if (statusCode > 400) {
+      throw new Error(`Https Status ${statusCode}`);
+    }
+
+    return data;
+  }
+
   protected async downloadByCurl(url: string) {
     const curl = new Curl();
     curl.setOpt('URL', url);
@@ -26,7 +35,12 @@ export class Downloader {
   }
 
   protected async downloadByAxios(url: string) {
-    const response = await http.get(url);
+    const response = await http.get(url, {
+      headers: {
+        'user-agent':
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
+      },
+    });
     if (response.status > 400) {
       throw new Error(`Error downloading ${url}`);
     }
@@ -38,7 +52,13 @@ export class Downloader {
     try {
       return await this.downloadByAxios(url);
     } catch (e) {
-      return await this.downloadByCurl(url);
+      console.error(e);
+      try {
+        return await this.downloadByCurly(url);
+      } catch (e) {
+        console.error(e);
+        return await this.downloadByCurl(url);
+      }
     }
   }
 }

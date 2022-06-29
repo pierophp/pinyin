@@ -31,7 +31,7 @@
     "@types/node": "^10",
     "@types/yargs": "^12.0.0",
     "adm-zip": "^0.4.11",
-    "axios": "^0.15.3",
+    "axios": "^0.27",
     "axios-retry": "^3.0.1",
     "bluebird": "^3.4.0",
     "body-parser": "^1.15.1",

@@ -127,6 +127,7 @@ export class Downloader {
     try {
       response = await this.downloader.download(this.encoder.encodeUrl(url));
     } catch (e) {
+      console.error(e);
       profiler('Download on exception: ' + url);
       response = await this.downloader.download(url);
     }
