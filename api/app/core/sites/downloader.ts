@@ -48,15 +48,23 @@ export class Downloader {
     return response.data;
   }
 
+  protected async downloadByFetch(url: string) {
+    const response = await fetch(url);
+
+    if (response.status > 400) {
+      throw new Error(`Error downloading ${url}`);
+    }
+
+    return await response.text();
+  }
+
   public async download(url: string) {
     try {
-      return await this.downloadByAxios(url);
+      return await this.downloadByFetch(url);
     } catch (e) {
-      console.error(e);
       try {
-        return await this.downloadByCurly(url);
+        return await this.downloadByAxios(url);
       } catch (e) {
-        console.error(e);
         return await this.downloadByCurl(url);
       }
     }
