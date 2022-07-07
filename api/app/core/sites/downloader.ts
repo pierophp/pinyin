@@ -13,7 +13,7 @@ export class Downloader {
 
   protected async downloadByCurl(url: string) {
     const curl = new Curl();
-    curl.setOpt('URL', `https://proxy.pinyin.workers.dev/?url=${url}`);
+    curl.setOpt('URL', url);
     curl.setOpt('FOLLOWLOCATION', true);
     return new Promise((done, reject) => {
       curl.on('end', (statusCode, body, headers) => {
