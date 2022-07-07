@@ -35,15 +35,12 @@ export class Downloader {
   }
 
   protected async downloadByAxios(url: string) {
-    const response = await http.get(
-      `https://proxy.pinyin.workers.dev/?url=${url}`,
-      {
-        headers: {
-          'user-agent':
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
-        },
+    const response = await http.get(url, {
+      headers: {
+        'user-agent':
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
       },
-    );
+    });
     if (response.status > 400) {
       throw new Error(`Error downloading ${url}`);
     }
@@ -51,32 +48,9 @@ export class Downloader {
     return response.data;
   }
 
-  protected async downloadByAxiosWithCloudflare(url: string) {
+  protected async downloadByAxiosWithVercel(url: string) {
     const response = await http.get(
-      `https://proxy.pinyin.workers.dev/?url=${url}`,
-      {
-        headers: {
-          'user-agent':
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
-        },
-      },
-    );
-    if (response.status > 400) {
-      throw new Error(`Error downloading ${url}`);
-    }
-
-    return response.data;
-  }
-
-  protected async downloadByAxiosWithNetlify(url: string) {
-    const response = await http.get(
-      `https://pinyin-proxy.netlify.app/?url=${url}`,
-      {
-        headers: {
-          'user-agent':
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
-        },
-      },
+      `https://pinyin-proxy.vercel.app/api/?url=${url}`,
     );
     if (response.status > 400) {
       throw new Error(`Error downloading ${url}`);
@@ -99,13 +73,9 @@ export class Downloader {
 
   public async download(url: string) {
     try {
-      return await this.downloadByAxiosWithNetlify(url);
+      return await this.downloadByAxiosWithVercel(url);
     } catch (e) {
-      try {
-        return await this.downloadByAxiosWithCloudflare(url);
-      } catch (e) {
-        return await this.downloadByAxios(url);
-      }
+      return await this.downloadByAxios(url);
     }
   }
 }
