@@ -51,6 +51,40 @@ export class Downloader {
     return response.data;
   }
 
+  protected async downloadByAxiosWithCloudflare(url: string) {
+    const response = await http.get(
+      `https://proxy.pinyin.workers.dev/?url=${url}`,
+      {
+        headers: {
+          'user-agent':
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
+        },
+      },
+    );
+    if (response.status > 400) {
+      throw new Error(`Error downloading ${url}`);
+    }
+
+    return response.data;
+  }
+
+  protected async downloadByAxiosWithNetlify(url: string) {
+    const response = await http.get(
+      `https://pinyin-proxy.netlify.app/?url=${url}`,
+      {
+        headers: {
+          'user-agent':
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
+        },
+      },
+    );
+    if (response.status > 400) {
+      throw new Error(`Error downloading ${url}`);
+    }
+
+    return response.data;
+  }
+
   protected async downloadByFetch(url: string) {
     const response = await fetch(
       `https://proxy.pinyin.workers.dev/?url=${url}`,
@@ -65,12 +99,12 @@ export class Downloader {
 
   public async download(url: string) {
     try {
-      return await this.downloadByAxios(url);
+      return await this.downloadByAxiosWithNetlify(url);
     } catch (e) {
       try {
-        return await this.downloadByFetch(url);
+        return await this.downloadByAxiosWithCloudflare(url);
       } catch (e) {
-        return await this.downloadByCurl(url);
+        return await this.downloadByAxios(url);
       }
     }
   }
