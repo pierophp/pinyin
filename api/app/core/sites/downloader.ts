@@ -13,7 +13,7 @@ export class Downloader {
 
   protected async downloadByCurl(url: string) {
     const curl = new Curl();
-    curl.setOpt('URL', url);
+    curl.setOpt('URL', `https://proxy.pinyin.workers.dev/?url=${url}`);
     curl.setOpt('FOLLOWLOCATION', true);
     return new Promise((done, reject) => {
       curl.on('end', (statusCode, body, headers) => {
@@ -35,12 +35,15 @@ export class Downloader {
   }
 
   protected async downloadByAxios(url: string) {
-    const response = await http.get(url, {
-      headers: {
-        'user-agent':
-          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
+    const response = await http.get(
+      `https://proxy.pinyin.workers.dev/?url=${url}`,
+      {
+        headers: {
+          'user-agent':
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
+        },
       },
-    });
+    );
     if (response.status > 400) {
       throw new Error(`Error downloading ${url}`);
     }
@@ -49,7 +52,9 @@ export class Downloader {
   }
 
   protected async downloadByFetch(url: string) {
-    const response = await fetch(url);
+    const response = await fetch(
+      `https://proxy.pinyin.workers.dev/?url=${url}`,
+    );
 
     if (response.status > 400) {
       throw new Error(`Error downloading ${url}`);
