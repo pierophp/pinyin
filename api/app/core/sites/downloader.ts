@@ -65,10 +65,10 @@ export class Downloader {
 
   public async download(url: string) {
     try {
-      return await this.downloadByFetch(url);
+      return await this.downloadByAxios(url);
     } catch (e) {
       try {
-        return await this.downloadByAxios(url);
+        return await this.downloadByFetch(url);
       } catch (e) {
         return await this.downloadByCurl(url);
       }
