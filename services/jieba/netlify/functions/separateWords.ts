@@ -11,7 +11,9 @@ const handler: Handler = async (event, context) => {
   // `cat /var/task/services/jieba/netlify/functions/separateWords.js`,
   const cmds = [
     `ls -la /var/task`,
-    `ls -la /var/task/services/jieba/netlify/`,
+    `ls -la /var/task/services`,
+    `ls -la /var/task/services/jieba`,
+    `ls -la /var/task/services/jieba/netlify`,
     `ls -la /var/task/services/jieba/netlify/functions`,
   ];
 
