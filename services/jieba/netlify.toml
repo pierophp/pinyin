@@ -9,7 +9,7 @@ autoLaunch = false
 [build]
 base = "services/jieba"
 # command = "mkdir netlify/functions/dict && cp node_modules/separate-chinese-words/dict/* netlify/functions/dict/ && ls -la netlify/functions/dict/"
-command = "mkdir dict && cp node_modules/separate-chinese-words/dict/* dict/ && ls -la dict/"
+command = "mkdir -p dict && cp node_modules/separate-chinese-words/dict/* dict/ && ls -la dict/"
 
 [functions]
 included_files = ["dict/**"]

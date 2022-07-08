@@ -18,7 +18,7 @@ const handler: Handler = async (event, context) => {
   let response = '';
 
   for (const cmd of cmds) {
-    response += `\n${cmd}\n`;
+    response += `\n\n${cmd}\n`;
     response += await new Promise((resolve, reject) => {
       exec(cmd, (error, stdout, stderr) => {
         if (error) {
