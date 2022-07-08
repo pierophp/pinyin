@@ -4,6 +4,7 @@ autoLaunch = false
 
 [build]
 base = "services/jieba"
-command = "ldd --version"
+command = "apt install pythoin3 && ldd --version && yarn install"
+ignore = "exit 1"
 
 [functions]
