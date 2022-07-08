@@ -1,5 +1,14 @@
+import { Handler } from '@netlify/functions';
+import { separateChineseWords } from 'separate-chinese-words';
+import { exec } from 'node:child_process';
 
-  // // `cat /var/task/services/jieba/netlify/functions/separateWords.js`,
+const handler: Handler = async (event, context) => {
+  const dictPath = process.env.NETLIFY_DEV
+    ? `${process.env.PWD}/node_modules/separate-chinese-words/dict/`
+    : `${process.env.PWD}/services/jieba/node_modules`;
+
+  // `ls -la /var/task/services/jieba/netlify/functions/separateWords.js`,
+  // `cat /var/task/services/jieba/netlify/functions/separateWords.js`,
   // const cmds = [
   //   `ls -la /var/task`,
   //   `ls -la /var/task/services`,
@@ -23,7 +32,6 @@
   //   });
   // }
 
-  // /var/task/services/jieba
   const response = JSON.stringify(process.env);
 
   return {
