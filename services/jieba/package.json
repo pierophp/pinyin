@@ -1,0 +1,13 @@
+{
+  "name": "jieba",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@netlify/functions": "^1.0.0",
+    "separate-chinese-words": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.3"
+  }
+}

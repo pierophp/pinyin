@@ -1,0 +1,4 @@
+[dev]
+  port = 8885
+  autoLaunch = false
+[functions]

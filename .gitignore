@@ -18,3 +18,4 @@ bible-pinyin
 functions/
 data/
 .pnpm-store
+.netlify
