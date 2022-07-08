@@ -1,4 +1,3 @@
 [dev]
-  port = 8885
-  autoLaunch = false
-[functions]
+port = 8885
+autoLaunch = false
