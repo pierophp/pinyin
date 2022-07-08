@@ -15,7 +15,6 @@ storage/*
 moedict-data
 chinese-dictionary
 bible-pinyin
-functions/
 data/
 .pnpm-store
 .netlify
