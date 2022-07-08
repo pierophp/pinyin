@@ -3,19 +3,19 @@ import { separateChineseWords } from 'separate-chinese-words';
 import { exec } from 'node:child_process';
 
 const handler: Handler = async (event, context) => {
-  // const response = await new Promise((resolve, reject) => {
-  //   exec('pwd', (error, stdout, stderr) => {
-  //     if (error) {
-  //       return reject(error);
-  //     }
+  const response = await new Promise((resolve, reject) => {
+    exec(`ls -la ${process.env.PWD}`, (error, stdout, stderr) => {
+      if (error) {
+        return reject(error);
+      }
 
-  //     resolve(stdout);
-  //   });
-  // });
+      resolve(stdout);
+    });
+  });
 
   return {
     statusCode: 200,
-    body: JSON.stringify(process.env),
+    body: process.env.PWD + '\n' + response,
   };
 
   // const body = event.body ? JSON.parse(event.body) : null;
@@ -29,10 +29,10 @@ const handler: Handler = async (event, context) => {
 
   // const response = separateChineseWords(body.text, {
   //   dictPath:
-  //     process.env.PWD +
+  //     process.env.LAMBDA_TASK_ROOT +
   //     '/node_modules/separate-chinese-words/dict/jieba.dict.utf8',
   //   userDictPath:
-  //     process.env.PWD +
+  //     process.env.LAMBDA_TASK_ROOT +
   //     '/node_modules/separate-chinese-words/dict/user.dict.utf8',
   // }).filter((item) => {
   //   return item
