@@ -1,4 +1,4 @@
-# Debug AWS lambda
+# Debug AWS Lambda
 
 Add this to the function:
 
