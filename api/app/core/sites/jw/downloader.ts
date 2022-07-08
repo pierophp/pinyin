@@ -171,9 +171,9 @@ export class Downloader {
 
     let response;
     try {
-      response = await this.downloader.download(link);
-    } catch (e) {
       response = await this.downloader.download(this.encoder.encodeUrl(link));
+    } catch (e) {
+      response = await this.downloader.download(link);
     }
 
     profiler('Download JW End - Chinese');
