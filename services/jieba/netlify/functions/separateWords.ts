@@ -9,21 +9,30 @@ const handler: Handler = async (event, context) => {
 
   // `ls -la /var/task/services/jieba/netlify/functions/separateWords.js`,
   // `cat /var/task/services/jieba/netlify/functions/separateWords.js`,
-  const cmd = `ls -la /var/task/services/jieba/netlify/`;
+  const cmds = [
+    `ls -la /var/task`,
+    `ls -la /var/task/services/jieba/netlify/`,
+    `ls -la /var/task/services/jieba/netlify/functions`,
+  ];
 
-  let response = await new Promise((resolve, reject) => {
-    exec(cmd, (error, stdout, stderr) => {
-      if (error) {
-        return reject(error);
-      }
+  let response = '';
 
-      resolve(stdout);
+  for (const cmd of cmds) {
+    response += `\n${cmd}\n`;
+    response += await new Promise((resolve, reject) => {
+      exec(cmd, (error, stdout, stderr) => {
+        if (error) {
+          return reject(error);
+        }
+
+        resolve(stdout);
+      });
     });
-  });
+  }
 
   return {
     statusCode: 200,
-    body: cmd + '\n' + response,
+    body: response,
   };
 
   // const body = event.body ? JSON.parse(event.body) : null;
