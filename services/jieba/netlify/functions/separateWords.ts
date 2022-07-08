@@ -7,21 +7,18 @@ const handler: Handler = async (event, context) => {
     ? `${process.env.PWD}/node_modules/separate-chinese-words/dict/`
     : `${process.env.PWD}/services/jieba/node_modules`;
 
-  const cmd = `ls -la /var/task/jieba/netlify/`;
+  // `ls -la /var/task/services/jieba/netlify/functions/separateWords.js`,
+  // `cat /var/task/services/jieba/netlify/functions/separateWords.js`,
+  const cmd = `ls -la /var/task/services/jieba/netlify/`;
 
   let response = await new Promise((resolve, reject) => {
-    exec(
-      cmd,
-      // `ls -la /var/task/services/jieba/netlify/functions/separateWords.js`,
-      // `cat /var/task/services/jieba/netlify/functions/separateWords.js`,
-      (error, stdout, stderr) => {
-        if (error) {
-          return reject(error);
-        }
+    exec(cmd, (error, stdout, stderr) => {
+      if (error) {
+        return reject(error);
+      }
 
-        resolve(stdout);
-      },
-    );
+      resolve(stdout);
+    });
   });
 
   return {
