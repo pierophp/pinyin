@@ -16,8 +16,8 @@ const handler: Handler = async (event, context) => {
     userDictPath: 'node_modules/separate-chinese-words/dict/user.dict.utf8',
   }).filter((item) => {
     return item
-      .replaceAll(String.fromCharCode(160), '') // Convert NO-BREAK SPACE to SPACE
-      .replaceAll(String.fromCharCode(8201), '') // Convert THIN SPACE to SPACE
+      .replaceAll(String.fromCharCode(160), '') // Convert NO-BREAK SPACE to Space
+      .replaceAll(String.fromCharCode(8201), '') // Convert THIN SPACE to Space
       .replaceAll(String.fromCharCode(8203), '') // Zero Width Space
       .replaceAll(String.fromCharCode(8206), '') // Left-To-Right Mark
       .replaceAll(String.fromCharCode(8234), '') // Left-To-Right Embedding
