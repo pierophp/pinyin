@@ -2,4 +2,8 @@
 port = 8885
 autoLaunch = false
 
+[build]
+base = "services/jieba"
+command = "ldd --version"
+
 [functions]
