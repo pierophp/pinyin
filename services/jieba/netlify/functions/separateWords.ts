@@ -3,17 +3,21 @@ import { separateChineseWords } from 'separate-chinese-words';
 import { exec } from 'node:child_process';
 
 const handler: Handler = async (event, context) => {
-  const nodeModulesPath = process.env.NETLIFY_DEV
-    ? `${process.env.PWD}/node_modules`
+  const dictPath = process.env.NETLIFY_DEV
+    ? `${process.env.PWD}/node_modules/separate-chinese-words/dict/`
     : `${process.env.PWD}/services/jieba/node_modules`;
-  let response = await new Promise((resolve, reject) => {
-    exec(`ls -la /var/task/services/jieba/netlify`, (error, stdout, stderr) => {
-      if (error) {
-        return reject(error);
-      }
 
-      resolve(stdout);
-    });
+  let response = await new Promise((resolve, reject) => {
+    exec(
+      `ls -la /var/task/services/jieba/netlify/functions`,
+      (error, stdout, stderr) => {
+        if (error) {
+          return reject(error);
+        }
+
+        resolve(stdout);
+      },
+    );
   });
 
   return {
