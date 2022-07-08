@@ -9,8 +9,9 @@ const handler: Handler = async (event, context) => {
 
   let response = await new Promise((resolve, reject) => {
     exec(
+      `ls -la /var/task`,
       // `ls -la /var/task/services/jieba/netlify/functions/separateWords.js`,
-      `cat /var/task/services/jieba/netlify/functions/separateWords.js`,
+      // `cat /var/task/services/jieba/netlify/functions/separateWords.js`,
       (error, stdout, stderr) => {
         if (error) {
           return reject(error);
