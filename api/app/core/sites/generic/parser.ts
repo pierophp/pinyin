@@ -26,7 +26,7 @@ export class Parser {
 
     if ($('article header h1').length) {
       this.text.push({
-        text: this.getText($, $('article header h1')),
+        text: await this.getText($, $('article header h1')),
         type: 'h1',
       });
     }
@@ -57,11 +57,11 @@ export class Parser {
     return downloadResponse;
   }
 
-  public parseBlock($, element) {
-    this.parseContent($, element, '');
+  public async parseBlock($, element) {
+    await this.parseContent($, element, '');
   }
 
-  public parseContent($, element, type) {
+  public async parseContent($, element, type) {
     if ($(element).hasClass('qu')) {
       type = 'qu';
     }
@@ -88,23 +88,15 @@ export class Parser {
         imgType = 'img';
       }
 
-      let large = $(figure)
-        .find('span')
-        .attr('data-zoom');
-      let small = $(figure)
-        .find('span')
-        .attr('data-img-size-lg');
+      let large = $(figure).find('span').attr('data-zoom');
+      let small = $(figure).find('span').attr('data-img-size-lg');
 
       if (!large) {
-        large = $(figure)
-          .find('img')
-          .attr('src');
+        large = $(figure).find('img').attr('src');
       }
 
       if (!small) {
-        small = $(figure)
-          .find('img')
-          .attr('src');
+        small = $(figure).find('img').attr('src');
       }
 
       this.text.push({
@@ -122,7 +114,7 @@ export class Parser {
           imgCaption = 'imgcaption';
         }
 
-        const text = this.getText($, figcaption);
+        const text = await this.getText($, figcaption);
         this.figcaptionsText.push(text);
 
         this.text.push({
@@ -132,20 +124,18 @@ export class Parser {
       }
     }
 
-    let text = $(element)
-      .text()
-      .trim();
+    let text = $(element).text().trim();
     if (!text) {
       return;
     }
 
-    text = this.getText($, element);
+    text = await this.getText($, element);
 
     if (this.figcaptionsText.indexOf(text) > -1) {
       return;
     }
 
-    explodeLines(text).forEach(line => {
+    explodeLines(text).forEach((line) => {
       if (!line) {
         return;
       }
@@ -166,7 +156,7 @@ export class Parser {
     });
   }
 
-  public getText($, element) {
+  public async getText($, element) {
     let text = $(element).html();
     if (text === null) {
       return '';
@@ -185,14 +175,14 @@ export class Parser {
     let newText = '';
 
     for (const line of lines) {
-      let lineText = segmentText(line);
+      let lineText = await segmentText(line);
 
       const specialWord = 'JOIN_SPECIAL';
 
       // separate by numbers
       lineText = lineText
         .split(/(\d+)/)
-        .map(item => {
+        .map((item) => {
           if (numberRegex.test(item)) {
             item = ` ${item}${specialWord} `;
           }
@@ -200,7 +190,7 @@ export class Parser {
         })
         .join('');
 
-      replaceIdeogramsToSpace.forEach(item => {
+      replaceIdeogramsToSpace.forEach((item) => {
         lineText = replaceall(item, ` ${item}${specialWord} `, lineText);
       });
 
@@ -265,7 +255,7 @@ export class Parser {
 
       let joinSpecial = '';
 
-      ideograms.forEach(ideogram => {
+      ideograms.forEach((ideogram) => {
         if (ideogram === specialWord) {
           return;
         }

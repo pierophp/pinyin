@@ -83,10 +83,10 @@ export class Track {
 
         if (i > 0) {
           if (line.trim()) {
-            const ideograms = separateWords(line);
+            const ideograms = await separateWords(line);
             const pinyinList = await pinyinConverter.toPinyin(ideograms);
             let newLine = '<ruby>';
-            pinyinList.forEach(pinyin => {
+            pinyinList.forEach((pinyin) => {
               if (showIdeograms) {
                 newLine += `${pinyin.ideogram}`;
               }
@@ -135,16 +135,14 @@ export class Track {
   public async loadTracks() {
     const languages = ['CH', 'CHS'];
     const videosInserted = {};
-    await bluebird.mapSeries(languages, async language => {
+    await bluebird.mapSeries(languages, async (language) => {
       const response = await http.get(
         `https://data.jw-api.org/mediator/v1/categories/${language}/VideoOnDemand?detailed=1`,
       );
       const categories = response.data.category.subcategories;
       await bluebird.mapSeries(categories, async (category: any) => {
         const res = await http.get(
-          `https://data.jw-api.org/mediator/v1/categories/${language}/${
-            category.key
-          }?detailed=1`,
+          `https://data.jw-api.org/mediator/v1/categories/${language}/${category.key}?detailed=1`,
         );
 
         const subcategories = res.data.category.subcategories;
@@ -154,9 +152,7 @@ export class Track {
             return;
           }
 
-          const url = `https://data.jw-api.org/mediator/v1/categories/${language}/${
-            subcategory.key
-          }?detailed=0`;
+          const url = `https://data.jw-api.org/mediator/v1/categories/${language}/${subcategory.key}?detailed=0`;
           try {
             const subRes = await http.get(url);
 
@@ -169,9 +165,8 @@ export class Track {
 
                 let trackUrl = '';
 
-                const urlParts = media.files[0].progressiveDownloadURL.split(
-                  '/',
-                );
+                const urlParts =
+                  media.files[0].progressiveDownloadURL.split('/');
 
                 const videos = {};
                 let images = {};

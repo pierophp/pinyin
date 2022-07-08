@@ -35,7 +35,7 @@ module.exports = class Tatoeba {
   static async filter() {
     const languagesKeys = Object.keys(languages);
     const filter = [];
-    languagesKeys.forEach(item => {
+    languagesKeys.forEach((item) => {
       filter.push(`$2 == "${item}"`);
     });
 
@@ -48,7 +48,7 @@ module.exports = class Tatoeba {
   static async import() {
     let i = 0;
 
-    return new Promise(async resolve => {
+    return new Promise(async (resolve) => {
       const fileStream = fs.createReadStream(
         `${storagePath}sentences_detailed.filtered.csv`,
       );
@@ -69,7 +69,7 @@ module.exports = class Tatoeba {
           quote: '',
           escape: '',
         })
-        .on('data', async data => {
+        .on('data', async (data) => {
           parser.pause();
           const id = data[0];
           const languageCode = data[1];
@@ -107,10 +107,10 @@ module.exports = class Tatoeba {
 
           if (languageCode === 'cmn') {
             phrase = await ideogramsConverter.traditionalToSimplified(phrase);
-            const ideograms = separateWords(phrase);
+            const ideograms = await separateWords(phrase);
             const ideogramsList = [];
             let ideogramsTemp = '';
-            ideograms.forEach(ideogram => {
+            ideograms.forEach((ideogram) => {
               if (isChinese(ideogram)) {
                 if (ideogramsTemp) {
                   ideogramsList.push(ideogramsTemp);
@@ -128,7 +128,7 @@ module.exports = class Tatoeba {
 
             const pinyin = await UnihanSearch.toPinyin(ideogramsList);
             const pinyinList = [];
-            pinyin.forEach(item => {
+            pinyin.forEach((item) => {
               const pinyinConverted = separatePinyinInSyllables(
                 item.pinyin,
               ).join(String.fromCharCode(160));
@@ -179,7 +179,7 @@ module.exports = class Tatoeba {
   }
 
   static async references() {
-    return new Promise(async resolve => {
+    return new Promise(async (resolve) => {
       const fileStream = fs.createReadStream(`${storagePath}links.csv`);
       fastCsv
         .fromStream(fileStream, {

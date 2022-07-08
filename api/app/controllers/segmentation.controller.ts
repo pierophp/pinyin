@@ -4,8 +4,8 @@ import { separateWords } from '../helpers/separate.words';
 // eslint-disable-next-line new-cap
 const router = express.Router();
 
-router.post('/segment', (req, res) => {
-  const ideogramsCuted = separateWords(req.body.ideograms);
+router.post('/segment', async (req, res) => {
+  const ideogramsCuted = await separateWords(req.body.ideograms);
   res.send({ ideograms: ideogramsCuted });
 });
 

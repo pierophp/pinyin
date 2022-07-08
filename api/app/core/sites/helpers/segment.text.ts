@@ -2,10 +2,10 @@ import * as replaceall from 'replaceall';
 import * as replaceIdeogramsToSpace from '../../../../../shared/helpers/special-ideograms-chars';
 import { separateWords } from '../../../helpers/separate.words';
 
-export function segmentText(line: string): string {
+export async function segmentText(line: string): Promise<string> {
   let verifyText = line;
 
-  replaceIdeogramsToSpace.forEach(item => {
+  replaceIdeogramsToSpace.forEach((item) => {
     verifyText = replaceall(`${item} `, item, verifyText);
   });
 
@@ -18,7 +18,7 @@ export function segmentText(line: string): string {
   const minimunWords = replaceall(' ', '', verifyText).length / 2.5;
 
   if (verifyText.split(' ').length < minimunWords) {
-    return separateWords(line).join(' ');
+    return (await separateWords(line)).join(' ');
   }
 
   return line;

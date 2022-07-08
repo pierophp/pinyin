@@ -78,15 +78,17 @@ export class MoedictParser {
         pinyinDefinition[key] = [];
         for (const entry of traditionalDefinition[key]) {
           pinyinDefinition[key].push(
-            (await this.pinyinConverter.toPinyin(separateWords(entry))).map(
-              item => item.pinyin,
-            ),
+            (
+              await this.pinyinConverter.toPinyin(await separateWords(entry))
+            ).map((item) => item.pinyin),
           );
         }
       } else {
-        pinyinDefinition[key] = (await this.pinyinConverter.toPinyin(
-          separateWords(traditionalDefinition[key]),
-        )).map(item => item.pinyin);
+        pinyinDefinition[key] = (
+          await this.pinyinConverter.toPinyin(
+            await separateWords(traditionalDefinition[key]),
+          )
+        ).map((item) => item.pinyin);
       }
     }
 
@@ -110,11 +112,10 @@ export class MoedictParser {
           );
         }
       } else {
-        simplifiedDefinition[
-          key
-        ] = await this.ideogramsConverter.traditionalToSimplified(
-          traditionalDefinition[key],
-        );
+        simplifiedDefinition[key] =
+          await this.ideogramsConverter.traditionalToSimplified(
+            traditionalDefinition[key],
+          );
       }
     }
 
@@ -126,7 +127,7 @@ export class MoedictParser {
     let characterOriginal = entry.title;
 
     if (character.indexOf('{') !== -1) {
-      const items = character.split(/[\{\}]/).filter(item => item);
+      const items = character.split(/[\{\}]/).filter((item) => item);
 
       let newCharacters = '';
       for (const item of items) {
@@ -176,9 +177,8 @@ export class MoedictParser {
         );
       }
 
-      const characterSimplified = await this.ideogramsConverter.traditionalToSimplified(
-        character,
-      );
+      const characterSimplified =
+        await this.ideogramsConverter.traditionalToSimplified(character);
 
       this.dictionaryParsed[key] = {
         character,

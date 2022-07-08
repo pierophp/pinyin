@@ -21,7 +21,7 @@ export class WithoutPdfParser {
 
     let lineText = '';
     const lineWithoutTags = striptags(text);
-    lineText = segmentText(lineWithoutTags);
+    lineText = await segmentText(lineWithoutTags);
 
     const specialWord = 'JOIN_SPECIAL';
 
