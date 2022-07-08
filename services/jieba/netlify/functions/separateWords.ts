@@ -7,9 +7,11 @@ const handler: Handler = async (event, context) => {
     ? `${process.env.PWD}/node_modules/separate-chinese-words/dict/`
     : `${process.env.PWD}/services/jieba/node_modules`;
 
+  const cmd = `ls -la /var/task/jieba/netlify/`;
+
   let response = await new Promise((resolve, reject) => {
     exec(
-      `ls -la /var/task`,
+      cmd,
       // `ls -la /var/task/services/jieba/netlify/functions/separateWords.js`,
       // `cat /var/task/services/jieba/netlify/functions/separateWords.js`,
       (error, stdout, stderr) => {
@@ -24,7 +26,7 @@ const handler: Handler = async (event, context) => {
 
   return {
     statusCode: 200,
-    body: process.env.PWD + '\n' + response,
+    body: cmd + '\n' + response,
   };
 
   // const body = event.body ? JSON.parse(event.body) : null;
