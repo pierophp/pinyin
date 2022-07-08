@@ -4,7 +4,7 @@ import { exec } from 'node:child_process';
 
 const handler: Handler = async (event, context) => {
   const response = await new Promise((resolve, reject) => {
-    exec(`cat ${process.env.PWD}/separateWords.js`, (error, stdout, stderr) => {
+    exec(`ls ${process.env.PWD}/services/jieba/`, (error, stdout, stderr) => {
       if (error) {
         return reject(error);
       }
