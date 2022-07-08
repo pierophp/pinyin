@@ -7,7 +7,7 @@ const handler: Handler = async (event, context) => {
     ? `${process.env.PWD}/node_modules`
     : `${process.env.PWD}/services/jieba/node_modules`;
   let response = await new Promise((resolve, reject) => {
-    exec(`ls ${nodeModulesPath}`, (error, stdout, stderr) => {
+    exec(`ls /var/task/services/jieba/`, (error, stdout, stderr) => {
       if (error) {
         return reject(error);
       }
