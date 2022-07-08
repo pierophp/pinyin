@@ -1,36 +1,30 @@
-import { Handler } from '@netlify/functions';
-import { separateChineseWords } from 'separate-chinese-words';
-import { exec } from 'node:child_process';
 
-const handler: Handler = async (event, context) => {
-  const dictPath = process.env.NETLIFY_DEV
-    ? `${process.env.PWD}/node_modules/separate-chinese-words/dict/`
-    : `${process.env.PWD}/services/jieba/node_modules`;
+  // // `cat /var/task/services/jieba/netlify/functions/separateWords.js`,
+  // const cmds = [
+  //   `ls -la /var/task`,
+  //   `ls -la /var/task/services`,
+  //   `ls -la /var/task/services/jieba`,
+  //   `ls -la /var/task/services/jieba/netlify`,
+  //   `ls -la /var/task/services/jieba/netlify/functions`,
+  // ];
 
-  // `ls -la /var/task/services/jieba/netlify/functions/separateWords.js`,
-  // `cat /var/task/services/jieba/netlify/functions/separateWords.js`,
-  const cmds = [
-    `ls -la /var/task`,
-    `ls -la /var/task/services`,
-    `ls -la /var/task/services/jieba`,
-    `ls -la /var/task/services/jieba/netlify`,
-    `ls -la /var/task/services/jieba/netlify/functions`,
-  ];
+  // let response = '';
 
-  let response = '';
+  // for (const cmd of cmds) {
+  //   response += `\n\n${cmd}\n`;
+  //   response += await new Promise((resolve, reject) => {
+  //     exec(cmd, (error, stdout, stderr) => {
+  //       if (error) {
+  //         return reject(error);
+  //       }
 
-  for (const cmd of cmds) {
-    response += `\n\n${cmd}\n`;
-    response += await new Promise((resolve, reject) => {
-      exec(cmd, (error, stdout, stderr) => {
-        if (error) {
-          return reject(error);
-        }
+  //       resolve(stdout);
+  //     });
+  //   });
+  // }
 
-        resolve(stdout);
-      });
-    });
-  }
+  // /var/task/services/jieba
+  const response = JSON.stringify(process.env);
 
   return {
     statusCode: 200,
