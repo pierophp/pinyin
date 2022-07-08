@@ -9,12 +9,10 @@
       "env_production": {
         "PORT": "3002",
         "NODE_ENV": "production"
-      },
+      }
     }
   ],
   "deploy": {
-    "production": {
-
-    }
+    "production": {}
   }
 }
