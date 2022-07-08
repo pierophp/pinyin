@@ -8,6 +8,6 @@ autoLaunch = false
 
 [build]
 base = "services/jieba"
-command = "ls -la && mkdir dict && cp node_modules/separate-chinese-words/dict/* dict/"
+command = "mkdir netlify/functions/dict && cp node_modules/separate-chinese-words/dict/* netlify/functions/dict/ && ls -la netlify/functions/dict/"
 
 [functions]
