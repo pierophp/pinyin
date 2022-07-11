@@ -1,7 +1,14 @@
+# Change on the UI:
+# Ubuntu Build Image to 16.04
+# PYTHON_VERSION=3.7
+# AWS_LAMBDA_JS_RUNTIME=nodejs16.x
 [dev]
-port = 8886
+port = 8885
 autoLaunch = false
 
 [build]
-base = "services/downloader"
+base = "services/jieba"
+command = "mkdir -p dict && cp node_modules/separate-chinese-words/dict/* dict/"
 
+[functions]
+included_files = ["dict/**"]
