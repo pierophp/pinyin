@@ -1,6 +1,10 @@
-import * as replaceall from 'replaceall';
-import * as replaceIdeogramsToSpace from '../../../helpers/special-ideograms-chars';
-import { separateWords } from '../../../helpers/separate.words';
+import * as replaceIdeogramsToSpace from '../../data/special-ideograms-chars.ts';
+import { separateWords } from '../../helpers/separate.words.ts';
+
+// @todo remove this
+function replaceall(item: string, search: string, replace: string) {
+  return item.replaceAll(search, replace);
+}
 
 export async function segmentText(line: string): Promise<string> {
   let verifyText = line;

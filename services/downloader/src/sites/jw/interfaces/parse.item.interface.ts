@@ -1,4 +1,4 @@
-import { TextInterface } from '../../interfaces/text.interface';
+import { TextInterface } from '../../interfaces/text.interface.ts';
 
 export interface ParseItemInterface {
   chinese: TextInterface;

@@ -1,16 +1,24 @@
-import * as backHtmlTags from 'pdf-pinyin/src/core/pinyin/back.html.tags';
-import * as fillBoldItalic from 'pdf-pinyin/src/core/pinyin/fill.bold.italic';
-import * as replaceall from 'replaceall';
-import * as striptags from 'striptags';
-import * as isChinese from '../../../../helpers/is-chinese';
-import * as separatePinyinInSyllables from '../../../../helpers/separate-pinyin-in-syllables';
-import * as replaceIdeogramsToSpace from '../../../../helpers/special-ideograms-chars';
-import { BlockInterface } from '../../../../core/interfaces/block.interface';
-import { PinyinConverter } from '../../../../core/pinyin/pinyin.converter';
-import { replaceWords } from '../../../../core/sites/helpers/replace.words';
-import { segmentText } from '../../../../core/sites/helpers/segment.text';
-import { parseBible } from '../helpers/parse.bible';
-import { ParseItemInterface } from '../interfaces/parse.item.interface';
+import { createRequire } from 'https://deno.land/std/node/module.ts';
+
+import { isChinese } from '../../../helpers/is-chinese.ts';
+import * as separatePinyinInSyllables from '../../../helpers/separate-pinyin-in-syllables.ts';
+import * as replaceIdeogramsToSpace from '../../../data/special-ideograms-chars.ts';
+import { BlockInterface } from '../../../interfaces/block.interface.ts';
+import { PinyinConverter } from '../../../pinyin/pinyin.converter.ts';
+import { replaceWords } from '../../helpers/replace.words.ts';
+import { segmentText } from '../../helpers/segment.text.ts';
+import { parseBible } from '../helpers/parse.bible.ts';
+import { ParseItemInterface } from '../interfaces/parse.item.interface.ts';
+
+// @todo remove this
+function replaceall(item: string, search: string, replace: string) {
+  return item.replaceAll(search, replace);
+}
+
+const require = createRequire(import.meta.url);
+const striptags = require('striptags');
+const backHtmlTags = require('pdf-pinyin/src/core/pinyin/back.html.tags');
+const fillBoldItalic = require('pdf-pinyin/src/core/pinyin/fill.bold.italic');
 
 const pinyinConverter = new PinyinConverter();
 export class SiteParser {

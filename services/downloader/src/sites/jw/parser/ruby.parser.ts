@@ -1,15 +1,22 @@
-import * as backHtmlTags from 'pdf-pinyin/src/core/pinyin/back.html.tags';
-import * as fillBoldItalic from 'pdf-pinyin/src/core/pinyin/fill.bold.italic';
-import * as striptags from 'striptags';
-import * as isChinese from '../../../../helpers/is-chinese';
-import { BlockInterface } from '../../../../core/interfaces/block.interface';
-import * as replaceall from 'replaceall';
-import { parseBible } from '../helpers/parse.bible';
-import { removeSpaces } from '../../../../helpers/remove.spaces';
-import { ParseItemInterface } from '../interfaces/parse.item.interface';
-import * as separatePinyinInSyllables from '../../../../helpers/separate-pinyin-in-syllables';
-import { restoreTraditional } from '../helpers/restore.traditional';
+import { createRequire } from 'https://deno.land/std/node/module.ts';
 
+import { isChinese } from '../../../helpers/is-chinese.ts';
+import { BlockInterface } from '../../../interfaces/block.interface.ts';
+import { parseBible } from '../helpers/parse.bible.ts';
+import { removeSpaces } from '../../../helpers/remove.spaces.ts';
+import { ParseItemInterface } from '../interfaces/parse.item.interface.ts';
+import * as separatePinyinInSyllables from '../../../helpers/separate-pinyin-in-syllables.ts';
+import { restoreTraditional } from '../helpers/restore.traditional.ts';
+
+const require = createRequire(import.meta.url);
+const striptags = require('striptags');
+const backHtmlTags = require('pdf-pinyin/src/core/pinyin/back.html.tags');
+const fillBoldItalic = require('pdf-pinyin/src/core/pinyin/fill.bold.italic');
+
+// @todo remove this
+function replaceall(item: string, search: string, replace: string) {
+  return item.replaceAll(search, replace);
+}
 export class RubyParser {
   public async parse(
     item: ParseItemInterface,

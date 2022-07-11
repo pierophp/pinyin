@@ -1,9 +1,13 @@
-import * as replaceall from 'replaceall';
-import * as replaceIdeogramsToSpace from '../../../helpers/special-ideograms-chars';
-import { explodeLines } from '../helpers/explode.lines';
-import { removeHtmlSpecialTags } from '../helpers/remove.html.special.tags';
-import { replaceWords } from '../helpers/replace.words';
-import { segmentText } from '../helpers/segment.text';
+import * as replaceIdeogramsToSpace from '../../data/special-ideograms-chars.ts';
+import { explodeLines } from '../helpers/explode.lines.ts';
+import { removeHtmlSpecialTags } from '../helpers/remove.html.special.tags.ts';
+import { replaceWords } from '../helpers/replace.words.ts';
+import { segmentText } from '../helpers/segment.text.ts';
+
+// @todo remove this
+function replaceall(item: string, search: string, replace: string) {
+  return item.replaceAll(search, replace);
+}
 
 export class Parser {
   protected text: any[] = [];

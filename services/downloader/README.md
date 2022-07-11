@@ -13,3 +13,4 @@ Track
 BibleImporter
 PdfObjectParser
 WithPdfParser
+Frequency

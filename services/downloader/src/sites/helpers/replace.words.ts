@@ -1,4 +1,7 @@
-import * as replaceall from 'replaceall';
+// @todo remove this
+function replaceall(item: string, search: string, replace: string) {
+  return item.replaceAll(search, replace);
+}
 
 export function replaceWords(lineText: string): string {
   const wordsToReplace = [
@@ -26,7 +29,7 @@ export function replaceWords(lineText: string): string {
     '身為',
   ];
 
-  wordsToReplace.concat(wordsToReplaceTraditional).forEach(word => {
+  wordsToReplace.concat(wordsToReplaceTraditional).forEach((word) => {
     const replaceWord = ` ${word.split('').join(' ')} `;
     lineText = replaceall(replaceWord, ` ${word} `, lineText);
   });

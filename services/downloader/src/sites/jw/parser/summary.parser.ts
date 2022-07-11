@@ -1,9 +1,10 @@
-import { padStart } from 'lodash';
-import * as isChinese from '../../../../helpers/is-chinese';
-import * as separatePinyinInSyllables from '../../../../helpers/separate-pinyin-in-syllables';
-import { ParserResponseInterface } from '../../../../core/sites/interfaces/parser.response.interface';
+import padStart from 'http://deno.land/x/lodash@4.17.15-es/padStart.js';
 
+import { isChinese } from '../../../helpers/is-chinese.ts';
+import { separatePinyinInSyllables } from '../../../helpers/separate-pinyin-in-syllables.ts';
+import { ParserResponseInterface } from '../../interfaces/parser.response.interface.ts';
 import { PinyinConverter } from '../../../pinyin/pinyin.converter.ts';
+
 const pinyinConverter = new PinyinConverter();
 export class SummaryParser {
   public async parse($: any): Promise<ParserResponseInterface> {
