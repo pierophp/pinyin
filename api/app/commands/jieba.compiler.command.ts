@@ -8,7 +8,7 @@ export class JiebaCompilerCommand implements CommandModule {
   public describe = 'Jieba compiler';
 
   public async handler(argv: Arguments) {
-    const compiledDir = `${__dirname.replace('dist/api/', '')}/../data/`;
+    const compiledDir = `${__dirname.replace('dist/', '')}/../data/`;
 
     const files = await readdir(compiledDir + 'src');
 
@@ -31,9 +31,9 @@ export class JiebaCompilerCommand implements CommandModule {
       try {
         await stat(join(compiledDir, 'src', file + '.t'));
 
-        contentTraditional = (await readFile(
-          join(compiledDir, 'src', file + '.t'),
-        ))
+        contentTraditional = (
+          await readFile(join(compiledDir, 'src', file + '.t'))
+        )
           .toString()
           .trim();
       } catch (e) {

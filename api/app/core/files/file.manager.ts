@@ -3,7 +3,7 @@ import { AdapterInterface, LocalAdapter, S3Adapter } from 'node-filesystem';
 import * as replaceall from 'replaceall';
 import * as env from '../../../env';
 
-let dirname = `${__dirname.replace('dist/api/', '')}/../../../../storage/`;
+let dirname = `${__dirname.replace('dist/', '')}/../../../../storage/`;
 if (env.storage_path) {
   dirname = `${env.storage_path}`;
 }

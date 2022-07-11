@@ -1,14 +1,19 @@
 import * as bluebird from 'bluebird';
 import * as cheerio from 'cheerio';
-import { Curl } from 'node-libcurl';
 import { PinyinConverter } from '../../../core/pinyin/pinyin.converter';
 import { profiler } from '../../../helpers/profiler';
 import { Encoder } from '../encoder';
 import { getBaseUrl } from '../helpers/get.base.url';
 import { Parser } from './parser';
+import { Downloader as GenericDownloader } from '../downloader';
 
 const pinyinConverter = new PinyinConverter();
 export class Downloader {
+  protected downloader: GenericDownloader;
+  constructor() {
+    this.downloader = new GenericDownloader();
+  }
+
   public async download(
     url: string,
     language: string,
@@ -24,10 +29,10 @@ export class Downloader {
     let response;
 
     try {
-      response = await this.downloadUrl(encoder.encodeUrl(url));
+      response = await this.downloader.download(encoder.encodeUrl(url));
     } catch (e) {
       profiler('Download on exception: ' + url);
-      response = await this.downloadUrl(url);
+      response = await this.downloader.download(url);
     }
 
     profiler('Download Generic End');
@@ -59,7 +64,7 @@ export class Downloader {
           const ideograms = item.text.split(' ');
           const pinyin = await pinyinConverter.toPinyin(ideograms);
           const pinynReturn: any[] = [];
-          pinyin.forEach(pinyinItem => {
+          pinyin.forEach((pinyinItem) => {
             pinynReturn.push(pinyinItem.pinyin);
           });
 
@@ -72,28 +77,5 @@ export class Downloader {
     profiler('End');
 
     return parsedDownload;
-  }
-
-  protected async downloadUrl(url: string) {
-    const curl = new Curl();
-    curl.setOpt('URL', url);
-    curl.setOpt('FOLLOWLOCATION', true);
-    return new Promise((done, reject) => {
-      curl.on('end', (statusCode, body, headers) => {
-        if (statusCode > 400) {
-          reject();
-          return;
-        }
-
-        curl.close.bind(curl);
-        done(body);
-      });
-
-      curl.on('error', () => {
-        curl.close.bind(curl);
-        reject();
-      });
-      curl.perform();
-    });
   }
 }

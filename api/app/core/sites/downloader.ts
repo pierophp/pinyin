@@ -1,39 +1,6 @@
-import { Curl, curly } from 'node-libcurl';
 import { http } from '../../helpers/http';
 
 export class Downloader {
-  protected async downloadByCurly(url: string) {
-    const { statusCode, data, headers } = await curly.get(url);
-    if (statusCode > 400) {
-      throw new Error(`Https Status ${statusCode}`);
-    }
-
-    return data;
-  }
-
-  protected async downloadByCurl(url: string) {
-    const curl = new Curl();
-    curl.setOpt('URL', url);
-    curl.setOpt('FOLLOWLOCATION', true);
-    return new Promise((done, reject) => {
-      curl.on('end', (statusCode, body, headers) => {
-        if (statusCode > 400) {
-          reject();
-          return;
-        }
-
-        curl.close.bind(curl);
-        done(body);
-      });
-
-      curl.on('error', () => {
-        curl.close.bind(curl);
-        reject();
-      });
-      curl.perform();
-    });
-  }
-
   protected async downloadByAxios(url: string) {
     const response = await http.get(url, {
       headers: {
