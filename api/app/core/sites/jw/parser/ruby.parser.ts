@@ -1,13 +1,13 @@
 import * as backHtmlTags from 'pdf-pinyin/src/core/pinyin/back.html.tags';
 import * as fillBoldItalic from 'pdf-pinyin/src/core/pinyin/fill.bold.italic';
 import * as striptags from 'striptags';
-import * as isChinese from '../../../../../../shared/helpers/is-chinese';
+import * as isChinese from '../../../../helpers/is-chinese';
 import { BlockInterface } from '../../../../core/interfaces/block.interface';
 import * as replaceall from 'replaceall';
 import { parseBible } from '../helpers/parse.bible';
 import { removeSpaces } from '../../../../helpers/remove.spaces';
 import { ParseItemInterface } from '../interfaces/parse.item.interface';
-import * as separatePinyinInSyllables from '../../../../../../shared/helpers/separate-pinyin-in-syllables';
+import * as separatePinyinInSyllables from '../../../../helpers/separate-pinyin-in-syllables';
 import { restoreTraditional } from '../helpers/restore.traditional';
 
 export class RubyParser {
@@ -41,7 +41,7 @@ export class RubyParser {
       }
     }
 
-    const blocks = text.split(/<ruby>|<\/ruby>/).filter(item => item.trim());
+    const blocks = text.split(/<ruby>|<\/ruby>/).filter((item) => item.trim());
 
     let items: any[] = [];
 

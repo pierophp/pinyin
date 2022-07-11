@@ -1,6 +1,6 @@
 import * as pinyinParser from 'pdf-pinyin/src/core/pinyin.parser';
 import * as replaceall from 'replaceall';
-import * as isChinese from '../../../../../../shared/helpers/is-chinese';
+import * as isChinese from '../../../../helpers/is-chinese';
 import { BlockInterface } from '../../../../core/interfaces/block.interface';
 import { parseBible } from '../helpers/parse.bible';
 import { restoreTraditional } from '../helpers/restore.traditional';
@@ -75,48 +75,46 @@ export class WithPdfParser {
 
     const item: any[] = result.lines[0];
 
-    const line = item.map(
-      (item2): BlockInterface => {
-        const returnItem: BlockInterface = {
-          c: item2.c.join(''),
-          p: item2.p.join(String.fromCharCode(160)),
-        };
+    const line = item.map((item2): BlockInterface => {
+      const returnItem: BlockInterface = {
+        c: item2.c.join(''),
+        p: item2.p.join(String.fromCharCode(160)),
+      };
 
-        if (item2.isBold) {
-          returnItem.isBold = 1;
+      if (item2.isBold) {
+        returnItem.isBold = 1;
+      }
+
+      if (item2.isItalic) {
+        returnItem.isItalic = 1;
+      }
+
+      const tempBible = parseBible(item2.tagsStart);
+      if (tempBible) {
+        bible = tempBible;
+      }
+
+      if (bible && !isChinese(returnItem.c, true)) {
+        returnItem.b = bible;
+        bible = null;
+      }
+
+      let indexOfFootnote = -1;
+
+      if (item2.tagsStart) {
+        indexOfFootnote = item2.tagsStart.indexOf('<footnote');
+      }
+
+      if (indexOfFootnote >= 0) {
+        const footnote = item2.tagsStart.match(/\<footnote id="(.*?)"\>/);
+
+        if (footnote) {
+          returnItem.footnote = footnote[1];
         }
+      }
 
-        if (item2.isItalic) {
-          returnItem.isItalic = 1;
-        }
-
-        const tempBible = parseBible(item2.tagsStart);
-        if (tempBible) {
-          bible = tempBible;
-        }
-
-        if (bible && !isChinese(returnItem.c, true)) {
-          returnItem.b = bible;
-          bible = null;
-        }
-
-        let indexOfFootnote = -1;
-
-        if (item2.tagsStart) {
-          indexOfFootnote = item2.tagsStart.indexOf('<footnote');
-        }
-
-        if (indexOfFootnote >= 0) {
-          const footnote = item2.tagsStart.match(/\<footnote id="(.*?)"\>/);
-
-          if (footnote) {
-            returnItem.footnote = footnote[1];
-          }
-        }
-
-        return returnItem;
-      },
-    );
+      return returnItem;
+    });
 
     if (line.length > 0) {
       line[0].line = {

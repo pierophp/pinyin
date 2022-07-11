@@ -1,5 +1,5 @@
 import { IdeogramsConverter } from '../converter/ideograms.converter';
-import * as isChinese from '../../../../shared/helpers/is-chinese';
+import * as isChinese from '../../helpers/is-chinese';
 import * as bluebird from 'bluebird';
 import { uniqBy } from 'lodash';
 import * as replaceall from 'replaceall';
@@ -13,15 +13,13 @@ export class DatabaseProvider {
     let cjkList: any[] = [];
 
     if (isChinese(search)) {
-      const simplifiedIdeogram = await ideogramsConverter.traditionalToSimplified(
-        search,
-      );
+      const simplifiedIdeogram =
+        await ideogramsConverter.traditionalToSimplified(search);
 
       cjkList = await knex('cjk')
         .where({
-          ideogram: ideogramsConverter.convertIdeogramsToUtf16(
-            simplifiedIdeogram,
-          ),
+          ideogram:
+            ideogramsConverter.convertIdeogramsToUtf16(simplifiedIdeogram),
         })
         .orderBy('main', 'DESC')
         .orderBy('frequency', 'ASC')
@@ -78,13 +76,12 @@ export class DatabaseProvider {
       cjkList = uniqBy([].concat(cjkList, cjkListLike), 'id');
     }
 
-    await bluebird.mapSeries(cjkList, async entry => {
+    await bluebird.mapSeries(cjkList, async (entry) => {
       entry.ideogram = ideogramsConverter.convertUtf16ToIdeograms(
         entry.ideogram,
       );
-      entry.ideogramTraditional = await ideogramsConverter.simplifiedToTraditional(
-        entry.ideogram,
-      );
+      entry.ideogramTraditional =
+        await ideogramsConverter.simplifiedToTraditional(entry.ideogram);
       return entry;
     });
 

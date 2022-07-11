@@ -1,7 +1,7 @@
 import * as bluebird from 'bluebird';
 import { ensureDir, unlink, writeFile } from 'fs-extra';
 import * as replaceall from 'replaceall';
-import * as separatePinyinInSyllables from '../../../../shared/helpers/separate-pinyin-in-syllables';
+import * as separatePinyinInSyllables from '../../helpers/separate-pinyin-in-syllables';
 import { CjkRepository } from '../../repository/cjk.repository';
 
 export class DictionaryExport {
@@ -55,10 +55,11 @@ export class DictionaryExport {
       if (!entry.simplified && !entry.traditional_exclusive) {
         const variants = JSON.parse(entry.variants);
         if (variants && variants.length) {
-          const entriesSimplified = await CjkRepository.searchByIdeogramRawAndPronunciation(
-            variants[0],
-            entry.pronunciation,
-          );
+          const entriesSimplified =
+            await CjkRepository.searchByIdeogramRawAndPronunciation(
+              variants[0],
+              entry.pronunciation,
+            );
 
           if (entriesSimplified.length) {
             entry = entriesSimplified[0];
@@ -111,7 +112,7 @@ export class DictionaryExport {
           ? JSON.parse(entry.definition_pt)
           : null,
         definition_ct_pt: entry.definition_ct_pt
-          ? JSON.parse(entry.definition_ct_pt).map(item => {
+          ? JSON.parse(entry.definition_ct_pt).map((item) => {
               return replaceall('~', entry.ideogram_raw, item);
             })
           : null,

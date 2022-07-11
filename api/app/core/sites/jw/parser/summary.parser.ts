@@ -1,6 +1,6 @@
 import { padStart } from 'lodash';
-import * as isChinese from '../../../../../../shared/helpers/is-chinese';
-import * as separatePinyinInSyllables from '../../../../../../shared/helpers/separate-pinyin-in-syllables';
+import * as isChinese from '../../../../helpers/is-chinese';
+import * as separatePinyinInSyllables from '../../../../helpers/separate-pinyin-in-syllables';
 import { ParserResponseInterface } from '../../../../core/sites/interfaces/parser.response.interface';
 
 import { PinyinConverter } from '../../../../core/pinyin/pinyin.converter';
@@ -43,7 +43,7 @@ export class SummaryParser {
         number: padStart(String(i), 3, '0'),
         title,
         title_pinyin: (await pinyinConverter.toPinyin(title.split(' ')))
-          .map(item => {
+          .map((item) => {
             if (!isChinese(item.ideogram)) {
               return item.pinyin.split('').join(String.fromCharCode(160));
             }

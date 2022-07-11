@@ -3,7 +3,7 @@ const fs = require('fs');
 const moment = require('moment');
 const fastCsv = require('fast-csv');
 const env = require('../../env');
-const isChinese = require('../../../shared/helpers/is-chinese');
+const isChinese = require('../helpers/is-chinese');
 const { LanguageRepository } = require('../repository/language.repository');
 const { PhraseRepository } = require('../repository/phrase.repository');
 const UnihanSearch = require('../services/UnihanSearch');
@@ -11,7 +11,7 @@ const separateWords = require('../helpers/separate.words');
 const profiler = require('../helpers/profiler').profiler;
 const { IdeogramsConverter } = require('../core/converter/ideograms.converter');
 
-const separatePinyinInSyllables = require('../../../shared/helpers/separate-pinyin-in-syllables');
+const separatePinyinInSyllables = require('../helpers/separate-pinyin-in-syllables');
 const exec = require('child-process-promise').exec;
 
 const path = require('path');

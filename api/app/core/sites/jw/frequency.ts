@@ -1,7 +1,7 @@
 import { orderBy, trimEnd } from 'lodash';
 import * as replaceall from 'replaceall';
-import * as isChinese from '../../../../../shared/helpers/is-chinese';
-import * as replaceIdeogramsToSpace from '../../../../../shared/helpers/special-ideograms-chars';
+import * as isChinese from '../../../helpers/is-chinese';
+import * as replaceIdeogramsToSpace from '../../../helpers/special-ideograms-chars';
 import { IdeogramsConverter } from '../../../core/converter/ideograms.converter';
 import * as knex from '../../../services/knex';
 
@@ -29,16 +29,14 @@ export class Frequency {
 
     const wordsList: any[] = [];
 
-    Object.keys(words).forEach(key => {
+    Object.keys(words).forEach((key) => {
       wordsList.push({
         ideogram: key,
         total: words[key],
       });
     });
 
-    const publicationCode = trimEnd(url, '/')
-      .split('/')
-      .pop();
+    const publicationCode = trimEnd(url, '/').split('/').pop();
 
     for (const word of wordsList) {
       const publicationFrequency = await knex('publication_frequency').where({
@@ -74,7 +72,7 @@ export class Frequency {
       return;
     }
 
-    replaceIdeogramsToSpace.forEach(item => {
+    replaceIdeogramsToSpace.forEach((item) => {
       t.text = replaceall(item, '', t.text);
     });
 
@@ -82,7 +80,7 @@ export class Frequency {
       return;
     }
 
-    t.text.split(' ').forEach(part => {
+    t.text.split(' ').forEach((part) => {
       if (!isChinese(part)) {
         return;
       }

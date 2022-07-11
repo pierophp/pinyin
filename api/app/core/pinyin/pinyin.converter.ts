@@ -1,5 +1,5 @@
 import * as bluebird from 'bluebird';
-import * as separatePinyinInSyllables from '../../../../shared/helpers/separate-pinyin-in-syllables';
+import * as separatePinyinInSyllables from '../../helpers/separate-pinyin-in-syllables';
 import { ArrayCache } from '../../cache/array.cache';
 import { RedisCache } from '../../cache/redis.cache';
 import ideogramPinyinRules from '../../core/converter/ideogram.pinyin.rules';

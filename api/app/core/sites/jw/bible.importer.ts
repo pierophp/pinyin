@@ -3,8 +3,8 @@ import * as bluebird from 'bluebird';
 import * as cheerio from 'cheerio';
 import { ensureDir, readFile, stat, writeFile } from 'fs-extra';
 import * as replaceall from 'replaceall';
-import * as bibleBooks from '../../../../../shared/data/bible/bible';
-import * as bibleChapters from '../../../../../shared/data/bible/chapters';
+import * as bibleBooks from '../../../data/bible/bible';
+import * as bibleChapters from '../../../data/bible/chapters';
 import { BlockInterface } from '../../../core/interfaces/block.interface';
 import { Encoder } from '../encoder';
 import { RubyParser } from './parser/ruby.parser';
@@ -18,9 +18,7 @@ export class BibleImporter {
 
   protected baseUrl = 'https://wol.jw.org';
   public async import() {
-    const booksUrl = `${
-      this.baseUrl
-    }/cmn-Hans/wol/binav/r23/lp-chs-rb/nwt/CHS/2019`;
+    const booksUrl = `${this.baseUrl}/cmn-Hans/wol/binav/r23/lp-chs-rb/nwt/CHS/2019`;
 
     let response = await axios.get(booksUrl);
     let $ = cheerio.load(response.data);
@@ -67,9 +65,7 @@ export class BibleImporter {
 
     $('a.b[data-bid]').remove();
     $('p.ss').remove();
-    $('p.sw')
-      .parent('div')
-      .remove();
+    $('p.sw').parent('div').remove();
     $('p.sw').remove();
     $('a.pr').remove();
     $('a.fn').remove();
@@ -81,9 +77,7 @@ export class BibleImporter {
 
     for (const line of lines) {
       let lineResponse: BlockInterface[] = [];
-      const verses = $(line)
-        .find('span.v')
-        .toArray();
+      const verses = $(line).find('span.v').toArray();
 
       for (const verse of verses) {
         const verseId = ($(verse) as any).attr('id').split('-')[2];
@@ -133,25 +127,17 @@ export class BibleImporter {
 
     if (bibles.length === 0) {
       $('.bibleBook .fullName').each((i, bibleChildren) => {
-        bibles.push(
-          $(bibleChildren)
-            .text()
-            .trim(),
-        );
+        bibles.push($(bibleChildren).text().trim());
       });
     }
 
-    await bluebird.mapSeries(bibles, async bible => {
+    await bluebird.mapSeries(bibles, async (bible) => {
       const urlChapter = `${urlBible}${bible}/`;
       response = await axios.get(encoder.encodeUrl(urlChapter));
       $ = cheerio.load(response.data);
       const chapters: any[] = [];
       $('.chapters .chapter').each((j, bibleChapterChildren) => {
-        chapters.push(
-          $(bibleChapterChildren)
-            .text()
-            .trim(),
-        );
+        chapters.push($(bibleChapterChildren).text().trim());
       });
 
       const bibleEnglish = Object.keys(bibleChapters)[bibleBooks[bible] - 1];
@@ -166,7 +152,7 @@ export class BibleImporter {
 
       const biblePathTraditional = `${__dirname}/../../../../../bible-pinyin/cmn-hant/`;
 
-      await bluebird.mapSeries(chapters, async chapter => {
+      await bluebird.mapSeries(chapters, async (chapter) => {
         let chapterTraditionalExists = true;
         try {
           await stat(`${biblePathTraditional}${bibleEnglish}/${chapter}.json`);
@@ -206,14 +192,9 @@ export class BibleImporter {
         $ = cheerio.load(response.data);
 
         $('#bibleText .verse').each((i, children) => {
-          $(children)
-            .find('.superscription')
-            .remove();
+          $(children).find('.superscription').remove();
 
-          let verse = $(children)
-            .find('.verseNum')
-            .text()
-            .trim();
+          let verse = $(children).find('.verseNum').text().trim();
 
           if (!verse) {
             verse = '1';
@@ -227,10 +208,7 @@ export class BibleImporter {
             return;
           }
 
-          let verseText = $(children)
-            .text()
-            .trim()
-            .replace(/\s/g, '');
+          let verseText = $(children).text().trim().replace(/\s/g, '');
 
           verseText = replaceall('+', '', verseText);
           verseText = replaceall('*', '', verseText);
@@ -356,18 +334,16 @@ export class BibleImporter {
                 blockContent.c = wordToChange.nc;
                 blockContent.p = wordToChange.p;
 
-                chapterObject.lines[lineIndex][
-                  blockIndex
-                ] = blockContentSimplified;
+                chapterObject.lines[lineIndex][blockIndex] =
+                  blockContentSimplified;
                 simplifiedChanged = true;
               }
             }
 
             blockContent = blockContent.c.trim().split('');
             blockContent[blockInlineIndex] = verseText[vId];
-            chapterObjectTraditional.lines[lineIndex][
-              blockIndex
-            ].c = blockContent.join('');
+            chapterObjectTraditional.lines[lineIndex][blockIndex].c =
+              blockContent.join('');
 
             blockInlineIndex += 1;
             if (blockInlineIndex === blockContent.length) {

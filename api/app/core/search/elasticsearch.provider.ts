@@ -1,7 +1,7 @@
 import * as env from '../../../env';
 import { Client } from 'elasticsearch';
 import { IdeogramsConverter } from '../converter/ideograms.converter';
-import * as isChinese from '../../../../shared/helpers/is-chinese';
+import * as isChinese from '../../helpers/is-chinese';
 import * as bluebird from 'bluebird';
 
 let client;

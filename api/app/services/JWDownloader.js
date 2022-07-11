@@ -4,7 +4,7 @@ const replaceall = require('replaceall');
 const axios = require('axios');
 const axiosRetry = require('axios-retry');
 const { Encoder } = require('../core/sites/encoder');
-const bibleChapters = require('../../../shared/data/bible/chapters');
+const bibleChapters = require('../data/bible/chapters');
 const UnihanSearch = require('../services/UnihanSearch');
 const fs = require('fs-extra');
 
@@ -22,18 +22,13 @@ module.exports = class JwDownloader {
 
     const words = [];
 
-    await Promise.mapSeries(links, async letterurl => {
+    await Promise.mapSeries(links, async (letterurl) => {
       response = await axios.get(encoder.encodeUrl(letterurl));
       $ = cheerio.load(response.data);
       $('.directory li a').each((i, wordLink) => {
-        const href = $(wordLink)
-          .attr('href')
-          .split('/');
+        const href = $(wordLink).attr('href').split('/');
         const id = href[href.length - 1];
-        const title = $(wordLink)
-          .find('.title')
-          .text()
-          .trim();
+        const title = $(wordLink).find('.title').text().trim();
         words.push({
           id,
           title,
@@ -57,13 +52,11 @@ module.exports = class JwDownloader {
       }
 
       $ = cheerio.load(response.data);
-      words[i].translation = $('article #p1 strong')
-        .text()
-        .trim();
+      words[i].translation = $('article #p1 strong').text().trim();
     });
 
     let csvBible = 'character;id;translation\n';
-    words.forEach(word => {
+    words.forEach((word) => {
       csvBible += `${word.title};${word.id};${word.translation}\n`;
     });
 
@@ -77,7 +70,7 @@ module.exports = class JwDownloader {
     const content = await fs.readFile(filenameBibleTotal);
     const lines = content.toString().split('\n');
     let csvPinyin = 'word;total;type\n';
-    await Promise.mapSeries(lines, async line => {
+    await Promise.mapSeries(lines, async (line) => {
       const values = line.split(';');
       let pinyin = await UnihanSearch.searchByWord(values[0]);
       let type = 'database';
@@ -128,11 +121,7 @@ module.exports = class JwDownloader {
       $ = cheerio.load(response.data);
       const chapters = [];
       $('.chapters .chapter').each((j, bibleChapterChildren) => {
-        chapters.push(
-          $(bibleChapterChildren)
-            .text()
-            .trim(),
-        );
+        chapters.push($(bibleChapterChildren).text().trim());
       });
 
       const bibleEnglish = Object.keys(bibleChapters)[bibleIndex];
@@ -144,7 +133,7 @@ module.exports = class JwDownloader {
 
       const biblePath = `${__dirname}/../../../ui/static/bible/${language}/`;
 
-      await Promise.mapSeries(chapters, async chapter => {
+      await Promise.mapSeries(chapters, async (chapter) => {
         // eslint-disable-next-line
         console.log(chapter);
         let chapterExists = true;
@@ -180,9 +169,7 @@ module.exports = class JwDownloader {
         chapterObject.lines[0][0].line.pinyinSpaced = 1;
 
         $('#bibleText .verse').each((i, children) => {
-          $(children)
-            .find('.superscription')
-            .remove();
+          $(children).find('.superscription').remove();
 
           if ($(children).find('.first').length) {
             lineIndex += 1;
@@ -191,17 +178,12 @@ module.exports = class JwDownloader {
             blockIndex += 1;
           }
 
-          let verse = $(children)
-            .find('.verseNum')
-            .text()
-            .trim();
+          let verse = $(children).find('.verseNum').text().trim();
           if (!verse) {
             verse = 1;
           }
 
-          let verseText = $(children)
-            .text()
-            .trim();
+          let verseText = $(children).text().trim();
           verseText = replaceall('+', '', verseText);
           verseText = replaceall('*', '', verseText);
 

@@ -1,5 +1,5 @@
 import * as replaceall from 'replaceall';
-import * as replaceIdeogramsToSpace from '../../../../../../shared/helpers/special-ideograms-chars';
+import * as replaceIdeogramsToSpace from '../../../../helpers/special-ideograms-chars';
 import { http } from '../../../../helpers/http';
 import { Encoder } from '../../encoder';
 import { Wol } from '../wol';
@@ -29,7 +29,7 @@ export class AudioParser {
         '',
         $('article header h1').text(),
       );
-      replaceIdeogramsToSpace.forEach(item => {
+      replaceIdeogramsToSpace.forEach((item) => {
         titleWithoutSpaces = replaceall(item, '', titleWithoutSpaces);
       });
 
@@ -51,9 +51,9 @@ export class AudioParser {
         return fileUrl;
       }
 
-      language.MP3.some(file => {
+      language.MP3.some((file) => {
         let audioTitleWithoutSpaces = replaceall(' ', '', file.title || '');
-        replaceIdeogramsToSpace.forEach(item => {
+        replaceIdeogramsToSpace.forEach((item) => {
           audioTitleWithoutSpaces = replaceall(
             item,
             '',

@@ -1,5 +1,5 @@
 import * as replaceall from 'replaceall';
-import * as bibleBooks from '../../../../../../shared/data/bible/bible';
+import * as bibleBooks from '../../../../data/bible/bible';
 import { removeHtmlSpecialTags } from '../../../../core/sites/helpers/remove.html.special.tags';
 import { TextInterface } from '../../../../core/sites/interfaces/text.interface';
 import { profiler } from '../../../../helpers/profiler';

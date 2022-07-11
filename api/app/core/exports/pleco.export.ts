@@ -1,14 +1,14 @@
 import { remove as removeDiacritics } from 'diacritics';
 import { writeFile } from 'fs-extra';
 import * as replaceall from 'replaceall';
-import * as separatePinyinInSyllables from '../../../../shared/helpers/separate-pinyin-in-syllables';
+import * as separatePinyinInSyllables from '../../helpers/separate-pinyin-in-syllables';
 import * as env from '../../../env';
 import extractPinyinTone from '../../helpers/extract-pinyin-tone';
 import { CjkRepository } from '../../repository/cjk.repository';
 import { IdeogramsConverter } from '../converter/ideograms.converter';
 
 function bold(number) {
-  return number.replace(/\d/g, c =>
+  return number.replace(/\d/g, (c) =>
     String.fromCodePoint(0x1d79e + c.charCodeAt(0)),
   );
 }
@@ -117,7 +117,7 @@ export class PlecoExport {
 
       const pinyin = separatePinyinInSyllables(entry.pronunciation);
       let pinyinTones = '';
-      pinyin.forEach(syllable => {
+      pinyin.forEach((syllable) => {
         let tone = extractPinyinTone(syllable);
         if (tone === 0) {
           tone = 5;

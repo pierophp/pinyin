@@ -1,5 +1,5 @@
 import * as replaceall from 'replaceall';
-import * as replaceIdeogramsToSpace from '../../../../../shared/helpers/special-ideograms-chars';
+import * as replaceIdeogramsToSpace from '../../../helpers/special-ideograms-chars';
 import { explodeLines } from '../helpers/explode.lines';
 import { removeHtmlSpecialTags } from '../helpers/remove.html.special.tags';
 import { replaceWords } from '../helpers/replace.words';
