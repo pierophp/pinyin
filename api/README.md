@@ -6,3 +6,5 @@ On production use Strong Loop
 slc ctl status pinyin
 
 /var/log/upstart/strong-pm.log
+
+flyctl deploy --no-cache

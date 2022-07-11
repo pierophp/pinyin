@@ -1,4 +1,3 @@
-.vscode/*
 travis/id_rsa
 travis/secrets.tar
 .idea/*
