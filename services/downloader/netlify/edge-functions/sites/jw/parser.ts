@@ -7,11 +7,10 @@ import { TextInterface } from '../interfaces/text.interface.ts';
 import { ParseItemInterface } from './interfaces/parse.item.interface.ts';
 import { AudioParser } from './parser/audio.parser.ts';
 import { DomParser } from './parser/dom.parser.ts';
-import { PdfObjecyParser } from './parser/pdf.object.parser.ts';
+
 import { RubyParser } from './parser/ruby.parser.ts';
 import { SummaryParser } from './parser/summary.parser.ts';
-import { WithPdfParser } from './parser/with.pdf.parser.ts';
-import { WithoutPdfParser } from './parser/without.pdf.parser.ts';
+import { SiteParser } from './parser/site.parser.ts';
 
 const require = createRequire(import.meta.url);
 const bluebird = require('bluebird');
@@ -32,11 +31,6 @@ export class Parser {
       const summaryParser = new SummaryParser();
       return await summaryParser.parse($chinese);
     }
-
-    // const pdfObjecyParser = new PdfObjecyParser();
-    // this.pdfParsedObjectPromise = pdfObjecyParser.parse(
-    //   $simplified ? $simplified : $chinese,
-    // );
 
     const downloadResponse: ParserResponseInterface = {
       text: [],
@@ -133,31 +127,8 @@ export class Parser {
       }
     }
 
-    // if (this.pdfParsedObjectPromise) {
-    //   const withPdfParser = new WithPdfParser();
-
-    //   try {
-    //     const parsedPdfResult = await withPdfParser.parse(
-    //       item,
-    //       this.pdfParsedObjectPromise,
-    //     );
-
-    //     if (parsedPdfResult) {
-    //       return await this.fillLanguage(parsedPdfResult, item);
-    //     }
-    //   } catch (e) {
-    //     console.error(
-    //       `Error on WITH Pdf Parser \n${e.message} \nLine: ${JSON.stringify(
-    //         item.chinese.text,
-    //       )}`,
-    //     );
-
-    //     throw e;
-    //   }
-    // }
-
     try {
-      const withoutPdfParser = new WithoutPdfParser();
+      const withoutPdfParser = new SiteParser();
       return await this.fillLanguage(await withoutPdfParser.parse(item), item);
     } catch (e) {
       console.error(

@@ -13,7 +13,7 @@ import { parseBible } from '../helpers/parse.bible';
 import { ParseItemInterface } from '../interfaces/parse.item.interface';
 
 const pinyinConverter = new PinyinConverter();
-export class WithoutPdfParser {
+export class SiteParser {
   public async parse(item: ParseItemInterface): Promise<BlockInterface[]> {
     const text = item.chinese.text!;
 

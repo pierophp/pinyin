@@ -1,4 +1,4 @@
-import * as replaceIdeogramsToSpace from '../../../helpers/special-ideograms-chars.ts';
+import * as replaceIdeogramsToSpace from '../../../data/special-ideograms-chars.ts';
 import { Encoder } from '../../encoder.ts';
 import { Wol } from '../wol.ts';
 

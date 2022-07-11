@@ -1,12 +1,14 @@
 import { format } from 'https://deno.land/std@0.147.0/datetime/mod.ts';
+import { config } from 'https://deno.land/x/dotenv/mod.ts';
 
 export function profiler(str: string, forceOnProduction?: boolean) {
-  if (process.env.NODE_ENV === 'production' && forceOnProduction !== true) {
+  const env = config({ safe: true });
+  if (env.PROFILER_ENABLED !== '1' || forceOnProduction !== true) {
     return;
   }
 
   let memoryMessage = '';
-  if (process.env.PROFILER_SHOW_MEMORY) {
+  if (env.PROFILER_SHOW_MEMORY === '1') {
     const memoryUsage = Deno.memoryUsage();
 
     const heapUsed = parseFloat(

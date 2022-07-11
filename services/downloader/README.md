@@ -11,3 +11,5 @@ netlify dev
 Songs
 Track
 BibleImporter
+PdfObjectParser
+WithPdfParser

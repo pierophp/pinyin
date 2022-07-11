@@ -1,4 +1,4 @@
-import * as bibleBooks from '../../../../data/bible/bible';
+import * as bibleBooks from '../../../data/bible.ts';
 import { removeHtmlSpecialTags } from '../../helpers/remove.html.special.tags.ts';
 import { TextInterface } from '../../interfaces/text.interface.ts';
 import { profiler } from '../../../helpers/profiler.ts';
