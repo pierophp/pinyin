@@ -40,10 +40,7 @@ export class PdfObjecyParser {
         pdfPinyinList.push(children.attribs.href);
       });
 
-      let dirname = `${__dirname.replace(
-        'dist/api/',
-        '',
-      )}/../../../../../storage/`;
+      let dirname = `${__dirname.replace('dist/', '')}/../../../../../storage/`;
 
       if (env.storage_path) {
         dirname = `${env.storage_path}`;
