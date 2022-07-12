@@ -14,6 +14,18 @@ serve(async (request: Request) => {
   }
 
   let downloader: DownloaderInterface = new GenericDownloader();
+  if (requestUrl.includes('.jw.org')) {
+    console.log('JW Downloader');
+    downloader = new JwDownloader();
+  }
+
+  const downloadResponse = await downloader.download(
+    requestUrl,
+    url.searchParams.get('language') ?? 'e',
+    url.searchParams.get('ideogramType') ?? undefined,
+  );
+
+  // console.log(downloadResponse);
 
   return await fetch(requestUrl, request);
 });

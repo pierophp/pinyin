@@ -9,8 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@netlify/functions": "^1.0.0",
-    "pdf-pinyin": "^1.0.13"
+    "@netlify/functions": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^18.0.3"

@@ -45,60 +45,58 @@ export class Downloader implements DownloaderInterface {
 
     const $: any = await this.downloadUrl(url);
 
-    console.log($);
+    const parser = new Parser();
+    let $chinese: any | undefined = $;
+    let $language: any;
 
-    // const parser = new Parser();
-    // let $chinese: any | undefined = $;
-    // let $language;
+    if (!this.isChinese) {
+      $chinese = await this.downloadChineseByLink(
+        $,
+        this.isTraditional ? 't' : 's',
+        url,
+      );
 
-    // if (!this.isChinese) {
-    //   $chinese = await this.downloadChineseByLink(
-    //     $,
-    //     this.isTraditional ? 't' : 's',
-    //     url,
-    //   );
+      $language = $;
+      language = String(
+        url
+          .replace('https://www.jw.org/', '')
+          .replace('https://wol.jw.org/', ''),
+      )
+        .split('/')[0]
+        .toLowerCase();
+    } else if (language) {
+      $language = await this.downloadLanguage($, language, url);
+    }
 
-    //   $language = $;
-    //   language = String(
-    //     url
-    //       .replace('https://www.jw.org/', '')
-    //       .replace('https://wol.jw.org/', ''),
-    //   )
-    //     .split('/')[0]
-    //     .toLowerCase();
-    // } else if (language) {
-    //   $language = await this.downloadLanguage($, language, url);
-    // }
+    if (!$chinese) {
+      throw new Error('Site not found');
+    }
 
-    // if (!$chinese) {
-    //   throw new Error('Site not found');
-    // }
+    let $simplified;
+    if (this.isTraditional) {
+      $simplified = await this.downloadChineseByLink($chinese, 's', url);
+    }
 
-    // let $simplified;
-    // if (this.isTraditional) {
-    //   $simplified = await this.downloadChineseByLink($chinese, 's', url);
-    // }
+    const baseUrl = getBaseUrl(url);
 
-    // const baseUrl = getBaseUrl(url);
+    const parsedDownload = await parser.parse(
+      $chinese,
+      $language,
+      $simplified,
+      baseUrl,
+      this.chineseLink,
+    );
 
-    // const parsedDownload = await parser.parse(
-    //   $chinese,
-    //   $language,
-    //   $simplified,
-    //   baseUrl,
-    //   this.chineseLink,
-    // );
+    if (parsedDownload.links) {
+      return this.parseLinks(
+        parsedDownload,
+        language,
+        ideogramType,
+        convertPinyin,
+      );
+    }
 
-    // if (parsedDownload.links) {
-    //   return this.parseLinks(
-    //     parsedDownload,
-    //     language,
-    //     ideogramType,
-    //     convertPinyin,
-    //   );
-    // }
-
-    // return parsedDownload;
+    return parsedDownload;
   }
 
   protected verifyTypeOfSite(url: string, ideogramType: string) {

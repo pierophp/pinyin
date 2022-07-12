@@ -10,7 +10,8 @@ import { replaceWords } from '../../helpers/replace.words.ts';
 import { segmentText } from '../../helpers/segment.text.ts';
 import { parseBible } from '../helpers/parse.bible.ts';
 import { ParseItemInterface } from '../interfaces/parse.item.interface.ts';
-
+import { backHtmlTags } from '../../../helpers/back.html.tags.ts';
+import { fillBoldItalic } from '../../../helpers/fill.bold.italic.ts';
 // @todo remove this
 function replaceall(item: string, search: string, replace: string) {
   return item.replaceAll(search, replace);
@@ -18,8 +19,6 @@ function replaceall(item: string, search: string, replace: string) {
 
 const require = createRequire(import.meta.url);
 const striptags = require('striptags');
-const backHtmlTags = require('pdf-pinyin/src/core/pinyin/back.html.tags');
-const fillBoldItalic = require('pdf-pinyin/src/core/pinyin/fill.bold.italic');
 
 const pinyinConverter = new PinyinConverter();
 export class SiteParser {

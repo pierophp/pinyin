@@ -7,11 +7,11 @@ import { removeSpaces } from '../../../helpers/remove.spaces.ts';
 import { ParseItemInterface } from '../interfaces/parse.item.interface.ts';
 import { separatePinyinInSyllables } from '../../../helpers/separate-pinyin-in-syllables.ts';
 import { restoreTraditional } from '../helpers/restore.traditional.ts';
+import { backHtmlTags } from '../../../helpers/back.html.tags.ts';
+import { fillBoldItalic } from '../../../helpers/fill.bold.italic.ts';
 
 const require = createRequire(import.meta.url);
 const striptags = require('striptags');
-const backHtmlTags = require('pdf-pinyin/src/core/pinyin/back.html.tags');
-const fillBoldItalic = require('pdf-pinyin/src/core/pinyin/fill.bold.italic');
 
 // @todo remove this
 function replaceall(item: string, search: string, replace: string) {
