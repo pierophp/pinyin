@@ -1,5 +1,4 @@
-import striptags from 'https://esm.sh/striptags@3.2.0';
-
+import { striptags } from '../../../deps.ts';
 import { BlockInterface } from '../../../interfaces/block.interface.ts';
 import { replaceAt } from '../../helpers/replace.at.ts';
 

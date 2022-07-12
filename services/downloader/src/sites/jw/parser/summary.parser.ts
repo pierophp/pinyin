@@ -1,5 +1,4 @@
-import padStart from 'http://deno.land/x/lodash@4.17.15-es/padStart.js';
-
+import { padStart } from '../../../deps.ts';
 import { isChinese } from '../../../helpers/is-chinese.ts';
 import { separatePinyinInSyllables } from '../../../helpers/separate-pinyin-in-syllables.ts';
 import { ParserResponseInterface } from '../../interfaces/parser.response.interface.ts';

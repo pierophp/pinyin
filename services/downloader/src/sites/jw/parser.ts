@@ -1,5 +1,3 @@
-import { createRequire } from 'https://deno.land/std/node/module.ts';
-
 import { BlockInterface } from '../../interfaces/block.interface.ts';
 import { profiler } from '../../helpers/profiler.ts';
 import { ParserResponseInterface } from '../interfaces/parser.response.interface.ts';
@@ -11,9 +9,7 @@ import { DomParser } from './parser/dom.parser.ts';
 import { RubyParser } from './parser/ruby.parser.ts';
 import { SummaryParser } from './parser/summary.parser.ts';
 import { SiteParser } from './parser/site.parser.ts';
-
-const require = createRequire(import.meta.url);
-const bluebird = require('bluebird');
+import { bluebird } from '../../deps.ts';
 
 export class Parser {
   protected pdfParsedObjectPromise?: Promise<any>;
@@ -136,6 +132,7 @@ export class Parser {
           item.chinese.text,
         )}`,
       );
+      console.error(e);
 
       throw e;
     }

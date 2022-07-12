@@ -1,4 +1,4 @@
-import striptags from 'https://esm.sh/striptags@3.2.0';
+import { striptags } from '../../../deps.ts';
 import { isChinese } from '../../../helpers/is-chinese.ts';
 import { BlockInterface } from '../../../interfaces/block.interface.ts';
 import { parseBible } from '../helpers/parse.bible.ts';

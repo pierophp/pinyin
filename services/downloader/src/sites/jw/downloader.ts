@@ -1,10 +1,4 @@
-import { createRequire } from 'https://deno.land/std/node/module.ts';
-
-import { cheerio } from 'https://deno.land/x/cheerio@1.0.6/mod.ts';
-import orderBy from 'http://deno.land/x/lodash@4.17.15-es/orderBy.js';
-
-const require = createRequire(import.meta.url);
-const bluebird = require('bluebird');
+import { bluebird, orderBy, cheerio } from '../../deps.ts';
 
 import { profiler } from '../../helpers/profiler.ts';
 import { Downloader as GenericDownloader } from '../downloader.ts';
@@ -43,7 +37,7 @@ export class Downloader implements DownloaderInterface {
 
     this.verifyTypeOfSite(url, ideogramType);
 
-    const $: any = await this.downloadUrl(url);
+    const $: any = await this.downloadUrlAndParse(url);
 
     const parser = new Parser();
     let $chinese: any | undefined = $;
@@ -125,7 +119,7 @@ export class Downloader implements DownloaderInterface {
     }
   }
 
-  protected async downloadUrl(url: string): Promise<any> {
+  protected async downloadUrlAndParse(url: string): Promise<any> {
     let response;
     profiler(`Download JW Start - ${url}`);
     try {
