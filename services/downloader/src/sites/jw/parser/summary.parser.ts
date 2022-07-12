@@ -1,4 +1,4 @@
-import { padStart } from '../../../deps.ts';
+import { padStart, CheerioAPI } from '../../../deps.ts';
 import { isChinese } from '../../../helpers/is-chinese.ts';
 import { separatePinyinInSyllables } from '../../../helpers/separate-pinyin-in-syllables.ts';
 import { ParserResponseInterface } from '../../interfaces/parser.response.interface.ts';
@@ -6,7 +6,7 @@ import { PinyinConverter } from '../../../pinyin/pinyin.converter.ts';
 
 const pinyinConverter = new PinyinConverter();
 export class SummaryParser {
-  public async parse($: any): Promise<ParserResponseInterface> {
+  public async parse($: CheerioAPI): Promise<ParserResponseInterface> {
     const downloadResponse: ParserResponseInterface = { text: [] };
     downloadResponse.links = [];
 

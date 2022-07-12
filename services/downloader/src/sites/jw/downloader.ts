@@ -1,4 +1,4 @@
-import { bluebird, orderBy, cheerio } from '../../deps.ts';
+import { bluebird, orderBy, cheerio, CheerioAPI } from '../../deps.ts';
 
 import { profiler } from '../../helpers/profiler.ts';
 import { Downloader as GenericDownloader } from '../downloader.ts';
@@ -37,11 +37,11 @@ export class Downloader implements DownloaderInterface {
 
     this.verifyTypeOfSite(url, ideogramType);
 
-    const $: any = await this.downloadUrlAndParse(url);
+    const $: CheerioAPI = await this.downloadUrlAndParse(url);
 
     const parser = new Parser();
-    let $chinese: any | undefined = $;
-    let $language: any;
+    let $chinese: CheerioAPI | undefined = $;
+    let $language: CheerioAPI | undefined;
 
     if (!this.isChinese) {
       $chinese = await this.downloadChineseByLink(
@@ -119,7 +119,7 @@ export class Downloader implements DownloaderInterface {
     }
   }
 
-  protected async downloadUrlAndParse(url: string): Promise<any> {
+  protected async downloadUrlAndParse(url: string): Promise<CheerioAPI> {
     let response;
     profiler(`Download JW Start - ${url}`);
     try {
@@ -142,10 +142,10 @@ export class Downloader implements DownloaderInterface {
   }
 
   protected async downloadChineseByLink(
-    $: any,
+    $: CheerioAPI,
     ideogramType: string,
     url: string,
-  ): Promise<any | undefined> {
+  ): Promise<CheerioAPI | undefined> {
     let link = '';
     if (url.indexOf('wol.jw') !== -1) {
       const wol = new Wol();
@@ -157,8 +157,8 @@ export class Downloader implements DownloaderInterface {
       }
 
       const href = chineseLink.attr('href');
-      link = href;
-      if (href.indexOf('://') === -1) {
+      link = href ?? '';
+      if (href?.indexOf('://') === -1) {
         link = `https://www.jw.org${href}`;
       }
     }
@@ -179,7 +179,11 @@ export class Downloader implements DownloaderInterface {
     return cheerio.load(response);
   }
 
-  protected async downloadLanguage($: any, language: string, url: string) {
+  protected async downloadLanguage(
+    $: CheerioAPI,
+    language: string,
+    url: string,
+  ): Promise<CheerioAPI> {
     let link = '';
     if (url.indexOf('wol.jw') !== -1) {
       const wol = new Wol();
@@ -188,8 +192,8 @@ export class Downloader implements DownloaderInterface {
       const translateLink = $(`link[hreflang="${language}"]`);
       if (translateLink.length > 0) {
         const href = translateLink.attr('href');
-        link = href;
-        if (href.indexOf('://') === -1) {
+        link = href ?? '';
+        if (href?.indexOf('://') === -1) {
           link = `https://www.jw.org${href}`;
         }
       }

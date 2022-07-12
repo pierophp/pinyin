@@ -9,16 +9,15 @@ import { DomParser } from './parser/dom.parser.ts';
 import { RubyParser } from './parser/ruby.parser.ts';
 import { SummaryParser } from './parser/summary.parser.ts';
 import { SiteParser } from './parser/site.parser.ts';
-import { bluebird } from '../../deps.ts';
+import { bluebird, CheerioAPI } from '../../deps.ts';
 
 export class Parser {
-  protected pdfParsedObjectPromise?: Promise<any>;
   protected baseUrl?: string;
 
   public async parse(
-    $chinese: any,
-    $language?: any,
-    $simplified?: any,
+    $chinese: CheerioAPI,
+    $language?: CheerioAPI,
+    $simplified?: CheerioAPI,
     baseUrl?: string,
     chineseUrl?: string,
   ): Promise<ParserResponseInterface> {
