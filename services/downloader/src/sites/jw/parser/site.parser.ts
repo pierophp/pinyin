@@ -1,7 +1,6 @@
-import { createRequire } from 'https://deno.land/std/node/module.ts';
-
+import striptags from 'https://esm.sh/striptags@3.2.0';
 import { isChinese } from '../../../helpers/is-chinese.ts';
-import * as separatePinyinInSyllables from '../../../helpers/separate-pinyin-in-syllables.ts';
+import { separatePinyinInSyllables } from '../../../helpers/separate-pinyin-in-syllables.ts';
 import { specialIdeogramsChars } from '../../../data/special-ideograms-chars.ts';
 
 import { BlockInterface } from '../../../interfaces/block.interface.ts';
@@ -16,9 +15,6 @@ import { fillBoldItalic } from '../../../helpers/fill.bold.italic.ts';
 function replaceall(item: string, search: string, replace: string) {
   return item.replaceAll(search, replace);
 }
-
-const require = createRequire(import.meta.url);
-const striptags = require('striptags');
 
 const pinyinConverter = new PinyinConverter();
 export class SiteParser {

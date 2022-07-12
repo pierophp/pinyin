@@ -1,5 +1,4 @@
-import { createRequire } from 'https://deno.land/std/node/module.ts';
-
+import striptags from 'https://esm.sh/striptags@3.2.0';
 import { isChinese } from '../../../helpers/is-chinese.ts';
 import { BlockInterface } from '../../../interfaces/block.interface.ts';
 import { parseBible } from '../helpers/parse.bible.ts';
@@ -9,9 +8,6 @@ import { separatePinyinInSyllables } from '../../../helpers/separate-pinyin-in-s
 import { restoreTraditional } from '../helpers/restore.traditional.ts';
 import { backHtmlTags } from '../../../helpers/back.html.tags.ts';
 import { fillBoldItalic } from '../../../helpers/fill.bold.italic.ts';
-
-const require = createRequire(import.meta.url);
-const striptags = require('striptags');
 
 // @todo remove this
 function replaceall(item: string, search: string, replace: string) {

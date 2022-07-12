@@ -1,4 +1,4 @@
-import * as replaceIdeogramsToSpace from '../../data/special-ideograms-chars.ts';
+import { specialIdeogramsChars } from '../../data/special-ideograms-chars.ts';
 import { separateWords } from '../../helpers/separate.words.ts';
 
 // @todo remove this
@@ -9,7 +9,7 @@ function replaceall(item: string, search: string, replace: string) {
 export async function segmentText(line: string): Promise<string> {
   let verifyText = line;
 
-  replaceIdeogramsToSpace.forEach((item: any) => {
+  specialIdeogramsChars.forEach((item: any) => {
     verifyText = replaceall(`${item} `, item, verifyText);
   });
 
