@@ -9,7 +9,7 @@ function replaceall(item: string, search: string, replace: string) {
 export async function segmentText(line: string): Promise<string> {
   let verifyText = line;
 
-  replaceIdeogramsToSpace.forEach((item) => {
+  replaceIdeogramsToSpace.forEach((item: any) => {
     verifyText = replaceall(`${item} `, item, verifyText);
   });
 

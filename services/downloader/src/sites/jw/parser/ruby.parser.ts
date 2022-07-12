@@ -5,7 +5,7 @@ import { BlockInterface } from '../../../interfaces/block.interface.ts';
 import { parseBible } from '../helpers/parse.bible.ts';
 import { removeSpaces } from '../../../helpers/remove.spaces.ts';
 import { ParseItemInterface } from '../interfaces/parse.item.interface.ts';
-import * as separatePinyinInSyllables from '../../../helpers/separate-pinyin-in-syllables.ts';
+import { separatePinyinInSyllables } from '../../../helpers/separate-pinyin-in-syllables.ts';
 import { restoreTraditional } from '../helpers/restore.traditional.ts';
 
 const require = createRequire(import.meta.url);

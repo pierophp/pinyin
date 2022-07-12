@@ -1,4 +1,5 @@
-import * as replaceIdeogramsToSpace from '../../data/special-ideograms-chars.ts';
+import { specialIdeogramsChars } from '../../data/special-ideograms-chars.ts';
+
 import { explodeLines } from '../helpers/explode.lines.ts';
 import { removeHtmlSpecialTags } from '../helpers/remove.html.special.tags.ts';
 import { replaceWords } from '../helpers/replace.words.ts';
@@ -12,17 +13,15 @@ function replaceall(item: string, search: string, replace: string) {
 export class Parser {
   protected text: any[] = [];
   protected figcaptionsText: any[] = [];
-  protected isChinese: boolean;
-  protected baseUrl: string;
+  protected isChinese = false;
 
-  public async parse($, isChinese: boolean, baseUrl: string) {
+  public async parse($: any, isChinese: boolean, baseUrl: string) {
     this.isChinese = isChinese;
-    this.baseUrl = baseUrl;
 
     return this.getContent($);
   }
 
-  public async getContent($) {
+  public async getContent($: any) {
     const downloadResponse: any = {};
     this.text = [];
 
@@ -53,7 +52,7 @@ export class Parser {
       mainElement = $('body');
     }
 
-    mainElement.children().each((i, children) => {
+    mainElement.children().each((i: number, children: any) => {
       this.parseBlock($, children);
     });
 
@@ -61,11 +60,11 @@ export class Parser {
     return downloadResponse;
   }
 
-  public async parseBlock($, element) {
+  public async parseBlock($: any, element: any) {
     await this.parseContent($, element, '');
   }
 
-  public async parseContent($, element, type) {
+  public async parseContent($: any, element: any, type: string) {
     if ($(element).hasClass('qu')) {
       type = 'qu';
     }
@@ -74,7 +73,7 @@ export class Parser {
       type = 'box';
     }
 
-    let footnote = null;
+    let footnote: any = null;
     if (type === 'foot') {
       footnote = replaceall('footnote', '', $(element).attr('id'));
     }
@@ -160,7 +159,7 @@ export class Parser {
     });
   }
 
-  public async getText($, element) {
+  public async getText($: any, element: any) {
     let text = $(element).html();
     if (text === null) {
       return '';
@@ -194,7 +193,7 @@ export class Parser {
         })
         .join('');
 
-      replaceIdeogramsToSpace.forEach((item) => {
+      specialIdeogramsChars.forEach((item) => {
         lineText = replaceall(item, ` ${item}${specialWord} `, lineText);
       });
 

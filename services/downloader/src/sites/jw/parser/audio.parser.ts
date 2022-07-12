@@ -1,4 +1,4 @@
-import * as replaceIdeogramsToSpace from '../../../data/special-ideograms-chars.ts';
+import { specialIdeogramsChars } from '../../../data/special-ideograms-chars.ts';
 import { Encoder } from '../../encoder.ts';
 import { Wol } from '../wol.ts';
 
@@ -27,7 +27,7 @@ export class AudioParser {
         '',
       );
 
-      replaceIdeogramsToSpace.forEach((item) => {
+      specialIdeogramsChars.forEach((item) => {
         titleWithoutSpaces = titleWithoutSpaces.replaceAll(item, '');
       });
 
@@ -41,7 +41,7 @@ export class AudioParser {
 
       let fileUrl;
 
-      const language = responseAudio.files.CHS
+      const language: any = responseAudio.files.CHS
         ? responseAudio.files.CHS
         : responseAudio.files.CH;
 
@@ -49,13 +49,13 @@ export class AudioParser {
         return fileUrl;
       }
 
-      language.MP3.some((file) => {
+      language.MP3.some((file: any) => {
         let audioTitleWithoutSpaces = String(file.title || '').replaceAll(
           ' ',
           '',
         );
 
-        replaceIdeogramsToSpace.forEach((item) => {
+        specialIdeogramsChars.forEach((item) => {
           audioTitleWithoutSpaces = audioTitleWithoutSpaces.replaceAll(
             item,
             '',

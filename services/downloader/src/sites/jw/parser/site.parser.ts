@@ -2,7 +2,8 @@ import { createRequire } from 'https://deno.land/std/node/module.ts';
 
 import { isChinese } from '../../../helpers/is-chinese.ts';
 import * as separatePinyinInSyllables from '../../../helpers/separate-pinyin-in-syllables.ts';
-import * as replaceIdeogramsToSpace from '../../../data/special-ideograms-chars.ts';
+import { specialIdeogramsChars } from '../../../data/special-ideograms-chars.ts';
+
 import { BlockInterface } from '../../../interfaces/block.interface.ts';
 import { PinyinConverter } from '../../../pinyin/pinyin.converter.ts';
 import { replaceWords } from '../../helpers/replace.words.ts';
@@ -44,7 +45,7 @@ export class SiteParser {
       })
       .join('');
 
-    replaceIdeogramsToSpace.forEach((item) => {
+    specialIdeogramsChars.forEach((item) => {
       lineText = replaceall(item, ` ${item}${specialWord} `, lineText);
     });
 

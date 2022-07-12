@@ -27,8 +27,8 @@ export class Downloader implements DownloaderInterface {
 
   public async download(
     url: string,
-    language: string,
-    ideogramType: string | null,
+    language?: string,
+    ideogramType?: string,
     convertPinyin = true,
   ) {
     if (!ideogramType) {
@@ -210,10 +210,10 @@ export class Downloader implements DownloaderInterface {
   }
 
   protected async parseLinks(
-    parsedDownload,
-    language,
-    ideogramType,
-    convertPinyin,
+    parsedDownload: any,
+    language: any,
+    ideogramType: any,
+    convertPinyin: any,
   ) {
     profiler('Getting links Start');
     const responseLinks: any = { links: [] };

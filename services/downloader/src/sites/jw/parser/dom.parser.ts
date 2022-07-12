@@ -180,7 +180,7 @@ export class DomParser {
     return this.items;
   }
 
-  public async parseBlock($: any, element) {
+  public async parseBlock($: any, element: any) {
     if (
       $(element).attr('class') &&
       $(element).attr('class').indexOf('boxSupplement') !== -1
@@ -268,7 +268,7 @@ export class DomParser {
     }
   }
 
-  public async parseContent($: any, element, type: string): Promise<void> {
+  public async parseContent($: any, element: any, type: string): Promise<void> {
     if ($(element).hasClass('qu')) {
       type = 'qu';
     }
@@ -384,7 +384,7 @@ export class DomParser {
           const urlJson = $(bible)
             .attr('href')
             .split('/')
-            .filter((item, i) => i !== 1)
+            .filter((item: any, i) => i !== 1)
             .join('/');
 
           const downloadResponse = await this.downloader.download(

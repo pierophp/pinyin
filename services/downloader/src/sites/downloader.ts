@@ -1,5 +1,5 @@
 export class Downloader {
-  protected async downloadByFetchWithVercel(url: string) {
+  protected async downloadByFetchWithVercel(url: string): Promise<string> {
     const response = await fetch(
       `https://pinyin-proxy.vercel.app/api/?url=${url}`,
     );
@@ -7,7 +7,7 @@ export class Downloader {
       throw new Error(`Error downloading ${url}`);
     }
 
-    return response.body;
+    return await response.text();
   }
 
   protected async downloadByFetch(url: string) {
@@ -22,7 +22,7 @@ export class Downloader {
     return await response.text();
   }
 
-  public async download(url: string) {
+  public async download(url: string): Promise<string> {
     try {
       return await this.downloadByFetch(url);
     } catch (e) {

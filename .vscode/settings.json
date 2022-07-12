@@ -1,6 +1,10 @@
 {
   "deno.enable": true,
-  "deno.enablePaths": ["services/downloader/netlify/edge-functions"],
+  "deno.enablePaths": [
+    "services/downloader/netlify/edge-functions",
+    "services/downloader/deno",
+    "services/downloader/src"
+  ],
   "deno.unstable": true,
   "deno.importMap": ".netlify/edge-functions-import-map.json",
   "deno.suggest.imports.hosts": {

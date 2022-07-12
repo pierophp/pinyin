@@ -1,4 +1,4 @@
-import { Downloader } from './downloader';
+import { Downloader } from './downloader.ts';
 
 interface LanguageInterface {
   [key: string]: {
@@ -91,7 +91,8 @@ export class Wol {
     try {
       const downloader = new Downloader();
       const response = await downloader.download(audioUrl);
-      return response.files.CH.MP3[0].file.url;
+      // @TODO Get back
+      // return response.files.CH.MP3[0].file.url;
     } catch (e) {
       console.error('Error on audio ' + e);
     }
