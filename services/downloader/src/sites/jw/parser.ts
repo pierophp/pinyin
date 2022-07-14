@@ -22,11 +22,11 @@ export class Parser {
     chineseUrl?: string,
   ): Promise<ParserResponseInterface> {
     this.baseUrl = baseUrl;
+    // List of articles to upload publications as a whole
     if (this.isSummary($chinese)) {
       const summaryParser = new SummaryParser();
       return await summaryParser.parse($chinese);
     }
-
     const downloadResponse: ParserResponseInterface = {
       text: [],
     };

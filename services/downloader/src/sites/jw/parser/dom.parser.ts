@@ -39,13 +39,22 @@ export class DomParser {
     /**
      * Main Image Article
      */
-    const mainImage = $('.lsrBannerImage');
-    if (mainImage.length) {
+    let mainImage = $('.lsrBannerImage');
+    if (mainImage.length > 0) {
       this.items.push({
         large: this.fullUrl($(mainImage).find('span').attr('data-zoom')),
         small: this.fullUrl($(mainImage).find('span').attr('data-img-size-lg')),
         type: 'img',
       });
+    } else {
+      mainImage = $('.article-top-related-image');
+      if (mainImage.length > 0) {
+        this.items.push({
+          large: this.fullUrl($(mainImage).find('a.zoom').attr('href')),
+          small: this.fullUrl($(mainImage).find('img').attr('src')),
+          type: 'img',
+        });
+      }
     }
 
     /**

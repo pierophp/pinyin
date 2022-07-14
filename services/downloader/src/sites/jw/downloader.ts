@@ -1,4 +1,4 @@
-import { bluebird, orderBy, cheerio, CheerioAPI } from '../../deps.ts';
+import { bluebird, cheerio, CheerioAPI } from '../../deps.ts';
 
 import { profiler } from '../../helpers/profiler.ts';
 import { Downloader as GenericDownloader } from '../downloader.ts';
@@ -7,6 +7,10 @@ import { getBaseUrl } from '../helpers/get.base.url.ts';
 import { Parser } from './parser.ts';
 import { Wol } from './wol.ts';
 import { DownloaderInterface } from '../interfaces/downloader.interface.ts';
+
+const sortBy = (key: string) => {
+  return (a: any, b: any) => (a[key] > b[key] ? 1 : b[key] > a[key] ? -1 : 0);
+};
 
 export class Downloader implements DownloaderInterface {
   protected downloader: GenericDownloader;
@@ -242,7 +246,7 @@ export class Downloader implements DownloaderInterface {
       { concurrency: 4 },
     );
 
-    responseLinks.links = orderBy(responseLinks.links, ['number']);
+    responseLinks.links.sort(sortBy('number'));
 
     profiler('Getting links End');
 

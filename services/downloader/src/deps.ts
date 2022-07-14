@@ -1,8 +1,6 @@
 import bluebird from 'https://esm.sh/bluebird@3.7.2';
 export { bluebird };
 
-export { orderBy, padStart } from 'https://esm.sh/lodash-es@4.17.21';
-
 export * as cheerio from 'https://esm.sh/cheerio@1.0.0-rc.12';
 export type { CheerioAPI } from 'https://esm.sh/cheerio@1.0.0-rc.12';
 
