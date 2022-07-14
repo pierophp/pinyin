@@ -17,3 +17,4 @@ bible-pinyin
 data/redis
 .pnpm-store
 .netlify
+playground

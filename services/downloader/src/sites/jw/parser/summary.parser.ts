@@ -1,4 +1,4 @@
-import { padStart, CheerioAPI } from '../../../deps.ts';
+import { CheerioAPI } from '../../../deps.ts';
 import { isChinese } from '../../../helpers/is-chinese.ts';
 import { separatePinyinInSyllables } from '../../../helpers/separate-pinyin-in-syllables.ts';
 import { ParserResponseInterface } from '../../interfaces/parser.response.interface.ts';
@@ -40,7 +40,7 @@ export class SummaryParser {
 
       downloadResponse.links.push({
         link: $(link).attr('href'),
-        number: padStart(String(i), 3, '0'),
+        number: String(i).padStart(3, '0'),
         title,
         title_pinyin: (await pinyinConverter.toPinyin(title.split(' ')))
           .map((item) => {

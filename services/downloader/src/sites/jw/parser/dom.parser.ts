@@ -3,9 +3,9 @@ import { removeHtmlSpecialTags } from '../../helpers/remove.html.special.tags.ts
 import { TextInterface } from '../../interfaces/text.interface.ts';
 import { profiler } from '../../../helpers/profiler.ts';
 import { Downloader } from '../../downloader.ts';
-
+import { CheerioAPI, Cheerio, Element } from '../../../deps.ts';
 // @todo remove this
-function replaceall(item: string, search: string, replace: string) {
+function replaceall(search: string, replace: string, item: string) {
   return item.replaceAll(search, replace);
 }
 
@@ -22,7 +22,10 @@ export class DomParser {
     this.downloader = new Downloader();
   }
 
-  public async parse($: any, isChinese: boolean): Promise<TextInterface[]> {
+  public async parse(
+    $: CheerioAPI,
+    isChinese: boolean,
+  ): Promise<TextInterface[]> {
     this.isChinese = isChinese;
     this.items = [];
     this.figcaptionsText = [];
@@ -39,8 +42,12 @@ export class DomParser {
     /**
      * Main Image Article
      */
-    const mainImage = $('.lsrBannerImage');
-    if (mainImage.length) {
+
+    let mainImage = $('.lsrBannerImage');
+    if (mainImage.length === 0) {
+      mainImage = $('.article-top-related-image');
+    }
+    if (mainImage.length > 0) {
       this.items.push({
         large: this.fullUrl($(mainImage).find('span').attr('data-zoom')),
         small: this.fullUrl($(mainImage).find('span').attr('data-img-size-lg')),
@@ -301,8 +308,8 @@ export class DomParser {
   }
 
   public async parseResult(
-    $: any,
-    element,
+    $: CheerioAPI,
+    element: Cheerio<Element>,
     type?: string,
     footnote?: string,
   ): Promise<TextInterface[]> {
@@ -312,7 +319,7 @@ export class DomParser {
       return [];
     }
 
-    let footNoteIds: any[] = [];
+    let footNoteIds: string[] = [];
 
     // asterisk
     let footNotes = $(element).find('.footnoteLink').toArray();
@@ -447,7 +454,7 @@ export class DomParser {
     return responseLines;
   }
 
-  protected fixTags($: any, text: string): string {
+  protected fixTags($: CheerioAPI, text: string): string {
     text = replaceall('<ruby>', 'RUBY#[', text);
     text = replaceall('</ruby>', ']#ENDRUBY', text);
 
