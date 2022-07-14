@@ -8,7 +8,19 @@ export function profiler(str: string, forceOnProduction?: boolean) {
 
   let memoryMessage = '';
   if (getEnv('PROFILER_SHOW_MEMORY') === '1') {
-    const memoryUsage = Deno.memoryUsage();
+    let memoryUsage = {
+      heapUsed: 0,
+      heapTotal: 0,
+      rss: 0,
+    };
+
+    const isDeno = typeof Deno !== 'undefined';
+    if (isDeno) {
+      memoryUsage = Deno.memoryUsage();
+    } else {
+      // @ts-ignore
+      memoryUsage = process.memoryUsage();
+    }
 
     const heapUsed = parseFloat(
       (memoryUsage.heapUsed / 1024 / 1024).toString(),
