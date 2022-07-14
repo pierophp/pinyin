@@ -11,9 +11,7 @@ export class Downloader {
   }
 
   protected async downloadByFetch(url: string) {
-    const response = await fetch(
-      `https://proxy.pinyin.workers.dev/?url=${url}`,
-    );
+    const response = await fetch(url);
 
     if (response.status > 400) {
       throw new Error(`Error downloading ${url}`);
