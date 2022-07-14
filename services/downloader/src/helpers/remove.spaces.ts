@@ -1,4 +1,5 @@
 // @todo remove this
+
 function replaceall(search: string, replace: string, item: string) {
   return item.replaceAll(search, replace);
 }

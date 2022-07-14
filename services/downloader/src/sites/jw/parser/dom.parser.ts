@@ -42,6 +42,7 @@ export class DomParser {
     /**
      * Main Image Article
      */
+
     let mainImage = $('.lsrBannerImage');
     if (mainImage.length === 0) {
       mainImage = $('.article-top-related-image');

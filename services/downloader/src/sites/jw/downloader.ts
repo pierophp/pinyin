@@ -11,7 +11,6 @@ import { DownloaderInterface } from '../interfaces/downloader.interface.ts';
 const sortBy = (key: string) => {
   return (a: any, b: any) => (a[key] > b[key] ? 1 : b[key] > a[key] ? -1 : 0);
 };
-
 export class Downloader implements DownloaderInterface {
   protected downloader: GenericDownloader;
   protected encoder: Encoder;
