@@ -18,7 +18,7 @@ export function profiler(str: string, forceOnProduction?: boolean) {
     if (isDeno) {
       memoryUsage = Deno.memoryUsage();
     } else {
-      // @ts-ignore
+      // @ts-ignorem Node compatibility
       memoryUsage = process.memoryUsage();
     }
 

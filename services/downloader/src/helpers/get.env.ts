@@ -4,6 +4,6 @@ export function getEnv(key: string) {
     return Deno.env.get(key);
   }
 
-  // @ts-ignore
+  // @ts-ignorem Node compatibility
   return process.env[key];
 }

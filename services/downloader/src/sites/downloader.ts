@@ -23,7 +23,7 @@ export class Downloader {
   public async download(url: string): Promise<string> {
     try {
       return await this.downloadByFetch(url);
-    } catch (e) {
+    } catch (_e) {
       return await this.downloadByFetchWithVercel(url);
     }
   }
