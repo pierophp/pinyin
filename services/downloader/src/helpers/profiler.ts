@@ -1,14 +1,13 @@
 import { format } from 'https://deno.land/std@0.147.0/datetime/mod.ts';
-import { config } from 'https://deno.land/x/dotenv/mod.ts';
+import { getEnv } from './get.env.ts';
 
 export function profiler(str: string, forceOnProduction?: boolean) {
-  const env = config({ safe: true });
-  if (env.PROFILER_ENABLED !== '1' || forceOnProduction !== true) {
+  if (getEnv('PROFILER_ENABLED') !== '1' || forceOnProduction !== true) {
     return;
   }
 
   let memoryMessage = '';
-  if (env.PROFILER_SHOW_MEMORY === '1') {
+  if (getEnv('PROFILER_SHOW_MEMORY') === '1') {
     const memoryUsage = Deno.memoryUsage();
 
     const heapUsed = parseFloat(
