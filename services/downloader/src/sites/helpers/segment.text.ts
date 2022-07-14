@@ -2,7 +2,7 @@ import { specialIdeogramsChars } from '../../data/special-ideograms-chars.ts';
 import { separateWords } from '../../helpers/separate.words.ts';
 
 // @todo remove this
-function replaceall(item: string, search: string, replace: string) {
+function replaceall(search: string, replace: string, item: string) {
   return item.replaceAll(search, replace);
 }
 

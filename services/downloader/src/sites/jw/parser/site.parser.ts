@@ -12,7 +12,7 @@ import { ParseItemInterface } from '../interfaces/parse.item.interface.ts';
 import { backHtmlTags } from '../../../helpers/back.html.tags.ts';
 import { fillBoldItalic } from '../../../helpers/fill.bold.italic.ts';
 // @todo remove this
-function replaceall(item: string, search: string, replace: string) {
+function replaceall(search: string, replace: string, item: string) {
   return item.replaceAll(search, replace);
 }
 
