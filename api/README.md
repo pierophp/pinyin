@@ -7,4 +7,4 @@ slc ctl status pinyin
 
 /var/log/upstart/strong-pm.log
 
-flyctl deploy --no-cache
+flyctl deploy --no-cache api/
