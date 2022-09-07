@@ -1,18 +1,20 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@aws-sdk/client-s3': ^3.163.0
-  '@cloudflare/workers-types': ^3.15.0
-  node-filesystem: ^1.0.0-beta.1
+  '@aws-sdk/client-s3': ^3.165.0
+  '@cloudflare/workers-types': ^3.16.0
+  itty-router: ^2.6.1
+  node-filesystem: ^1.0.0-beta.2
   typescript: ^4.8.2
   wrangler: 2.0.28
 
 dependencies:
-  '@aws-sdk/client-s3': 3.163.0
-  node-filesystem: 1.0.0-beta.1
+  '@aws-sdk/client-s3': 3.165.0
+  itty-router: 2.6.1
+  node-filesystem: 1.0.0-beta.2
 
 devDependencies:
-  '@cloudflare/workers-types': 3.15.0
+  '@cloudflare/workers-types': 3.16.0
   typescript: 4.8.2
   wrangler: 2.0.28
 
@@ -107,16 +109,16 @@ packages:
       tslib: 2.4.0
     dev: false
 
-  /@aws-sdk/client-s3/3.163.0:
-    resolution: {integrity: sha512-pWjsVnD9kjXeS8yan8pMj6p+3yIvzR8gEpV6MDWDbJnlhD432M8WZUsFo+lkDK+2sfvGvdIg+gKd+Cb2cO8KvQ==}
+  /@aws-sdk/client-s3/3.165.0:
+    resolution: {integrity: sha512-vVTIxf6OJoX0t2Ur64r0gQXKfSeK7VnHq4m5O6QM8IDmOuVP7jyeEt5sw1PaDC4amarVa215u/IZWsaIEDlrsw==}
     engines: {node: '>=12.0.0'}
     dependencies:
       '@aws-crypto/sha1-browser': 2.0.0
       '@aws-crypto/sha256-browser': 2.0.0
       '@aws-crypto/sha256-js': 2.0.0
-      '@aws-sdk/client-sts': 3.163.0
+      '@aws-sdk/client-sts': 3.165.0
       '@aws-sdk/config-resolver': 3.163.0
-      '@aws-sdk/credential-provider-node': 3.163.0
+      '@aws-sdk/credential-provider-node': 3.165.0
       '@aws-sdk/eventstream-serde-browser': 3.162.0
       '@aws-sdk/eventstream-serde-config-resolver': 3.162.0
       '@aws-sdk/eventstream-serde-node': 3.162.0
@@ -135,7 +137,7 @@ packages:
       '@aws-sdk/middleware-logger': 3.162.0
       '@aws-sdk/middleware-recursion-detection': 3.162.0
       '@aws-sdk/middleware-retry': 3.162.0
-      '@aws-sdk/middleware-sdk-s3': 3.162.0
+      '@aws-sdk/middleware-sdk-s3': 3.165.0
       '@aws-sdk/middleware-serde': 3.162.0
       '@aws-sdk/middleware-signing': 3.163.0
       '@aws-sdk/middleware-ssec': 3.162.0
@@ -170,8 +172,8 @@ packages:
       - aws-crt
     dev: false
 
-  /@aws-sdk/client-sso/3.163.0:
-    resolution: {integrity: sha512-qWVDIhHwrGQf+vu+y/6Yq/YaWwdp8wa3OhX5JbaU5aBEoRYVAMEZX/srHKcfGR4Lu9lHoUZcXp3XnKugZiN49g==}
+  /@aws-sdk/client-sso/3.165.0:
+    resolution: {integrity: sha512-Cizf03z6UFgHWOIQYOjZdNwUhoh6yhT5B2dH+mh1q+Naq1zsLmD2PUvx7SM+0fZsN9MhOICLyBSE/nSSE7E8Kg==}
     engines: {node: '>=12.0.0'}
     dependencies:
       '@aws-crypto/sha256-browser': 2.0.0
@@ -209,14 +211,14 @@ packages:
       - aws-crt
     dev: false
 
-  /@aws-sdk/client-sts/3.163.0:
-    resolution: {integrity: sha512-gm0dzuy+qE61F0W8YYGeSQzY9Bn0O+K6LMcwxJhsOkN8drzEe3KJqEIfSSrYBgUoSc5+qvzwmXpC1W9hb8D1ZA==}
+  /@aws-sdk/client-sts/3.165.0:
+    resolution: {integrity: sha512-pizXLuaIRDdC1zseB0v/YQ3IKxzJfD/bVBgOhQNCNVr4d7O7/oDXU3I+GhESmKpWopQADg1s1Q3NGtkUoJJUew==}
     engines: {node: '>=12.0.0'}
     dependencies:
       '@aws-crypto/sha256-browser': 2.0.0
       '@aws-crypto/sha256-js': 2.0.0
       '@aws-sdk/config-resolver': 3.163.0
-      '@aws-sdk/credential-provider-node': 3.163.0
+      '@aws-sdk/credential-provider-node': 3.165.0
       '@aws-sdk/fetch-http-handler': 3.162.0
       '@aws-sdk/hash-node': 3.162.0
       '@aws-sdk/invalid-dependency': 3.162.0
@@ -284,13 +286,13 @@ packages:
       tslib: 2.4.0
     dev: false
 
-  /@aws-sdk/credential-provider-ini/3.163.0:
-    resolution: {integrity: sha512-i6WF+Q00MKzFnzVqQie0xDCVq0JtAxq9UA0lCHOAtKwIvQXTZka/Ya3oII0cn9I3avCZLcI/SYZc9lmVEiJfDg==}
+  /@aws-sdk/credential-provider-ini/3.165.0:
+    resolution: {integrity: sha512-NrLe29bdhmpNPsEsYxUxb0hTxNMXCmz5pH2l/T9COT6SMxom1wpbB/aKwf9897Z1xvhoFi6flDQjmu//599BZw==}
     engines: {node: '>= 12.0.0'}
     dependencies:
       '@aws-sdk/credential-provider-env': 3.162.0
       '@aws-sdk/credential-provider-imds': 3.162.0
-      '@aws-sdk/credential-provider-sso': 3.163.0
+      '@aws-sdk/credential-provider-sso': 3.165.0
       '@aws-sdk/credential-provider-web-identity': 3.162.0
       '@aws-sdk/property-provider': 3.162.0
       '@aws-sdk/shared-ini-file-loader': 3.162.0
@@ -300,15 +302,15 @@ packages:
       - aws-crt
     dev: false
 
-  /@aws-sdk/credential-provider-node/3.163.0:
-    resolution: {integrity: sha512-43Fp3YyfgK8M+yEpzxUXUWwGzG4AEpd+4IO5CBna0ZnrNX+x7JbZTUXfSopkPkMnZeudgjHvNF6/Vr7v9pOSkw==}
+  /@aws-sdk/credential-provider-node/3.165.0:
+    resolution: {integrity: sha512-emUd3kqAvV8Qydn5pJ+YKo47UJ+B5RXNyQXMasNQsw1jxrB60j8QAIL9JGM019SzZBnHZuW3DrHClA17OVC+xQ==}
     engines: {node: '>=12.0.0'}
     dependencies:
       '@aws-sdk/credential-provider-env': 3.162.0
       '@aws-sdk/credential-provider-imds': 3.162.0
-      '@aws-sdk/credential-provider-ini': 3.163.0
+      '@aws-sdk/credential-provider-ini': 3.165.0
       '@aws-sdk/credential-provider-process': 3.162.0
-      '@aws-sdk/credential-provider-sso': 3.163.0
+      '@aws-sdk/credential-provider-sso': 3.165.0
       '@aws-sdk/credential-provider-web-identity': 3.162.0
       '@aws-sdk/property-provider': 3.162.0
       '@aws-sdk/shared-ini-file-loader': 3.162.0
@@ -328,11 +330,11 @@ packages:
       tslib: 2.4.0
     dev: false
 
-  /@aws-sdk/credential-provider-sso/3.163.0:
-    resolution: {integrity: sha512-VbmxP4Z0sxqBzbqs5u86/5q2PG3xzTClOWE1aUWoiBLqDRkO3+4lpLUKD0lwh9Ot3Ai/pT2KYDgxkRBXrfA/bA==}
+  /@aws-sdk/credential-provider-sso/3.165.0:
+    resolution: {integrity: sha512-b2BuYyUSmnfChhz5ZbnqOaLSAsnzYcwpEPEUbQUdNGPSE3QcMd0SPl3woH82095WYlXTFjwgxlOPn5ad5hdBpA==}
     engines: {node: '>= 12.0.0'}
     dependencies:
-      '@aws-sdk/client-sso': 3.163.0
+      '@aws-sdk/client-sso': 3.165.0
       '@aws-sdk/property-provider': 3.162.0
       '@aws-sdk/shared-ini-file-loader': 3.162.0
       '@aws-sdk/types': 3.162.0
@@ -540,8 +542,8 @@ packages:
       uuid: 8.3.2
     dev: false
 
-  /@aws-sdk/middleware-sdk-s3/3.162.0:
-    resolution: {integrity: sha512-uwdqdmaPbFaui/AYjmlfULvYulG3v3MvNymDU2zngs0tNQO5DMtLFRUeVl1M2a10bvumR6JcXH+MnZhBMCWmnw==}
+  /@aws-sdk/middleware-sdk-s3/3.165.0:
+    resolution: {integrity: sha512-OaCQqrgvJLdCVmBwSvQ/woYyDfYuOHUY4i7hl/DDH20QGq1n/CE8g7BBvFVqEaptin0dunFVHOOgzopmVpmOUQ==}
     engines: {node: '>= 12.0.0'}
     dependencies:
       '@aws-sdk/middleware-bucket-endpoint': 3.162.0
@@ -900,8 +902,8 @@ packages:
       mime: 3.0.0
     dev: true
 
-  /@cloudflare/workers-types/3.15.0:
-    resolution: {integrity: sha512-meL/Afy5qdIsgfdnlbVfcYUh/YjHk23EWUvgmULf6iDrDbrBcd+fse2os3CC7rxSfScdP1OqJVTHgRSEjUm/Pw==}
+  /@cloudflare/workers-types/3.16.0:
+    resolution: {integrity: sha512-gaBUSaKS65mN3iKZEgichbXYEmAa/pXkc5Gbt+1BptYphdGkj09ggdsiE4w8g0F/uI1g36QaTKrzVnBAWMipvQ==}
     dev: true
 
   /@esbuild-plugins/node-globals-polyfill/0.1.1_esbuild@0.14.51:
@@ -1032,7 +1034,7 @@ packages:
       '@miniflare/shared': 2.7.1
       '@miniflare/web-sockets': 2.7.1
       kleur: 4.1.5
-      selfsigned: 2.0.1
+      selfsigned: 2.1.1
       undici: 5.9.1
       ws: 8.8.1
       youch: 2.2.2
@@ -1696,6 +1698,10 @@ packages:
     engines: {node: '>=8'}
     dev: false
 
+  /itty-router/2.6.1:
+    resolution: {integrity: sha512-l9gxWe5TOLUESYnBn85Jxd6tIZLWdRX5YKkHIBfSgbNQ7UFPNUGuWihRV+LlEbfJJIzgLmhwAbaWRi5yWJm8kg==}
+    dev: false
+
   /json-bigint/1.0.0:
     resolution: {integrity: sha512-SiPv/8VpZuWbvLSMtTDU8hEfrZWg/mH/nV/b4o0CYbSxu1UIQPLdwKOCIyLQX+VIPO5vrLX3i8qtqFyhdPSUSQ==}
     dependencies:
@@ -1853,11 +1859,11 @@ packages:
       whatwg-url: 5.0.0
     dev: false
 
-  /node-filesystem/1.0.0-beta.1:
-    resolution: {integrity: sha512-bXLVGc1D6MI0gZ7Zsr9QKFkEHfkwUQNszZzBVqt88Na6Sd0s4R6DGGoL03SSHI9bZ+KRGdKJSGGFZkUDzBHrBA==}
+  /node-filesystem/1.0.0-beta.2:
+    resolution: {integrity: sha512-EDzgAJlzUJMAE1y0TLBh31MV/lwrfIGmaRSB29U/Oj3KXWMS9ix63I2JRrJGwNg8lh2Itwp8pyhduyz1Ng7W5w==}
     engines: {node: '>=14.0'}
     dependencies:
-      '@aws-sdk/client-s3': 3.163.0
+      '@aws-sdk/client-s3': 3.165.0
       '@google-cloud/storage': 6.4.2
       fs-extra: 4.0.3
       lodash: 4.17.21
@@ -1964,8 +1970,8 @@ packages:
     resolution: {integrity: sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==}
     dev: false
 
-  /selfsigned/2.0.1:
-    resolution: {integrity: sha512-LmME957M1zOsUhG+67rAjKfiWFox3SBxE/yymatMZsAx+oMrJ0YQ8AToOnyCm7xbeg2ep37IHLxdu0o2MavQOQ==}
+  /selfsigned/2.1.1:
+    resolution: {integrity: sha512-GSL3aowiF7wa/WtSFwnUrludWFoNhftq8bUkH9pkzjpN2XSPOAYEgg6e0sS9s0rZwgJzJiQRPU18A6clnoW5wQ==}
     engines: {node: '>=10'}
     dependencies:
       node-forge: 1.3.1
@@ -2117,7 +2123,7 @@ packages:
       miniflare: 2.7.1
       nanoid: 3.3.4
       path-to-regexp: 6.2.1
-      selfsigned: 2.0.1
+      selfsigned: 2.1.1
       source-map: 0.7.4
       xxhash-wasm: 1.0.1
     optionalDependencies:
