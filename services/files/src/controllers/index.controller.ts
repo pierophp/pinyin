@@ -6,6 +6,6 @@ export class IndexController {
     env: Env,
     ctx: ExecutionContext,
   ): Promise<Response> {
-    return new Response('Home!');
+    return Response.json({ welcome: 'Welcome to Pinyin Files' });
   }
 }
