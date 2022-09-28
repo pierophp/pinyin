@@ -1,11 +1,7 @@
-import { Env } from '..';
-import { Request } from 'itty-router';
+import { AppRequest } from '..';
+
 export class IndexController {
-  public static async welcome(
-    req: Request,
-    env: Env,
-    ctx: ExecutionContext,
-  ): Promise<Response> {
+  public static async welcome(req: AppRequest): Promise<Response> {
     return new Response('Home!');
   }
 }
