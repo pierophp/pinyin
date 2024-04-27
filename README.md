@@ -34,3 +34,4 @@ $ git config core.hooksPath hooks/
 ```
 
 <img src="https://travis-ci.org/pierophp/pinyin.svg" alt="build:passed">
+
