@@ -57,6 +57,7 @@ export class DomParser {
      * Main Elements Priority
      */
     const mainElements = [
+      'article > .scalableui > .bodyTxt',
       'article > .docSubContent .textSizeIncrement > div[class="  "]',
       'article > .docSubContent .textSizeIncrement > div[class=""]',
       'article > .docSubContent .textSizeIncrement',

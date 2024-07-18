@@ -38,8 +38,9 @@ export class Parser {
       text: [],
     };
 
-    const audioParser = new AudioParser();
-    downloadResponse.audio = await audioParser.parse($chinese, chineseUrl!);
+
+    // const audioParser = new AudioParser();
+    // downloadResponse.audio = await audioParser.parse($chinese, chineseUrl!);
 
     const chineseDomParser = new DomParser(this.baseUrl);
     const chinesePromise = chineseDomParser.parse($chinese, true);
