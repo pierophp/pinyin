@@ -1,4 +1,7 @@
 import * as moment from 'moment';
+import { appendFile } from 'fs';
+
+let profileToFile = false;
 
 export function profiler(str: string, forceOnProduction?: boolean) {
   // if (process.env.NODE_ENV === 'production' && forceOnProduction !== true) {
@@ -22,6 +25,12 @@ export function profiler(str: string, forceOnProduction?: boolean) {
     memoryMessage = `- Mem RSS ${memoryUsage}MB - Mem Tot ${memoryTotal}MB - Mem Usag ${memoryRSS}MB `;
   }
 
-  // eslint-disable-next-line
-  console.log(`${moment().format('HH:mm:ss')} ${memoryMessage}${str}`);
+  if(profileToFile) {
+    appendFile("/home/piero/dev/pinyin/log.txt", `${moment().format('HH:mm:ss')} ${memoryMessage}${str}\n`, () =>{});
+  } else {
+    // eslint-disable-next-line
+    console.log(`${moment().format('HH:mm:ss')} ${memoryMessage}${str}`);
+  }
+
+
 }

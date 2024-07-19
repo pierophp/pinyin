@@ -167,10 +167,14 @@ export class DomParser {
         }
       } else {
         if (this.debug) {
-          profiler('LEVEL 1 - Generic');
+          profiler('LEVEL 1 - Generic START');
         }
 
         await this.parseBlock($, children);
+
+        if (this.debug) {
+          profiler('LEVEL 1 - Generic END');
+        }
       }
     }
 
@@ -258,10 +262,14 @@ export class DomParser {
       }
     } else {
       if (this.debug) {
-        profiler('PARSE BLOCK - GENERIC');
+        profiler('PARSE BLOCK - GENERIC START');
       }
 
       await this.parseContent($, element, '');
+
+      if (this.debug) {
+        profiler('PARSE BLOCK - GENERIC END');
+      }
     }
   }
 
@@ -292,9 +300,17 @@ export class DomParser {
       return;
     }
 
+    if (this.debug) {
+      profiler('PARSE RESULTS START');
+    }
+
     this.items = this.items.concat(
       await this.parseResult($, element, type, footnote),
     );
+
+    if (this.debug) {
+      profiler('PARSE RESULTS END');
+    }
   }
 
   public async parseResult(
@@ -384,25 +400,28 @@ export class DomParser {
             .filter((item, i) => i !== 1)
             .join('/');
 
-          const downloadResponse = await this.downloader.download(
-            this.fullUrl(urlJson),
-          );
 
-          const item = downloadResponse.items[0];
+          // COMENTADO BÌBLIA
 
-          const bibleBook = item.book;
-          const bibleChapter = item.first_chapter;
-          const bibleVerses: any[] = [];
-          bibleVerses.push(item.first_verse);
-          bibleVerses.push(item.last_verse);
+          // const downloadResponse = await this.downloader.download(
+          //   this.fullUrl(urlJson),
+          // );
 
-          text = replaceall(
-            $.html(bible),
-            `BI#[${bibleBook}:${bibleChapter}:${bibleVerses.join('-')}]#BI${$(
-              bible,
-            ).html()}]#ENDBI`,
-            text,
-          );
+          // const item = downloadResponse.items[0];
+
+          // const bibleBook = item.book;
+          // const bibleChapter = item.first_chapter;
+          // const bibleVerses: any[] = [];
+          // bibleVerses.push(item.first_verse);
+          // bibleVerses.push(item.last_verse);
+
+          // text = replaceall(
+          //   $.html(bible),
+          //   `BI#[${bibleBook}:${bibleChapter}:${bibleVerses.join('-')}]#BI${$(
+          //     bible,
+          //   ).html()}]#ENDBI`,
+          //   text,
+          // );
         }
       }
     }

@@ -140,7 +140,11 @@ export class Downloader {
       }
     } catch (e) {}
 
-    return cheerio.load(response);
+    profiler(`Cherio Load Start`);
+    const cherioResponse = cheerio.load(response);
+    profiler(`Cherio Load End`);
+
+    return cherioResponse;
   }
 
   protected async downloadChineseByLink(
