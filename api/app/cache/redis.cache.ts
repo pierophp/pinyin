@@ -6,7 +6,7 @@ bluebird.promisifyAll(redis.RedisClient.prototype);
 const redisClient = redis.createClient({
   host: process.env['REDIS_HOST'] ?? env.redis_host,
   port: process.env['REDIS_PORT'] ?? env.redis_port ?? 6379,
-  password: process.env['REDIS_PASSWORD'] ?? env.redis_password,
+  password: process.env['REDIS_PASS'] ?? env.redis_pass,
 });
 
 export class RedisCache {
