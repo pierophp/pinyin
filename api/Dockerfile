@@ -11,7 +11,7 @@ RUN npm install -g pnpm
 COPY ./ /var/www/pinyin
 WORKDIR /var/www/pinyin/
 
-RUN pnpm install --production
-RUN pnpm run build
+RUN npm install --production
+RUN npm run build
 
 ENTRYPOINT [ "node", "/var/www/pinyin/dist/app/index.js" ]
