@@ -13,21 +13,28 @@ module.exports = function passportConfig(passport) {
       .where({
         id,
       })
-      .then(data => {
+      .then((data) => {
         done(null, data[0]);
       });
   });
 
-  if (!env.google_client_id || !env.google_client_secret) {
+  const googleClientId =
+    process.env['GOOGLE_CLIENT_ID'] ?? env.google_client_id;
+  const googleClientSecret =
+    process.env['GOOGLE_CLIENT_SECRET'] ?? env.google_client_secret;
+
+  if (!googleClientId || !googleClientSecret) {
     throw new Error(
       'define google_client_id and google_client_secret in your env.js file',
     );
   }
 
+  const frontUrl = process.env['FRONT_URL'] ?? env.front_url;
+
   const googleOpts = {
-    clientID: env.google_client_id,
-    clientSecret: env.google_client_secret,
-    callbackURL: `${env.front_url}/`,
+    clientID: googleClientId,
+    clientSecret: googleClientSecret,
+    callbackURL: `${frontUrl}/`,
   };
 
   passport.use(
@@ -38,7 +45,7 @@ module.exports = function passportConfig(passport) {
             provider: 'google',
             profile_id: profile.id,
           })
-          .then(data => {
+          .then((data) => {
             if (data.length > 0) {
               done(null, data[0]);
               return;
@@ -59,57 +66,63 @@ module.exports = function passportConfig(passport) {
                     provider: 'google',
                     profile_id: profile.id,
                   })
-                  .then(user => done(null, user[0]));
+                  .then((user) => done(null, user[0]));
               });
           });
       });
     }),
   );
 
-  const baiduOpts = {
-    clientID: env.baidu_client_id,
-    clientSecret: env.baidu_client_secret,
-    callbackURL: `${env.front_url}#/login/baidu`,
-  };
+  const baiduClientId = process.env['BAIDU_CLIENT_ID'] ?? env.baidu_client_id;
+  const baiduClientSecret =
+    process.env['BAIDU_CLIENT_SECRET'] ?? env.baidu_client_secret;
 
-  passport.use(
-    new BaiduStrategy(baiduOpts, (token, refreshToken, profile, done) => {
-      process.nextTick(() => {
-        knex('user')
-          .where({
-            provider: 'baidu',
-            profile_id: profile.id,
-          })
-          .then(data => {
-            if (data.length > 0) {
-              done(null, data[0]);
-              return;
-            }
+  if (baiduClientId && baiduClientSecret) {
+    const baiduOpts = {
+      clientID: baiduClientId,
+      clientSecret: baiduClientSecret,
+      callbackURL: `${frontUrl}#/login/baidu`,
+    };
 
-            let name = profile.displayName;
-            if (!name) {
-              name = profile.username;
-            }
+    passport.use(
+      new BaiduStrategy(baiduOpts, (token, refreshToken, profile, done) => {
+        process.nextTick(() => {
+          knex('user')
+            .where({
+              provider: 'baidu',
+              profile_id: profile.id,
+            })
+            .then((data) => {
+              if (data.length > 0) {
+                done(null, data[0]);
+                return;
+              }
 
-            knex('user')
-              .insert({
-                provider: 'baidu',
-                profile_id: profile.id,
-                token,
-                name,
-                email: profile.username,
-                created_at: new Date(),
-              })
-              .then(() => {
-                knex('user')
-                  .where({
-                    provider: 'baidu',
-                    profile_id: profile.id,
-                  })
-                  .then(user => done(null, user[0]));
-              });
-          });
-      });
-    }),
-  );
+              let name = profile.displayName;
+              if (!name) {
+                name = profile.username;
+              }
+
+              knex('user')
+                .insert({
+                  provider: 'baidu',
+                  profile_id: profile.id,
+                  token,
+                  name,
+                  email: profile.username,
+                  created_at: new Date(),
+                })
+                .then(() => {
+                  knex('user')
+                    .where({
+                      provider: 'baidu',
+                      profile_id: profile.id,
+                    })
+                    .then((user) => done(null, user[0]));
+                });
+            });
+        });
+      }),
+    );
+  }
 };

@@ -1,4 +1,4 @@
-env.js
+.env
 env.prod.js
 node_modules/
 newrelic.js

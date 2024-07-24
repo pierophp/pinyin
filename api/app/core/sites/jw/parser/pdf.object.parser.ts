@@ -42,8 +42,9 @@ export class PdfObjecyParser {
 
       let dirname = `${__dirname.replace('dist/', '')}/../../../../../storage/`;
 
-      if (env.storage_path) {
-        dirname = `${env.storage_path}`;
+      const storagePathEnv = process.env['STORAGE_PATH'] ?? env.storage_path;
+      if (storagePathEnv) {
+        dirname = `${storagePathEnv}`;
       }
 
       if (pdfPinyinList.length) {

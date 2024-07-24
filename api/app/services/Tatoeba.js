@@ -27,8 +27,9 @@ const languages = {
 let storagePath = path.resolve(`${__dirname}/../../../storage/`);
 storagePath += '/';
 
-if (env.storage_path) {
-  storagePath = env.storage_path;
+const storagePathEnv = process.env['STORAGE_PATH'] ?? env.storage_path;
+if (storagePathEnv) {
+  storagePath = storagePathEnv;
 }
 
 module.exports = class Tatoeba {

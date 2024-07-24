@@ -4,13 +4,14 @@ import * as replaceall from 'replaceall';
 import * as env from '../../../env';
 
 let dirname = `${__dirname.replace('dist/', '')}/../../../../storage/`;
-if (env.storage_path) {
-  dirname = `${env.storage_path}`;
+const storagePathEnv = process.env['STORAGE_PATH'] ?? env.storage_path;
+if (storagePathEnv) {
+  dirname = `${storagePathEnv}`;
 }
 
 export class FileManager {
   protected getAdapter(): AdapterInterface {
-    let adapter = env.files_adapter;
+    let adapter = process.env['FILES_ADAPTER'] ?? env.files_adapter;
     if (!adapter) {
       adapter = 'local';
     }
@@ -21,12 +22,16 @@ export class FileManager {
 
     if (adapter === 's3') {
       const s3Client = new AWS.S3({
-        accessKeyId: env.aws_access_key_id,
-        secretAccessKey: env.aws_secret_access_key,
-        region: env.aws_region,
+        accessKeyId: process.env['AWS_ACCESS_KEY_ID'] ?? env.aws_access_key_id,
+        secretAccessKey:
+          process.env['AWS_SECRET_ACCESS_KEY'] ?? env.aws_secret_access_key,
+        region: process.env['AWS_REGION'] ?? env.aws_region,
       });
 
-      return new S3Adapter(s3Client as any, env.aws_s3_bucket);
+      return new S3Adapter(
+        s3Client as any,
+        process.env['AWS_S3_BUCKET'] ?? env.aws_s3_bucket,
+      );
     }
 
     throw new Error('Invalid adapter');

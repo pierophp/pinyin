@@ -8,8 +8,9 @@ const fs = require('fs');
 program.parse(process.argv);
 
 let storagePath = `${__dirname}/../../storage/`;
-if (env.storage_path) {
-  storagePath = env.storage_path;
+const storagePathEnv = process.env['STORAGE_PATH'] ?? env.storage_path;
+if (storagePathEnv) {
+  storagePath = storagePathEnv;
 }
 
 const filename = `${storagePath}ucd.unihan.flat.xml`;
@@ -48,7 +49,7 @@ const downloadFile = function downloadFile() {
 
   const download = wget.download(src, filenameZip);
 
-  download.on('error', err => {
+  download.on('error', (err) => {
     // eslint-disable-next-line
     console.log(`Error: ${err}`);
   });

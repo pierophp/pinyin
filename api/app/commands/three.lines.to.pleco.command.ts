@@ -13,8 +13,10 @@ export class ThreeLinesToPlecoCommand implements CommandModule {
 
   public async handler(argv: Arguments) {
     let dirname = `${__dirname}/../../../storage/`;
-    if (env.storage_path) {
-      dirname = `${env.storage_path}/`;
+
+    const storagePathEnv = process.env['STORAGE_PATH'] ?? env.storage_path;
+    if (storagePathEnv) {
+      dirname = `${storagePathEnv}/`;
     }
 
     const content = await readFile(dirname + '3Lines_Spanish-Pinyin.txt');
@@ -43,7 +45,7 @@ export class ThreeLinesToPlecoCommand implements CommandModule {
         '',
       )}\t${fields[3]
         .split('/')
-        .filter(item => {
+        .filter((item) => {
           return item !== '*';
         })
         .join(String.fromCharCode(60081))}\n`;

@@ -13,9 +13,11 @@ router.get('/is_logged_in', async (req: any, res) => {
   if (req.isAuthenticated()) {
     user.id = req.user.id;
 
-    const dbUser = (await knex('user').where({
-      id: req.user.id,
-    }))[0];
+    const dbUser = (
+      await knex('user').where({
+        id: req.user.id,
+      })
+    )[0];
 
     user.admin = dbUser.admin;
     user.name = dbUser.name;
@@ -47,7 +49,7 @@ router.get(
   (req: any, res) => {
     const token = jwt.sign(
       { id: req.user.id, admin: req.user.admin },
-      env.jwt_key,
+      process.env['JWT_KEY'] ?? env.jwt_key,
     );
     res.send({
       token,
@@ -68,7 +70,7 @@ router.get(
   (req: any, res) => {
     const token = jwt.sign(
       { id: req.user.id, admin: req.user.admin },
-      env.jwt_key,
+      process.env['JWT_KEY'] ?? env.jwt_key,
     );
     res.send({
       token,

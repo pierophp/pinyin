@@ -436,7 +436,9 @@ export class ElasticsearchProvider {
     }
 
     client = new Client({
-      host: `${env.elasticsearch_host}:${env.elasticsearch_port}`,
+      host: `${process.env['ELASTICSEARCH_HOST'] ?? env.elasticsearch_host}:${
+        process.env['ELASTICSEARCH_PORT'] ?? env.elasticsearch_port
+      }`,
       // log: 'trace',
     });
 

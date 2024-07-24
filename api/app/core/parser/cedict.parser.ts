@@ -9,8 +9,9 @@ import * as knex from '../../services/knex';
 import { IdeogramsConverter } from '../converter/ideograms.converter';
 
 let storagePath = `${__dirname}/../../../../storage/`;
-if (env.storage_path) {
-  storagePath = env.storage_path;
+const storagePathEnv = process.env['STORAGE_PATH'] ?? env.storage_path;
+if (storagePathEnv) {
+  storagePath = storagePathEnv;
 }
 
 const filename = `${storagePath}cedict_ts.u8`;

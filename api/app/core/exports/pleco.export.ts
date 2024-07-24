@@ -86,8 +86,9 @@ export class PlecoExport {
     dictionary?: string,
   ) {
     let dirname = `${__dirname}/../../../../storage/`;
-    if (env.storage_path) {
-      dirname = `${env.storage_path}/`;
+    const storagePathEnv = process.env['STORAGE_PATH'] ?? env.storage_path;
+    if (storagePathEnv) {
+      dirname = `${storagePathEnv}/`;
     }
 
     const ideogramsConverter = new IdeogramsConverter();
