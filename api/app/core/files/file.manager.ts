@@ -26,7 +26,7 @@ export class FileManager {
         region: process.env['AWS_REGION'],
       });
 
-      return new S3Adapter(s3Client as any, process.env['AWS_S3_BUCKET']);
+      return new S3Adapter(s3Client as any, process.env['AWS_S3_BUCKET']!);
     }
 
     throw new Error('Invalid adapter');
