@@ -14,4 +14,4 @@ WORKDIR /var/www/pinyin/
 RUN npm install --production
 RUN npm run build
 
-ENTRYPOINT [ "node", "/var/www/pinyin/dist/app/index.js" ]
+ENTRYPOINT [ "node", "/var/www/pinyin/dist/app/server.js" ]
