@@ -24,6 +24,7 @@ app.use(cors());
 app.use(
   jwt({
     secret: process.env['JWT_KEY'],
+    algorithms: ['HS256'],
   }).unless({
     path: [
       '/',
