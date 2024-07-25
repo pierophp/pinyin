@@ -1,6 +1,5 @@
 import { readFile, writeFile } from 'fs-extra';
 import { Arguments, CommandModule } from 'yargs';
-import * as env from '../../env';
 
 /**
  *
@@ -14,7 +13,7 @@ export class ThreeLinesToPlecoCommand implements CommandModule {
   public async handler(argv: Arguments) {
     let dirname = `${__dirname}/../../../storage/`;
 
-    const storagePathEnv = process.env['STORAGE_PATH'] ?? env.storage_path;
+    const storagePathEnv = process.env['STORAGE_PATH'];
     if (storagePathEnv) {
       dirname = `${storagePathEnv}/`;
     }

@@ -1,4 +1,3 @@
-const env = require('../../env');
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const BaiduStrategy = require('passport-baidu').Strategy;
 const knex = require('../services/knex');
@@ -18,18 +17,16 @@ module.exports = function passportConfig(passport) {
       });
   });
 
-  const googleClientId =
-    process.env['GOOGLE_CLIENT_ID'] ?? env.google_client_id;
-  const googleClientSecret =
-    process.env['GOOGLE_CLIENT_SECRET'] ?? env.google_client_secret;
+  const googleClientId = process.env['GOOGLE_CLIENT_ID'];
+  const googleClientSecret = process.env['GOOGLE_CLIENT_SECRET'];
 
   if (!googleClientId || !googleClientSecret) {
     throw new Error(
-      'define google_client_id and google_client_secret in your env.js file',
+      'define google_client_id and google_client_secret in your env file',
     );
   }
 
-  const frontUrl = process.env['FRONT_URL'] ?? env.front_url;
+  const frontUrl = process.env['FRONT_URL'];
 
   const googleOpts = {
     clientID: googleClientId,
@@ -73,9 +70,8 @@ module.exports = function passportConfig(passport) {
     }),
   );
 
-  const baiduClientId = process.env['BAIDU_CLIENT_ID'] ?? env.baidu_client_id;
-  const baiduClientSecret =
-    process.env['BAIDU_CLIENT_SECRET'] ?? env.baidu_client_secret;
+  const baiduClientId = process.env['BAIDU_CLIENT_ID'];
+  const baiduClientSecret = process.env['BAIDU_CLIENT_SECRET'];
 
   if (baiduClientId && baiduClientSecret) {
     const baiduOpts = {

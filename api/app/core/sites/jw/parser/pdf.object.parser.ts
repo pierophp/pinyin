@@ -1,7 +1,6 @@
 import * as cheerio from 'cheerio';
 import * as getPdfParsedObject from 'pdf-pinyin/src/core/get.pdf.parsed.object';
 import { Downloader as GenericDownloader } from '../../downloader';
-import * as env from '../../../../../env';
 
 export class PdfObjecyParser {
   public async parse($: any): Promise<any> {
@@ -42,7 +41,7 @@ export class PdfObjecyParser {
 
       let dirname = `${__dirname.replace('dist/', '')}/../../../../../storage/`;
 
-      const storagePathEnv = process.env['STORAGE_PATH'] ?? env.storage_path;
+      const storagePathEnv = process.env['STORAGE_PATH'];
       if (storagePathEnv) {
         dirname = `${storagePathEnv}`;
       }

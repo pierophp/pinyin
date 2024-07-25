@@ -2,7 +2,6 @@ import { remove as removeDiacritics } from 'diacritics';
 import { writeFile } from 'fs-extra';
 import * as replaceall from 'replaceall';
 import * as separatePinyinInSyllables from '../../helpers/separate-pinyin-in-syllables';
-import * as env from '../../../env';
 import extractPinyinTone from '../../helpers/extract-pinyin-tone';
 import { CjkRepository } from '../../repository/cjk.repository';
 import { IdeogramsConverter } from '../converter/ideograms.converter';
@@ -86,7 +85,7 @@ export class PlecoExport {
     dictionary?: string,
   ) {
     let dirname = `${__dirname}/../../../../storage/`;
-    const storagePathEnv = process.env['STORAGE_PATH'] ?? env.storage_path;
+    const storagePathEnv = process.env['STORAGE_PATH'];
     if (storagePathEnv) {
       dirname = `${storagePathEnv}/`;
     }

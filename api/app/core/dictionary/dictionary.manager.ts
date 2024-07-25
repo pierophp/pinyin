@@ -1,4 +1,3 @@
-import * as env from '../../../env';
 import { DatabaseProvider } from '../search/database.provider';
 import { ElasticsearchProvider } from '../search/elasticsearch.provider';
 

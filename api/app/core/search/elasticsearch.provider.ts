@@ -1,4 +1,3 @@
-import * as env from '../../../env';
 import { Client } from 'elasticsearch';
 import { IdeogramsConverter } from '../converter/ideograms.converter';
 import * as isChinese from '../../helpers/is-chinese';
@@ -436,9 +435,7 @@ export class ElasticsearchProvider {
     }
 
     client = new Client({
-      host: `${process.env['ELASTICSEARCH_HOST'] ?? env.elasticsearch_host}:${
-        process.env['ELASTICSEARCH_PORT'] ?? env.elasticsearch_port
-      }`,
+      host: `${process.env['ELASTICSEARCH_HOST']}:${process.env['ELASTICSEARCH_PORT']}`,
       // log: 'trace',
     });
 

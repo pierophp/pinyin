@@ -4,7 +4,6 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const express = require('express');
-const env = require('../env');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const cors = require('cors');
@@ -15,7 +14,7 @@ if (process.env.NODE_ENV === 'production') {
   // RAVEN - SENTRY
   // eslint-disable-next-line global-require
   const Raven = require('raven');
-  Raven.config(process.env['SENTRY_DSN'] ?? env.sentry_dsn).install();
+  Raven.config(process.env['SENTRY_DSN']).install();
   app.use(Raven.requestHandler());
   app.use(Raven.errorHandler());
 }
@@ -24,7 +23,7 @@ app.use(cors());
 
 app.use(
   jwt({
-    secret: process.env['JWT_KEY'] ?? env.jwt_key,
+    secret: process.env['JWT_KEY'],
   }).unless({
     path: [
       '/',

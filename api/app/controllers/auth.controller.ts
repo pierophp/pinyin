@@ -1,7 +1,6 @@
 import * as express from 'express';
 import * as passport from 'passport';
 import { sign } from 'jsonwebtoken';
-import * as env from '../../env';
 import * as knex from '../services/knex';
 
 // eslint-disable-next-line new-cap
@@ -49,7 +48,7 @@ router.get(
   (req: any, res) => {
     const token = sign(
       { id: req.user.id, admin: req.user.admin },
-      process.env['JWT_KEY'] ?? env.jwt_key,
+      process.env['JWT_KEY']!,
     );
     res.send({
       token,
@@ -70,7 +69,7 @@ router.get(
   (req: any, res) => {
     const token = sign(
       { id: req.user.id, admin: req.user.admin },
-      process.env['JWT_KEY'] ?? env.jwt_key,
+      process.env['JWT_KEY']!,
     );
     res.send({
       token,

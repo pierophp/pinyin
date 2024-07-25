@@ -1,14 +1,13 @@
 import { createReadStream } from 'fs';
 import * as readline from 'readline';
 import * as replaceall from 'replaceall';
-import * as env from '../../../env';
 import { pinyinNumbersToAccents } from '../../helpers/pinyin.numbers.to.accents';
 import * as knex from '../../services/knex';
 import { IdeogramsConverter } from '../converter/ideograms.converter';
 
 let storagePath = `${__dirname}/../../../../storage/`;
 
-const storagePathEnv = process.env['STORAGE_PATH'] ?? env.storage_path;
+const storagePathEnv = process.env['STORAGE_PATH'];
 if (storagePathEnv) {
   storagePath = storagePathEnv;
 }

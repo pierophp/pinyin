@@ -2,7 +2,6 @@ const Promise = require('bluebird');
 const fs = require('fs');
 const moment = require('moment');
 const fastCsv = require('fast-csv');
-const env = require('../../env');
 const isChinese = require('../helpers/is-chinese');
 const { LanguageRepository } = require('../repository/language.repository');
 const { PhraseRepository } = require('../repository/phrase.repository');
@@ -27,7 +26,7 @@ const languages = {
 let storagePath = path.resolve(`${__dirname}/../../../storage/`);
 storagePath += '/';
 
-const storagePathEnv = process.env['STORAGE_PATH'] ?? env.storage_path;
+const storagePathEnv = process.env['STORAGE_PATH'];
 if (storagePathEnv) {
   storagePath = storagePathEnv;
 }

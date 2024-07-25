@@ -1,5 +1,4 @@
 import * as express from 'express';
-import * as env from '../../env';
 import { IdeogramsConverter } from '../core/converter/ideograms.converter';
 import * as knex from '../services/knex';
 
@@ -10,7 +9,7 @@ const ideogramConverter = new IdeogramsConverter();
 
 router.post('/my_words', async (req: any, res) => {
   try {
-    const token = process.env['2PINYIN_TOKEN'] ?? env['2pinyin_token'];
+    const token = process.env['2PINYIN_TOKEN'];
     if (req.body.token !== token) {
       throw new Error('Invalid token');
     }
