@@ -1,6 +1,6 @@
 import * as express from 'express';
 import * as passport from 'passport';
-import * as jwt from 'jsonwebtoken';
+import { sign } from 'jsonwebtoken';
 import * as env from '../../env';
 import * as knex from '../services/knex';
 
@@ -47,7 +47,7 @@ router.get(
   '/google/callback',
   passport.authenticate('google'),
   (req: any, res) => {
-    const token = jwt.sign(
+    const token = sign(
       { id: req.user.id, admin: req.user.admin },
       process.env['JWT_KEY'] ?? env.jwt_key,
     );
@@ -68,7 +68,7 @@ router.get(
   '/baidu/callback',
   passport.authenticate('baidu'),
   (req: any, res) => {
-    const token = jwt.sign(
+    const token = sign(
       { id: req.user.id, admin: req.user.admin },
       process.env['JWT_KEY'] ?? env.jwt_key,
     );

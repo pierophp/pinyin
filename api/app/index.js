@@ -8,7 +8,7 @@ const env = require('../env');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const cors = require('cors');
-const jwt = require('express-jwt');
+const { expressjwt: jwt } = require('express-jwt');
 
 const app = express();
 if (process.env.NODE_ENV === 'production') {
