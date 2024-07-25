@@ -8,6 +8,7 @@ export class Downloader {
           'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
       },
     });
+
     if (response.status > 400) {
       throw new Error(`Error downloading ${url}`);
     }
@@ -40,9 +41,9 @@ export class Downloader {
 
   public async download(url: string) {
     try {
-      return await this.downloadByAxiosWithVercel(url);
-    } catch (e) {
       return await this.downloadByAxios(url);
+    } catch (e) {
+      return await this.downloadByAxiosWithVercel(url);
     }
   }
 }
