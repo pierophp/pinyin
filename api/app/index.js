@@ -25,6 +25,7 @@ app.use(
   jwt({
     secret: process.env['JWT_KEY'],
     algorithms: ['HS256'],
+    requestProperty: 'user',
   }).unless({
     path: [
       '/',
