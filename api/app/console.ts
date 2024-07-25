@@ -51,9 +51,5 @@ const yargs = require('yargs').usage('Usage: $0 <command> [options]');
     }
   }
 
-  yargs
-    .demandCommand(1)
-    .strict()
-    .help('h')
-    .alias('v', 'version').argv;
+  yargs.demandCommand(1).strict().help('h').alias('v', 'version').argv;
 })();

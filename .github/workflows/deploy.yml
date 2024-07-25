@@ -1,36 +1,36 @@
-name: Deploy
-'on':
-  push:
-    branches:
-      - master
-jobs:
-  Build:
-    runs-on: ubuntu-22.04
-    steps:
-      - name: 'Set up Node.js ${{ matrix.node-version }}'
-        uses: actions/setup-node@v1
-        with:
-          node-version: 18.x
-      - name: Cache multiple paths
-        uses: actions/cache@v2
-        with:
-          path: |-
-            node_modules
-            $HOME/.npm
-          key: "${{ runner.os }}-${{ hashFiles('TODO') }}"
-      - uses: actions/checkout@v2
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.4.1
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      - run: pwd
-      - run: echo $HOME
-      - run: ls /home/runner/.ssh/
-      - run: npm install pm2 -g
-      - run: bash travis/master.sh
-      - run: mkdir storage
-      - run: bash scripts/deploy.sh
-        env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_PORT: ${{ secrets.SSH_PORT }}
+# name: Deploy
+# 'on':
+#   push:
+#     branches:
+#       - master
+# jobs:
+#   Build:
+#     runs-on: ubuntu-22.04
+#     steps:
+#       - name: 'Set up Node.js ${{ matrix.node-version }}'
+#         uses: actions/setup-node@v1
+#         with:
+#           node-version: 18.x
+#       - name: Cache multiple paths
+#         uses: actions/cache@v2
+#         with:
+#           path: |-
+#             node_modules
+#             $HOME/.npm
+#           key: "${{ runner.os }}-${{ hashFiles('TODO') }}"
+#       - uses: actions/checkout@v2
+#       - name: Setup SSH
+#         uses: webfactory/ssh-agent@v0.4.1
+#         with:
+#           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+#       - run: pwd
+#       - run: echo $HOME
+#       - run: ls /home/runner/.ssh/
+#       - run: npm install pm2 -g
+#       - run: bash travis/master.sh
+#       - run: mkdir storage
+#       - run: bash scripts/deploy.sh
+#         env:
+#           SSH_HOST: ${{ secrets.SSH_HOST }}
+#           SSH_USER: ${{ secrets.SSH_USER }}
+#           SSH_PORT: ${{ secrets.SSH_PORT }}

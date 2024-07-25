@@ -52,7 +52,7 @@
     "line-reader": "^0.4.0",
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
-    "mysql2": "^1.2.0",
+    "mysql2": "^3.10.3",
     "newrelic": "^1.40.0",
     "node-filesystem": "^0.0.21",
     "node-opencc": "^2.0.0",
