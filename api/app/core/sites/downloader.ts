@@ -40,10 +40,10 @@ export class Downloader {
   }
 
   public async download(url: string) {
-    try {
-      return await this.downloadByAxios(url);
-    } catch (e) {
-      return await this.downloadByAxiosWithVercel(url);
-    }
+    // try {
+    return await this.downloadByAxios(url);
+    // } catch (e) {
+    //   return await this.downloadByAxiosWithVercel(url);
+    // }
   }
 }
