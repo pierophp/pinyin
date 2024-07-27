@@ -1,7 +1,7 @@
-if (process.env.NODE_ENV === 'production') {
-  // eslint-disable-next-line global-require
-  require('newrelic');
-}
+// if (process.env.NODE_ENV === 'production') {
+//   // eslint-disable-next-line global-require
+//   require('newrelic');
+// }
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -10,14 +10,14 @@ const cors = require('cors');
 const { expressjwt: jwt } = require('express-jwt');
 
 const app = express();
-if (process.env.NODE_ENV === 'production') {
-  // RAVEN - SENTRY
-  // eslint-disable-next-line global-require
-  const Raven = require('raven');
-  Raven.config(process.env['SENTRY_DSN']).install();
-  app.use(Raven.requestHandler());
-  app.use(Raven.errorHandler());
-}
+// if (process.env.NODE_ENV === 'production') {
+//   // RAVEN - SENTRY
+//   // eslint-disable-next-line global-require
+//   const Raven = require('raven');
+//   Raven.config(process.env['SENTRY_DSN']).install();
+//   app.use(Raven.requestHandler());
+//   app.use(Raven.errorHandler());
+// }
 
 app.use(cors());
 
