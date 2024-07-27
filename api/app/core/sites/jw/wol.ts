@@ -84,19 +84,19 @@ export class Wol {
   }
 
   public async getAudioLink(url: string): Promise<string> {
-    const urlParts = url.split('/');
+    // const urlParts = url.split('/');
 
-    const audioUrl = `https://apps.jw.org/GETPUBMEDIALINKS?langwritten=CH&txtCMSLang=CH&fileformat=mp3&docid=${
-      urlParts[8]
-    }`;
+    // const audioUrl = `https://apps.jw.org/GETPUBMEDIALINKS?langwritten=CH&txtCMSLang=CH&fileformat=mp3&docid=${
+    //   urlParts[8]
+    // }`;
 
-    try {
-      const downloader = new Downloader();
-      const response = await downloader.download(audioUrl);
-      return response.files.CH.MP3[0].file.url;
-    } catch (e) {
-      console.error('Error on audio ' + e);
-    }
+    // try {
+    //   const downloader = new Downloader();
+    //   const response = await downloader.download(audioUrl);
+    //   return response.files.CH.MP3[0].file.url;
+    // } catch (e) {
+    //   console.error('Error on audio ' + e);
+    // }
 
     return '';
   }
