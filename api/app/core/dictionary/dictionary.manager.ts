@@ -1,5 +1,5 @@
 import { DatabaseProvider } from '../search/database.provider';
-import { ElasticsearchProvider } from '../search/elasticsearch.provider';
+// import { ElasticsearchProvider } from '../search/elasticsearch.provider';
 
 export class DictionaryManager {
   public async search(term: string, debug: boolean) {
