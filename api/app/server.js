@@ -1,4 +1,3 @@
-require('ts-node/register');
 const app = require('./index');
 
 const port = 'PORT' in process.env ? process.env.PORT : 9090;
