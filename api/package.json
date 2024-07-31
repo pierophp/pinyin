@@ -4,7 +4,7 @@
   "description": "",
   "main": "app/server.js",
   "scripts": {
-    "dev": "tsc --watch & node --watch --env-file=.env --trace-deprecation ./dist/app/server.js",
+    "dev": "tsc --watch & node --watch --env-file=.env ./dist/app/server.js",
     "build": "tsc",
     "start": "node app/server.js",
     "server": "node app/server.js",

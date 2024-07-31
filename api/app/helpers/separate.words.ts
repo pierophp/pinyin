@@ -14,6 +14,7 @@
 // }
 
 import * as nodejieba from 'nodejieba';
+import { resolve } from 'path';
 import * as replaceall from 'replaceall';
 
 let jiebaInstance;
@@ -23,17 +24,13 @@ function getJiebaInstance(): any {
     return jiebaInstance;
   }
 
-  let dictPath = `${__dirname.replace(
-    'dist/api/',
-    '',
-  )}/../data/jieba.full.utf8`;
+  const dictPath = resolve(
+    `${__dirname.replace('dist/', '')}/../data/jieba.full.utf8`,
+  );
 
-  let userDictPath = `${__dirname.replace(
-    'dist/api/',
-    '',
-  )}/../data/compiled.utf8`;
-
-  console.log({ dictPath, userDictPath });
+  const userDictPath = resolve(
+    `${__dirname.replace('dist/', '')}/../data/compiled.utf8`,
+  );
 
   nodejieba.load({
     dict: dictPath,
