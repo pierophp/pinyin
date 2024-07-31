@@ -28,7 +28,7 @@
     "axios-retry": "^4.4.2",
     "bluebird": "^3.4.0",
     "body-parser": "^1.15.1",
-    "cheerio": "^0.22.0",
+    "cheerio": "1.0.0-rc.12",
     "child-process-async": "^1.0.1",
     "child-process-promise": "^2.2.1",
     "commander": "^12.1.0",

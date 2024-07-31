@@ -26,6 +26,7 @@ export class DomParser {
     $('.viewOptions').remove();
     $('.pageNum').remove();
     $('.screenReaderText').remove();
+    $('.dc-screenReaderText').remove();
     $('textarea').remove();
     $('.alternatePresentation').remove();
     $('noscript').remove();
@@ -117,10 +118,18 @@ export class DomParser {
 
           if (bodyTxtChildren.length === 0) {
             if (this.debug) {
-              profiler('LEVEL 2 - div');
+              profiler(
+                `LEVEL 2 - div El: ${$(subChildren)[0].name} Class: ${$(
+                  subChildren,
+                ).attr('class')}`,
+              );
             }
 
-            bodyTxtChildren = $(subChildren).children();
+            if (!['p', 'h2'].includes($(subChildren)[0].name)) {
+              bodyTxtChildren = $(subChildren).children();
+            } else {
+              bodyTxtChildren = $(subChildren);
+            }
           } else {
             if (this.debug) {
               profiler('LEVEL 2 - div.pGroup');
@@ -187,7 +196,7 @@ export class DomParser {
       $(element).attr('class').indexOf('boxSupplement') !== -1
     ) {
       if (this.debug) {
-        profiler('PARSE BLOCK - .boxSupplement');
+        profiler(`PARSE BLOCK - .boxSupplement`);
       }
       //
       const boxFigure = $(element).find('.fullBleed figure');
@@ -262,7 +271,11 @@ export class DomParser {
       }
     } else {
       if (this.debug) {
-        profiler('PARSE BLOCK - GENERIC START');
+        profiler(
+          `PARSE BLOCK - GENERIC START El:${$(element)[0].name} Class: ${$(
+            element,
+          ).attr('class')}`,
+        );
       }
 
       await this.parseContent($, element, '');
@@ -392,38 +405,32 @@ export class DomParser {
       }
     } else if (this.isChinese) {
       bibles = $(element).find('a[data-bid]').toArray();
-      if (bibles.length > 0 && this.isChinese) {
-        for (const bible of bibles) {
-          const urlJson = $(bible)
-            .attr('href')
-            .split('/')
-            .filter((item, i) => i !== 1)
-            .join('/');
-
-
-          // COMENTADO BÌBLIA
-
-          // const downloadResponse = await this.downloader.download(
-          //   this.fullUrl(urlJson),
-          // );
-
-          // const item = downloadResponse.items[0];
-
-          // const bibleBook = item.book;
-          // const bibleChapter = item.first_chapter;
-          // const bibleVerses: any[] = [];
-          // bibleVerses.push(item.first_verse);
-          // bibleVerses.push(item.last_verse);
-
-          // text = replaceall(
-          //   $.html(bible),
-          //   `BI#[${bibleBook}:${bibleChapter}:${bibleVerses.join('-')}]#BI${$(
-          //     bible,
-          //   ).html()}]#ENDBI`,
-          //   text,
-          // );
-        }
-      }
+      // if (bibles.length > 0 && this.isChinese) {
+      // for (const bible of bibles) {
+      // COMENTADO BÌBLIA
+      // const urlJson = $(bible)
+      //   .attr('href')
+      //   .split('/')
+      //   .filter((item, i) => i !== 1)
+      //   .join('/');
+      // const downloadResponse = await this.downloader.download(
+      //   this.fullUrl(urlJson),
+      // );
+      // const item = downloadResponse.items[0];
+      // const bibleBook = item.book;
+      // const bibleChapter = item.first_chapter;
+      // const bibleVerses: any[] = [];
+      // bibleVerses.push(item.first_verse);
+      // bibleVerses.push(item.last_verse);
+      // text = replaceall(
+      //   $.html(bible),
+      //   `BI#[${bibleBook}:${bibleChapter}:${bibleVerses.join('-')}]#BI${$(
+      //     bible,
+      //   ).html()}]#ENDBI`,
+      //   text,
+      // );
+      // }
+      // }
     }
 
     text = this.fixTags($, text);
@@ -438,6 +445,10 @@ export class DomParser {
 
         text = replaceall(`#ENDFOOTNOTE${footNoteId}`, '</footnote>', text);
       }
+    }
+
+    if (this.debug) {
+      profiler('TEXT:' + text);
     }
 
     const lines = text!

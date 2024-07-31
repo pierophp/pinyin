@@ -25,12 +25,14 @@ export function profiler(str: string, forceOnProduction?: boolean) {
     memoryMessage = `- Mem RSS ${memoryUsage}MB - Mem Tot ${memoryTotal}MB - Mem Usag ${memoryRSS}MB `;
   }
 
-  if(profileToFile) {
-    appendFile("/home/piero/dev/pinyin/log.txt", `${moment().format('HH:mm:ss')} ${memoryMessage}${str}\n`, () =>{});
+  if (profileToFile) {
+    appendFile(
+      '/home/piero/dev/pinyin/log.txt',
+      `${moment().format('HH:mm:ss')} ${memoryMessage}${str}\n`,
+      () => {},
+    );
   } else {
     // eslint-disable-next-line
     console.log(`${moment().format('HH:mm:ss')} ${memoryMessage}${str}`);
   }
-
-
 }
