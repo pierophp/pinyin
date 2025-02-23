@@ -1,7 +1,7 @@
 import * as bluebird from 'bluebird';
 import * as replaceall from 'replaceall';
 import { IdeogramsConverter } from '../core/converter/ideograms.converter';
-import { ElasticsearchProvider } from '../core/search/elasticsearch.provider';
+// import { ElasticsearchProvider } from '../core/search/elasticsearch.provider';
 import { profiler } from '../helpers/profiler';
 import * as knex from '../services/knex';
 import { BaseRepository } from './base.repository';
@@ -84,18 +84,15 @@ export class CjkRepository extends BaseRepository {
   }
 
   static async findIdeogramRawIsNull(): Promise<any[]> {
-    return await knex('cjk')
-      .whereRaw(`ideogram_raw IS NULL`)
-      .select();
+    return await knex('cjk').whereRaw(`ideogram_raw IS NULL`).select();
   }
 
   static async searchPronunciationByWord(
     ideograms: string,
   ): Promise<string | undefined> {
     const ideogramsConverter = new IdeogramsConverter();
-    const ideogramConverted = ideogramsConverter.convertIdeogramsToUtf16(
-      ideograms,
-    );
+    const ideogramConverted =
+      ideogramsConverter.convertIdeogramsToUtf16(ideograms);
     let response: any = null;
     if (ideograms.length === 1) {
       response = await knex('cjk')
@@ -135,7 +132,7 @@ export class CjkRepository extends BaseRepository {
     for (let i = 0; i < ideograms.length; i += 1) {
       chars.push(ideograms[i].charCodeAt(0).toString(16));
     }
-    return await bluebird.map(chars, async char => {
+    return await bluebird.map(chars, async (char) => {
       return await knex('cjk')
         .where({
           ideogram: char,
@@ -180,23 +177,21 @@ export class CjkRepository extends BaseRepository {
     if (params.id) {
       params.updated_at = new Date();
 
-      await knex('cjk')
-        .where('id', '=', params.id)
-        .update(params);
+      await knex('cjk').where('id', '=', params.id).update(params);
     } else {
       params.created_at = new Date();
 
-      params.id = (await knex('cjk')
-        .insert(params)
-        .returning('id'))[0];
+      params.id = (await knex('cjk').insert(params).returning('id'))[0];
     }
 
-    const cjk = (await knex('cjk').where({
-      id: params.id,
-    }))[0];
+    const cjk = (
+      await knex('cjk').where({
+        id: params.id,
+      })
+    )[0];
 
-    const elasticsearchProvider = new ElasticsearchProvider();
-    await elasticsearchProvider.saveMany([cjk]);
+    // const elasticsearchProvider = new ElasticsearchProvider();
+    // await elasticsearchProvider.saveMany([cjk]);
   }
 
   static async referencePhrases() {

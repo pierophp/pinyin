@@ -4,7 +4,10 @@ import * as express from 'express';
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  res.send({ name: 'Simple Pinyin Editor' });
+  res.send({
+    name: 'Simple Pinyin Editor',
+    node_version: process.versions.node,
+  });
 });
 
 module.exports = router;
