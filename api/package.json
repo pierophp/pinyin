@@ -19,7 +19,7 @@
     "cli:dist": "NODE_ENV=production node ./dist/app/console.js"
   },
   "engines": {
-    "node": ">=18.0"
+    "node": ">=20.0"
   },
   "author": "",
   "license": "MIT",
@@ -32,11 +32,11 @@
     "@types/node": "^18",
     "@types/yargs": "^12.0.0",
     "adm-zip": "^0.4.11",
-    "axios": "^0.27",
-    "axios-retry": "^3.0.1",
-    "bluebird": "^3.4.0",
-    "body-parser": "^1.15.1",
-    "cheerio": "^0.22.0",
+    "axios": "^1.7.2",
+    "axios-retry": "^4.4.2",
+    "bluebird": "^3.7.2",
+    "body-parser": "^1.20.2",
+    "cheerio": "^1.0.0-rc.12",
     "child-process-async": "^1.0.1",
     "child-process-promise": "^2.2.1",
     "commander": "^12.1.0",

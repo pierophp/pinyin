@@ -1,7 +1,7 @@
 import { Router, Request as RouterRequest } from 'itty-router';
 import { IndexController } from './controllers/index.controller';
 import { FilesController } from './controllers/files.controller';
-import { verify } from 'jsonwebtoken';
+import { verify } from '@tsndr/cloudflare-worker-jwt';
 
 export interface AppRequest extends RouterRequest {
   request: Request;
@@ -21,8 +21,13 @@ export interface Env {
   JWT_KEY: string;
 }
 
-const withUser = (req: AppRequest, request: Request) => {
-  // verify(value, env.JWT_KEY);
+const withUser = (req: AppRequest) => {
+  const authHeader = req.request.headers.get('Authorization') ?? '';
+
+  const isValidToken = verify(authHeader, req.env.JWT_KEY);
+
+  console.log({ isValidToken });
+
   req.user = { id: 1 };
 };
 
@@ -56,9 +61,9 @@ export default {
     );
     router.get(
       '/files',
-      (req) => withUser(req, env),
+      (req) => withUser(loadRequest(req, request, env, ctx)),
       requireUser,
-      (req) => FilesController.list(req, env, ctx),
+      (req) => FilesController.list(req),
     );
     router.all('*', () => new Response('Not Found.', { status: 404 }));
 

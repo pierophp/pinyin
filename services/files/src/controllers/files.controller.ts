@@ -17,14 +17,8 @@ function getAdapter(env: Env): AdapterInterface {
 }
 
 export class FilesController {
-  public static async list(
-    req: AppRequest,
-    env: Env,
-    ctx: ExecutionContext,
-  ): Promise<Response> {
-    console.log('Test');
-
-    const fileAdapter = getAdapter(env);
+  public static async list(req: AppRequest): Promise<Response> {
+    const fileAdapter = getAdapter(req.env);
 
     // await fileAdapter.write('1/teste.txt', 'Teste');
 
