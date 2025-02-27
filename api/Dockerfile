@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y \
   libstdc++6 poppler-utils && \
   rm -rf /var/lib/apt/lists/*
 
-RUN curl -fsSL https://bun.sh/install | bash
+RUN npm install -g bun
 
 COPY ./ /var/www/pinyin
 WORKDIR /var/www/pinyin/
